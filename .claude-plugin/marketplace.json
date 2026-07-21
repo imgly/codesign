@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+  "metadata": {
+    "description": "IMG.LY CoDesign — generate vector designs and print-ready PDFs from your coding agent."
+  },
+  "name": "imgly-codesign",
+  "owner": {
+    "email": "support@img.ly",
+    "name": "IMG.LY GmbH"
+  },
+  "plugins": [
+    {
+      "author": {
+        "email": "support@img.ly",
+        "name": "IMG.LY GmbH"
+      },
+      "category": "development",
+      "description": "CoDesign design-generation server (CE.SDK) over MCP. Requires Node.js >= 20 on PATH.",
+      "homepage": "https://github.com/imgly/codesign",
+      "keywords": [
+        "codesign",
+        "cesdk",
+        "creative-editor",
+        "design",
+        "pdf",
+        "img.ly",
+        "mcp"
+      ],
+      "license": "SEE LICENSE IN LICENSE",
+      "name": "codesign",
+      "repository": "https://github.com/imgly/codesign",
+      "source": "./plugins/codesign",
+      "tags": ["codesign", "cesdk", "design", "mcp"]
+    }
+  ]
+}

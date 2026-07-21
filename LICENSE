@@ -1,0 +1,16 @@
+# Proprietary License
+
+Copyright (c) IMG.LY GmbH. All rights reserved.
+
+This repository distributes configuration that installs and runs the proprietary
+`@imgly/codesign-mcp` server. During the beta period the software is provided to
+authorized testers solely for evaluation. No license or right to use, copy,
+modify, distribute, sublicense, or create derivative works is granted except as
+expressly agreed in writing with IMG.LY GmbH.
+
+Use of the CreativeEditor SDK (CE.SDK) engine bundled or fetched as a dependency
+is additionally governed by the IMG.LY CE.SDK license terms.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
