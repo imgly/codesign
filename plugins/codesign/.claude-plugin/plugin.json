@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "codesign",
-  "description": "CoDesign: generate vector designs and print-ready PDFs via CE.SDK, over MCP. Requires Node.js >= 20 on your PATH — without it the server fails silently (see README).",
+  "description": "Give your AI agent a real design engine — generate and edit designs and export print-ready PDFs over MCP, powered by CE.SDK. Requires Node.js >= 20 on your PATH — without it the server fails silently (see README).",
   "version": "0.1.0",
   "author": {
     "name": "IMG.LY GmbH",
