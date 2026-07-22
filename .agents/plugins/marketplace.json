@@ -1,0 +1,12 @@
+{
+  "name": "imgly-codesign",
+  "plugins": [
+    {
+      "name": "codesign",
+      "source": {
+        "source": "local",
+        "path": "./plugins/codesign"
+      }
+    }
+  ]
+}

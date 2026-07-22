@@ -69,20 +69,7 @@ print, video, and social:
   ([anthropics/claude-code#58510](https://github.com/anthropics/claude-code/issues/58510)).
   Use WSL for now; a native Windows launcher is coming.
 
-## Quick start (Claude Code)
-
-```bash
-claude plugin marketplace add imgly/codesign
-claude plugin install codesign@imgly-codesign
-```
-
-Or, without the plugin:
-
-```bash
-claude mcp add codesign -- npx -y @imgly/codesign-mcp@latest stdio
-```
-
-## Install in your agent
+## Install
 
 ### Claude Code
 
@@ -99,23 +86,19 @@ Or add the MCP server directly, without the plugin:
 claude mcp add codesign -- npx -y @imgly/codesign-mcp@latest stdio
 ```
 
-### Cursor
+### Codex
 
-Add to `.cursor/mcp.json`:
+Install the plugin from the marketplace:
 
-```json
-{
-  "mcpServers": {
-    "codesign": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@imgly/codesign-mcp@latest",
-        "stdio"
-      ]
-    }
-  }
-}
+```bash
+codex plugin marketplace add imgly/codesign
+codex plugin add codesign@imgly-codesign
+```
+
+Or add the MCP server directly, without the plugin:
+
+```bash
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@latest stdio
 ```
 
 ### Gemini CLI
@@ -143,9 +126,34 @@ Or add the server manually to `~/.gemini/settings.json`:
 }
 ```
 
-### VS Code
+### Other MCP hosts
 
-Add to `.vscode/mcp.json`:
+Every other host spawns the same stdio server — only the config file and
+the top-level key differ. Add this block to the host’s MCP config:
+
+```json
+{
+  "mcpServers": {
+    "codesign": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@imgly/codesign-mcp@latest",
+        "stdio"
+      ]
+    }
+  }
+}
+```
+
+| Host | Config file | Note |
+| --- | --- | --- |
+| Cursor | `.cursor/mcp.json` | as-is |
+| Windsurf | `~/.codeium/windsurf/mcp_config.json` | as-is |
+| VS Code | `.vscode/mcp.json` | use the key `servers` instead of `mcpServers` |
+| Zed | `settings.json` | use the `context_servers` shape below |
+
+VS Code (`servers` key):
 
 ```json
 {
@@ -162,38 +170,7 @@ Add to `.vscode/mcp.json`:
 }
 ```
 
-### OpenAI Codex
-
-Add to `~/.codex/config.toml`:
-
-```toml
-[mcp_servers.codesign]
-command = "npx"
-args = ["-y", "@imgly/codesign-mcp@latest", "stdio"]
-```
-
-### Windsurf
-
-Add to `~/.codeium/windsurf/mcp_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "codesign": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@imgly/codesign-mcp@latest",
-        "stdio"
-      ]
-    }
-  }
-}
-```
-
-### Zed
-
-Add to `settings.json`:
+Zed (`context_servers`):
 
 ```json
 {
@@ -207,25 +184,6 @@ Add to `settings.json`:
           "stdio"
         ]
       }
-    }
-  }
-}
-```
-
-### Generic stdio host
-
-Any MCP host that spawns a stdio subprocess:
-
-```json
-{
-  "mcpServers": {
-    "codesign": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@imgly/codesign-mcp@latest",
-        "stdio"
-      ]
     }
   }
 }
