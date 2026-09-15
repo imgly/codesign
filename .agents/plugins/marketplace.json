@@ -1,12 +1,16 @@
 {
   "name": "imgly-codesign",
+  "interface": {
+    "displayName": "IMG.LY CoDesign"
+  },
   "plugins": [
     {
       "name": "codesign",
       "source": {
         "source": "local",
         "path": "./plugins/codesign"
-      }
+      },
+      "category": "Creativity"
     }
   ]
 }

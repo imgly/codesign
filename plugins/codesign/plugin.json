@@ -10,5 +10,12 @@
   "homepage": "https://github.com/imgly/codesign",
   "repository": "https://github.com/imgly/codesign",
   "license": "SEE LICENSE IN LICENSE",
-  "keywords": ["codesign", "cesdk", "design", "pdf", "mcp"]
+  "keywords": ["codesign", "cesdk", "design", "pdf", "mcp"],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "CoDesign"
+      }
+    }
+  }
 }
