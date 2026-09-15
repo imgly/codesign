@@ -57,10 +57,10 @@ print, video, and social:
 
 > **Read this first — the failure modes below are silent.**
 
-- **Node.js ≥ 20 is required and is _not_ provided.** The server runs on your
-  system Node. With no Node (or Node < 20) on `PATH`, the host reports the
+- **Node.js ≥ 22.15 is required and is _not_ provided.** The server runs on your
+  system Node. With no Node (or Node < 22.15) on `PATH`, the host reports the
   server as failed with no useful reason — typically `local: 0` and
-  `MCP error -32000`. Install Node 20+ first: <https://nodejs.org>.
+  `MCP error -32000`. Install Node 22.15+ first: <https://nodejs.org>.
 - **Pin `@latest` — it's in every recipe on purpose.** A bare, unpinned `npx`
   caches the package and goes stale; because each release carries a rolling
   30-day trial license, a stale copy eventually stops working.

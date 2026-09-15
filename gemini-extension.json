@@ -1,7 +1,7 @@
 {
   "name": "codesign",
   "version": "0.1.0",
-  "description": "Give your AI agent a real design engine — generate and edit designs and export print-ready PDFs over MCP, powered by CE.SDK. Requires Node.js >= 20 on your PATH — without it the server fails silently (see README).",
+  "description": "Give your AI agent a real design engine — generate and edit designs and export print-ready PDFs over MCP, powered by CE.SDK. Requires Node.js >= 22.15 on your PATH — without it the server fails silently (see README).",
   "mcpServers": {
     "codesign": {
       "command": "npx",

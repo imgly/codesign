@@ -1,16 +1,36 @@
-# Proprietary License
+# License
 
-Copyright (c) IMG.LY GmbH. All rights reserved.
+CoDesign MCP is free to use locally. This file explains what you can and cannot
+do with it.
 
-This repository distributes configuration that installs and runs the proprietary
-`@imgly/codesign-mcp` server. During the beta period the software is provided to
-authorized testers solely for evaluation. No license or right to use, copy,
-modify, distribute, sublicense, or create derivative works is granted except as
-expressly agreed in writing with IMG.LY GmbH.
+## What you can do
 
-Use of the CreativeEditor SDK (CE.SDK) engine bundled or fetched as a dependency
-is additionally governed by the IMG.LY CE.SDK license terms.
+You may install and run CoDesign on your own machines, for personal or
+commercial work, at no cost during the preview. Designs you create with CoDesign
+are yours. You may use them however you like.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
-FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+## What you cannot do
+
+You may not copy, modify, sell, sublicense, or redistribute the CoDesign
+software or the CE.SDK engine it contains. You may not bundle it inside your own
+product or service, or offer it to others as a hosted service. You may not
+reverse-engineer it or remove license or copyright notices.
+
+## Ownership
+
+CoDesign and CE.SDK remain the property of IMG.LY GmbH. This license gives you
+permission to use the software; it does not transfer any rights to it.
+
+## Preview terms
+
+This is a preview. Features may change or be removed, and the software may stop
+working after a preview version expires. IMG.LY GmbH may change these terms, or
+end the free preview, at any time. When the preview ends, continued use will
+require a new license.
+
+## No warranty
+
+The software is provided "as is", without warranty of any kind. IMG.LY GmbH is
+not liable for any damages arising from its use, to the extent permitted by law.
+
+Copyright © 2026 IMG.LY GmbH. All rights reserved.
