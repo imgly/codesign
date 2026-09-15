@@ -101,7 +101,25 @@ Or add the MCP server directly, without the plugin:
 codex mcp add codesign -- npx -y @imgly/codesign-mcp@latest stdio
 ```
 
+### Antigravity CLI
+
+Clone the repo and install the plugin folder:
+
+```bash
+git clone https://github.com/imgly/codesign
+agy plugin install ./codesign/plugins/codesign
+```
+
+Or add the MCP server directly, without the plugin:
+
+```bash
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@latest stdio
+```
+
 ### Gemini CLI
+
+Gemini CLI now serves Gemini Code Assist Standard/Enterprise and API-key
+accounts; on a personal Google account, use Antigravity CLI above.
 
 Install as an extension straight from the public repo:
 
