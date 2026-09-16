@@ -1,21 +1,36 @@
-MIT License
+# License
 
-Copyright (c) 2026 IMG.LY GmbH
+CoDesign MCP is free to use locally. This file explains what you can and cannot
+do with it.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+## What you can do
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+You may install and run CoDesign on your own machines, for personal or
+commercial work, at no cost during the preview. Designs you create with CoDesign
+are yours. You may use them however you like.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+## What you cannot do
+
+You may not copy, modify, sell, sublicense, or redistribute the CoDesign
+software or the CE.SDK engine it contains. You may not bundle it inside your own
+product or service, or offer it to others as a hosted service. You may not
+reverse-engineer it or remove license or copyright notices.
+
+## Ownership
+
+CoDesign and CE.SDK remain the property of IMG.LY GmbH. This license gives you
+permission to use the software; it does not transfer any rights to it.
+
+## Preview terms
+
+This is a preview. Features may change or be removed, and the software may stop
+working after a preview version expires. IMG.LY GmbH may change these terms, or
+end the free preview, at any time. When the preview ends, continued use will
+require a new license.
+
+## No warranty
+
+The software is provided "as is", without warranty of any kind. IMG.LY GmbH is
+not liable for any damages arising from its use, to the extent permitted by law.
+
+Copyright © 2026 IMG.LY GmbH. All rights reserved.

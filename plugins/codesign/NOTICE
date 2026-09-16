@@ -1,8 +1,0 @@
-CoDesign
-Copyright (c) 2026 IMG.LY GmbH
-
-This repository — the Claude Code and Codex plugins, marketplace manifests,
-skills and documentation — is released under the MIT License (see LICENSE).
-The CoDesign engine itself, distributed as the npm package
-`@imgly/codesign-mcp`, is proprietary software from IMG.LY and free to use
-locally. The full terms ship inside the package as `LICENSE.md`.

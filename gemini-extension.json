@@ -1,7 +1,7 @@
 {
   "name": "codesign",
   "version": "0.1.0",
-  "description": "Local design engine for AI agents. Create, edit and export real, editable designs from Claude Code, Codex, Cursor and more, then fix anything by hand in the built-in editor. Powered by CE.SDK.",
+  "description": "Local design engine for your AI agent from IMG.LY that lets it create, edit and export real, editable designs, including print-ready PDF with CMYK and bleed. Every design also opens in a built-in editor for hand edits. Local use is free, no account needed, runs on the user's machine.",
   "mcpServers": {
     "codesign": {
       "command": "npx",
