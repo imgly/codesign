@@ -3,7 +3,7 @@
   "metadata": {
     "description": "Give your AI agent a real design engine — generate and edit designs and export print-ready PDFs over MCP. Powered by CE.SDK."
   },
-  "name": "imgly-codesign",
+  "name": "imgly-codesign-next",
   "owner": {
     "email": "support@img.ly",
     "name": "IMG.LY GmbH"
@@ -30,7 +30,12 @@
       "name": "codesign",
       "repository": "https://github.com/imgly/codesign",
       "source": "./plugins/codesign",
-      "tags": ["codesign", "cesdk", "design", "mcp"]
+      "tags": [
+        "codesign",
+        "cesdk",
+        "design",
+        "mcp"
+      ]
     }
   ]
 }

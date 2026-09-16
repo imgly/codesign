@@ -5,7 +5,11 @@
   "mcpServers": {
     "codesign": {
       "command": "npx",
-      "args": ["-y", "@imgly/codesign-mcp@latest", "stdio"]
+      "args": [
+        "-y",
+        "@imgly/codesign-mcp@next",
+        "stdio"
+      ]
     }
   }
 }
