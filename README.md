@@ -38,6 +38,14 @@ Three layers, one product:
 - **The CE.SDK CreativeEngine** — IMG.LY's real, headless design engine that
   does the actual layout, rendering, and export.
 
+## Licensing
+
+This repository — the Claude Code and Codex plugins, marketplace manifests,
+skills and documentation — is released under the [MIT License](./LICENSE).
+The CoDesign engine itself, distributed as the npm package `@imgly/codesign-mcp`, is
+proprietary software from IMG.LY and free to use locally. The full terms ship
+inside the package as `LICENSE.md`.
+
 ## Why a real engine matters
 
 Every other design agent draws on a web canvas — a quick fix that breaks on the
@@ -207,17 +215,6 @@ Zed (`context_servers`):
 }
 ```
 
-## Licensing
-
-A 30-day CE.SDK trial license is bundled in the package, so the recipes above
-work out of the box with **zero configuration**. To use your own CE.SDK license,
-set `CESDK_LICENSE` in the server's environment — for example, add an `env`
-block next to `command`/`args`:
-
-```json
-{ "env": { "CESDK_LICENSE": "your-cesdk-node-license" } }
-```
-
 ## Beyond your machine
 
 CoDesign runs free on your machine today. When you need more — always-on
@@ -228,4 +225,4 @@ config, not vendors. No lock-in. Talk to us: <support@img.ly>.
 ## Support
 
 Questions or issues: <support@img.ly>. This distribution is generated from
-IMG.LY's source repository; see [LICENSE](./LICENSE) for terms.
+IMG.LY's source repository.
