@@ -1,7 +1,7 @@
 {
   "name": "codesign",
   "version": "0.1.0",
-  "description": "Give your AI agent a real design engine — generate and edit designs and export print-ready PDFs over MCP, powered by CE.SDK. Requires Node.js >= 22.15 on your PATH — without it the server fails silently (see README).",
+  "description": "Local design engine for your AI agent from IMG.LY that lets it create, edit and export real, editable designs, including print-ready PDF with CMYK and bleed. Every design also opens in a built-in editor for hand edits. Local use is free, no account needed, runs on the user's machine.",
   "mcpServers": {
     "codesign": {
       "command": "npx",
