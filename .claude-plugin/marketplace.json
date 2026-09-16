@@ -30,7 +30,12 @@
       "name": "codesign",
       "repository": "https://github.com/imgly/codesign",
       "source": "./plugins/codesign",
-      "tags": ["codesign", "cesdk", "design", "mcp"]
+      "tags": [
+        "codesign",
+        "cesdk",
+        "design",
+        "mcp"
+      ]
     }
   ]
 }
