@@ -1,7 +1,7 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
   "metadata": {
-    "description": "Local design engine for AI agents. Create, edit and export real, editable designs from Claude Code, Codex, Cursor and more, then fix anything by hand in the built-in editor. Powered by CE.SDK."
+    "description": "CoDesign gives AI agents like Claude Code, Codex and PI a real design engine for genuine, editable designs, not flat images. Bring in what you have: InDesign, Photoshop, PowerPoint and PDF files stay editable. Exports print-ready PDFs with CMYK and bleed. Every design opens in a built-in editor for manual fixes. Runs on your machine, no account."
   },
   "name": "imgly-codesign",
   "owner": {
@@ -15,7 +15,7 @@
         "name": "IMG.LY GmbH"
       },
       "category": "design",
-      "description": "Local design engine for AI agents. Create, edit and export real, editable designs from Claude Code, Codex, Cursor and more, then fix anything by hand in the built-in editor. Powered by CE.SDK.",
+      "description": "CoDesign gives AI agents like Claude Code, Codex and PI a real design engine for genuine, editable designs, not flat images. Bring in what you have: InDesign, Photoshop, PowerPoint and PDF files stay editable. Exports print-ready PDFs with CMYK and bleed. Every design opens in a built-in editor for manual fixes. Runs on your machine, no account.",
       "homepage": "https://img.ly/codesign",
       "keywords": [
         "ai-agents",

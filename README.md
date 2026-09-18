@@ -20,10 +20,26 @@ use.
 
 Ask your agent, in plain language:
 
-- _"Design a 3-panel Instagram carousel announcing our launch, on-brand."_
-- _"Resize this poster to A4 with print bleed and export a print-ready PDF."_
-- _"Localize this flyer into German and re-fit the layout to the new text."_
-- _"Generate five color variants of this template so I can pick one."_
+- **Resize for every channel** — _"Take this Instagram post and make the
+  Story, LinkedIn and X versions."_
+- **Make an image editable** (needs the free IMG.LY sign-in) — _"Split this
+  flat product photo into layers, put the product on our brand background and
+  make it editable."_
+- **Restyle an existing PDF** — _"Import this datasheet.pdf as an editable
+  design, restyle it with our brand kit, and export A4 and web versions."_
+- **Generate many from a CSV** — _"One speaker card per row in speakers.csv,
+  same template, all editable."_
+- **Prepare for print** — _"Turn this flyer into an A4 print PDF with 3 mm
+  bleed and CMYK."_
+- **Update an existing design** — _"Open last year's flyer.psd, swap the date
+  and venue, export again."_
+- **Localize a design** — _"Translate this poster into German and re-fit the
+  layout so nothing overflows."_
+- **Create a launch graphic** — _"Make the v2.0 launch graphic with our logo
+  and brand colors, in X, LinkedIn and OG-image sizes."_
+- **Create App Store graphics** — _"Make the App Store screenshots and the
+  Play Store feature graphic from these five screen captures, on-brand, all
+  sizes."_
 
 ## How it works
 
@@ -58,8 +74,8 @@ print, video, and social:
   browser or config.
 - **Native performance** — a purpose-built engine that stays fast at scale and
   under heavy assets.
-- **Full compatibility** — imports InDesign, PSD, PDF, and Lottie; exports
-  print-ready PDF, image, video, and HTML.
+- **Full compatibility** — imports InDesign, PSD, PowerPoint (PPTX), PDF, and
+  Lottie; exports print-ready PDF, image, video, and HTML.
 
 ## Requirements & known limitations
 
