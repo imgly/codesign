@@ -5,6 +5,7 @@ description: >-
   creative (PNG / JPEG / WebP) — as an editable, layered CoDesign design or `.imgly` file; when
   asked to layerize, decompose, de-flatten or "make editable" an image; or when splitting an
   image into separate layers with live, editable text.
+argument-hint: <image> [output.imgly]
 ---
 
 # layerize
@@ -24,7 +25,7 @@ Call `asset_generate` — **one successful call per image**:
 
 - `model`: `bytedance/seedream-5-pro-layerize`
 - `image_uris`: `[uri]` — the source image, added to the workspace with `asset_add({ source: { path } })`
-- `prompt`: exactly what the `models` skill prescribes for this model. Read `skill({ name: 'models', path: 'bytedance-seedream.md' })` before the call — it also explains the result (which asset is the background, why cut-outs come back rescaled, how bounding boxes are written).
+- `prompt`: exactly what the `models` skill prescribes for this model. Read `../models/bytedance-seedream.md` before the call — it also explains the result (which asset is the background, why cut-outs come back rescaled, how bounding boxes are written).
 
 **Never retry a call that may have generated.** If it times out, find its output with `asset_search({ sourceId: 'ly.img.workspace.images' })` (newest first): the images created together with the source's dimensions or smaller, the full-size one being the background. If it returns an error instead, check the same way first; only when none of its output is in the workspace did it not run — fix the cause the error names and call it again. After the third failure, stop: build nothing, report the errors with their `gw_…` request ids, and ask the user how to proceed. Seedream is not optional: no other model and no local cut-outs replace it.
 
@@ -86,7 +87,7 @@ Check with a PNG export (`export({ format: 'png' })`) compared against the origi
 - no element missing, no element appearing twice
 - named layers, grouped per scene
 
-Then run the judge loop against the source (`skill({ name: 'judge' })`), export with `export({ format: 'imgly', outPath: '<output path>' })`, and report:
+Then run the judge loop against the source (`../judge/SKILL.md`), export with `export({ format: 'imgly', outPath: '<output path>' })`, and report:
 
 - the layer list
 - what Seedream got wrong and how it was fixed
