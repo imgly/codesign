@@ -68,6 +68,7 @@ Each tool's full contract lives on the tool itself — its description in tools/
 - `edit({ parent, code, title?, note? })` — THE mutating tool: runs async JS (`engine` in scope, plus `engine.design` — the preferred facade: awaited `create` for a block or subtree, `setProps`/`getProps`, `measure`, `align`/`distribute`; full contract in the api skill) and commits a revision. The response's first text part is JSON `{ revision, parent }` — save `revision`; it is your `parent` for the next edit.
 - `preview({ blockIds, revision })` — render blocks to inline PNGs; omit `blockIds` for every page (max 10).
 - `export({ format, revision, blockId?, outPath? })` — write a deliverable (`pdf`/`png`/`jpeg`/`webp`/`svg`/`pdfx`/`html`, or `imgly` to stay editable); omit `blockId` for the whole document; returns `{ uri, httpUrl, bytes, format, revision }` (+ `path` with `outPath`). `uri` is the durable handle; `httpUrl` is process-scoped — never persist it. Pass `outPath` (absolute) when your environment cannot fetch localhost URLs. Full contract on the tool itself.
+- `export` also accepts `format: "mp4"` — renders the block's authored timeline (recipe: `video.md`); needs the native engine (the default).
 - `import({ source, title? })` — ingest a design FILE as a NEW root (was `load`): native `.imgly` (also legacy `.scene` / `.zip`), foreign Photoshop `.psd` / InDesign `.idml` / PowerPoint `.pptx` / PDF (translated in; `warnings` are your touch-up list — preview, then repair with `edit`), or a plain image/SVG (one page sized to it). Continue with `edit({ parent: revision })`.
 - `asset_add({ source: { path } })` — bring a local file (image or font) into the workspace for use in a design (was `import`); embed the returned `workspace://` uri in `edit` code — never a fetch/file URL, and never the original local path or a `file://` URI (renders server-side but breaks portability).
 - `asset_search({ sourceId?, query?, page?, perPage? })` — discover and search the engine's asset sources; apply results inside `edit` (the exact patterns are in the tool's description). The `ly.img.workspace.images` source also lists images the human uploaded — searchable by their original filename, newest first.
@@ -279,6 +280,17 @@ This barrier is for **your own measuring** inside `edit` code — positioning by
 
 `getFrameWidth(id) > 0` after the await is your "font loaded + shaped successfully" signal. **Never** use `getWidth(id) === 0` as a font-load probe — it returns 0 by design in Auto mode regardless of font state.
 
+### Video: any design can become a video
+
+Scenes are not "static" or "video" at creation time — add time-based content
+to the scene you already have, then `export({ format: "mp4" })` renders the
+authored timeline. Do NOT rebuild a scene with `scene.createVideo()` just to
+animate it (`createVideo` and `scene.setMode('Video')` exist as conveniences;
+you rarely need either).
+
+The recipe — page duration, tracks and offsets, video fills and trims, audio,
+`export`/`preview` for timelines — is `video.md`; read it
+before any timeline work.
 
 ### Common operations cheatsheet
 

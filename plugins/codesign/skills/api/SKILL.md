@@ -165,8 +165,6 @@ the declaration by name instead: `class BlockAPI`.)
 
 # The edit-code API surface (docs/api/signatures.d.ts)
 
-⚠ The video/audio/caption/track members below exist in the engine but the VIDEO FEATURE IS DISABLED on this server: no mp4/audio export, no video fills, no timeline work. Treat them as reference-only.
-
 Everything edit code writes through, inline below. The upstream CE.SDK core is the rest of that file — `signatures.d.ts` — when you need a member this section lacks.
 
 ```typescript
