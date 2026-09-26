@@ -17,6 +17,7 @@ We currently support the following fill types:
 - `'//ly.img.ubq/fill/image'`
 - `'//ly.img.ubq/fill/video'`
 - `'//ly.img.ubq/fill/pixelStream'`
+- `'//ly.img.ubq/fill/stripe'`
 
 Note: short types are also accepted, e.g. 'color' instead of '//ly.img.ubq/fill/color'.
 

@@ -3,31 +3,7 @@
 ---
 
 ```ts
-type SettingColorPropertyName = 
-  | "clearColor"
-  | "handleFillColor"
-  | "highlightColor"
-  | "pageHighlightColor"
-  | "placeholderHighlightColor"
-  | "snappingGuideColor"
-  | "rotationSnappingGuideColor"
-  | "cropOverlayColor"
-  | "textVariableHighlightColor"
-  | "borderOutlineColor"
-  | "progressColor"
-  | "errorStateColor"
-  | "grid/color"
-  | "page/title/color"
-  | "page/marginFillColor"
-  | "page/marginFrameColor"
-  | "page/safetyFillColor"
-  | "page/safetyFrameColor"
-  | "page/exclusionAreaFillColor"
-  | "page/exclusionAreaFrameColor"
-  | "page/innerBorderColor"
-  | "page/outerBorderColor"
-  | "colorMaskingSettings/maskColor"
-  | string & object;
+type SceneColorConversionMode = typeof SceneColorConversionModeValues[number];
 ```
 
 

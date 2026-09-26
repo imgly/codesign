@@ -2,33 +2,13 @@
 
 ---
 
-```ts
-type SettingColorPropertyName = 
-  | "clearColor"
-  | "handleFillColor"
-  | "highlightColor"
-  | "pageHighlightColor"
-  | "placeholderHighlightColor"
-  | "snappingGuideColor"
-  | "rotationSnappingGuideColor"
-  | "cropOverlayColor"
-  | "textVariableHighlightColor"
-  | "borderOutlineColor"
-  | "progressColor"
-  | "errorStateColor"
-  | "grid/color"
-  | "page/title/color"
-  | "page/marginFillColor"
-  | "page/marginFrameColor"
-  | "page/safetyFillColor"
-  | "page/safetyFrameColor"
-  | "page/exclusionAreaFillColor"
-  | "page/exclusionAreaFrameColor"
-  | "page/innerBorderColor"
-  | "page/outerBorderColor"
-  | "colorMaskingSettings/maskColor"
-  | string & object;
-```
+Options for `asset.defaultApplyAsset`.
+
+## Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+|  `placement?` | [`AssetPlacement`](./api/node/interfaces/assetplacement.md) | Where the created block is placed. Omit it to place the block automatically. |
 
 
 ---

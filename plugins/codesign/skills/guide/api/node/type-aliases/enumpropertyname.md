@@ -11,6 +11,7 @@ type EnumPropertyName =
   | "height/mode"
   | "position/x/mode"
   | "position/y/mode"
+  | "scene/colorConversionMode"
   | "scene/designUnit"
   | "scene/fontSizeUnit"
   | "scene/layout"

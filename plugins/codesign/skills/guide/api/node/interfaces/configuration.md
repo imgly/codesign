@@ -14,7 +14,7 @@ and role.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 |  `baseURL` | `string` | - |
-|  `license?` | `string` | - |
+|  `license?` | `string` | The license key or API key for the SDK. CE.SDK is a commercial product and a license is required for production use. Without a license, CE.SDK runs in evaluation mode, which watermarks exports. |
 |  `userId?` | `string` | - |
 |  `core` | `object` | - |
 | `core.baseURL` | `string` | - |

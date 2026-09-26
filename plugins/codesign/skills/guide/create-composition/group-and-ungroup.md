@@ -175,7 +175,7 @@ Groups are blocks with type `'group'` that contain child blocks as members. Tran
 Groups can be nested, meaning a group can contain other groups. This enables complex hierarchical structures where multiple logical units can be combined and manipulated together.
 
 > **Note:** **What cannot be grouped*** Scene blocks cannot be grouped
-> * Blocks already part of a group cannot be grouped again until ungrouped
+> * A block cannot be grouped with a group it sits inside, which would make that group a child of itself
 
 ## Create the Blocks
 
@@ -299,7 +299,7 @@ engine.dispose();
 If `engine.block.isGroupable()` returns `false`:
 
 - Check if any of the blocks is a scene block (scenes cannot be grouped)
-- Check if any block is already part of a group (use `engine.block.getParent()` to verify)
+- Check that no block is being grouped with a group it sits inside (walk up with `engine.block.getParent()`)
 - Ensure all block IDs are valid
 
 ### Group Not Visible After Creation

@@ -377,6 +377,85 @@ engine.editor.setSettingBool('features/forceLowQualityVideoPreview', true);
 
 The `features/forceLowQualityVideoPreview` setting forces previews to use the smallest source during editing. By default, this is disabled, and the engine uses the source closest to the current drawing size.
 
+## Automatic Source Sets
+
+The engine can make the smaller entries of a source set by itself, so it can draw
+a small image where the full one is not needed. This is off by default. Set
+`features/automaticSourceSetsEnabled` to `true` to turn it on.
+
+### Which fills get entries
+
+The engine adds entries to an image fill when both of these are true:
+
+- You added the fill in this session. A fill from a loaded scene gets none, so a
+  document of many pages costs nothing to open.
+- The fill has one image and no smaller sizes. An `imageFileURI` on its own
+  counts, and so does a source set with a single entry.
+
+A fill that already holds two or more entries gets none. You gave the engine
+sizes to choose from, so it adds no more.
+
+The engine adds entries one time for each fill. Two fills of the same image file
+share the same entries, so the engine does the work one time.
+
+Give a fill a different image and the engine removes the entries it made,
+because they show the old image. The new image gets none.
+
+### How many entries, and how large
+
+The smallest entry the engine makes is **512 pixels** on the long edge. It makes
+one entry for each time the long edge of the image halves down to that size. The
+sizes shrink by the same ratio each step, and the last one lands on 512 pixels:
+
+| Long edge of the image | Entries the engine adds |
+| --- | --- |
+| Under 1024 pixels | none |
+| 1024 pixels | one, at 512 pixels |
+| 2048 pixels | two, at 1024 and 512 pixels |
+| 4096 pixels | three, at 2048, 1024 and 512 pixels |
+
+An image under 1024 pixels on its long edge gets nothing, because the single
+entry it could hold saves too little to pay for the work.
+
+No entry is larger than the `maxImageSize` setting, which is 4096 pixels by
+default. The engine draws no image above that size, so a larger entry would
+never be selected. Your own image stays the largest source in the set, so an
+export still uses the full resolution.
+
+The engine reads an image with more pixels than `maxImageSize` squared at a
+smaller size, and makes each entry from the entry before it.
+
+### The format of an entry
+
+Each entry is a JPEG for an image without transparency, and a PNG for one with
+it. A JPEG entry uses quality 90, which you cannot change, so it saves space but
+is not exact.
+
+### What the work costs
+
+The engine takes one step for each engine update, reads the image a few rows at
+a time, and encodes each entry row by row, so adding an image does not hold a
+frame. No step runs while you drag, during an export, or during an implicit
+update.
+
+### Saving a scene that holds generated entries
+
+The entries live in memory. Each one states a `buffer://` address, which means
+nothing once the session that made it is gone. `findAllTransientResources` lists
+every resource of that kind, the entries among them. What you must do depends on
+how you save:
+
+**An archive needs nothing.** `saveToArchive` carries the bytes of every
+resource, the entries included, so it holds no `buffer://` address that a later
+session cannot resolve.
+
+**A string needs somewhere to put the bytes.** A saved string can only state an
+address, and `buffer` is not one of the schemes a save allows, so `saveToString`
+reports the disallowed scheme and stops. Give it an
+`onDisallowedResourceScheme` callback: store the bytes where your application
+keeps its media, and return the new address. The saved scene then states that
+address instead.
+
 ## Troubleshooting
 
 | Problem | Solution |

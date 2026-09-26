@@ -11,6 +11,7 @@ type EnumValues =
   | HeightMode
   | PositionXMode
   | PositionYMode
+  | SceneColorConversionMode
   | DesignUnit
   | SceneFontSizeUnit
   | SceneLayout

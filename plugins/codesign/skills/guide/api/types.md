@@ -40,7 +40,7 @@ Types: CutoutOperation
 
 ## engine
 
-Types: Vector, DesignBlockId, HistoryId, HistoryUpdate, NumberRange, Vec2, Vec3, Size2, Range, ClampArgs, ClampCameraCommandResult, EmscriptenClassHandle, UBQError, UBQResult, MouseButtonEvent, MouseMoveEvent, MouseWheelEvent, KeyboardKeyEvent, ZoomAutoFitAxis, EngineTouchEvent, TouchRotateEvent, TouchPanEvent, TouchPinchEvent, TrackingMetadata, EditMode
+Types: Vector, HistoryId, HistoryUpdate, NumberRange, Vec2, Vec3, Size2, Range, ClampArgs, ClampCameraCommandResult, EmscriptenClassHandle, UBQError, UBQResult, MouseButtonEvent, MouseMoveEvent, DragInputEvent, MouseWheelEvent, KeyboardKeyEvent, ZoomAutoFitAxis, EngineTouchEvent, TouchRotateEvent, TouchPanEvent, TouchPinchEvent, TrackingMetadata, EditMode
 
 ## fontMetrics
 
@@ -48,7 +48,7 @@ Types: FontMetrics
 
 ## propertyTypes
 
-Types: BoolPropertyName, EnumPropertyName, FloatPropertyName, StringPropertyName, DoublePropertyName, ColorPropertyName, IntPropertyName, SourceSetPropertyName, BlendMode, HorizontalContentFillAlignment, ContentFillMode, VerticalContentFillAlignment, HeightMode, PositionXMode, PositionYMode, SceneDesignUnit, SceneFontSizeUnit, SceneLayout, SceneMode, WidthMode, PageGuidesSource, StrokeCap, StrokeCornerGeometry, StrokeDashEndCap, StrokeDashStartCap, StrokeEndCap, StrokePosition, StrokeStartCap, StrokeStyle, PlaybackFadeInEasing, PlaybackFadeOutEasing, TextHorizontalAlignment, TextVerticalAlignment, CutoutType, CaptionHorizontalAlignment, CaptionVerticalAlignment, AnimationEasing, TextAnimationWritingStyle, AnimationGrowDirection, AnimationWipeDirection, AnimationBaselineDirection, AnimationSpinDirection, AnimationSpinLoopDirection, AnimationJumpLoopDirection, AnimationTypewriterTextWritingStyle, AnimationBlockSwipeTextDirection, AnimationMergeTextDirection, AnimationKenBurnsDirection, FillPixelStreamOrientation, ShapeVectorPathFillRule, EnumValues, BlockEnumType
+Types: BoolPropertyName, EnumPropertyName, FloatPropertyName, StringPropertyName, DoublePropertyName, ColorPropertyName, IntPropertyName, SourceSetPropertyName, BlendMode, HorizontalContentFillAlignment, ContentFillMode, VerticalContentFillAlignment, HeightMode, PositionXMode, PositionYMode, SceneColorConversionMode, SceneDesignUnit, SceneFontSizeUnit, SceneLayout, SceneMode, WidthMode, PageGuidesSource, StrokeCap, StrokeCornerGeometry, StrokeDashEndCap, StrokeDashStartCap, StrokeEndCap, StrokePosition, StrokeStartCap, StrokeStyle, PlaybackFadeInEasing, PlaybackFadeOutEasing, TextHorizontalAlignment, TextVerticalAlignment, CutoutType, CaptionHorizontalAlignment, CaptionVerticalAlignment, AnimationEasing, TextAnimationWritingStyle, AnimationGrowDirection, AnimationWipeDirection, AnimationBaselineDirection, AnimationSpinDirection, AnimationSpinLoopDirection, AnimationJumpLoopDirection, AnimationTypewriterTextWritingStyle, AnimationBlockSwipeTextDirection, AnimationMergeTextDirection, AnimationKenBurnsDirection, FillPixelStreamOrientation, ShapeVectorPathFillRule, EnumValues, BlockEnumType
 
 ## role
 

@@ -220,12 +220,19 @@ interface BlockProps {
     };
     caption?: {
         automaticFontSizeEnabled?: boolean;
+        backgroundCornerRadius?: number;
+        backgroundPadding?: {
+            bottom?: number;
+            left?: number;
+            right?: number;
+            top?: number;
+        };
         clipLinesOutsideOfFrame?: boolean;
         externalReference?: string;
         fontFileUri?: string;
         fontSize?: number;
         hasClippedLines?: boolean;
-        horizontalAlignment?: 'Left' | 'Right' | 'Center' | 'Auto';
+        horizontalAlignment?: 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto';
         letterSpacing?: number;
         lineHeight?: number;
         maxAutomaticFontSize?: number;
@@ -281,6 +288,10 @@ interface BlockProps {
         };
     };
     effects?: Effect[];
+    exclusionArea?: {
+        constrains?: boolean;
+        punchOut?: boolean;
+    };
     fill?: Fill | null;
     flip?: {
         horizontal?: boolean;
@@ -325,6 +336,13 @@ interface BlockProps {
         };
         marginEnabled?: boolean;
         marginScale?: number;
+        safetyEnabled?: boolean;
+        safetyInset?: {
+            bottom?: number;
+            left?: number;
+            right?: number;
+            top?: number;
+        };
         titleTemplate?: string;
     };
     placeholder?: {
@@ -367,6 +385,7 @@ interface BlockProps {
     rotation?: number;
     scene?: {
         aspectRatioLock?: boolean;
+        colorConversionMode?: 'Managed' | 'Legacy';
         designUnit?: 'Pixel' | 'Millimeter' | 'Inch';
         dpi?: number;
         extendedPanningArea?: boolean;
@@ -405,6 +424,13 @@ interface BlockProps {
     };
     text?: {
         automaticFontSizeEnabled?: boolean;
+        backgroundCornerRadius?: number;
+        backgroundPadding?: {
+            bottom?: number;
+            left?: number;
+            right?: number;
+            top?: number;
+        };
         case?: string;
         clipLinesOutsideOfFrame?: boolean;
         color?: Color;
@@ -414,7 +440,7 @@ interface BlockProps {
         fontFileUri?: string;
         fontSize?: string /* WRITE needs a unit: '64px' | '24pt'. READS answer a unit string too ('64px') — parseFloat() before any math, never .toFixed() on it */;
         hasClippedLines?: boolean;
-        horizontalAlignment?: 'Left' | 'Right' | 'Center' | 'Auto';
+        horizontalAlignment?: 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto';
         letterSpacing?: number;
         lineHeight?: number /* engine scale: multiplies the font's contentArea */ | { visual: number } /* CSS-style x fontSize — the facade converts per font */;
         lineHeightVisual?: number /* READ-ONLY, selected reads: lineHeight in CSS terms. Write via lineHeight: { visual } */;
@@ -517,6 +543,15 @@ type Fill = { enabled?: boolean; overprint?: boolean } & (
       type: 'pixelStream';
       pixelStream?: {
           orientation?: 'Up' | 'Down' | 'Left' | 'Right' | 'UpMirrored' | 'DownMirrored' | 'LeftMirrored' | 'RightMirrored';
+      };
+    }
+  | {
+      type: 'stripe';
+      stripe?: {
+          angle?: number;
+          color?: Color;
+          gap?: number;
+          width?: number;
       };
     }
 );
@@ -947,7 +982,12 @@ interface SettingsProps {
     defaultFontFileUri?: string;
     doubleClickSelectionMode?: 'Direct' | 'Hierarchical';
     doubleClickToCropEnabled?: boolean;
+    dragToSwapFills?: {
+        enabled?: boolean;
+        longPressDurationMs?: number;
+    };
     errorStateColor?: Color;
+    fallbackCMYKProfileUri?: string;
     fallbackFontUri?: string;
     forceSystemEmojis?: boolean;
     grid?: {
@@ -974,6 +1014,8 @@ interface SettingsProps {
         allowRotateInteraction?: boolean;
         allowShapeChange?: boolean;
         dimOutOfPageAreas?: boolean;
+        exclusionAreaFillColor?: Color;
+        exclusionAreaFrameColor?: Color;
         flipDimensionsOn90DegreeCropRotation?: boolean;
         highlightDropTarget?: boolean;
         highlightWhenCropping?: boolean;
@@ -986,6 +1028,9 @@ interface SettingsProps {
         reparentBlocksToSceneWhenOutOfPage?: boolean;
         restrictPageSelectionToBorderAndTitle?: boolean;
         restrictResizeInteractionToFixedAspectRatio?: boolean;
+        safetyFillColor?: Color;
+        safetyFrameColor?: Color;
+        safetyRevealDuringTransform?: boolean;
         selectWhenNoBlocksSelected?: boolean;
         title?: {
             appendPageName?: boolean;
@@ -1079,7 +1124,7 @@ interface Typeface {
 }
 type Color = RGBAColor | CMYKColor | SpotColor;
 type DesignBlockId = number;
-type DesignBlockType = 'scene' | 'stack' | 'camera' | 'page' | 'graphic' | 'audio' | 'text' | 'group' | 'cutout' | 'track' | 'caption' | 'captionTrack'; // each also valid as '//ly.img.ubq/<name>'
+type DesignBlockType = 'scene' | 'stack' | 'camera' | 'page' | 'graphic' | 'audio' | 'text' | 'group' | 'cutout' | 'track' | 'caption' | 'captionTrack' | 'exclusionArea'; // each also valid as '//ly.img.ubq/<name>'
 type FontStyle = 'normal' | 'italic';
 type FontWeight = 'thin' | 'extraLight' | 'light' | 'normal' | 'medium' | 'semiBold' | 'bold' | 'extraBold' | 'heavy';
 type ListStyle = 'None' | 'Unordered' | 'Ordered';
@@ -1152,6 +1197,7 @@ type AnimationTypeLonghand = `//ly.img.ubq/animation/${AnimationTypeShorthand}`;
 type AnimationTypeShorthand = 'slide' | 'pan' | 'fade' | 'blur' | 'grow' | 'zoom' | 'pop' | 'wipe' | 'baseline' | 'crop_zoom' | 'spin' | 'spin_loop' | 'fade_loop' | 'blur_loop' | 'pulsating_loop' | 'breathing_loop' | 'jump_loop' | 'squeeze_loop' | 'sway_loop' | 'scale_loop' | 'typewriter_text' | 'block_swipe_text' | 'spread_text' | 'merge_text' | 'ken_burns';
 interface ApplyAssetOptions {
     clipType?: 'clip' | 'overlay';
+    placement?: AssetPlacement;
     [key: string]: unknown;
 }
 interface Asset {
@@ -1175,13 +1221,14 @@ class AssetAPI {
     findAssets(sourceId: string, query: AssetQueryData): Promise<AssetsQueryResult<CompleteAssetResult>>;
     fetchAsset(sourceId: string, assetId: string, params?: Pick<AssetQueryData, 'locale'>): Promise<CompleteAssetResult | null>;
     getSupportedMimeTypes(sourceId: string): string[];
+    /** @deprecated The flag this reads is deprecated. To control whether an upload button is rendered, use the `canAdd` option on an asset library entry instead. */
     canManageAssets(sourceId: string): boolean;
     addAssetToSource(sourceId: string, asset: AssetDefinition): void;
     removeAssetFromSource(sourceId: string, assetId: string): void;
     apply(sourceId: string, assetResult: AssetResult, options?: ApplyAssetOptions): Promise<DesignBlockId | undefined>;
     applyToBlock(sourceId: string, assetResult: AssetResult, block: DesignBlockId): Promise<void>;
     applyProperty(sourceId: string, assetResult: AssetResult, property: AssetProperty): Promise<void>;
-    defaultApplyAsset(assetResult: AssetResult): Promise<DesignBlockId | undefined>;
+    defaultApplyAsset(assetResult: AssetResult, options?: DefaultApplyAssetOptions): Promise<DesignBlockId | undefined>;
     defaultApplyAssetToBlock(assetResult: AssetResult, block: DesignBlockId): Promise<void>;
     onAssetSourceAdded: (callback: (sourceID: string) => void) => (() => void);
     onAssetSourceRemoved: (callback: (sourceID: string) => void) => (() => void);
@@ -1292,6 +1339,13 @@ interface AssetPayload {
     transformPreset?: AssetTransformPreset;
     properties?: AssetProperty[];
     stylePreset?: AssetStylePreset;
+}
+interface AssetPlacement {
+    parent?: DesignBlockId;
+    center?: {
+        x: number;
+        y: number;
+    };
 }
 type AssetProperty = AssetBooleanProperty | AssetColorProperty | AssetEnumProperty | AssetNumberProperty | AssetStringProperty;
 type AssetPropertyFilter = {
@@ -1462,6 +1516,7 @@ class BlockAPI {
     findAll(): DesignBlockId[];
     findAllPlaceholders(): DesignBlockId[];
     findAllUnused(): DesignBlockId[];
+    findAllInExclusionAreas(): DesignBlockId[];
     isLineOrigin(id: DesignBlockId): boolean;
     isValid(id: DesignBlockId): boolean;
     referencesAnyVariables(id: DesignBlockId): boolean;
@@ -1485,6 +1540,8 @@ class BlockAPI {
     createCutoutFromOperation(ids: DesignBlockId[], op: CutoutOperation): DesignBlockId;
     removeText(id: DesignBlockId, from?: number, to?: number): void;
     getTextColors(id: DesignBlockId, from?: number, to?: number): Array<Color>;
+    setTextBackgroundColor(id: DesignBlockId, color: Color, from?: number, to?: number): void;
+    getTextBackgroundColors(id: DesignBlockId, from?: number, to?: number): Array<Color>;
     getTextFontWeights(id: DesignBlockId, from?: number, to?: number): FontWeight[];
     getTextFontSizes(id: DesignBlockId, options?: TextFontSizeOptions): number[];
     getTextFontStyles(id: DesignBlockId, from?: number, to?: number): FontStyle[];
@@ -1498,7 +1555,7 @@ class BlockAPI {
     getTextVisibleLineGlobalBoundingBoxXYWH(id: DesignBlockId, lineIndex: number): XYWH;
     getTextVisibleLineContent(id: DesignBlockId, lineIndex: number): string;
     getTextCharacterInkBoxes(id: DesignBlockId, from?: number, to?: number): CharacterInkBox[];
-    getTextEffectiveHorizontalAlignment(id: DesignBlockId): 'Left' | 'Right' | 'Center';
+    getTextEffectiveHorizontalAlignment(id: DesignBlockId): 'Left' | 'Right' | 'Center' | 'Justify';
     setPlaceholderControlsOverlayEnabled(id: DesignBlockId, enabled: boolean): void;
     isPlaceholderControlsOverlayEnabled(id: DesignBlockId): boolean;
     setPlaceholderControlsButtonEnabled(id: DesignBlockId, enabled: boolean): void;
@@ -1563,7 +1620,7 @@ interface BlockStateReady {
     type: 'Ready';
 }
 type BooleanOperation = 'Difference' | 'Intersection' | 'Union' | 'XOR';
-type BoolPropertyName = 'alwaysOnBottom' | 'alwaysOnTop' | 'clipped' | 'flip/horizontal' | 'flip/vertical' | 'highlightEnabled' | 'includedInExport' | 'placeholder/enabled' | 'playback/playing' | 'playback/soloPlaybackEnabled' | 'scene/aspectRatioLock' | 'scene/extendedPanningArea' | 'selected' | 'selectionEnabled' | 'transformLocked' | 'visible' | 'blur/enabled' | 'dropShadow/clip' | 'dropShadow/enabled' | 'fill/enabled' | 'fill/overprint' | 'page/guides/gridEnabled' | 'page/guides/gridSnapEnabled' | 'page/marginEnabled' | 'placeholderControls/showButton' | 'placeholderControls/showOverlay' | 'playback/looping' | 'playback/muted' | 'stroke/enabled' | 'stroke/overprint' | 'backgroundColor/enabled' | 'placeholderBehavior/enabled' | 'text/automaticFontSizeEnabled' | 'text/clipLinesOutsideOfFrame' | 'text/hasClippedLines' | 'text/pathFlipped' | 'text/useContextualAlternates' | 'text/useContextualLigatures' | 'text/useDiscretionaryLigatures' | 'text/useKerning' | 'text/useLigatures' | 'track/automaticallyManageBlockOffsets' | 'caption/automaticFontSizeEnabled' | 'caption/clipLinesOutsideOfFrame' | 'caption/hasClippedLines' | 'caption/pathFlipped' | 'caption/useContextualAlternates' | 'caption/useContextualLigatures' | 'caption/useDiscretionaryLigatures' | 'caption/useKerning' | 'caption/useLigatures' | 'captionTrack/automaticallyManageBlockOffsets' | 'animation/slide/fade' | 'animation/pan/fade' | 'animation/blur/fade' | 'animation/zoom/fade' | 'animation/crop_zoom/fade' | 'animation/spin/fade' | 'animation/block_swipe_text/useTextColor' | 'animation/spread_text/fade' | 'animation/ken_burns/fade' | 'effect/enabled' | (string & {});
+type BoolPropertyName = 'alwaysOnBottom' | 'alwaysOnTop' | 'clipped' | 'flip/horizontal' | 'flip/vertical' | 'highlightEnabled' | 'includedInExport' | 'placeholder/enabled' | 'playback/playing' | 'playback/soloPlaybackEnabled' | 'scene/aspectRatioLock' | 'scene/extendedPanningArea' | 'selected' | 'selectionEnabled' | 'transformLocked' | 'visible' | 'blur/enabled' | 'dropShadow/clip' | 'dropShadow/enabled' | 'fill/enabled' | 'fill/overprint' | 'page/guides/gridEnabled' | 'page/guides/gridSnapEnabled' | 'page/marginEnabled' | 'page/safetyEnabled' | 'placeholderControls/showButton' | 'placeholderControls/showOverlay' | 'playback/looping' | 'playback/muted' | 'stroke/enabled' | 'stroke/overprint' | 'backgroundColor/enabled' | 'placeholderBehavior/enabled' | 'text/automaticFontSizeEnabled' | 'text/clipLinesOutsideOfFrame' | 'text/hasClippedLines' | 'text/pathFlipped' | 'text/useContextualAlternates' | 'text/useContextualLigatures' | 'text/useDiscretionaryLigatures' | 'text/useKerning' | 'text/useLigatures' | 'exclusionArea/constrains' | 'exclusionArea/punchOut' | 'track/automaticallyManageBlockOffsets' | 'caption/automaticFontSizeEnabled' | 'caption/clipLinesOutsideOfFrame' | 'caption/hasClippedLines' | 'caption/pathFlipped' | 'caption/useContextualAlternates' | 'caption/useContextualLigatures' | 'caption/useDiscretionaryLigatures' | 'caption/useKerning' | 'caption/useLigatures' | 'captionTrack/automaticallyManageBlockOffsets' | 'animation/slide/fade' | 'animation/pan/fade' | 'animation/blur/fade' | 'animation/zoom/fade' | 'animation/crop_zoom/fade' | 'animation/spin/fade' | 'animation/block_swipe_text/useTextColor' | 'animation/spread_text/fade' | 'animation/ken_burns/fade' | 'effect/enabled' | (string & {});
 type CameraClampingOvershootMode = 'Center' | 'Reverse';
 interface CharacterInkBox {
     x: number;
@@ -1578,8 +1635,17 @@ type CMYK = [
     y: number,
     k: number
 ];
+interface CMYKProfileInfo {
+    contentHash: string;
+}
 type ColorPickerColorMode = 'RGB' | 'CMYK' | 'Any';
-type ColorPropertyName = 'dropShadow/color' | 'fill/solid/color' | 'page/guides/gridColor' | 'stroke/color' | 'backgroundColor/color' | 'animation/block_swipe_text/blockColor' | 'effect/duotone_filter/darkColor' | 'effect/duotone_filter/lightColor' | 'effect/green_screen/fromColor' | 'effect/recolor/fromColor' | 'effect/recolor/toColor' | 'fill/color/value' | (string & {});
+type ColorPropertyName = 'dropShadow/color' | 'fill/solid/color' | 'page/guides/gridColor' | 'stroke/color' | 'backgroundColor/color' | 'animation/block_swipe_text/blockColor' | 'effect/duotone_filter/darkColor' | 'effect/duotone_filter/lightColor' | 'effect/green_screen/fromColor' | 'effect/recolor/fromColor' | 'effect/recolor/toColor' | 'fill/color/value' | 'fill/stripe/color' | (string & {});
+enum ColorRenderingIntent {
+    Perceptual = 0,
+    RelativeColorimetric = 1,
+    Saturation = 2,
+    AbsoluteColorimetric = 3
+}
 type ColorSpace = 'sRGB' | 'CMYK' | 'SpotColor';
 interface CompleteAssetResult extends AssetResult {
     context: {
@@ -1653,12 +1719,15 @@ class CreativeEngine {
 }
 type CutoutOperation = 'Difference' | 'Intersection' | 'Union' | 'XOR';
 type CutoutType = 'Solid' | 'Dashed';
+interface DefaultApplyAssetOptions {
+    placement?: AssetPlacement;
+}
 /** @deprecated This function uses legacy v4 asset source IDs. Please migrate to v5 asset sources using engine.asset.addLocalAssetSourceFromJSONURI() directly. */
 type DefaultAssetSourceId = 'ly.img.sticker' | 'ly.img.vectorpath' | 'ly.img.colors.defaultPalette' | 'ly.img.filter.lut' | 'ly.img.filter.duotone' | 'ly.img.effect' | 'ly.img.blur' | 'ly.img.typeface' | 'ly.img.page.presets' | 'ly.img.page.presets.video' | 'ly.img.crop.presets' | 'ly.img.text' | 'ly.img.captionPresets';
 /** @deprecated This function uses legacy v3 demo asset source IDs. Please migrate to v4 asset sources using engine.asset.addLocalAssetSourceFromJSONURI() directly. */
 type DemoAssetSourceId = 'ly.img.template' | 'ly.img.image.upload' | 'ly.img.video.upload' | 'ly.img.audio.upload' | 'ly.img.image' | 'ly.img.video' | 'ly.img.video.template' | 'ly.img.audio' | 'ly.img.textComponents';
 type DesignBlockTypeLonghand = `//ly.img.ubq/${DesignBlockTypeShorthand}`;
-type DesignBlockTypeShorthand = 'scene' | 'stack' | 'camera' | 'page' | 'graphic' | 'audio' | 'text' | 'group' | 'cutout' | 'track' | 'caption' | 'captionTrack';
+type DesignBlockTypeShorthand = 'scene' | 'stack' | 'camera' | 'page' | 'graphic' | 'audio' | 'text' | 'group' | 'cutout' | 'track' | 'caption' | 'captionTrack' | 'exclusionArea';
 interface DominantColor {
     r: number;
     g: number;
@@ -1761,6 +1830,7 @@ class EditorAPI {
     convertColorToColorSpace(color: Color, colorSpace: 'sRGB'): RGBAColor;
     convertColorToColorSpace(color: Color, colorSpace: 'CMYK'): CMYKColor;
     convertColorToColorSpace(color: Color, colorSpace: ColorSpace): never;
+    loadCMYKProfile(): Promise<void>;
     createBuffer(): string;
     destroyBuffer(uri: string): void;
     setBufferData(uri: string, offset: number, data: Uint8Array): void;
@@ -1812,12 +1882,12 @@ interface EngineActionsRegistry {
 }
 type EngineCapability = 'aacEncode' | 'opusEncode' | 'h264Encode' | 'hevcEncode' | 'vp9Encode' | 'av1Encode' | 'h264Decode' | 'hevcDecode' | 'vp9Decode' | 'av1Decode' | 'tempFileStorage' | 'concurrentFileRead';
 type EngineCustomActionFunction = (...args: any[]) => unknown;
-type EnumPropertyName = 'blend/mode' | 'contentFill/horizontalAlignment' | 'contentFill/mode' | 'contentFill/verticalAlignment' | 'height/mode' | 'position/x/mode' | 'position/y/mode' | 'scene/designUnit' | 'scene/fontSizeUnit' | 'scene/layout' | 'scene/mode' | 'width/mode' | 'page/guides/source' | 'stroke/cap' | 'stroke/cornerGeometry' | 'stroke/dashEndCap' | 'stroke/dashStartCap' | 'stroke/endCap' | 'stroke/position' | 'stroke/startCap' | 'stroke/style' | 'playback/fadeIn/easing' | 'playback/fadeOut/easing' | 'text/horizontalAlignment' | 'text/verticalAlignment' | 'cutout/type' | 'caption/horizontalAlignment' | 'caption/verticalAlignment' | 'animationEasing' | 'textAnimationWritingStyle' | 'animation/grow/direction' | 'animation/wipe/direction' | 'animation/baseline/direction' | 'animation/spin/direction' | 'animation/spin_loop/direction' | 'animation/jump_loop/direction' | 'animation/typewriter_text/writingStyle' | 'animation/block_swipe_text/direction' | 'animation/merge_text/direction' | 'animation/ken_burns/direction' | 'fill/pixelStream/orientation' | 'shape/vector_path/fillRule' | (string & {});
+type EnumPropertyName = 'blend/mode' | 'contentFill/horizontalAlignment' | 'contentFill/mode' | 'contentFill/verticalAlignment' | 'height/mode' | 'position/x/mode' | 'position/y/mode' | 'scene/colorConversionMode' | 'scene/designUnit' | 'scene/fontSizeUnit' | 'scene/layout' | 'scene/mode' | 'width/mode' | 'page/guides/source' | 'stroke/cap' | 'stroke/cornerGeometry' | 'stroke/dashEndCap' | 'stroke/dashStartCap' | 'stroke/endCap' | 'stroke/position' | 'stroke/startCap' | 'stroke/style' | 'playback/fadeIn/easing' | 'playback/fadeOut/easing' | 'text/horizontalAlignment' | 'text/verticalAlignment' | 'cutout/type' | 'caption/horizontalAlignment' | 'caption/verticalAlignment' | 'animationEasing' | 'textAnimationWritingStyle' | 'animation/grow/direction' | 'animation/wipe/direction' | 'animation/baseline/direction' | 'animation/spin/direction' | 'animation/spin_loop/direction' | 'animation/jump_loop/direction' | 'animation/typewriter_text/writingStyle' | 'animation/block_swipe_text/direction' | 'animation/merge_text/direction' | 'animation/ken_burns/direction' | 'fill/pixelStream/orientation' | 'shape/vector_path/fillRule' | (string & {});
 class EventAPI {
     #private;
     subscribe: (blocks: DesignBlockId[], callback: (events: BlockEvent[]) => void) => (() => void);
 }
-type FloatPropertyName = 'globalBoundingBox/height' | 'globalBoundingBox/width' | 'globalBoundingBox/x' | 'globalBoundingBox/y' | 'height' | 'lastFrame/height' | 'lastFrame/width' | 'lastFrame/x' | 'lastFrame/y' | 'movement/constraint' | 'position/x' | 'position/y' | 'rotation' | 'scene/dpi' | 'scene/pageDimensions/height' | 'scene/pageDimensions/width' | 'scene/pixelScaleFactor' | 'width' | 'camera/pixelRatio' | 'camera/resolution/height' | 'camera/resolution/width' | 'camera/zoomLevel' | 'dropShadow/blurRadius/x' | 'dropShadow/blurRadius/y' | 'dropShadow/offset/x' | 'dropShadow/offset/y' | 'page/guides/gridSpacingX' | 'page/guides/gridSpacingY' | 'page/margin/bottom' | 'page/margin/left' | 'page/margin/right' | 'page/margin/top' | 'page/marginScale' | 'playback/speed' | 'playback/volume' | 'stroke/dashOffset' | 'stroke/width' | 'opacity' | 'backgroundColor/cornerRadius' | 'backgroundColor/paddingBottom' | 'backgroundColor/paddingLeft' | 'backgroundColor/paddingRight' | 'backgroundColor/paddingTop' | 'text/fontSize' | 'text/letterSpacing' | 'text/lineHeight' | 'text/maxAutomaticFontSize' | 'text/minAutomaticFontSize' | 'text/paragraphSpacing' | 'text/pathOffset' | 'cutout/offset' | 'cutout/smoothing' | 'caption/fontSize' | 'caption/letterSpacing' | 'caption/lineHeight' | 'caption/maxAutomaticFontSize' | 'caption/minAutomaticFontSize' | 'caption/paragraphSpacing' | 'caption/pathOffset' | 'animation/slide/direction' | 'textAnimationOverlap' | 'animation/pan/direction' | 'animation/pan/distance' | 'animation/blur/intensity' | 'animation/grow/scaleFactor' | 'animation/crop_zoom/scale' | 'animation/spin/intensity' | 'animation/blur_loop/intensity' | 'animation/pulsating_loop/intensity' | 'animation/breathing_loop/intensity' | 'animation/jump_loop/intensity' | 'animation/sway_loop/intensity' | 'animation/spread_text/intensity' | 'animation/merge_text/intensity' | 'animation/ken_burns/travelDistanceRatio' | 'animation/ken_burns/zoomIntensity' | 'blur/uniform/intensity' | 'blur/linear/blurRadius' | 'blur/linear/x1' | 'blur/linear/x2' | 'blur/linear/y1' | 'blur/linear/y2' | 'blur/mirrored/blurRadius' | 'blur/mirrored/gradientSize' | 'blur/mirrored/size' | 'blur/mirrored/x1' | 'blur/mirrored/x2' | 'blur/mirrored/y1' | 'blur/mirrored/y2' | 'blur/radial/blurRadius' | 'blur/radial/gradientRadius' | 'blur/radial/radius' | 'blur/radial/x' | 'blur/radial/y' | 'effect/adjustments/blacks' | 'effect/adjustments/brightness' | 'effect/adjustments/clarity' | 'effect/adjustments/contrast' | 'effect/adjustments/exposure' | 'effect/adjustments/gamma' | 'effect/adjustments/highlights' | 'effect/adjustments/saturation' | 'effect/adjustments/shadows' | 'effect/adjustments/sharpness' | 'effect/adjustments/temperature' | 'effect/adjustments/whites' | 'effect/cross_cut/offset' | 'effect/cross_cut/slices' | 'effect/cross_cut/speedV' | 'effect/cross_cut/time' | 'effect/dot_pattern/blur' | 'effect/dot_pattern/dots' | 'effect/dot_pattern/size' | 'effect/duotone_filter/intensity' | 'effect/extrude_blur/amount' | 'effect/glow/amount' | 'effect/glow/darkness' | 'effect/glow/size' | 'effect/green_screen/colorMatch' | 'effect/green_screen/smoothness' | 'effect/green_screen/spill' | 'effect/half_tone/angle' | 'effect/half_tone/scale' | 'effect/linocut/scale' | 'effect/liquid/amount' | 'effect/liquid/scale' | 'effect/liquid/time' | 'effect/lut_filter/intensity' | 'effect/outliner/amount' | 'effect/outliner/passthrough' | 'effect/posterize/levels' | 'effect/radial_pixel/radius' | 'effect/radial_pixel/segments' | 'effect/recolor/brightnessMatch' | 'effect/recolor/colorMatch' | 'effect/recolor/smoothness' | 'effect/shifter/amount' | 'effect/shifter/angle' | 'effect/tilt_shift/amount' | 'effect/tilt_shift/position' | 'effect/tv_glitch/distortion' | 'effect/tv_glitch/distortion2' | 'effect/tv_glitch/rollSpeed' | 'effect/tv_glitch/speed' | 'effect/vignette/darkness' | 'effect/vignette/offset' | 'fill/gradient/linear/endPointX' | 'fill/gradient/linear/endPointY' | 'fill/gradient/linear/startPointX' | 'fill/gradient/linear/startPointY' | 'fill/gradient/radial/centerPointX' | 'fill/gradient/radial/centerPointY' | 'fill/gradient/radial/radius' | 'fill/gradient/conical/centerPointX' | 'fill/gradient/conical/centerPointY' | 'shape/rect/cornerRadiusBL' | 'shape/rect/cornerRadiusBR' | 'shape/rect/cornerRadiusTL' | 'shape/rect/cornerRadiusTR' | 'shape/polygon/cornerRadius' | 'shape/star/cornerRadius' | 'shape/star/innerDiameter' | 'shape/vector_path/cornerRadius' | 'shape/vector_path/height' | 'shape/vector_path/width' | (string & {});
+type FloatPropertyName = 'globalBoundingBox/height' | 'globalBoundingBox/width' | 'globalBoundingBox/x' | 'globalBoundingBox/y' | 'height' | 'lastFrame/height' | 'lastFrame/width' | 'lastFrame/x' | 'lastFrame/y' | 'movement/constraint' | 'position/x' | 'position/y' | 'rotation' | 'scene/dpi' | 'scene/pageDimensions/height' | 'scene/pageDimensions/width' | 'scene/pixelScaleFactor' | 'width' | 'camera/pixelRatio' | 'camera/resolution/height' | 'camera/resolution/width' | 'camera/zoomLevel' | 'dropShadow/blurRadius/x' | 'dropShadow/blurRadius/y' | 'dropShadow/offset/x' | 'dropShadow/offset/y' | 'page/guides/gridSpacingX' | 'page/guides/gridSpacingY' | 'page/margin/bottom' | 'page/margin/left' | 'page/margin/right' | 'page/margin/top' | 'page/marginScale' | 'page/safetyInset/bottom' | 'page/safetyInset/left' | 'page/safetyInset/right' | 'page/safetyInset/top' | 'playback/speed' | 'playback/volume' | 'stroke/dashOffset' | 'stroke/width' | 'opacity' | 'backgroundColor/cornerRadius' | 'backgroundColor/paddingBottom' | 'backgroundColor/paddingLeft' | 'backgroundColor/paddingRight' | 'backgroundColor/paddingTop' | 'text/backgroundCornerRadius' | 'text/backgroundPadding/bottom' | 'text/backgroundPadding/left' | 'text/backgroundPadding/right' | 'text/backgroundPadding/top' | 'text/fontSize' | 'text/letterSpacing' | 'text/lineHeight' | 'text/maxAutomaticFontSize' | 'text/minAutomaticFontSize' | 'text/paragraphSpacing' | 'text/pathOffset' | 'cutout/offset' | 'cutout/smoothing' | 'caption/backgroundCornerRadius' | 'caption/backgroundPadding/bottom' | 'caption/backgroundPadding/left' | 'caption/backgroundPadding/right' | 'caption/backgroundPadding/top' | 'caption/fontSize' | 'caption/letterSpacing' | 'caption/lineHeight' | 'caption/maxAutomaticFontSize' | 'caption/minAutomaticFontSize' | 'caption/paragraphSpacing' | 'caption/pathOffset' | 'animation/slide/direction' | 'textAnimationOverlap' | 'animation/pan/direction' | 'animation/pan/distance' | 'animation/blur/intensity' | 'animation/grow/scaleFactor' | 'animation/crop_zoom/scale' | 'animation/spin/intensity' | 'animation/blur_loop/intensity' | 'animation/pulsating_loop/intensity' | 'animation/breathing_loop/intensity' | 'animation/jump_loop/intensity' | 'animation/sway_loop/intensity' | 'animation/spread_text/intensity' | 'animation/merge_text/intensity' | 'animation/ken_burns/travelDistanceRatio' | 'animation/ken_burns/zoomIntensity' | 'blur/uniform/intensity' | 'blur/linear/blurRadius' | 'blur/linear/x1' | 'blur/linear/x2' | 'blur/linear/y1' | 'blur/linear/y2' | 'blur/mirrored/blurRadius' | 'blur/mirrored/gradientSize' | 'blur/mirrored/size' | 'blur/mirrored/x1' | 'blur/mirrored/x2' | 'blur/mirrored/y1' | 'blur/mirrored/y2' | 'blur/radial/blurRadius' | 'blur/radial/gradientRadius' | 'blur/radial/radius' | 'blur/radial/x' | 'blur/radial/y' | 'effect/adjustments/blacks' | 'effect/adjustments/brightness' | 'effect/adjustments/clarity' | 'effect/adjustments/contrast' | 'effect/adjustments/exposure' | 'effect/adjustments/gamma' | 'effect/adjustments/highlights' | 'effect/adjustments/saturation' | 'effect/adjustments/shadows' | 'effect/adjustments/sharpness' | 'effect/adjustments/temperature' | 'effect/adjustments/whites' | 'effect/cross_cut/offset' | 'effect/cross_cut/slices' | 'effect/cross_cut/speedV' | 'effect/cross_cut/time' | 'effect/dot_pattern/blur' | 'effect/dot_pattern/dots' | 'effect/dot_pattern/size' | 'effect/duotone_filter/intensity' | 'effect/extrude_blur/amount' | 'effect/glow/amount' | 'effect/glow/darkness' | 'effect/glow/size' | 'effect/green_screen/colorMatch' | 'effect/green_screen/smoothness' | 'effect/green_screen/spill' | 'effect/half_tone/angle' | 'effect/half_tone/scale' | 'effect/linocut/scale' | 'effect/liquid/amount' | 'effect/liquid/scale' | 'effect/liquid/time' | 'effect/lut_filter/intensity' | 'effect/outliner/amount' | 'effect/outliner/passthrough' | 'effect/posterize/levels' | 'effect/radial_pixel/radius' | 'effect/radial_pixel/segments' | 'effect/recolor/brightnessMatch' | 'effect/recolor/colorMatch' | 'effect/recolor/smoothness' | 'effect/shifter/amount' | 'effect/shifter/angle' | 'effect/tilt_shift/amount' | 'effect/tilt_shift/position' | 'effect/tv_glitch/distortion' | 'effect/tv_glitch/distortion2' | 'effect/tv_glitch/rollSpeed' | 'effect/tv_glitch/speed' | 'effect/vignette/darkness' | 'effect/vignette/offset' | 'fill/gradient/linear/endPointX' | 'fill/gradient/linear/endPointY' | 'fill/gradient/linear/startPointX' | 'fill/gradient/linear/startPointY' | 'fill/gradient/radial/centerPointX' | 'fill/gradient/radial/centerPointY' | 'fill/gradient/radial/radius' | 'fill/gradient/conical/centerPointX' | 'fill/gradient/conical/centerPointY' | 'fill/stripe/angle' | 'fill/stripe/gap' | 'fill/stripe/width' | 'shape/rect/cornerRadiusBL' | 'shape/rect/cornerRadiusBR' | 'shape/rect/cornerRadiusTL' | 'shape/rect/cornerRadiusTR' | 'shape/polygon/cornerRadius' | 'shape/star/cornerRadius' | 'shape/star/innerDiameter' | 'shape/vector_path/cornerRadius' | 'shape/vector_path/height' | 'shape/vector_path/width' | (string & {});
 interface FontMetrics {
     ascender: number;
     descender: number;
@@ -1895,6 +1965,14 @@ interface RGBColor {
 type RoleString = 'Creator' | 'Adopter' | 'Viewer' | 'Presenter';
 class SceneAPI {
     #private;
+    setCMYKProfile(uri: string): Promise<void>;
+    setCMYKProfileFromData(data: Uint8Array): void;
+    getCMYKProfileInfo(): CMYKProfileInfo | null;
+    removeCMYKProfile(): void;
+    getColorRenderingIntent(): ColorRenderingIntent;
+    setColorRenderingIntent(intent: ColorRenderingIntent): void;
+    isBlackPointCompensationEnabled(): boolean;
+    setBlackPointCompensationEnabled(enabled: boolean): void;
     load(source: string | URL, overrideEditorConfig?: boolean, waitForResources?: boolean): Promise<DesignBlockId>;
     /** @deprecated Scene mode no longer affects engine behavior. Use `create()` followed by `setMode('Video')` instead. ```javascript const scene = engine.scene.createVideo(); ``` */
     createVideo(options?: CreateSceneOptions): DesignBlockId;
@@ -1927,8 +2005,8 @@ type DesignUnit = 'Pixel' | 'Millimeter' | 'Inch';
 type FontSizeUnit = 'Pixel' | 'Point';
 type SceneLayout = 'Free' | 'VerticalStack' | 'HorizontalStack' | 'DepthStack';
 type SceneMode = 'Design' | 'Video';
-type SettingBoolPropertyName = 'doubleClickToCropEnabled' | 'showBuildVersion' | 'placeholderControls/showButton' | 'placeholderControls/showOverlay' | 'blockAnimations/enabled' | 'playback/showAllBlocks' | 'grid/enabled' | 'grid/snapEnabled' | 'archival/bundleOnlyUsedFontVariants' | 'touch/dragStartCanSelect' | 'touch/singlePointPanning' | 'mouse/enableZoom' | 'mouse/enableScroll' | 'controlGizmo/showCropHandles' | 'controlGizmo/showMoveHandles' | 'controlGizmo/dynamicMoveHandleVisibility' | 'controlGizmo/showResizeHandles' | 'controlGizmo/showScaleHandles' | 'controlGizmo/showRotateHandles' | 'controlGizmo/showCropScaleHandles' | 'page/title/show' | 'page/title/showPageTitleTemplate' | 'page/title/appendPageName' | 'page/title/showOnSinglePage' | 'page/title/canEdit' | 'page/dimOutOfPageAreas' | 'page/allowCropInteraction' | 'page/allowResizeInteraction' | 'page/restrictResizeInteractionToFixedAspectRatio' | 'page/allowRotateInteraction' | 'page/allowMoveInteraction' | 'page/marqueeSelectOnBodyDrag' | 'page/restrictPageSelectionToBorderAndTitle' | 'page/moveChildrenWhenCroppingFill' | 'page/selectWhenNoBlocksSelected' | 'page/highlightWhenCropping' | 'page/allowShapeChange' | 'page/highlightDropTarget' | 'page/reparentBlocksToSceneWhenOutOfPage' | 'page/flipDimensionsOn90DegreeCropRotation' | 'clampThumbnailTextureSizes' | 'useSystemFontFallback' | 'forceSystemEmojis' | (string & {});
-type SettingColorPropertyName = 'clearColor' | 'handleFillColor' | 'highlightColor' | 'pageHighlightColor' | 'placeholderHighlightColor' | 'snappingGuideColor' | 'rotationSnappingGuideColor' | 'cropOverlayColor' | 'textVariableHighlightColor' | 'borderOutlineColor' | 'progressColor' | 'errorStateColor' | 'grid/color' | 'page/title/color' | 'page/marginFillColor' | 'page/marginFrameColor' | 'page/innerBorderColor' | 'page/outerBorderColor' | 'colorMaskingSettings/maskColor' | (string & {});
+type SettingBoolPropertyName = 'doubleClickToCropEnabled' | 'showBuildVersion' | 'placeholderControls/showButton' | 'placeholderControls/showOverlay' | 'blockAnimations/enabled' | 'playback/showAllBlocks' | 'grid/enabled' | 'grid/snapEnabled' | 'archival/bundleOnlyUsedFontVariants' | 'touch/dragStartCanSelect' | 'touch/singlePointPanning' | 'mouse/enableZoom' | 'mouse/enableScroll' | 'dragToSwapFills/enabled' | 'controlGizmo/showCropHandles' | 'controlGizmo/showMoveHandles' | 'controlGizmo/dynamicMoveHandleVisibility' | 'controlGizmo/showResizeHandles' | 'controlGizmo/showScaleHandles' | 'controlGizmo/showRotateHandles' | 'controlGizmo/showCropScaleHandles' | 'page/title/show' | 'page/title/showPageTitleTemplate' | 'page/title/appendPageName' | 'page/title/showOnSinglePage' | 'page/title/canEdit' | 'page/safetyRevealDuringTransform' | 'page/dimOutOfPageAreas' | 'page/allowCropInteraction' | 'page/allowResizeInteraction' | 'page/restrictResizeInteractionToFixedAspectRatio' | 'page/allowRotateInteraction' | 'page/allowMoveInteraction' | 'page/marqueeSelectOnBodyDrag' | 'page/restrictPageSelectionToBorderAndTitle' | 'page/moveChildrenWhenCroppingFill' | 'page/selectWhenNoBlocksSelected' | 'page/highlightWhenCropping' | 'page/allowShapeChange' | 'page/highlightDropTarget' | 'page/reparentBlocksToSceneWhenOutOfPage' | 'page/flipDimensionsOn90DegreeCropRotation' | 'clampThumbnailTextureSizes' | 'useSystemFontFallback' | 'forceSystemEmojis' | (string & {});
+type SettingColorPropertyName = 'clearColor' | 'handleFillColor' | 'highlightColor' | 'pageHighlightColor' | 'placeholderHighlightColor' | 'snappingGuideColor' | 'rotationSnappingGuideColor' | 'cropOverlayColor' | 'textVariableHighlightColor' | 'borderOutlineColor' | 'progressColor' | 'errorStateColor' | 'grid/color' | 'page/title/color' | 'page/marginFillColor' | 'page/marginFrameColor' | 'page/safetyFillColor' | 'page/safetyFrameColor' | 'page/exclusionAreaFillColor' | 'page/exclusionAreaFrameColor' | 'page/innerBorderColor' | 'page/outerBorderColor' | 'colorMaskingSettings/maskColor' | (string & {});
 type SettingEnumType = {
     'touch/pinchAction': TouchPinchAction;
     'touch/rotateAction': TouchRotateAction;
@@ -1941,7 +2019,7 @@ type SettingEnumType = {
     'colorPicker/colorMode': ColorPickerColorMode;
     'timeline/trackVisibility': TimelineTrackVisibility;
 };
-type SettingFloatPropertyName = 'positionSnappingThreshold' | 'rotationSnappingThreshold' | 'grid/spacingX' | 'grid/spacingY' | 'controlGizmo/blockScaleDownLimit' | 'listIndentPerLevel' | (string & {});
+type SettingFloatPropertyName = 'positionSnappingThreshold' | 'rotationSnappingThreshold' | 'grid/spacingX' | 'grid/spacingY' | 'dragToSwapFills/longPressDurationMs' | 'controlGizmo/blockScaleDownLimit' | 'listIndentPerLevel' | (string & {});
 type SettingIntPropertyName = 'maxImageSize' | 'maxPreviewResolution' | (string & {});
 type SettingKey = keyof Settings;
 interface Settings {
@@ -1958,11 +2036,13 @@ interface Settings {
     /** @deprecated Use `controlGizmo/scaleHandlesVisibility`. `false` hides the corner (scale) handles. */
     'controlGizmo/showScaleHandles': boolean;
     doubleClickToCropEnabled: boolean;
+    'dragToSwapFills/enabled': boolean;
     'features/singlePageModeEnabled': boolean;
     'features/fileSystemUsageEnabled': boolean;
     'features/pageCarouselEnabled': boolean;
     'features/transformEditsRetainCoverMode': boolean;
     'features/clampTextBlockWidthToPageDimensionsDuringEditing': boolean;
+    'features/equalDistanceSnappingEnabled': boolean;
     'mouse/enableScroll': boolean;
     'mouse/enableZoom': boolean;
     'page/allowCropInteraction': boolean;
@@ -1980,6 +2060,7 @@ interface Settings {
     'page/title/show': boolean;
     'page/title/showOnSinglePage': boolean;
     'page/title/showPageTitleTemplate': boolean;
+    'page/safetyRevealDuringTransform': boolean;
     'placeholderControls/showButton': boolean;
     'placeholderControls/showOverlay': boolean;
     'blockAnimations/enabled': boolean;
@@ -2004,6 +2085,7 @@ interface Settings {
     'page/title/fontFileUri': string;
     'page/title/separator': string;
     fallbackFontUri: string;
+    fallbackCMYKProfileUri: string;
     'upload/supportedMimeTypes': string;
     'web/fetchCredentials': 'omit' | 'same-origin' | 'include';
     'controlGizmo/blockScaleDownLimit': number;
@@ -2012,6 +2094,7 @@ interface Settings {
     rotationSnappingThreshold: number;
     'grid/spacingX': number;
     'grid/spacingY': number;
+    'dragToSwapFills/longPressDurationMs': number;
     maxImageSize: number;
     maxPreviewResolution: number;
     borderOutlineColor: Color;
@@ -2020,10 +2103,14 @@ interface Settings {
     cropOverlayColor: Color;
     errorStateColor: Color;
     highlightColor: Color;
+    'page/exclusionAreaFillColor': Color;
+    'page/exclusionAreaFrameColor': Color;
     'page/innerBorderColor': Color;
     'page/marginFillColor': Color;
     'page/marginFrameColor': Color;
     'page/outerBorderColor': Color;
+    'page/safetyFillColor': Color;
+    'page/safetyFrameColor': Color;
     'page/title/color': Color;
     pageHighlightColor: Color;
     placeholderHighlightColor: Color;
@@ -2046,6 +2133,7 @@ interface Settings {
     'colorPicker/colorMode': 'RGB' | 'CMYK' | 'Any';
     'timeline/trackVisibility': 'all' | 'active';
     'timeline/transitionControlVisibility': 'hover' | 'always';
+    'features/automaticSourceSetsEnabled': boolean;
 }
 type SettingsBool = SettingBoolPropertyName;
 type SettingsColor = SettingColorPropertyName;
@@ -2054,7 +2142,7 @@ type SettingsColorRGBA = SettingsColor;
 type SettingsFloat = SettingFloatPropertyName;
 type SettingsInt = SettingIntPropertyName;
 type SettingsString = SettingStringPropertyName;
-type SettingStringPropertyName = 'basePath' | 'defaultEmojiFontFileUri' | 'defaultFontFileUri' | 'upload/supportedMimeTypes' | 'license' | 'web/fetchCredentials' | 'page/title/separator' | 'page/title/fontFileUri' | 'fallbackFontUri' | (string & {});
+type SettingStringPropertyName = 'basePath' | 'defaultEmojiFontFileUri' | 'defaultFontFileUri' | 'upload/supportedMimeTypes' | 'license' | 'web/fetchCredentials' | 'page/title/separator' | 'page/title/fontFileUri' | 'fallbackFontUri' | 'fallbackCMYKProfileUri' | (string & {});
 type SettingType = 'Bool' | 'Int' | 'Float' | 'String' | 'Color' | 'Enum';
 type SettingValueType<K extends SettingKey> = Settings[K];
 type SizeMode = 'Absolute' | 'Percent' | 'Auto' | 'Absolute' | 'Percent' | 'Auto';

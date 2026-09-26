@@ -12,7 +12,7 @@
 ## Related Pages
 
 - [To v1.19](./to-v1-19.md) - Learn what changed in v1.19 and how to update your implementation to stay compatible.
-- [To v1.82 (Fonts)](./to-v1-82-fonts.md) - Learn what changed in v1.82 for fonts — the bundled typefaces now ship as WOFF2 instead of TTF and OTF. Find out whether your saved scenes reference the old files, and migrate the ones that do.
+- [To v1.82](./to-v1-82.md) - Learn what changed in v1.82 for Node.js — the bundled typefaces now ship as WOFF2 instead of TTF and OTF. Find out whether your saved scenes reference the old files, and migrate the ones that do.
 
 
 ---

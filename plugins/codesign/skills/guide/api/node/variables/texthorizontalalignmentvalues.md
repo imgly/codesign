@@ -3,7 +3,7 @@
 ---
 
 ```ts
-const TextHorizontalAlignmentValues: readonly ["Left", "Right", "Center", "Auto"];
+const TextHorizontalAlignmentValues: readonly ["Left", "Right", "Center", "Justify", "Auto"];
 ```
 
 

@@ -2,33 +2,13 @@
 
 ---
 
-```ts
-type SettingColorPropertyName = 
-  | "clearColor"
-  | "handleFillColor"
-  | "highlightColor"
-  | "pageHighlightColor"
-  | "placeholderHighlightColor"
-  | "snappingGuideColor"
-  | "rotationSnappingGuideColor"
-  | "cropOverlayColor"
-  | "textVariableHighlightColor"
-  | "borderOutlineColor"
-  | "progressColor"
-  | "errorStateColor"
-  | "grid/color"
-  | "page/title/color"
-  | "page/marginFillColor"
-  | "page/marginFrameColor"
-  | "page/safetyFillColor"
-  | "page/safetyFrameColor"
-  | "page/exclusionAreaFillColor"
-  | "page/exclusionAreaFrameColor"
-  | "page/innerBorderColor"
-  | "page/outerBorderColor"
-  | "colorMaskingSettings/maskColor"
-  | string & object;
-```
+What the document stores about a CMYK profile that was assigned to it.
+
+## Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+|  `contentHash` | `string` | SHA-256 of the profile bytes, base64 encoded. Two profiles with the same hash have the same content. |
 
 
 ---

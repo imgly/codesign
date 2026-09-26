@@ -121,11 +121,12 @@ engine.asset.addSource({
 ```
 
 ```typescript
-defaultApplyAsset(assetResult: AssetResult): Promise<DesignBlockId | undefined>
+defaultApplyAsset(assetResult: AssetResult, options?: DefaultApplyAssetOptions): Promise<DesignBlockId | undefined>
 ```
 
 **Parameters:**
 - `assetResult` - A single asset result from a `findAssets` query.
+- `options` - Optional configuration for asset application.
 
 **Returns:** Promise resolving to the created block ID, or undefined if no block was created.
 
@@ -414,11 +415,15 @@ getLicense(sourceId: string): {
 
 **Returns:** The asset source's license info consisting of a name and an optional URL.
 
-### canManageAssets()
+### canManageAssets() *(deprecated)*
 
-Check if an asset source supports asset management.
-Returns true if the source allows adding and removing assets dynamically, via 'Add File' and 'Delete' button on the UI.
-This is typically true for local asset sources and false for remote sources.
+Check whether an asset source declared the deprecated `canManageAssets`
+flag.
+Returns the value the source passed to {@link addSource}, which the asset
+library reads to decide whether to offer its 'Add File' and 'Delete'
+buttons. It is a record of what was declared, not a capability the engine
+is asked about: a source registered through {@link addLocalSource} carries
+no flag and so returns `false`, as does an id that was never registered.
 ```javascript
 engine.asset.canManageAssets('asset-source-id');
 ```
@@ -430,7 +435,7 @@ canManageAssets(sourceId: string): boolean
 **Parameters:**
 - `sourceId` - The ID of the asset source to check.
 
-**Returns:** True if the source supports asset management operations.
+**Returns:** Whether that source declared the flag.
 
 ## Asset Lifecycle
 

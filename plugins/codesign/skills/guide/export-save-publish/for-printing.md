@@ -164,6 +164,14 @@ Before exporting, configure your scene with appropriate print settings. Set the 
     engine.block.setFloat(scene, 'scene/dpi', 300);
 ```
 
+## Exclusion Areas in a Print Export
+
+An exclusion area marks a region of a page that content must stay out of, such as an envelope window or a book spine. An exclusion area is authoring geometry, so it is left out of an export and its guide colors never reach the file.
+
+Set `exclusionArea/punchOut` to `true` on an exclusion area to cut it out of the export instead. The page and everything on it get a hole where the exclusion area is, so a die cut window in the design becomes a window in the exported PDF. The hole is transparent, which a print workflow reads as an absence of ink rather than as white. It is off by default.
+
+See [Exclusion Areas](./concepts/exclusion-areas.md) for how to create and place an exclusion area.
+
 ## PDF Export Options for Print
 
 Export a page as PDF using `engine.block.export()` with `mimeType: 'application/pdf'`.

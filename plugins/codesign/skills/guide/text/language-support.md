@@ -246,6 +246,7 @@ The alignment options:
 - **'Left'** - Always align text to the left
 - **'Right'** - Always align text to the right
 - **'Center'** - Center-align text (language-neutral)
+- **'Justify'** - Stretch every line of a paragraph except the last, by widening the gaps between words. The last line keeps its natural width and is aligned like **'Auto'**: flush right for RTL scripts, flush left for LTR. Justified Arabic and Hebrew therefore read correctly. A line with no gap to widen keeps its natural width too — a single unbroken word, or a script written without word spaces such as Chinese, Japanese or Korean.
 
 With 'Auto' alignment, the Arabic text in our example automatically aligns to the right without explicit configuration:
 
@@ -273,7 +274,8 @@ To check the effective alignment when 'Auto' is set, use `getTextEffectiveHorizo
 
 ```typescript
 const effectiveAlignment = engine.block.getTextEffectiveHorizontalAlignment(textBlock);
-// Returns 'Left' or 'Right' based on text content, never 'Auto'
+// Returns 'Left' or 'Right' based on text content, never 'Auto'.
+// Only 'Auto' is resolved this way — 'Justify' is itself an effective alignment and comes back verbatim.
 ```
 
 This approach simplifies multilingual templates - the same template works correctly for both LTR and RTL languages without alignment adjustments.
@@ -522,7 +524,7 @@ Exported images preserve all multilingual text rendering including RTL layout, c
 | `engine.block.create('text')` | Create text block for multilingual content |
 | `engine.block.setString(id, 'text/text', value)` | Set text content in any language |
 | `engine.block.getString(id, 'text/text')` | Get text content |
-| `engine.block.setEnum(id, 'text/horizontalAlignment', value)` | Set horizontal text alignment (Auto, Left, Right, Center) |
+| `engine.block.setEnum(id, 'text/horizontalAlignment', value)` | Set horizontal text alignment (Auto, Left, Right, Center, Justify) |
 | `engine.block.getEnum(id, 'text/horizontalAlignment')` | Get horizontal text alignment |
 | `engine.block.getTextEffectiveHorizontalAlignment(id)` | Get resolved alignment (Auto resolves to Left or Right) |
 | `engine.block.setTypeface()` | Apply typeface to text block |

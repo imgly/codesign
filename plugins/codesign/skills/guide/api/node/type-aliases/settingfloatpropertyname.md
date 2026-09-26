@@ -8,6 +8,7 @@ type SettingFloatPropertyName =
   | "rotationSnappingThreshold"
   | "grid/spacingX"
   | "grid/spacingY"
+  | "dragToSwapFills/longPressDurationMs"
   | "controlGizmo/blockScaleDownLimit"
   | "listIndentPerLevel"
   | string & object;

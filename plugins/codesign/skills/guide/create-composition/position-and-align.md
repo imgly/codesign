@@ -418,6 +418,7 @@ If `engine.block.alignHorizontally()` or `engine.block.alignVertically()` has no
 - Confirm `engine.block.isAlignable()` returns `true` for the blocks
 - Verify all block IDs in the array are valid
 - Check that blocks have the `'layer/move'` scope enabled
+- Check that no block is transform-locked, either on its own or by a group or frame above it
 
 ### Blocks Cannot Be Distributed
 
@@ -426,6 +427,7 @@ If `engine.block.distributeHorizontally()` or `engine.block.distributeVertically
 - Verify `engine.block.isDistributable()` returns `true`
 - Ensure you have at least three blocks in the array
 - Check that all blocks share the same parent
+- Check that no block is transform-locked, either on its own or by a group or frame above it
 
 ## API Reference
 

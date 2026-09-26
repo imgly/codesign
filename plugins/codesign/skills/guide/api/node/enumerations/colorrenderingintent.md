@@ -2,33 +2,18 @@
 
 ---
 
-```ts
-type SettingColorPropertyName = 
-  | "clearColor"
-  | "handleFillColor"
-  | "highlightColor"
-  | "pageHighlightColor"
-  | "placeholderHighlightColor"
-  | "snappingGuideColor"
-  | "rotationSnappingGuideColor"
-  | "cropOverlayColor"
-  | "textVariableHighlightColor"
-  | "borderOutlineColor"
-  | "progressColor"
-  | "errorStateColor"
-  | "grid/color"
-  | "page/title/color"
-  | "page/marginFillColor"
-  | "page/marginFrameColor"
-  | "page/safetyFillColor"
-  | "page/safetyFrameColor"
-  | "page/exclusionAreaFillColor"
-  | "page/exclusionAreaFrameColor"
-  | "page/innerBorderColor"
-  | "page/outerBorderColor"
-  | "colorMaskingSettings/maskColor"
-  | string & object;
-```
+How a color that the destination cannot reproduce is mapped into it.
+
+The values are the ICC rendering intent numbers.
+
+## Enumeration Members
+
+| Enumeration Member | Value |
+| ------ | ------ |
+|  `Perceptual` | `0` |
+|  `RelativeColorimetric` | `1` |
+|  `Saturation` | `2` |
+|  `AbsoluteColorimetric` | `3` |
 
 
 ---

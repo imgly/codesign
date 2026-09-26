@@ -319,6 +319,28 @@ Page margins define bleed areas useful for print designs. Enable margins and con
 
 Set `page/marginEnabled` to `true` to enable margins, then use `page/margin/top`, `page/margin/bottom`, `page/margin/left`, and `page/margin/right` to configure each side.
 
+### Safety Inset
+
+The safety inset is the inward inset from the page edge that content must stay inside. It is the counterpart of the bleed margin, which extends outward. Print shops cut with a tolerance, so text and logos placed too close to the edge can be trimmed off.
+
+Set `page/safetyEnabled` to `true`, then use `page/safetyInset/top`, `page/safetyInset/bottom`, `page/safetyInset/left`, and `page/safetyInset/right` to configure each side. Every inset defaults to `0`, so set a value as well as enabling the area.
+
+The safety inset is authoring state, and nothing it draws reaches an export.
+
+The guide appears while a drag is in the safety inset or comes near the safety line, and goes away when the drag ends. A move or resize with the arrow keys shows it the same way for 1.6 seconds, without snapping. The engine shades the band between the page edge and the line, draws the line itself, and lets the dragged block snap to it. Set `page/safetyRevealDuringTransform` to `false` to draw the guide on every page all the time instead.
+
+Set the guide colors with the `page/safetyFillColor` and `page/safetyFrameColor` settings; a fully transparent `page/safetyFrameColor` hides the line and turns its snapping off.
+
+### Exclusion Area
+
+An exclusion area marks a region of a page that content must stay out of: a window on an envelope, a spine on a book cover, a glue flap on a box, an address panel on a mailer. Where the safety inset is one inset per page, a page can carry any number of exclusion areas, each with its own position, size and rotation.
+
+Create one with the `//ly.img.ubq/exclusionArea` block type and append it to a page. An exclusion area is a graphic, so it takes a shape, a fill, a stroke and the ordinary transform, and you can put the artwork of the obstruction into it. A new exclusion area is a rectangle with no fill and shows a striped pattern, so it is visible at once. Assign a fill to replace the stripes.
+
+An exclusion area is authoring state. The engine washes it in `page/exclusionAreaFillColor` and frames it in `page/exclusionAreaFrameColor`, neither of which reaches an export, and a fully transparent `page/exclusionAreaFrameColor` hides the frame. An exclusion area is left out of an export as well: set `includedInExport` to `true` on the exclusion area to put its artwork in the file.
+
+Set `exclusionArea/punchOut` to `true` to cut the exclusion area out of an export instead. The page and everything on it get a hole where the exclusion area is, so a die cut window in the design becomes a window in the file. It is off by default, and the canvas keeps showing the content either way.
+
 ### Title Template
 
 The `page/titleTemplate` property defines the display label shown for each page. It supports template variables like `{{ubq.page_index}}` for dynamic numbering.

@@ -2,33 +2,16 @@
 
 ---
 
-```ts
-type SettingColorPropertyName = 
-  | "clearColor"
-  | "handleFillColor"
-  | "highlightColor"
-  | "pageHighlightColor"
-  | "placeholderHighlightColor"
-  | "snappingGuideColor"
-  | "rotationSnappingGuideColor"
-  | "cropOverlayColor"
-  | "textVariableHighlightColor"
-  | "borderOutlineColor"
-  | "progressColor"
-  | "errorStateColor"
-  | "grid/color"
-  | "page/title/color"
-  | "page/marginFillColor"
-  | "page/marginFrameColor"
-  | "page/safetyFillColor"
-  | "page/safetyFrameColor"
-  | "page/exclusionAreaFillColor"
-  | "page/exclusionAreaFrameColor"
-  | "page/innerBorderColor"
-  | "page/outerBorderColor"
-  | "colorMaskingSettings/maskColor"
-  | string & object;
-```
+Where the block created from an asset is placed.
+
+## Properties
+
+| Property | Type | Description |
+| ------ | ------ | ------ |
+|  `parent?` | `number` | The block that the new block is added to. Omit it to use the current page. |
+|  `center?` | `object` | The center of the new block, in design units relative to `parent`. Both values must be finite. Omit it to place the block automatically. |
+| `center.x` | `number` | - |
+| `center.y` | `number` | - |
 
 
 ---

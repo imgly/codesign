@@ -281,6 +281,29 @@ const blob = await engine.block.export(scene, {
 
 The underlayer is generated automatically from the contours of all design elements on the page. Elements with transparency will have proportionally reduced underlayer opacity.
 
+## Add Printer's Marks
+
+A print shop needs to see where to cut, and a press operator needs a target to align the plates against. Set `exportPdfWithCropMarks` to draw the four pairs of corner lines that mark the cut, and `exportPdfWithRegistrationMarks` to draw a bullseye at the middle of each page edge. Both default to `false`, so an export that does not ask for marks is unchanged.
+
+```typescript
+const pdfBlob = await engine.block.export(page, {
+  mimeType: 'application/pdf',
+  exportPdfWithCropMarks: true,
+  exportPdfWithRegistrationMarks: true,
+  printMarkOffset: 6,
+  printMarkWidth: 0.25,
+  cropMarkLength: 15
+});
+```
+
+Both mark types are painted in the PDF registration colorant `All`, so they appear on every separation, and each is knocked out in white underneath so it stays legible over dark artwork.
+
+`printMarkOffset` and `printMarkWidth` are shared by both mark types, and `cropMarkLength` sets one corner line. The offset and the length are in design units, so the offset is directly comparable with the page bleed and the sheet grows by the sum of the two. The weight is in points, the unit a print shop states a stroke weight in.
+
+The offset is measured from the trim, so a small offset places a mark inside the bleed, which the knife removes anyway. A negative offset falls back to the 6 pt default, and `0` places a mark on the trim edge.
+
+Marks grow the exported page by the offset plus the equivalent of 15 points on each side, or by the offset plus `cropMarkLength` when that is longer. The artwork does not move, and the TrimBox and BleedBox keep describing the same physical rectangles. A page whose trim is not a rectangle gets no marks and no larger page.
+
 ## Export at Target Dimensions
 
 Use `targetWidth` and `targetHeight` to control the exported PDF dimensions in pixels. The block renders large enough to fill the target size while maintaining aspect ratio.
@@ -310,6 +333,11 @@ For print output, calculate the target dimensions based on your desired DPI:
 | `exportPdfWithUnderlayer` | Generate an underlayer from design contours. Defaults to `false`. |
 | `underlayerSpotColorName` | Spot color name for the underlayer ink. Required when `exportPdfWithUnderlayer` is true. |
 | `underlayerOffset` | Size adjustment in design units. Negative values shrink the underlayer inward. |
+| `exportPdfWithCropMarks` | Draw the four pairs of corner lines that show a print shop where to cut. Defaults to `false`. |
+| `exportPdfWithRegistrationMarks` | Draw a bullseye target at the middle of each page edge, which a press operator aligns the plates by. Defaults to `false`. |
+| `printMarkOffset` | Distance in design units from the trim to the nearest edge of any mark, so it is comparable with the page bleed. Shared by both mark types. Defaults to 6 pt. |
+| `printMarkWidth` | Stroke weight in points of any mark, the unit a print shop states a weight in. Shared by both mark types. Defaults to `0.25`. |
+| `cropMarkLength` | Length in design units of one crop mark line, the same unit as `printMarkOffset`. Defaults to 15 pt. |
 | `targetWidth` | Target output width in pixels. Must be used with `targetHeight`. |
 | `targetHeight` | Target output height in pixels. Must be used with `targetWidth`. |
 | `onProgress` | Callback invoked once per page during PDF export with `(exportedPages, totalPages)`. Only called for PDF exports. |

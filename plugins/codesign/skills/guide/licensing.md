@@ -31,6 +31,12 @@ Trial licenses are available for evaluation and testing and are valid for **30 d
 
 If you need more time to evaluate, [contact our sales team](https://img.ly/forms/contact-sales).
 
+## Evaluation Mode
+
+CE.SDK is a commercial product and a license is required for production use. Without a license, CE.SDK runs in evaluation mode, which watermarks exports.
+
+Every API, save, archive and export works, with no expiry, no domain lock and no feature gate. Evaluation mode watermarks the canvas and every export, keeps usage tracking on, and prints a banner to the console. Thumbnails are not watermarked.
+
 ## Testing and Production
 
 Paid license keys can be used across development, staging, and production environments. Multiple domains or app identifiers can be added to support this setup.

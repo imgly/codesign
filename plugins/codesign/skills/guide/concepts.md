@@ -21,6 +21,7 @@ Key Concepts and principles of CE.SDK.
 - [Blocks](./concepts/blocks.md) - Learn how blocks define elements in a scene and how to structure them for rendering in CE.SDK.
 - [Scenes](./concepts/scenes.md) - Create, configure, save, and load scenes—the root container for all design elements in CE.SDK.
 - [Pages](./concepts/pages.md) - Pages structure scenes in CE.SDK and must share the same dimensions to ensure consistent rendering.
+- [Exclusion Areas](./concepts/exclusion-areas.md) - Mark a region of a page that content must stay out of, and cut it out of a headless export.
 - [Assets](./concepts/assets.md) - Learn how assets provide external content to CE.SDK designs and how asset sources make them available programmatically.
 - [Templating](./concepts/templating.md) - Templates enable dynamic, reusable designs with text variables and placeholder media. Learn to create, load, and personalize templates programmatically.
 - [Import and Export](./concepts/import-export.md) - Understand every way files move in and out of CE.SDK—importing media and design files, loading and saving native scenes, and exporting finished output.

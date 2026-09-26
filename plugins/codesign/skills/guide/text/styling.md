@@ -77,6 +77,28 @@ try {
   // Apply different color to a specific range (characters 0-2)
   engine.block.setTextColor(text, { r: 0.2, g: 0.6, b: 1.0, a: 1.0 }, 0, 2); // Blue
 
+  // Apply a background color to a specific range (characters 0-2)
+  engine.block.setTextBackgroundColor(
+    text,
+    { r: 1.0, g: 0.9, b: 0.3, a: 1.0 }, // Yellow
+    0,
+    2,
+  );
+
+  // A fully transparent color removes the background again:
+  // engine.block.setTextBackgroundColor(text, { r: 0, g: 0, b: 0, a: 0 }, 0, 2);
+
+  // Query the unique background colors in the text
+  const backgroundColors = engine.block.getTextBackgroundColors(text);
+  console.log("Text background colors:", backgroundColors);
+
+  // Grow the background around the text and round its corners
+  engine.block.setFloat(text, "text/backgroundPadding/left", 4);
+  engine.block.setFloat(text, "text/backgroundPadding/right", 4);
+  engine.block.setFloat(text, "text/backgroundPadding/top", 2);
+  engine.block.setFloat(text, "text/backgroundPadding/bottom", 2);
+  engine.block.setFloat(text, "text/backgroundCornerRadius", 4);
+
   // Enable and configure text background
   engine.block.setBool(text, "backgroundColor/enabled", true);
 
@@ -203,6 +225,38 @@ We apply different colors to character ranges using `engine.block.setTextColor()
 
 CE.SDK supports applying different colors to individual character ranges within a single text block, enabling multi-colored text effects.
 
+## Text Run Backgrounds
+
+We apply a background color behind specific character ranges using `engine.block.setTextBackgroundColor()`. The `engine.block.getTextBackgroundColors()` method returns an ordered list of unique background colors in the text. Text without a background color is reported as a fully transparent color.
+
+```typescript highlight-text-run-background
+  // Apply a background color to a specific range (characters 0-2)
+  engine.block.setTextBackgroundColor(
+    text,
+    { r: 1.0, g: 0.9, b: 0.3, a: 1.0 }, // Yellow
+    0,
+    2,
+  );
+
+  // A fully transparent color removes the background again:
+  // engine.block.setTextBackgroundColor(text, { r: 0, g: 0, b: 0, a: 0 }, 0, 2);
+
+  // Query the unique background colors in the text
+  const backgroundColors = engine.block.getTextBackgroundColors(text);
+  console.log("Text background colors:", backgroundColors);
+
+  // Grow the background around the text and round its corners
+  engine.block.setFloat(text, "text/backgroundPadding/left", 4);
+  engine.block.setFloat(text, "text/backgroundPadding/right", 4);
+  engine.block.setFloat(text, "text/backgroundPadding/top", 2);
+  engine.block.setFloat(text, "text/backgroundPadding/bottom", 2);
+  engine.block.setFloat(text, "text/backgroundCornerRadius", 4);
+```
+
+A fully transparent color removes the background from a range. The run background is independent of the block-level `backgroundColor/color` property and is drawn on top of the block-level background.
+
+The `text/backgroundPadding/*` properties grow the background around the text. The `text/backgroundCornerRadius` property rounds its corners. Both apply to every text run of the block. Caption blocks get the same properties under `caption/`, and a caption track keeps them in sync.
+
 ## Text Backgrounds
 
 We add rectangular backgrounds using `backgroundColor/*` properties. The background is enabled with `engine.block.setBool()`, customized with `engine.block.setColor()`, and adjusted with `engine.block.setFloat()` for padding and corner radius.
@@ -315,6 +369,8 @@ The typeface must include fonts matching the requested weight and style combinat
 | `engine.block.removeText()` | Remove text at specified indices |
 | `engine.block.setTextColor()` | Set color for entire text or specific range |
 | `engine.block.getTextColors()` | Get ordered list of unique colors in text |
+| `engine.block.setTextBackgroundColor()` | Set background color for entire text or specific range |
+| `engine.block.getTextBackgroundColors()` | Get ordered list of unique background colors in text |
 | `engine.block.setBool()` | Enable/disable boolean properties |
 | `engine.block.setColor()` | Set color property values |
 | `engine.block.getColor()` | Get color property values |
@@ -338,7 +394,7 @@ The typeface must include fonts matching the requested weight and style combinat
 
 **Font toggle not working**: Verify the typeface definition includes fonts for requested weight and style combinations.
 
-**Text background not visible**: Ensure the `backgroundColor/enabled` property is set to true.
+**Text background not visible**: Ensure the `backgroundColor/enabled` property is set to true. This switch belongs to the block background. A run background needs no switch, and text on a path hides only the block background.
 
 **Unexpected text case rendering**: Text case transformations don't modify the underlying string value - they only affect rendering.
 

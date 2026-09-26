@@ -26,11 +26,13 @@ The settings are organized by type:
 |  ~~`controlGizmo/showRotateHandles`~~ | `boolean` | **Deprecated** Use `controlGizmo/rotateHandlesVisibility`. `false` hides the rotation handle. |
 |  ~~`controlGizmo/showScaleHandles`~~ | `boolean` | **Deprecated** Use `controlGizmo/scaleHandlesVisibility`. `false` hides the corner (scale) handles. |
 |  `doubleClickToCropEnabled` | `boolean` | Enable double-click to enter crop mode. |
+|  `dragToSwapFills/enabled` | `boolean` | Whether pressing and holding an image element lifts its image into a drag. Releasing it over another image element exchanges the two images. |
 |  `features/singlePageModeEnabled` | `boolean` | Enable single page mode where only one page is shown at a time. |
 |  `features/fileSystemUsageEnabled` | `boolean` | Enable file system usage, that allows the engine to use the file system to store files for local uploads. |
 |  `features/pageCarouselEnabled` | `boolean` | Enable the page carousel for navigating between pages. |
 |  `features/transformEditsRetainCoverMode` | `boolean` | Whether transform edits should retain the cover mode of the content. |
 |  `features/clampTextBlockWidthToPageDimensionsDuringEditing` | `boolean` | Whether auto-sized text blocks should be clamped to page boundaries during editing. |
+|  `features/equalDistanceSnappingEnabled` | `boolean` | Whether a dragged block snaps to equal spacing with its siblings and shows the size of each gap. Defaults to `false`. |
 |  `mouse/enableScroll` | `boolean` | Whether the engine processes mouse scroll events. |
 |  `mouse/enableZoom` | `boolean` | Whether the engine processes mouse zoom events. |
 |  `page/allowCropInteraction` | `boolean` | Whether crop interaction (by handles and gestures) should be possible. |
@@ -48,6 +50,7 @@ The settings are organized by type:
 |  `page/title/show` | `boolean` | Whether to show titles above each page. |
 |  `page/title/showOnSinglePage` | `boolean` | Whether to hide the page title when only a single page exists. |
 |  `page/title/showPageTitleTemplate` | `boolean` | Whether to include the default page title from page.titleTemplate. |
+|  `page/safetyRevealDuringTransform` | `boolean` | Whether the safety inset appears only while a drag, a nudge or a keyboard resize is in it or comes near it. |
 |  `placeholderControls/showButton` | `boolean` | Whether to show the placeholder button. |
 |  `placeholderControls/showOverlay` | `boolean` | Whether to show the overlay pattern for placeholders. |
 |  `blockAnimations/enabled` | `boolean` | Whether animations should be enabled or not. |
@@ -72,6 +75,7 @@ The settings are organized by type:
 |  `page/title/fontFileUri` | `string` | The font file URI for page titles. |
 |  `page/title/separator` | `string` | The separator between page number and page name in titles. |
 |  `fallbackFontUri` | `string` | The URI for the fallback font used when glyphs are missing. |
+|  `fallbackCMYKProfileUri` | `string` | The URI of the ICC profile that previews CMYK colors when the document defines no CMYK profile. Empty means the bundled default profile. |
 |  `upload/supportedMimeTypes` | `string` | The supported MIME types for file uploads. |
 |  `web/fetchCredentials` | `"omit"` | `"same-origin"` | `"include"` | Web-only: Credentials mode for cross-origin fetch requests. - "omit": Never send cookies - "same-origin": Send cookies only for same-origin requests (default) - "include": Always send cookies, even for cross-origin requests Note: Only affects web platform. Ignored on native platforms. |
 |  `controlGizmo/blockScaleDownLimit` | `number` | Scale-down limit for blocks in screen pixels when scaling with gizmos or touch gestures. |
@@ -80,6 +84,7 @@ The settings are organized by type:
 |  `rotationSnappingThreshold` | `number` | The threshold angle in degrees for rotation snapping. |
 |  `grid/spacingX` | `number` | Horizontal spacing between vertical grid lines in design units. |
 |  `grid/spacingY` | `number` | Vertical spacing between horizontal grid lines in design units. |
+|  `dragToSwapFills/longPressDurationMs` | `number` | How long the pointer must stay pressed and still before the image lifts, in milliseconds. 0 lifts on the first update, so every drag swaps instead of moves. |
 |  `maxImageSize` | `number` | The maximum size (width or height) in pixels for images. |
 |  `maxPreviewResolution` | `number` | The maximum dimension (width or height) in physical pixels for preview rendering. When greater than 0, the scene is rendered at reduced resolution and upscaled for improved performance. Does not affect exports. Set to -1 to disable (default). |
 |  `borderOutlineColor` | [`Color`](./api/node/type-aliases/color.md) | The color of the border outline for selected elements. |
@@ -88,10 +93,14 @@ The settings are organized by type:
 |  `cropOverlayColor` | [`Color`](./api/node/type-aliases/color.md) | The color of the crop overlay. |
 |  `errorStateColor` | [`Color`](./api/node/type-aliases/color.md) | The color indicating an error state. |
 |  `highlightColor` | [`Color`](./api/node/type-aliases/color.md) | The highlight color for selected or active elements. |
+|  `page/exclusionAreaFillColor` | [`Color`](./api/node/type-aliases/color.md) | The color washed over an exclusion area. |
+|  `page/exclusionAreaFrameColor` | [`Color`](./api/node/type-aliases/color.md) | The color of the frame around an exclusion area. |
 |  `page/innerBorderColor` | [`Color`](./api/node/type-aliases/color.md) | The color of the inner frame around the page. |
 |  `page/marginFillColor` | [`Color`](./api/node/type-aliases/color.md) | The color filled into the bleed margins of pages. |
 |  `page/marginFrameColor` | [`Color`](./api/node/type-aliases/color.md) | The color of the frame around the bleed margin area. |
 |  `page/outerBorderColor` | [`Color`](./api/node/type-aliases/color.md) | The color of the outer frame around the page. |
+|  `page/safetyFillColor` | [`Color`](./api/node/type-aliases/color.md) | The color filled into the safety inset band of pages. |
+|  `page/safetyFrameColor` | [`Color`](./api/node/type-aliases/color.md) | The color of the frame around the safety inset of the pages. |
 |  `page/title/color` | [`Color`](./api/node/type-aliases/color.md) | The color of page titles visible in preview mode. |
 |  `pageHighlightColor` | [`Color`](./api/node/type-aliases/color.md) | Color of the outline of each page |
 |  `placeholderHighlightColor` | [`Color`](./api/node/type-aliases/color.md) | The highlight color for placeholder elements. |
@@ -114,6 +123,7 @@ The settings are organized by type:
 |  `colorPicker/colorMode` | `"CMYK"` | `"RGB"` | `"Any"` | Controls the color mode of the color picker. When set to 'RGB' or 'CMYK', only colors matching this mode are fully editable. Defaults to 'Any'. |
 |  `timeline/trackVisibility` | `"all"` | `"active"` | Controls which timeline tracks are visible. 'all' shows all tracks, 'active' shows only the track containing the active block. Defaults to 'all'. |
 |  `timeline/transitionControlVisibility` | `"always"` | `"hover"` | Controls the clip transition control on the timeline. 'always' keeps it shown, 'hover' reveals it on hover/focus. Defaults to 'hover'. |
+|  `features/automaticSourceSetsEnabled` | `boolean` | Whether the engine makes the smaller source set entries of an image fill by itself. Off by default; the entries use the `buffer` scheme, so a save needs a persistence callback. |
 
 
 ---

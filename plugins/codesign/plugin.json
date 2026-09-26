@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "codesign",
-  "version": "0.3.7-next.20260926064901.gb45fd3c",
+  "version": "0.3.7-next.20260926104913.gd00e34c",
   "description": "CoDesign gives AI agents like Claude Code, Codex and PI a real design engine for genuine, editable designs, not flat images. Bring in what you have: InDesign, Photoshop, PowerPoint and PDF files stay editable. Exports print-ready PDFs with CMYK and bleed. Every design opens in a built-in editor for manual fixes. Runs on your machine, no account.",
   "author": {
     "name": "IMG.LY GmbH",

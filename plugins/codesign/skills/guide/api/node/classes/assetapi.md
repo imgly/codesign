@@ -613,13 +613,17 @@ Retrieve metadata, credits, licenses, and supported formats from asset sources.
 
 <details>
   <summary>
-    ### canManageAssets()
+    ### ~~canManageAssets()~~
 
-    <br /><p>Check if an asset source supports asset management.</p>
+    <br /><p>Check whether an asset source declared the deprecated <code>canManageAssets</code>
+    flag.</p>
   </summary>
 
-  Returns true if the source allows adding and removing assets dynamically, via 'Add File' and 'Delete' button on the UI.
-  This is typically true for local asset sources and false for remote sources.
+  Returns the value the source passed to [addSource](./api/node/classes/assetapi.md), which the asset
+  library reads to decide whether to offer its 'Add File' and 'Delete'
+  buttons. It is a record of what was declared, not a capability the engine
+  is asked about: a source registered through [addLocalSource](./api/node/classes/assetapi.md) carries
+  no flag and so returns `false`, as does an id that was never registered.
 
   ```javascript
   engine.asset.canManageAssets('asset-source-id');
@@ -635,13 +639,13 @@ Retrieve metadata, credits, licenses, and supported formats from asset sources.
 
   `boolean`
 
-  True if the source supports asset management operations.
+  Whether that source declared the flag.
 
-  #### Signature
+  #### Deprecated
 
-  ```typescript
-  canManageAssets(sourceId: string): boolean
-  ```
+  The flag this reads is deprecated. To control whether an
+  upload button is rendered, use the `canAdd` option on an asset library
+  entry instead.
 </details>
 
 ## Asset Application
@@ -899,6 +903,7 @@ Apply assets to scenes, blocks, or specific properties with customizable behavio
   | Parameter | Type | Description |
   | ------ | ------ | ------ |
   | `assetResult` | [`AssetResult`](./api/node/interfaces/assetresult.md) | A single asset result from a `findAssets` query. |
+  | `options?` | [`DefaultApplyAssetOptions`](./api/node/interfaces/defaultapplyassetoptions.md) | Optional configuration for asset application. |
 
   #### Returns
 
@@ -909,7 +914,7 @@ Apply assets to scenes, blocks, or specific properties with customizable behavio
   #### Signature
 
   ```typescript
-  defaultApplyAsset(assetResult: AssetResult): Promise<number>
+  defaultApplyAsset(assetResult: AssetResult, options?: DefaultApplyAssetOptions): Promise<number>
   ```
 
   ***

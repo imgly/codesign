@@ -245,7 +245,9 @@ forceLoadResources(ids: DesignBlockId[]): Promise<void>
 - `ids` - The blocks whose resources should be loaded. Pass an empty array to load resources for every
   block currently known to the engine.
 
-**Returns:** A Promise that resolves once all resources have finished loading.
+**Returns:** A Promise that resolves once every resource has finished loading. The state of a block
+then reports the result of its fetch. A file that arrives but that the engine cannot decode
+keeps it pending.
 
 ## Block Fills
 
@@ -1646,6 +1648,10 @@ isVisibleAtCurrentPlaybackTime(id: DesignBlockId): boolean
 
 Gets the current state of a block.
 A block's state is determined by its own state and that of its shape, fill, and effects.
+A block whose CMYK or spot color needs the document CMYK profile is pending while that
+profile loads.
+Runs an engine update when the block names a resource that nothing asked for yet.
+A font set just before this call is then reported as pending.
 ```javascript
 const state = engine.block.getState(block);
 ```
@@ -1841,7 +1847,10 @@ Create and manage groups of blocks.
 ### isGroupable()
 
 Checks if a set of blocks can be grouped.
-A scene block or a block that is already part of a group cannot be grouped.
+A scene block or a page cannot be grouped, and neither can a block together
+with a group it sits inside, which would make that group a child of itself.
+Blocks that already belong to a group can be grouped again, which is how a
+group inside a group is made.
 ```javascript
 const groupable = engine.block.isGroupable([block1, block2])
 ```
@@ -2033,6 +2042,22 @@ findAllUnused(): DesignBlockId[]
 ```
 
 **Returns:** A list of block ids that are not attached to any scene.
+
+### findAllInExclusionAreas()
+
+Get all blocks that overlap an exclusion area on their page.
+The engine never moves a block to satisfy an exclusion area. A scene loaded from a file, or laid out
+through the API, can legitimately overlap one, and silently repositioning it would lose the
+author's layout. Use this to warn or to highlight instead.
+An exclusion area that is hidden, or that is not on a page, reports nothing. `exclusionArea/constrains` is not
+read: an advisory exclusion area has no push, so a warning is the only thing it has. A group that
+straddles an exclusion area is reported instead of the blocks inside it.
+
+```typescript
+findAllInExclusionAreas(): DesignBlockId[]
+```
+
+**Returns:** A list of block ids that overlap an exclusion area, sorted ascending.
 
 ## Block Shapes
 
@@ -5016,6 +5041,47 @@ getTextColors(id: DesignBlockId, from?: number, to?: number): Array<Color>
 
 **Returns:** The ordered unique list of colors.
 
+### setTextBackgroundColor()
+
+Sets the background color for a range of text.
+The background is drawn as a rectangle behind each affected text run, or as a band along the curve for text
+on a path.
+A fully transparent color removes the background from the range.
+The run background is independent of the block-level background color
+('backgroundColor/color'); it is drawn on top of the block-level background.
+```javascript
+engine.block.setTextBackgroundColor(text, { r: 1.0, g: 1.0, b: 0.0, a: 1.0 }, 1, 4);
+```
+
+```typescript
+setTextBackgroundColor(id: DesignBlockId, color: Color, from?: number, to?: number): void
+```
+
+**Parameters:**
+- `id` - The text block whose background color should be changed.
+- `color` - The new background color of the selected text range.
+- `from` - The start index of the UTF-16 range to change. Defaults to the start of the current selection or text.
+- `to` - The end index of the UTF-16 range to change. Defaults to the end of the current selection or text.
+
+### getTextBackgroundColors()
+
+Gets the unique background colors within a range of text.
+Text without a background color is reported as a fully transparent color.
+```javascript
+const backgroundColorsInRange = engine.block.getTextBackgroundColors(text, 2, 5);
+```
+
+```typescript
+getTextBackgroundColors(id: DesignBlockId, from?: number, to?: number): Array<Color>
+```
+
+**Parameters:**
+- `id` - The text block whose background colors should be returned.
+- `from` - The start index of the UTF-16 range. Defaults to the start of the current selection or text.
+- `to` - The end index of the UTF-16 range. Defaults to the end of the current selection or text.
+
+**Returns:** The ordered unique list of background colors.
+
 ### setTextFontWeight()
 
 Sets the font weight for a range of text.
@@ -5308,7 +5374,7 @@ or the block-level alignment.
 ```javascript
 const alignment = engine.block.getTextHorizontalAlignment(text, 0);
 const blockAlignment = engine.block.getTextHorizontalAlignment(text); // paragraphIndex defaults to -1
-// e.g. 'Left' | 'Center' | 'Right' | 'Auto' | undefined
+// e.g. 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto' | undefined
 ```
 
 ```typescript
@@ -5330,6 +5396,7 @@ Sets the paragraph-level horizontal alignment override for one or all paragraphs
 engine.block.setTextHorizontalAlignment(text, 'Center', 0);
 engine.block.setTextHorizontalAlignment(text, undefined, 0); // clear override
 engine.block.setTextHorizontalAlignment(text, 'Right'); // apply to all
+engine.block.setTextHorizontalAlignment(text, 'Justify'); // stretch every line but each paragraph's last
 ```
 
 ```typescript
@@ -5339,6 +5406,8 @@ setTextHorizontalAlignment(id: DesignBlockId, alignment: TextHorizontalAlignment
 **Parameters:**
 - `id` - The text block to modify.
 - `alignment` - The alignment to apply, or `undefined` to clear the paragraph override.
+`'Justify'` stretches every line of a paragraph except the last.
+The last line keeps its natural width and follows the text direction, like `'Auto'`.
 - `paragraphIndex` - The 0-based index of the paragraph.
 Negative values clear all paragraph-level alignment overrides and, when `alignment` is provided,
 apply that alignment to the whole text block.
@@ -5736,13 +5805,15 @@ If the alignment is set to Auto, this returns the resolved alignment (Left or Ri
 based on the text direction of the first logical run. This never returns 'Auto'.
 
 ```typescript
-getTextEffectiveHorizontalAlignment(id: DesignBlockId): 'Left' | 'Right' | 'Center'
+getTextEffectiveHorizontalAlignment(id: DesignBlockId): 'Left' | 'Right' | 'Center' | 'Justify'
 ```
 
 **Parameters:**
 - `id` - The text block whose effective alignment should be returned.
 
-**Returns:** The effective alignment ('Left', 'Right', or 'Center').
+**Returns:** The effective alignment ('Left', 'Right', 'Center', or 'Justify').
+Only `'Auto'` is resolved — `'Justify'` is itself an effective alignment and is
+returned verbatim.
 
 ### setTextOnPath()
 

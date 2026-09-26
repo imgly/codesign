@@ -248,6 +248,10 @@ Load scenes from various sources including strings, URLs, and archives.
 
   The scene file will be fetched asynchronously by the engine and loaded into the engine once it is available. Any existing scene is replaced by the new one.
 
+  This requires continuous `render` calls on this engine instance, as `loadFromArchiveURL` does.
+  The engine advances the fetch while it renders, so without a render loop the returned promise
+  never settles — it neither resolves nor rejects, even for a URL that cannot be reached.
+
   ```javascript
   const sceneURL = 'https://example.com/my-scene.json';
   creativeEngine.scene.loadFromURL(sceneURL);
@@ -584,6 +588,279 @@ Subscribe to scene-related events and changes.
   A method to unsubscribe.
 
   () => `void`
+</details>
+
+## Color Management
+
+Configure the document CMYK profile and its conversion settings. These properties are saved with the scene.
+
+<details>
+  <summary>
+    ### setCMYKProfile()
+
+    <br /><p>Loads the ICC profile at a URI and makes it the CMYK profile of the document.</p>
+  </summary>
+
+  The profile is document state: it is saved with the scene and bundled into an archive. It
+  converts CMYK colors, the CMYK approximations of spot colors, and CMYK images without an
+  embedded profile, while `scene/colorConversionMode` is `'Managed'`. An image with its own
+  profile keeps using that profile.
+
+  The assignment is atomic. The previous profile stays in effect while the new one loads, and a
+  failure leaves it unchanged. A later assignment, [removeCMYKProfile](./api/node/classes/sceneapi.md) or a scene load
+  replaces a request that is still loading. Undo and redo do not change the profile.
+
+  ```javascript
+  await engine.scene.setCMYKProfile('https://example.com/profiles/PSOcoated_v3.icc');
+  ```
+
+  #### Parameters
+
+  | Parameter | Type | Description |
+  | ------ | ------ | ------ |
+  | `uri` | `string` | The URI of a CMYK ICC profile. |
+
+  #### Returns
+
+  `Promise`\<`void`>
+
+  A promise that resolves once the profile is in effect. It rejects with
+  `COLOR.PROFILE_MISSING` when the URI cannot be loaded, `COLOR.PROFILE_INVALID` or
+  `COLOR.PROFILE_UNSUPPORTED_SPACE` when the bytes are not a usable profile,
+  `COLOR.PROFILE_SPACE_MISMATCH` when the profile is not CMYK, and
+  `COLOR.PROFILE_ASSIGNMENT_SUPERSEDED` when a later change replaced the request.
+
+  #### Signature
+
+  ```typescript
+  setCMYKProfile(uri: string): Promise<void>
+  ```
+
+  ***
+</details>
+
+<details>
+  <summary>
+    ### setCMYKProfileFromData()
+
+    <br /><p>Makes the ICC profile in the given bytes the CMYK profile of the document.</p>
+  </summary>
+
+  Works like [setCMYKProfile](./api/node/classes/sceneapi.md), but the change is in effect when the call returns. The
+  engine keeps one buffer per distinct profile for its lifetime.
+
+  [saveToString](./api/node/classes/sceneapi.md) stores this profile as a `buffer://` URI that only this engine can read.
+  Save to an archive to keep the profile bytes with the scene.
+
+  ```javascript
+  const response = await fetch('https://example.com/profiles/PSOcoated_v3.icc');
+  engine.scene.setCMYKProfileFromData(new Uint8Array(await response.arrayBuffer()));
+  ```
+
+  #### Parameters
+
+  | Parameter | Type | Description |
+  | ------ | ------ | ------ |
+  | `data` | `Uint8Array` | The bytes of a CMYK ICC profile. |
+
+  #### Returns
+
+  `void`
+
+  #### Throws
+
+  `COLOR.PROFILE_INVALID` or `COLOR.PROFILE_UNSUPPORTED_SPACE` when the bytes are not a
+  usable profile, and `COLOR.PROFILE_DATA_SPACE_MISMATCH` when the profile is not CMYK. The
+  previous profile then stays in effect.
+
+  #### Signature
+
+  ```typescript
+  setCMYKProfileFromData(data: Uint8Array): void
+  ```
+
+  ***
+</details>
+
+<details>
+  <summary>
+    ### getCMYKProfileInfo()
+
+    <br /><p>What the document stores about its CMYK profile.</p>
+  </summary>
+
+  Reports the profile that the document names, whether it is loaded, still loading, or failed
+  to load. The fallback profile is not reported. Await `engine.editor.loadCMYKProfile()` to learn
+  whether the profile that renders is usable.
+
+  ```javascript
+  const info = engine.scene.getCMYKProfileInfo();
+  if (info === null) {
+    // The document uses the fallback profile.
+  }
+  ```
+
+  #### Returns
+
+  [`CMYKProfileInfo`](./api/node/interfaces/cmykprofileinfo.md)
+
+  The info, or `null` when the document names no CMYK profile.
+
+  #### Signature
+
+  ```typescript
+  getCMYKProfileInfo(): CMYKProfileInfo
+  ```
+
+  ***
+</details>
+
+<details>
+  <summary>
+    ### removeCMYKProfile()
+
+    <br /><p>Removes the CMYK profile from the document.</p>
+  </summary>
+
+  CMYK conversion then uses the `fallbackCMYKProfileUri` setting, or the bundled profile when
+  that setting is unset. Color management stays on. A [setCMYKProfile](./api/node/classes/sceneapi.md) request that is
+  still loading is cancelled.
+
+  ```javascript
+  engine.scene.removeCMYKProfile();
+  ```
+
+  #### Returns
+
+  `void`
+
+  #### Signature
+
+  ```typescript
+  removeCMYKProfile(): void
+  ```
+
+  ***
+</details>
+
+<details>
+  <summary>
+    ### getColorRenderingIntent()
+
+    <br /><p>How a color that the destination cannot reproduce is mapped into it.</p>
+  </summary>
+
+  ```javascript
+  const intent = engine.scene.getColorRenderingIntent();
+  ```
+
+  #### Returns
+
+  [`ColorRenderingIntent`](./api/node/enumerations/colorrenderingintent.md)
+
+  The rendering intent of the document. `RelativeColorimetric` unless it was changed.
+
+  #### Signature
+
+  ```typescript
+  getColorRenderingIntent(): ColorRenderingIntent
+  ```
+
+  ***
+</details>
+
+<details>
+  <summary>
+    ### setColorRenderingIntent()
+
+    <br /><p>Sets how a color that the destination cannot reproduce is mapped into it.</p>
+  </summary>
+
+  The intent is document state and applies to every conversion from the document CMYK profile.
+  Undo and redo do not change it.
+
+  ```javascript
+  engine.scene.setColorRenderingIntent(ColorRenderingIntent.Perceptual);
+  ```
+
+  #### Parameters
+
+  | Parameter | Type | Description |
+  | ------ | ------ | ------ |
+  | `intent` | [`ColorRenderingIntent`](./api/node/enumerations/colorrenderingintent.md) | The rendering intent. |
+
+  #### Returns
+
+  `void`
+
+  #### Throws
+
+  `COLOR.RENDERING_INTENT_INVALID` when the value is not one of the four intents.
+
+  #### Signature
+
+  ```typescript
+  setColorRenderingIntent(intent: ColorRenderingIntent): void
+  ```
+
+  ***
+</details>
+
+<details>
+  <summary>
+    ### isBlackPointCompensationEnabled()
+
+    <br /><p>Whether conversion maps the black point of the source onto the destination.</p>
+  </summary>
+
+  ```javascript
+  const enabled = engine.scene.isBlackPointCompensationEnabled();
+  ```
+
+  #### Returns
+
+  `boolean`
+
+  True when black point compensation is on, which is the default.
+
+  #### Signature
+
+  ```typescript
+  isBlackPointCompensationEnabled(): boolean
+  ```
+
+  ***
+</details>
+
+<details>
+  <summary>
+    ### setBlackPointCompensationEnabled()
+
+    <br /><p>Turns black point compensation of the document on or off.</p>
+  </summary>
+
+  The setting is document state and applies to every conversion from the document CMYK
+  profile. Undo and redo do not change it.
+
+  ```javascript
+  engine.scene.setBlackPointCompensationEnabled(false);
+  ```
+
+  #### Parameters
+
+  | Parameter | Type | Description |
+  | ------ | ------ | ------ |
+  | `enabled` | `boolean` | Whether conversion maps the black point. |
+
+  #### Returns
+
+  `void`
+
+  #### Signature
+
+  ```typescript
+  setBlackPointCompensationEnabled(enabled: boolean): void
+  ```
 </details>
 
 ## Experimental Features

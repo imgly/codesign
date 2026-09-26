@@ -16,9 +16,6 @@ description: |
   core — JSDoc-free, every string-vocabulary type (property names, block
   types, enum values) flattened to its literal union; the entry document
   explains how to look a member up in it.
-
-  Triggered when you need to verify an `engine.block.*` or `engine.scene.*`
-  signature, look up a parameter type, or confirm an enum/string-property name.
 ---
 
 ## Start here: `engine.design` (inside `edit` code)
@@ -140,15 +137,14 @@ whole-class reads are cheap (`BlockAPI` is the largest):
 
 | Class        | Start line |
 | ------------ | ---------- |
-| AssetAPI     | 1163       |
-| **BlockAPI** | **1452**   |
-| EditorAPI    | 1685       |
-| EventAPI     | 1816       |
-| **SceneAPI** | **1896**   |
-| VariableAPI  | 2099       |
+| AssetAPI     | 1209       |
+| **BlockAPI** | **1506**   |
+| EditorAPI    | 1754       |
+| EventAPI     | 1886       |
+| **SceneAPI** | **1966**   |
+| VariableAPI  | 2187       |
 
-(If a start line looks off — e.g. the run doesn't begin with the class — find
-the declaration by name instead: `class BlockAPI`.)
+(If a start line looks off, search for `class BlockAPI` instead.)
 
 ## What is NOT in this file
 
@@ -156,9 +152,8 @@ the declaration by name instead: `class BlockAPI`.)
   parameters. Where a signature says only `r: number`, color components are
   in the range 0–1, never 0–255. For anything else a bare `number`/`string`
   leaves open, check the `guide` skill's topic page before guessing.
-- Conceptual prose ("how does XYZ work") → use the `guide` skill instead.
-- General topic guides (text, fills, export, rules) → use the `guide` skill
-  instead.
+- Conceptual prose and topic guides (text, fills, export, rules) → use the
+  `guide` skill instead.
 
 
 ---
@@ -390,12 +385,19 @@ interface BlockProps {
     };
     caption?: {
         automaticFontSizeEnabled?: boolean;
+        backgroundCornerRadius?: number;
+        backgroundPadding?: {
+            bottom?: number;
+            left?: number;
+            right?: number;
+            top?: number;
+        };
         clipLinesOutsideOfFrame?: boolean;
         externalReference?: string;
         fontFileUri?: string;
         fontSize?: number;
         hasClippedLines?: boolean;
-        horizontalAlignment?: 'Left' | 'Right' | 'Center' | 'Auto';
+        horizontalAlignment?: 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto';
         letterSpacing?: number;
         lineHeight?: number;
         maxAutomaticFontSize?: number;
@@ -451,6 +453,10 @@ interface BlockProps {
         };
     };
     effects?: Effect[];
+    exclusionArea?: {
+        constrains?: boolean;
+        punchOut?: boolean;
+    };
     fill?: Fill | null;
     flip?: {
         horizontal?: boolean;
@@ -495,6 +501,13 @@ interface BlockProps {
         };
         marginEnabled?: boolean;
         marginScale?: number;
+        safetyEnabled?: boolean;
+        safetyInset?: {
+            bottom?: number;
+            left?: number;
+            right?: number;
+            top?: number;
+        };
         titleTemplate?: string;
     };
     placeholder?: {
@@ -537,6 +550,7 @@ interface BlockProps {
     rotation?: number;
     scene?: {
         aspectRatioLock?: boolean;
+        colorConversionMode?: 'Managed' | 'Legacy';
         designUnit?: 'Pixel' | 'Millimeter' | 'Inch';
         dpi?: number;
         extendedPanningArea?: boolean;
@@ -575,6 +589,13 @@ interface BlockProps {
     };
     text?: {
         automaticFontSizeEnabled?: boolean;
+        backgroundCornerRadius?: number;
+        backgroundPadding?: {
+            bottom?: number;
+            left?: number;
+            right?: number;
+            top?: number;
+        };
         case?: string;
         clipLinesOutsideOfFrame?: boolean;
         color?: Color;
@@ -584,7 +605,7 @@ interface BlockProps {
         fontFileUri?: string;
         fontSize?: string /* WRITE needs a unit: '64px' | '24pt'. READS answer a unit string too ('64px') — parseFloat() before any math, never .toFixed() on it */;
         hasClippedLines?: boolean;
-        horizontalAlignment?: 'Left' | 'Right' | 'Center' | 'Auto';
+        horizontalAlignment?: 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto';
         letterSpacing?: number;
         lineHeight?: number /* engine scale: multiplies the font's contentArea */ | { visual: number } /* CSS-style x fontSize — the facade converts per font */;
         lineHeightVisual?: number /* READ-ONLY, selected reads: lineHeight in CSS terms. Write via lineHeight: { visual } */;
@@ -687,6 +708,15 @@ type Fill = { enabled?: boolean; overprint?: boolean } & (
       type: 'pixelStream';
       pixelStream?: {
           orientation?: 'Up' | 'Down' | 'Left' | 'Right' | 'UpMirrored' | 'DownMirrored' | 'LeftMirrored' | 'RightMirrored';
+      };
+    }
+  | {
+      type: 'stripe';
+      stripe?: {
+          angle?: number;
+          color?: Color;
+          gap?: number;
+          width?: number;
       };
     }
 );
@@ -1117,7 +1147,12 @@ interface SettingsProps {
     defaultFontFileUri?: string;
     doubleClickSelectionMode?: 'Direct' | 'Hierarchical';
     doubleClickToCropEnabled?: boolean;
+    dragToSwapFills?: {
+        enabled?: boolean;
+        longPressDurationMs?: number;
+    };
     errorStateColor?: Color;
+    fallbackCMYKProfileUri?: string;
     fallbackFontUri?: string;
     forceSystemEmojis?: boolean;
     grid?: {
@@ -1144,6 +1179,8 @@ interface SettingsProps {
         allowRotateInteraction?: boolean;
         allowShapeChange?: boolean;
         dimOutOfPageAreas?: boolean;
+        exclusionAreaFillColor?: Color;
+        exclusionAreaFrameColor?: Color;
         flipDimensionsOn90DegreeCropRotation?: boolean;
         highlightDropTarget?: boolean;
         highlightWhenCropping?: boolean;
@@ -1156,6 +1193,9 @@ interface SettingsProps {
         reparentBlocksToSceneWhenOutOfPage?: boolean;
         restrictPageSelectionToBorderAndTitle?: boolean;
         restrictResizeInteractionToFixedAspectRatio?: boolean;
+        safetyFillColor?: Color;
+        safetyFrameColor?: Color;
+        safetyRevealDuringTransform?: boolean;
         selectWhenNoBlocksSelected?: boolean;
         title?: {
             appendPageName?: boolean;
@@ -1249,7 +1289,7 @@ interface Typeface {
 }
 type Color = RGBAColor | CMYKColor | SpotColor;
 type DesignBlockId = number;
-type DesignBlockType = 'scene' | 'stack' | 'camera' | 'page' | 'graphic' | 'audio' | 'text' | 'group' | 'cutout' | 'track' | 'caption' | 'captionTrack'; // each also valid as '//ly.img.ubq/<name>'
+type DesignBlockType = 'scene' | 'stack' | 'camera' | 'page' | 'graphic' | 'audio' | 'text' | 'group' | 'cutout' | 'track' | 'caption' | 'captionTrack' | 'exclusionArea'; // each also valid as '//ly.img.ubq/<name>'
 type FontStyle = 'normal' | 'italic';
 type FontWeight = 'thin' | 'extraLight' | 'light' | 'normal' | 'medium' | 'semiBold' | 'bold' | 'extraBold' | 'heavy';
 type ListStyle = 'None' | 'Unordered' | 'Ordered';

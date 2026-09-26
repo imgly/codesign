@@ -485,6 +485,7 @@ type BlockEnumType = {
     'height/mode': HeightMode;
     'position/x/mode': PositionXMode;
     'position/y/mode': PositionYMode;
+    'scene/colorConversionMode': SceneColorConversionMode;
     'scene/designUnit': DesignUnit;
     'scene/fontSizeUnit': FontSizeUnit;
     'scene/layout': SceneLayout;
@@ -535,7 +536,7 @@ interface EnginePlugin {
     version: string;
     initialize: (context: EnginePluginContext) => void | Promise<void>;
 }
-type EnumValues = BlendMode | HorizontalContentFillAlignment | ContentFillMode | VerticalContentFillAlignment | HeightMode | PositionXMode | PositionYMode | DesignUnit | FontSizeUnit | SceneLayout | SceneMode | WidthMode | PageGuidesSource | StrokeCap | StrokeCornerGeometry | StrokeDashEndCap | StrokeDashStartCap | StrokeEndCap | StrokePosition | StrokeStartCap | StrokeStyle | PlaybackFadeInEasing | PlaybackFadeOutEasing | TextHorizontalAlignment | TextVerticalAlignment | CutoutType | CaptionHorizontalAlignment | CaptionVerticalAlignment | AnimationEasing | TextAnimationWritingStyle | AnimationGrowDirection | AnimationWipeDirection | AnimationBaselineDirection | AnimationSpinDirection | AnimationSpinLoopDirection | AnimationJumpLoopDirection | AnimationTypewriterTextWritingStyle | AnimationBlockSwipeTextDirection | AnimationMergeTextDirection | AnimationKenBurnsDirection | FillPixelStreamOrientation | ShapeVectorPathFillRule | (string & {});
+type EnumValues = BlendMode | HorizontalContentFillAlignment | ContentFillMode | VerticalContentFillAlignment | HeightMode | PositionXMode | PositionYMode | SceneColorConversionMode | DesignUnit | FontSizeUnit | SceneLayout | SceneMode | WidthMode | PageGuidesSource | StrokeCap | StrokeCornerGeometry | StrokeDashEndCap | StrokeDashStartCap | StrokeEndCap | StrokePosition | StrokeStartCap | StrokeStyle | PlaybackFadeInEasing | PlaybackFadeOutEasing | TextHorizontalAlignment | TextVerticalAlignment | CutoutType | CaptionHorizontalAlignment | CaptionVerticalAlignment | AnimationEasing | TextAnimationWritingStyle | AnimationGrowDirection | AnimationWipeDirection | AnimationBaselineDirection | AnimationSpinDirection | AnimationSpinLoopDirection | AnimationJumpLoopDirection | AnimationTypewriterTextWritingStyle | AnimationBlockSwipeTextDirection | AnimationMergeTextDirection | AnimationKenBurnsDirection | FillPixelStreamOrientation | ShapeVectorPathFillRule | (string & {});
 type ExportOptions = {
     mimeType?: ImageMimeType | Exclude<ApplicationMimeType, 'application/zip'>;
     pngCompressionLevel?: number;
@@ -551,12 +552,17 @@ type ExportOptions = {
     underlayerMaxError?: number;
     allowTextOverhang?: boolean;
     exportPdfWithDeviceCMYK?: boolean;
+    exportPdfWithCropMarks?: boolean;
+    exportPdfWithRegistrationMarks?: boolean;
+    printMarkOffset?: number;
+    printMarkWidth?: number;
+    cropMarkLength?: number;
     pdfImageQuality?: number;
     pdfChunkSize?: number;
     onProgress?: (exportedPages: number, totalPages: number) => void;
     abortSignal?: AbortSignal;
 };
-type FillType = 'color' | 'gradient/linear' | 'gradient/radial' | 'gradient/conical' | 'image' | 'video' | 'pixelStream'; // each also valid as '//ly.img.ubq/fill/<name>'
+type FillType = 'color' | 'gradient/linear' | 'gradient/radial' | 'gradient/conical' | 'image' | 'video' | 'pixelStream' | 'stripe'; // each also valid as '//ly.img.ubq/fill/<name>'
 type FillTypeLonghand = `//ly.img.ubq/fill/${FillTypeShorthand}`;
 interface FindAssetsQuery {
     perPage: number;
@@ -584,7 +590,7 @@ type GradientstopRGBA = [
     a: number
 ];
 type HistoryId = number;
-type HorizontalBlockAlignment = 'Left' | 'Right' | 'Center' | 'Auto';
+type HorizontalBlockAlignment = 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto';
 function isCMYKColor(color: Color): color is CMYKColor;
 function isRGBAColor(color: Color): color is RGBAColor;
 function isSpotColor(color: Color): color is SpotColor;
@@ -657,6 +663,11 @@ interface UBQExportOptions {
     underlayerMaxError: number;
     allowTextOverhang: boolean;
     exportPdfWithDeviceCMYK: boolean;
+    exportPdfWithCropMarks: boolean;
+    exportPdfWithRegistrationMarks: boolean;
+    printMarkOffset: number;
+    cropMarkLength: number;
+    printMarkWidth: number;
     pdfImageQuality: number;
     pdfChunkSize: number;
 }
@@ -733,7 +744,7 @@ type AnimationWipeDirection = 'Up' | 'Right' | 'Down' | 'Left';
 type ApplicationMimeType = Extract<MimeType_2, 'application/octet-stream' | 'application/pdf' | 'application/zip'>;
 type AudioMimeType = Extract<MimeType_2, 'audio/wav' | 'audio/mp4'>;
 type BlendMode = 'PassThrough' | 'Normal' | 'Darken' | 'Multiply' | 'ColorBurn' | 'LinearBurn' | 'DarkenColor' | 'Lighten' | 'Screen' | 'ColorDodge' | 'LinearDodge' | 'LightenColor' | 'Overlay' | 'SoftLight' | 'HardLight' | 'VividLight' | 'LinearLight' | 'PinLight' | 'HardMix' | 'Difference' | 'Exclusion' | 'Subtract' | 'Divide' | 'Hue' | 'Saturation' | 'Color' | 'Luminosity';
-type CaptionHorizontalAlignment = 'Left' | 'Right' | 'Center' | 'Auto';
+type CaptionHorizontalAlignment = 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto';
 type CaptionVerticalAlignment = 'Top' | 'Bottom' | 'Center';
 interface CompressionOptions {
     format?: CompressionFormat_2;
@@ -755,6 +766,7 @@ type PlaybackFadeInEasing = 'Linear' | 'EaseIn' | 'EaseOut' | 'EaseInOut' | 'Eas
 type PlaybackFadeOutEasing = 'Linear' | 'EaseIn' | 'EaseOut' | 'EaseInOut' | 'EaseInQuart' | 'EaseOutQuart' | 'EaseInOutQuart' | 'EaseInQuint' | 'EaseOutQuint' | 'EaseInOutQuint' | 'EaseInBack' | 'EaseOutBack' | 'EaseInOutBack' | 'EaseInSpring' | 'EaseOutSpring' | 'EaseInOutSpring';
 type PositionXMode = 'Absolute' | 'Percent' | 'Auto';
 type PositionYMode = 'Absolute' | 'Percent' | 'Auto';
+type SceneColorConversionMode = 'Managed' | 'Legacy';
 type ShapeVectorPathFillRule = 'EvenOdd' | 'NonZero';
 type StrokeCap = 'Butt' | 'Round' | 'Square';
 type StrokeCornerGeometry = 'Bevel' | 'Miter' | 'Round';
@@ -765,7 +777,7 @@ type StrokePosition = 'Center' | 'Inner' | 'Outer';
 type StrokeStartCap = 'Butt' | 'Round' | 'Square';
 type StrokeStyle = 'Dashed' | 'DashedRound' | 'Dotted' | 'LongDashed' | 'LongDashedRound' | 'Solid';
 type TextAnimationWritingStyle = 'Block' | 'Line' | 'Character' | 'Word';
-type TextHorizontalAlignment = 'Left' | 'Right' | 'Center' | 'Auto';
+type TextHorizontalAlignment = 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto';
 type TextVerticalAlignment = 'Top' | 'Bottom' | 'Center';
 type VerticalContentFillAlignment = 'Top' | 'Center' | 'Bottom';
 type VideoBitrateMode = 'System' | 'Auto';
@@ -784,5 +796,5 @@ enum CompressionLevel {
     Best = 2
 }
 type EffectTypeShorthand = 'adjustments' | 'cross_cut' | 'dot_pattern' | 'duotone_filter' | 'extrude_blur' | 'glow' | 'green_screen' | 'half_tone' | 'linocut' | 'liquid' | 'lut_filter' | 'mirror' | 'outliner' | 'pixelize' | 'posterize' | 'radial_pixel' | 'recolor' | 'sharpie' | 'shifter' | 'tilt_shift' | 'tv_glitch' | 'vignette';
-type FillTypeShorthand = 'color' | 'gradient/linear' | 'gradient/radial' | 'gradient/conical' | 'image' | 'video' | 'pixelStream';
+type FillTypeShorthand = 'color' | 'gradient/linear' | 'gradient/radial' | 'gradient/conical' | 'image' | 'video' | 'pixelStream' | 'stripe';
 type ShapeTypeShorthand = 'rect' | 'line' | 'ellipse' | 'polygon' | 'star' | 'vector_path';

@@ -18,6 +18,7 @@ Allows passing arbitrary data to middleware for custom placement logic.
 | Property | Type | Description |
 | ------ | ------ | ------ |
 |  `clipType?` | `"clip"` | `"overlay"` | How the asset should be placed in the scene. - 'clip': Background clip placed on background track - 'overlay': Foreground overlay placed at playhead |
+|  `placement?` | [`AssetPlacement`](./api/node/interfaces/assetplacement.md) | Where the created block is placed. An asset source that was registered with its own `applyAsset` implementation ignores it. |
 
 
 ---

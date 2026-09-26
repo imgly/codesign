@@ -1008,6 +1008,41 @@
   ```typescript
   convertColorToColorSpace(color: Color, colorSpace: ColorSpace): never
   ```
+
+  ***
+</details>
+
+<details>
+  <summary>
+    ### loadCMYKProfile()
+
+    <br /><p>Loads the CMYK profile that this document previews and converts CMYK colors with.</p>
+  </summary>
+
+  The profile is a resource, and a resource takes several update cycles to arrive, so a CMYK
+  conversion made right after the engine starts fails. Await this once and every later [convertColorToColorSpace](./api/node/classes/editorapi.md) answers without handling `COLOR.PROFILE_NOT_LOADED`.
+
+  Loads the profile the document names, otherwise the one the `fallbackCMYKProfileUri` setting
+  names, which is the bundled default profile while that setting is unset. Call it again after
+  changing either, so the new profile is loaded before the next conversion.
+
+  ```javascript
+  await engine.editor.loadCMYKProfile();
+  const rgb = engine.editor.convertColorToColorSpace(cmyk, 'sRGB');
+  ```
+
+  #### Returns
+
+  `Promise`\<`void`>
+
+  A promise that resolves once the profile is loaded, and rejects with
+  `COLOR.PROFILE_MISSING` when it cannot be read.
+
+  #### Signature
+
+  ```typescript
+  loadCMYKProfile(): Promise<void>
+  ```
 </details>
 
 ## Resource Management
@@ -2688,7 +2723,8 @@
 
   Check if a user interaction is currently happening.
 
-  Detects active interactions like resize edits with drag handles or touch gestures.
+  Detects active interactions like resize edits with drag handles, touch gestures, and content
+  dragged over the canvas.
 
   #### Returns
 
@@ -2940,7 +2976,7 @@
     ### setMovementConstraint()
 
     <br /><p>Set one or more rules that limit how far blocks can be positioned outside their
-    parent page during user interactions (drag, resize, touch gestures, crop).
+    parent page during user interactions (drag, resize, touch gestures, crop, nudge).
     Programmatic API calls are not affected.</p>
   </summary>
 
