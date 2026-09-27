@@ -137,12 +137,12 @@ whole-class reads are cheap (`BlockAPI` is the largest):
 
 | Class        | Start line |
 | ------------ | ---------- |
-| AssetAPI     | 1209       |
-| **BlockAPI** | **1506**   |
-| EditorAPI    | 1754       |
-| EventAPI     | 1886       |
-| **SceneAPI** | **1966**   |
-| VariableAPI  | 2187       |
+| AssetAPI     | 1208       |
+| **BlockAPI** | **1505**   |
+| EditorAPI    | 1753       |
+| EventAPI     | 1885       |
+| **SceneAPI** | **1965**   |
+| VariableAPI  | 2186       |
 
 (If a start line looks off, search for `class BlockAPI` instead.)
 
@@ -352,7 +352,6 @@ interface BuildSpec {
 interface BlockProps {
     alwaysOnBottom?: boolean;
     alwaysOnTop?: boolean;
-    animationEasing?: 'Linear' | 'EaseIn' | 'EaseOut' | 'EaseInOut' | 'EaseInQuart' | 'EaseOutQuart' | 'EaseInOutQuart' | 'EaseInQuint' | 'EaseOutQuint' | 'EaseInOutQuint' | 'EaseInBack' | 'EaseOutBack' | 'EaseInOutBack' | 'EaseInSpring' | 'EaseOutSpring' | 'EaseInOutSpring';
     animations?: {
         in?: Animation | null;
         loop?: Animation | null;
@@ -630,8 +629,6 @@ interface BlockProps {
         verticalAlignment?: 'Top' | 'Bottom' | 'Center';
         weight?: string;
     };
-    textAnimationOverlap?: number;
-    textAnimationWritingStyle?: 'Block' | 'Line' | 'Character' | 'Word';
     track?: {
         automaticallyManageBlockOffsets?: boolean;
     };
@@ -699,6 +696,7 @@ type Fill = { enabled?: boolean; overprint?: boolean } & (
   | {
       type: 'video';
       uri?: string /* shorthand for video.fileURI */;
+      playback?: { trimOffset?: number; trimLength?: number; volume?: number };
       video?: {
           fileURI?: string;
           totalDuration?: number;
@@ -969,7 +967,7 @@ type Effect = { enabled?: boolean } & (
       };
     }
 );
-type Animation =
+type Animation = { duration?: number; easing?: string; writingStyle?: string; overlap?: number } & (
   | {
       type: 'slide';
       slide?: {
@@ -1110,7 +1108,8 @@ type Animation =
           travelDistanceRatio?: number;
           zoomIntensity?: number;
       };
-    };
+    }
+);
 interface SettingsProps {
     archival?: {
         bundleOnlyUsedFontVariants?: boolean;

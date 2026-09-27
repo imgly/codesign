@@ -187,7 +187,6 @@ interface BuildSpec {
 interface BlockProps {
     alwaysOnBottom?: boolean;
     alwaysOnTop?: boolean;
-    animationEasing?: 'Linear' | 'EaseIn' | 'EaseOut' | 'EaseInOut' | 'EaseInQuart' | 'EaseOutQuart' | 'EaseInOutQuart' | 'EaseInQuint' | 'EaseOutQuint' | 'EaseInOutQuint' | 'EaseInBack' | 'EaseOutBack' | 'EaseInOutBack' | 'EaseInSpring' | 'EaseOutSpring' | 'EaseInOutSpring';
     animations?: {
         in?: Animation | null;
         loop?: Animation | null;
@@ -465,8 +464,6 @@ interface BlockProps {
         verticalAlignment?: 'Top' | 'Bottom' | 'Center';
         weight?: string;
     };
-    textAnimationOverlap?: number;
-    textAnimationWritingStyle?: 'Block' | 'Line' | 'Character' | 'Word';
     track?: {
         automaticallyManageBlockOffsets?: boolean;
     };
@@ -534,6 +531,7 @@ type Fill = { enabled?: boolean; overprint?: boolean } & (
   | {
       type: 'video';
       uri?: string /* shorthand for video.fileURI */;
+      playback?: { trimOffset?: number; trimLength?: number; volume?: number };
       video?: {
           fileURI?: string;
           totalDuration?: number;
@@ -804,7 +802,7 @@ type Effect = { enabled?: boolean } & (
       };
     }
 );
-type Animation =
+type Animation = { duration?: number; easing?: string; writingStyle?: string; overlap?: number } & (
   | {
       type: 'slide';
       slide?: {
@@ -945,7 +943,8 @@ type Animation =
           travelDistanceRatio?: number;
           zoomIntensity?: number;
       };
-    };
+    }
+);
 interface SettingsProps {
     archival?: {
         bundleOnlyUsedFontVariants?: boolean;

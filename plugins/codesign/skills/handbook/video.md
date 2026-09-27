@@ -33,7 +33,17 @@ const fillId = engine.block.getFill(block);
 await engine.block.forceLoadAVResource(fillId); // engine.block: AV metadata load has no facade verb
 await engine.design.setProps(fillId, {
   playback: { trimOffset: 2.0, trimLength: 5.0 } // start 2s in, play 5s
+}); // setProps(block, { playback: { trimOffset } }) reaches the fill too
+
+// Animation timing and text styling are spec keys — no raw animation ids.
+await engine.design.setProps(block, {
+  animations: {
+    in: { type: 'slide', duration: 0.8, easing: 'EaseOutBack' },
+    loop: { type: 'breathing_loop', duration: 2 } // loops take no easing
+  }
 });
+// Text: writingStyle ('Line' | 'Word' | 'Character' | 'Block') + overlap (0..1)
+// animate per unit, e.g. in: { type: 'fade', writingStyle: 'Word', overlap: 0.3 }
 
 // Audio block — plays during the page's timeline.
 await engine.design.create(
@@ -53,10 +63,12 @@ await engine.design.create(
 - Motion beyond timing — enter/exit/loop animations on any block, animated
   text, captions — is in the guide: `../guide/animation/create.md`,
   `../guide/animation/types.md`, `../guide/edit-video/add-captions.md`.
-- `preview` renders a STILL frame of a video scene, not motion — pass `time`
-  (seconds) to seek: verify a few salient moments (start, a transition, the
-  end). Each video preview returns `{time, duration}` JSON next to the image.
-  Export for the real thing.
+- `preview` renders a STILL frame, not motion — pass `time` (seconds) to seek
+  any page with a timeline, whatever the scene mode: verify a few salient
+  moments (start, a transition, the end). Each timed preview returns
+  `{time, duration}` JSON next to the image. Export for the real thing.
+- Poster: a still `export` (png/jpeg/webp) renders the frame at the page's
+  playhead — park it with `setProps(page, { playback: { time } })` in an edit.
 - Resource loading during export is handled server-side — you do NOT need a
   `loadResources` barrier before `export` (unlike the handbook's font barrier).
   The one load you DO need is `forceLoadAVResource(fill)` before reading or
