@@ -62,13 +62,15 @@ If 1, 3 or 8 cannot be answered from the project, ask once, per the intake contr
 
 ## 2 — Plan the storyboard
 
-Pick the tempo first — 100–128 BPM suits most launches, so a beat is 0.47–0.6 s — then write
-`<out>/plan.md`: the angle in one sentence, the BPM, then a beat table — start, end, what is on
-screen, the exact words, the motion, the transition out. The shape to start from:
+Story before motion — read `reference/story.md` first. Decide the one
+line, the viewer's problem, the structure (outcome first, before/after, story spine or hook →
+reveal → proof) and the **proof moment** — the beat where the claim becomes undeniable on screen.
 
-```
-Hook (≤ 1 s) → Reveal → 3–6 highlight beats → Call to action (2–3 s, held)
-```
+Then pick the tempo — 100–128 BPM suits most launches, so a beat is 0.47–0.6 s — and write
+`<out>/plan.md`: the one line, the structure, the proof moment, the BPM, then a beat table — start,
+end, what is on screen, the exact words, the motion, the transition out. Run the story checks at
+the end of `story.md` on it; a beat that only says a claim instead of showing it is rewritten or
+cut.
 
 ### Make it catchy
 
@@ -76,16 +78,16 @@ Hook (≤ 1 s) → Reveal → 3–6 highlight beats → Call to action (2–3 s,
   never a logo on a blank screen, never a slow fade up.
 - **Cut on the grid.** Every cut lands on a beat: 0.5, 1 or 2 bars' worth, at the track's BPM.
   Shots are 0.4–2 s long; vary them — a run of short cuts, then one longer hold.
-- **One big line per beat.** No explanatory captions, HUD chrome or code labels. One line, set big —
-  it fills the frame; a label that needs reading at arm's length does not belong in the video.
+- **One big line per beat.** No explanatory captions or HUD chrome. One line, set big — it fills
+  the frame; product UI on screen is the exception, simplified so it reads at a glance.
 - **Fill the frame.** Alternate dark beats with full-bleed accent-colour beats so every cut reads.
 - **Move between beats.** A transition on every cut (`../handbook/video.md`, "Transitions
   between clips"), matched to the tone below; the biggest move on the musical accents.
 - **Keep the camera alive.** A slow drift on every shot — `ken_burns` or `crop_zoom` on images; a
   clip-long `zoom` in-animation (its `animation/zoom/fade` off, `Linear` easing) settles type from
   large to rest.
-- **Show outputs, not the tool.** The results the project produces carry the video; its UI, terminal
-  or settings screen at most once.
+- **Show, never list.** No run of slogans on colour fields: each beat shows the product doing
+  something — its UI or output in action, the input visible before the result.
 
 Every beat also stays:
 
