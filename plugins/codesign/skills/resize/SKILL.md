@@ -5,7 +5,8 @@ description: >-
   (ig-post ↔ ig-square ↔ ig-story ↔ widescreen, or a custom W×H); when building the size/format
   editions of a design from an existing design or from a brief; or when a reformatted
   edition has a dead void / letterboxed empty band, drifted or broken margins, off-canvas or
-  clipped elements, mis-scaled decoration, or a stretched / squished layout.
+  clipped elements, mis-scaled decoration, or a stretched / squished layout. Also for animated /
+  video designs: timed blocks, animations, captions, and audio carried into each edition.
 ---
 
 # resize
@@ -23,6 +24,10 @@ principle, workflow, the re-composition routine, the no-goes, and the **resize c
 checklist** (end of this file). Per-format data lives in the **`formats` skill** — exact W×H,
 aspect, and platform safe zones, one file per format: `../formats/SKILL.md` for the index,
 `../formats/<id>.md` for the format(s) you're building.
+
+Building several editions of one design, or re-applying a fix to editions you already built: the
+**master → editions** workflow, `editions.md`. For an animated or video design,
+read **Video and animated designs** below as well.
 
 ## Localize vs resize — snap vs re-compose
 
@@ -113,7 +118,7 @@ by re-flow, not by scaling the canvas contents). Never leave a **lopsided void**
    styling in a resize; if you must, pass the runs from `getProps(id, ['text.ranges'])` back as
    `text: { ranges: [...] }` in the same `setProps` — **every** run, not just the accent.
 8. **`loadResources` → `preview` each format** (dead void / crop / tofu only show in the
-   render). Each format lands as its own revision — give each a `note` naming the format (e.g.
+   render; for a video design, at several `time`s — see below). Each format lands as its own revision — give each a `note` naming the format (e.g.
    "ig-story 1080×1920").
 
 ## Proportional re-composition routine
@@ -294,6 +299,45 @@ miss):
 the source's **group hierarchy** on the new canvas (handbook §4 "Group blocks & hierarchy") so each
 format ships the same grouped, nested structure — not a flattened tree.
 
+## Video and animated designs
+
+Applies when the page has a `playback.duration`, blocks carry `playback.timeOffset` /
+`playback.duration`, `animations`, an `audio` block, or a `captionTrack`. A resize re-composes the
+**frame**; the **timeline** is invariant.
+
+- **Fork, move, resize — never recreate a timed block.** A page resize keeps every block's
+  `timeOffset`, `duration`, animations, audio and video trims; a re-created block loses all of them.
+  Walk the whole tree, not just the page's children: timed blocks can sit under `track`s and
+  captions under a `captionTrack` (the capture `walk` above already recurses).
+- **Re-aim every entrance for the new layout.** `slide` / `pan` `direction` is the **direction of
+  travel** in radians, y pointing down: `0` enters from the left moving right, `π/2` from the top
+  moving down, `π` from the right, `3π/2` from the bottom moving up. A slide that entered from the
+  photo's side on 16:9 crosses the photo once 9:16 stacks text under it — aim it along the new
+  reading axis. Patch in place with the **same type**, which keeps the animation's duration:
+  `setProps(id, { animations: { in: { type: 'slide', slide: { direction: (3 * Math.PI) / 2 } } } })`
+  (a different type replaces the animation and resets its duration). The duration itself is not in
+  the spec: `engine.block.setDuration(engine.block.getInAnimation(id), s) // engine.block: animation duration`.
+- **Scaling entrances overdraw.** `zoom` / `grow` scale around the block's centre, so a
+  full-height photo spills over its neighbours during the entrance — check the first frames after
+  every re-layout.
+- **Vertical safe zones hold for the whole timeline.** Story / reel / TikTok / Shorts UI covers the
+  top and bottom bands (and the right edge on TikTok / Shorts) — `../formats/ig-story.md`,
+  `../formats/tiktok.md`, `../formats/yt-shorts.md`. Captions and CTAs belong inside
+  the safe band, and so does every block's position _mid-entrance_.
+- **Captions carry their own frame, per caption.** Writing the first caption's position or size
+  does not reach the others — set `position`, `width`, `height`, `caption/fontSize` on **every**
+  caption, with `caption/automaticFontSizeEnabled` off (otherwise the text grows past its frame
+  and over the layout). Keep the frame's bottom at or above `H − bottom safe band`.
+- **A fill's region of interest moves over time.** Capture / re-apply the ROI as above, then check
+  it at the start, middle and end of every video clip and of every `ken_burns` / `pan` move — a
+  crop that frames the subject at 0 s can cut it at 3 s.
+- **Preview at several `time`s, per edition.** One frame of a video proves nothing about the
+  rest: `preview({ revision, time })` at the first frame, mid-entrance of each timed block, each
+  hold, each caption change and the last second. Then `export({ format: 'mp4', blockId: page })`
+  for the real motion. `preview` accepts `time` on a Video-mode scene only; if it answers "not a
+  video scene", switch it once — `engine.scene.setMode('Video')`, move the page under the scene
+  (`engine.design.appendChild(engine.scene.get(), page)`) and destroy the now-empty `stack`.
+
 ## No-goes / red flags
 
 - **Dead void / letterboxing** — the headline failure: content clustered on one side of a
@@ -321,6 +365,8 @@ format ships the same grouped, nested structure — not a flattened tree.
 - **Flattened hierarchy** — the resize dropped the source's group blocks and shipped a flat list of
   siblings. Re-group each cluster (nested where nested) on the new canvas.
 - **Ignoring platform safe zones** — vital content under story/reel UI chrome.
+- **Timeline drift (video)** — a timed block re-created instead of moved, an entrance still aimed
+  across the old layout, or a caption left in the platform's UI band.
 - **tofu / overflow at new wrap widths** — a new measure can push a glyph the font lacks, or wrap to
   a line count that overflows; only `preview` catches it.
 
@@ -355,6 +401,13 @@ Any "no" on an applicable line drops the axis below 8.
 - [ ] **Crop invariants** hold on every fill-in-frame — full coverage (no gap), uniform scale (no stretch), subject inside the window (checked in `preview`)
 - [ ] Zero tofu / overflow at the new wrap width, checked in `preview`
 - [ ] Native export dimensions (the page's own pixel size)
+
+**Video / animated (when the design has a timeline)**
+
+- [ ] Every block's `timeOffset` / `duration`, animations and audio carried over — moved, not re-created
+- [ ] Every entrance re-aimed for the new layout (`direction` = direction of travel); no block crosses the photo or leaves the safe band mid-entrance
+- [ ] Every caption framed and sized on the new canvas, inside the safe band, auto font size off
+- [ ] Checked at several `time`s (entrances, holds, caption changes, last second), not one frame
 
 ## Cross-references
 

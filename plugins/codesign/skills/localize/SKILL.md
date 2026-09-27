@@ -6,6 +6,8 @@ description: >-
   decorative elements have drifted, re-centered, or resized away from the source layout; when
   translated copy is tofu, overflowing, mis-tracked, or the wrong font after a language swap; or
   when loading a non-Latin script (Cyrillic / CJK / Arabic RTL / Vietnamese) font into a scene.
+  Also for animated / video designs: longer holds, re-timed reveals, a new voice-over and captions
+  per language.
 ---
 
 # localize
@@ -30,6 +32,10 @@ and are pulled in only when the task needs them:
   quotation marks, one file per family: `latin-expansion.md` (de/fr/es…), `arabic.md`, `cjk.md`
   (ja/zh/ko), `vietnamese.md`, `cyrillic.md` (ru…). Read the file(s) for the **target locale(s)**
   you're building, e.g. `reference/arabic.md`.
+
+Several locales of one design, or re-applying a master fix to locales you already built: the
+**master → editions** workflow, `../resize/editions.md`. For an animated or video design,
+read **Video and animated designs** below as well.
 
 ## Inputs — what to localize, and into what
 
@@ -131,7 +137,8 @@ alignment`, plus page `w/h`, the ghost's anchor (left / centered), and the rule 
    verbatim; re-locate the styled substring in the target language (§ "Carrying rich text across
    a translation").
 8. **`loadResources` → `preview`.** One preview per locale — tofu / RTL / overflow /
-   position match are only visible in the render.
+   position match are only visible in the render. A video design needs several per locale, at
+   different `time`s (below).
 
 Then apply the per-locale quality rules in `reference/language-rules.md` **and the family
 file(s) for the target locale(s)** (`reference/latin-expansion.md`, `arabic.md`, `cjk.md`,
@@ -365,6 +372,48 @@ return {
   })
 };
 ```
+
+## Video and animated designs
+
+Applies when the page has a `playback.duration`, timed blocks, `animations`, an `audio` voice-over
+or a `captionTrack`. Geometry still snaps to the reference; the **timeline** is re-derived from the
+new language's speech and reading time.
+
+- **Reading time sets the hold.** A line must stay on screen ≈**0.3 s per word** after its
+  entrance finishes. Expansion languages (German, French, Spanish run 15–35 % longer) need longer
+  holds: extend the block's `playback.duration`, shift what follows, and grow the page's
+  `playback.duration` — never shorten reading time or speed up speech to fit the source length.
+- **Word-by-word reveals scale with the target.** A `typewriter_text` (or any text animation whose
+  `textAnimationWritingStyle` is `Word` / `Character`) reveals per word or per character: scale its
+  duration by target ÷ source word (or character) count, and check that the reveal ends with the
+  0.3 s-per-word hold still ahead of it. The duration is not in the animation spec:
+  `engine.block.setDuration(engine.block.getInAnimation(id), s) // engine.block: animation duration`.
+- **Re-voice, don't re-use.** Generate the voice-over again from the translated script with a
+  `text2speech` model — `asset_generate({ capability: 'text2speech' })` lists them (e.g.
+  `elevenlabs/eleven-v3-tts`); keep the master's voice across locales via `params`
+  (`asset_generate({ model, schema: true })` names the model's inputs). Swap the file on the
+  existing audio block — `setProps(audio, { audio: { fileURI } })` — so its offset and volume stay.
+- **Captions come from the new take.** Transcribe it with a `speech2text` model
+  (`elevenlabs/scribe-v2`, via `params` — check its inputs with `schema: true`); the result carries
+  word-level `start` / `end`. Rebuild the captions from those words: a caption per phrase (break at
+  sentence ends, and at commas once a phrase has two words), `timeOffset` = the audio block's
+  offset + the first word's `start`, held until the next caption. Carry the master captions' frame
+  and style onto **every** new caption (it is per caption, not shared) — and their typeface:
+  captions have their own font (`caption/typeface`, `caption/fontFileUri`), so the script face goes
+  there too, not only on text blocks.
+- **Re-snap the timeline to the new speech — one rule.** Every timed block that enters on a spoken
+  cue keeps its **lead**: new `timeOffset` = master `timeOffset` − master cue time + target cue
+  time. A block that ended where another began still ends there; a block that ran to the end of
+  the page still does; page duration = max(master duration, voice-over offset + last word's `end` +
+  the master's closing silence).
+- **RTL mirrors the motion, not only the layout.** For Arabic / Hebrew, mirror horizontal
+  directions: `slide` / `pan` `direction` θ → `π − θ` (`0` ↔ `π`; it is the direction of travel),
+  `wipe` `Left` ↔ `Right`, `caption/horizontalAlignment` `Left` ↔ `Right`. The do-not-mirror
+  inventory (icons, logos, numerals, photos) holds for motion too.
+- **Preview at several `time`s, per locale.** Mid-reveal of each word-by-word line, the end of each
+  hold, each caption change and the last second (`preview({ revision, time })`; a scene that refuses
+  `time` needs the Video-mode switch in the `resize` skill), then export the
+  mp4 — a caption out of sync with the voice or a line that leaves mid-sentence shows only in time.
 
 ## Carrying rich text across a translation
 
