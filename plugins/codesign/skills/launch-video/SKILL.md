@@ -115,7 +115,7 @@ Sound comes before the build, because the cuts are timed to it. Per
 `reference/sound.md`:
 
 1. Music — generate a track at the planned BPM and length, or `asset_add` the user's file.
-2. Analyse it into `<out>/build/beats.json` — the beat grid and the accents.
+2. Analyse it, with the planned BPM, into `<out>/build/beats.json` — the beat grid and the accents.
 3. Snap the beat table to it: every cut, transition and loop pulse on a beat time; accents get the
    big moves. Update `plan.md` with the snapped times.
 4. A short whoosh or hit per transition; a voiceover and word-timed captions only when

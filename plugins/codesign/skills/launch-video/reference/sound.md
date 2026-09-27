@@ -29,14 +29,16 @@ recipe (`../handbook/video.md`).
 
 ## Beat map
 
-Write this script to `<out>/build/beats.mjs` and run it on the track (it needs `ffmpeg` on the
-PATH): `node <out>/build/beats.mjs music.mp3 > <out>/build/beats.json`.
+Write this script to `<out>/build/beats.mjs` and run it on the track with the BPM you asked for (it
+needs `ffmpeg` on the PATH): `node <out>/build/beats.mjs music.mp3 --bpm 120 > <out>/build/beats.json`.
 
 ```js
-// node beats.mjs <audio> > beats.json — beat grid, onsets and accents from any audio ffmpeg reads.
+// node beats.mjs <audio> [--bpm <requested>] > beats.json — beat grid, onsets and accents from any audio ffmpeg reads.
 import { execFileSync } from 'node:child_process';
 const SR = 22050,
   HOP = 512;
+const flag = process.argv.indexOf('--bpm');
+const requested = flag > 0 ? Number(process.argv[flag + 1]) : null;
 const pcm = execFileSync(
   'ffmpeg',
   [
@@ -56,7 +58,8 @@ const pcm = execFileSync(
 );
 const x = new Float32Array(pcm.buffer, pcm.byteOffset, pcm.length / 4);
 const fps = SR / HOP,
-  n = Math.floor(x.length / HOP);
+  n = Math.floor(x.length / HOP),
+  duration = x.length / SR;
 const energy = new Float64Array(n);
 for (let i = 0; i < n; i++) {
   let s = 0;
@@ -77,70 +80,130 @@ for (let i = 1; i < n - 1; i++) {
     flux[i] > flux[i + 1]
   )
     onsets.push({
-      t: +(i / fps).toFixed(3),
+      t: i / fps,
+      attack: flux[i],
       strength: Math.max(...energy.slice(i, i + 4))
     });
 }
-if (onsets.length < 4) {
-  console.log(
-    JSON.stringify({
-      duration: +(x.length / SR).toFixed(3),
-      bpm: null,
-      beats: [],
-      accents: [],
-      onsets
-    })
-  );
-  process.exit(0);
-}
+const sum = (a, f) => a.reduce((s, v) => s + f(v), 0);
+const attack = sum(onsets, (o) => o.attack),
+  nEff = attack ** 2 / sum(onsets, (o) => o.attack ** 2);
+// The onsets within `tol` of the grid `phase + k·period`, each with its beat index k and its error.
+const near = (period, phase, tol = Math.min(0.05, period / 8)) =>
+  onsets
+    .map((o) => ({ o, k: Math.round((o.t - phase) / period) }))
+    .map((p) => ({ ...p, err: p.o.t - phase - p.k * period }))
+    .filter((p) => Math.abs(p.err) < tol);
+// How well a grid explains the attacks: share of attack energy on it, above what chance would put there.
+const measure = (period, phase) => {
+  const tol = Math.min(0.05, period / 8),
+    chance = (2 * tol) / period,
+    pts = near(period, phase);
+  return {
+    period,
+    phase: phase - period * Math.floor(phase / period),
+    score: sum(pts, (p) => p.o.attack) / attack - chance,
+    noise: Math.sqrt((chance * (1 - chance)) / nEff),
+    onGrid: pts.length,
+    meanErrMs: +(
+      (1000 * sum(pts, (p) => Math.abs(p.err))) / pts.length || 0
+    ).toFixed(1)
+  };
+};
+// Refine a tempo guess: seed the phase from the attacks, then weighted least squares on the onsets near the grid.
+const fit = (period) => {
+  let sx = 0,
+    sy = 0;
+  for (const o of onsets) {
+    sx += o.attack * Math.cos((2 * Math.PI * o.t) / period);
+    sy += o.attack * Math.sin((2 * Math.PI * o.t) / period);
+  }
+  let phase = (Math.atan2(sy, sx) / (2 * Math.PI)) * period;
+  for (let it = 0; it < 10; it++) {
+    const tol = Math.min(0.05, period / 8),
+      pts = near(period, phase, tol);
+    for (const p of pts)
+      p.w = p.o.attack * Math.exp(-(((2 * p.err) / tol) ** 2));
+    const w = sum(pts, (p) => p.w),
+      mk = sum(pts, (p) => p.w * p.k) / w,
+      mt = sum(pts, (p) => p.w * p.o.t) / w,
+      vk = sum(pts, (p) => p.w * (p.k - mk) ** 2);
+    if (pts.length < 4 || !vk) return null;
+    period = sum(pts, (p) => p.w * (p.k - mk) * (p.o.t - mt)) / vk;
+    phase = mt - period * mk;
+  }
+  return measure(period, phase);
+};
 const ac = (l) => {
   let s = 0;
   for (let i = l; i < n; i++) s += flux[i] * flux[i - l];
   return s;
 };
-let lag = 0; // tempo: autocorrelation of the flux over 70–180 BPM, peak refined to sub-frame
+let lag = 0; // tempo guess: autocorrelation peak of the flux over 70–180 BPM
 for (
   let l = Math.round((fps * 60) / 180);
   l <= Math.round((fps * 60) / 70);
   l++
 )
   if (!lag || ac(l) > ac(lag)) lag = l;
-const [a, b, c] = [ac(lag - 1), ac(lag), ac(lag + 1)];
-const period = (lag + (a - c) / (2 * (a - 2 * b + c) || 1)) / fps;
-let sx = 0,
-  sy = 0; // grid phase: strength-weighted circular mean of onset times modulo the period
-for (const o of onsets) {
-  const th = (2 * Math.PI * o.t) / period;
-  sx += o.strength * Math.cos(th);
-  sy += o.strength * Math.sin(th);
+// The peak can lock onto a related tempo (2/3, 3/4 …) — keep the alias whose grid carries the most
+// attack. Halving or doubling the grid fits by construction, so the requested BPM decides that.
+let best = null;
+for (const r of [1, 2, 1 / 2, 3 / 2, 2 / 3, 4 / 3, 3 / 4]) {
+  const f =
+    onsets.length >= 8 &&
+    lag / fps / r >= 0.25 &&
+    lag / fps / r <= 1.5 &&
+    fit(lag / fps / r);
+  if (f && (!best || f.score > best.score)) best = f;
 }
-const phase =
-  ((((Math.atan2(sy, sx) / (2 * Math.PI)) * period) % period) + period) %
-  period;
-const duration = x.length / SR,
-  beats = [];
-for (let t = phase; t < duration; t += period) beats.push(+t.toFixed(3));
+let grid = best && best.score > 3 * best.noise ? best : null;
+if (grid && requested) {
+  const { period: p, phase: ph } = grid,
+    half = [measure(2 * p, ph), measure(2 * p, ph + p)].sort(
+      (a, b) => b.score - a.score
+    )[0];
+  const off = (g) => Math.abs(Math.log(60 / g.period / requested));
+  grid = [grid, half, measure(p / 2, ph)].sort((a, b) => off(a) - off(b))[0];
+}
+const beats = [];
+for (let t = grid?.phase; grid && t < duration; t += grid.period)
+  beats.push(+t.toFixed(3));
 const max = Math.max(...onsets.map((o) => o.strength));
-for (const o of onsets) o.strength = +(o.strength / max).toFixed(2);
-const accents = onsets.filter((o) => o.strength >= 0.8).map((o) => o.t);
+const hits = onsets.map((o) => ({
+  t: +o.t.toFixed(3),
+  strength: +(o.strength / max).toFixed(2)
+}));
 console.log(
   JSON.stringify({
     duration: +duration.toFixed(3),
-    bpm: +(60 / period).toFixed(1),
+    bpm: grid && +(60 / grid.period).toFixed(2),
+    requestedBpm: requested,
+    fit: grid && {
+      onsets: onsets.length,
+      onGrid: grid.onGrid,
+      meanErrMs: grid.meanErrMs
+    },
     beats,
-    accents,
-    onsets
+    accents: hits.filter((o) => o.strength >= 0.8).map((o) => o.t),
+    onsets: hits
   })
 );
 ```
 
-`beats.json` holds `bpm`, `beats` (the grid, seconds), `accents` (the loudest hits) and `onsets`
-(every hit, `strength` 0–1). Checked against a click track: tempo within 1 %, beats within one
-23 ms analysis frame, every downbeat reported as an accent.
+`beats.json` holds `bpm`, `beats` (the grid, seconds), `fit`, `accents` (the loudest hits) and
+`onsets` (every hit, `strength` 0–1). Checked against a click track (tempo within 1 %, beats within
+one 23 ms analysis frame) and a syncopated groove whose loud hits repeat every 1.5 beats (the beat,
+not the 2:3 alias).
 
-- Compare `bpm` with the tempo you asked for. Half or double means the grid locked onto every other
-  beat — halve or double it. `bpm: null` means no rhythm was found (an ambient pad): cut on your
-  own grid at the requested BPM.
+- **Pass the tempo you asked for** as `--bpm`. The script settles related tempos itself — a grid at
+  2/3 or 3/4 of the beat carries less of the attack and loses — and uses `--bpm` only to choose
+  between halving and doubling, which fit equally well. `bpm` may still differ from the request by a
+  few tenths — that is the track's real tempo; use it.
+- **Check `fit`**: `meanErrMs` is how far the hits on the grid sit from it, `onGrid` of `onsets` how
+  many sit on it — a click keeps them all, a busy track with off-beat hits about a third. Above
+  ~25 ms the lock is loose: listen before cutting to it. `bpm: null` means no rhythm was found (an
+  ambient pad): cut on your own grid at the requested BPM.
 - **Snap every planned time to the grid**: each cut, each transition's start, each loop pulse moves
   to the nearest `beats` entry. A bar is four beats — cut on bars for the long holds, on single
   beats for the fast runs.
