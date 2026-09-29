@@ -4048,6 +4048,72 @@ Create, configure, and manage block fills, including solid colors, gradients, an
   ```typescript
   getFillSolidColor(id: number): RGBA
   ```
+
+  ***
+</details>
+
+<details>
+  <summary>
+    ### unstable\_setImportedImageDefinition()
+  </summary>
+
+  Attaches the color definition found beside the fill's current JPEG bytes.
+
+  The engine then decodes the JPEG samples in the given color space, instead of reading the
+  JPEG's own metadata. Finish writing an image buffer before calling this method.
+
+  The definition describes the image bytes it was read from, so it applies only while the image
+  still holds them. A write that changes the bytes switches it off, and writing the same bytes
+  back switches it on again. There is no event for that; `unstable_getImportedImageDefinition`
+  returns `null` while it is off. Remote content must stay unchanged while the definition is
+  attached. Fills that share one URI with different definitions replace each other's cached
+  pixels, so each one decodes the image again when it draws.
+
+  #### Parameters
+
+  | Parameter | Type | Description |
+  | ------ | ------ | ------ |
+  | `id` | `number` | The image fill. |
+  | `definition` | [`ImportedImageDefinitionInput`](./api/node/interfaces/importedimagedefinitioninput.md) | The color definition of the fill's current image. |
+
+  #### Returns
+
+  `void`
+
+  #### Throws
+
+  Error if the block is not an image fill, has no image, uses a source set, or the
+  definition is invalid.
+  Unstable until the general design of image color provenance is settled. It then
+  becomes stable or is replaced.
+
+  ***
+</details>
+
+<details>
+  <summary>
+    ### unstable\_getImportedImageDefinition()
+  </summary>
+
+  Reads the color definition of the fill's current image.
+
+  #### Parameters
+
+  | Parameter | Type | Description |
+  | ------ | ------ | ------ |
+  | `id` | `number` | The image fill. |
+
+  #### Returns
+
+  [`ImportedImageDefinitionInfo`](./api/node/interfaces/importedimagedefinitioninfo.md)
+
+  The definition of the current image bytes.
+
+  #### Throws
+
+  Error if the block is not an image fill or no definition applies.
+  Unstable until the general design of image color provenance is settled. It then
+  becomes stable or is replaced.
 </details>
 
 ## Block Shapes

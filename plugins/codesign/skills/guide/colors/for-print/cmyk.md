@@ -509,7 +509,7 @@ engine.scene.setCMYKProfileFromData(
 );
 
 // Read what the document names, and go back to the fallback profile.
-const info = engine.scene.getCMYKProfileInfo(); // { contentHash } or null
+const info = engine.scene.getCMYKProfileInfo(); // { contentHash }
 engine.scene.removeCMYKProfile();
 
 // Configure the conversion.
@@ -517,7 +517,7 @@ engine.scene.setColorRenderingIntent(ColorRenderingIntent.Perceptual);
 engine.scene.setBlackPointCompensationEnabled(false);
 ```
 
-An assignment is atomic. While a profile loads, the previous profile stays in effect. When the profile cannot be loaded, is not a valid ICC profile, or is not a CMYK profile, the call fails and the previous profile stays in effect. `engine.scene.getCMYKProfileInfo()` returns the content hash of the profile the document names, or `null` when the document names no CMYK profile. `engine.scene.removeCMYKProfile()` goes back to the fallback profile.
+An assignment is atomic. While a profile loads, the previous profile stays in effect. When the profile cannot be loaded, is not a valid ICC profile, or is not a CMYK profile, the call fails and the previous profile stays in effect. `engine.scene.getCMYKProfileInfo()` returns the content hash of the profile the document names and throws when none is set. `engine.scene.removeCMYKProfile()` goes back to the fallback profile.
 
 A profile set from bytes is saved as a `buffer://` URI when you save the scene to a string, and only the same engine can read that URI. Save the scene to an archive to keep the profile bytes with the scene.
 
@@ -551,7 +551,7 @@ Make sure you're checking a `Color` value returned from `engine.block.getColor()
 | `isCMYKColor()`                                   | Check if a color is CMYK                                            |
 | `engine.scene.setCMYKProfile()`                   | Load a CMYK ICC profile from a URI and make it the document profile |
 | `engine.scene.setCMYKProfileFromData()`           | Make the CMYK ICC profile in the given bytes the document profile   |
-| `engine.scene.getCMYKProfileInfo()`               | Get the content hash of the document CMYK profile, or `null`        |
+| `engine.scene.getCMYKProfileInfo()`               | Get the document CMYK profile hash; throws if none is set        |
 | `engine.scene.removeCMYKProfile()`                | Remove the document CMYK profile and use the fallback profile       |
 | `engine.scene.setColorRenderingIntent()`          | Set the rendering intent of CMYK conversion                         |
 | `engine.scene.setBlackPointCompensationEnabled()` | Turn black point compensation on or off                             |

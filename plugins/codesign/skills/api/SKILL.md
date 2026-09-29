@@ -139,10 +139,10 @@ whole-class reads are cheap (`BlockAPI` is the largest):
 | ------------ | ---------- |
 | AssetAPI     | 1208       |
 | **BlockAPI** | **1505**   |
-| EditorAPI    | 1753       |
-| EventAPI     | 1885       |
-| **SceneAPI** | **1965**   |
-| VariableAPI  | 2186       |
+| EditorAPI    | 1755       |
+| EventAPI     | 1887       |
+| **SceneAPI** | **1988**   |
+| VariableAPI  | 2209       |
 
 (If a start line looks off, search for `class BlockAPI` instead.)
 

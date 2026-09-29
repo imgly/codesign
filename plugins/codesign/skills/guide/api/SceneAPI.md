@@ -54,18 +54,12 @@ What the document stores about its CMYK profile.
 Reports the profile that the document names, whether it is loaded, still loading, or failed
 to load. The fallback profile is not reported. Await `engine.editor.loadCMYKProfile()` to learn
 whether the profile that renders is usable.
-```javascript
-const info = engine.scene.getCMYKProfileInfo();
-if (info === null) {
-  // The document uses the fallback profile.
-}
-```
 
 ```typescript
-getCMYKProfileInfo(): CMYKProfileInfo | null
+getCMYKProfileInfo(): CMYKProfileInfo
 ```
 
-**Returns:** The info, or `null` when the document names no CMYK profile.
+**Returns:** The info for the document's CMYK profile.
 
 ### removeCMYKProfile()
 

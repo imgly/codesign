@@ -693,18 +693,15 @@ Configure the document CMYK profile and its conversion settings. These propertie
   to load. The fallback profile is not reported. Await `engine.editor.loadCMYKProfile()` to learn
   whether the profile that renders is usable.
 
-  ```javascript
-  const info = engine.scene.getCMYKProfileInfo();
-  if (info === null) {
-    // The document uses the fallback profile.
-  }
-  ```
-
   #### Returns
 
   [`CMYKProfileInfo`](./api/node/interfaces/cmykprofileinfo.md)
 
-  The info, or `null` when the document names no CMYK profile.
+  The info for the document's CMYK profile.
+
+  #### Throws
+
+  Error when the document names no CMYK profile.
 
   #### Signature
 

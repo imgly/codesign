@@ -1575,6 +1575,8 @@ class BlockAPI {
     setAudioFadeOut(id: DesignBlockId, duration: number, easing?: AnimationEasing): void;
     forceLoadAVResource(id: DesignBlockId): Promise<void>;
     unstable_isAVResourceLoaded(id: DesignBlockId): boolean;
+    unstable_setImportedImageDefinition(id: DesignBlockId, definition: ImportedImageDefinitionInput): void;
+    unstable_getImportedImageDefinition(id: DesignBlockId): ImportedImageDefinitionInfo;
     getAVResourceTotalDuration(id: DesignBlockId): number;
     getVideoWidth(id: DesignBlockId): number;
     getVideoHeight(id: DesignBlockId): number;
@@ -1901,6 +1903,27 @@ interface FontMetrics {
 }
 type TextFontSizeUnit = DesignUnit | 'Point';
 type HistoryUpdate = 'Updated' | 'Activated';
+type ImportedImageColorSpace = 'DeviceGray' | 'DeviceRGB' | 'DeviceCMYK' | 'ICCBased';
+interface ImportedImageDefinitionInfo {
+    colorSpace: ImportedImageColorSpace;
+    declaredColorSpace: ImportedImageColorSpace;
+    profileContentHash: string;
+    decode: number[];
+    colorTransform?: number;
+    renderingIntent?: ColorRenderingIntent;
+    importerRecord: string;
+    importerRecordFormat: string;
+}
+interface ImportedImageDefinitionInput {
+    colorSpace: ImportedImageColorSpace;
+    declaredColorSpace?: ImportedImageColorSpace;
+    iccProfile?: Uint8Array;
+    decode?: number[];
+    colorTransform?: number;
+    renderingIntent?: ColorRenderingIntent;
+    importerRecord?: string;
+    importerRecordFormat?: string;
+}
 type IntPropertyName = 'effect/lut_filter/horizontalTileCount' | 'effect/lut_filter/verticalTileCount' | 'effect/mirror/side' | 'effect/pixelize/horizontalPixelSize' | 'effect/pixelize/verticalPixelSize' | 'shape/polygon/sides' | 'shape/star/points' | (string & {});
 type Locale = string;
 interface Logger {
@@ -1966,7 +1989,7 @@ class SceneAPI {
     #private;
     setCMYKProfile(uri: string): Promise<void>;
     setCMYKProfileFromData(data: Uint8Array): void;
-    getCMYKProfileInfo(): CMYKProfileInfo | null;
+    getCMYKProfileInfo(): CMYKProfileInfo;
     removeCMYKProfile(): void;
     getColorRenderingIntent(): ColorRenderingIntent;
     setColorRenderingIntent(intent: ColorRenderingIntent): void;

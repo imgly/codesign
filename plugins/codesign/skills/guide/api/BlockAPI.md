@@ -717,6 +717,39 @@ getFillSolidColor(id: DesignBlockId): RGBA
 
 **Returns:** The fill color.
 
+### unstable_setImportedImageDefinition()
+
+Attaches the color definition found beside the fill's current JPEG bytes.
+The engine then decodes the JPEG samples in the given color space, instead of reading the
+JPEG's own metadata. Finish writing an image buffer before calling this method.
+The definition describes the image bytes it was read from, so it applies only while the image
+still holds them. A write that changes the bytes switches it off, and writing the same bytes
+back switches it on again. There is no event for that; `unstable_getImportedImageDefinition`
+returns `null` while it is off. Remote content must stay unchanged while the definition is
+attached. Fills that share one URI with different definitions replace each other's cached
+pixels, so each one decodes the image again when it draws.
+
+```typescript
+unstable_setImportedImageDefinition(id: DesignBlockId, definition: ImportedImageDefinitionInput): void
+```
+
+**Parameters:**
+- `id` - The image fill.
+- `definition` - The color definition of the fill's current image.
+
+### unstable_getImportedImageDefinition()
+
+Reads the color definition of the fill's current image.
+
+```typescript
+unstable_getImportedImageDefinition(id: DesignBlockId): ImportedImageDefinitionInfo
+```
+
+**Parameters:**
+- `id` - The image fill.
+
+**Returns:** The definition of the current image bytes.
+
 ## Block Audio
 
 ### getAudioTrackCountFromVideo()

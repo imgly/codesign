@@ -122,6 +122,7 @@
 | [HorizontalBlockAlignment](./api/node/type-aliases/horizontalblockalignment.md) | - |
 | [HorizontalContentFillAlignment](./api/node/type-aliases/horizontalcontentfillalignment.md) | - |
 | [ImageMimeType](./api/node/type-aliases/imagemimetype.md) | Represents the image MIME types used in the editor. |
+| [ImportedImageColorSpace](./api/node/type-aliases/importedimagecolorspace.md) | PDF image color spaces supported by the imported image definition. |
 | [IntPropertyName](./api/node/type-aliases/intpropertyname.md) | - |
 | [ListStyle](./api/node/type-aliases/liststyle.md) | Represents the list style of a paragraph. |
 | [Locale](./api/node/type-aliases/locale.md) | e.g. `en`, `de`, etc. |
@@ -264,6 +265,8 @@
 | [Font](./api/node/interfaces/font.md) | Individual font within a typeface. Field optionality matches `@cesdk/engine` (WASM) — fields not present in the engine response are simply omitted rather than empty strings. |
 | [FontMetrics](./api/node/interfaces/fontmetrics.md) | Font metrics extracted from a font file. Values are in the font's design units coordinate space. |
 | [GradientColorStop](./api/node/interfaces/gradientcolorstop.md) | Represents a gradient color stop. |
+| [ImportedImageDefinitionInfo](./api/node/interfaces/importedimagedefinitioninfo.md) | The definition attached to an image fill. |
+| [ImportedImageDefinitionInput](./api/node/interfaces/importedimagedefinitioninput.md) | The color definition found beside an imported JPEG's bytes. |
 | [Logger](./api/node/interfaces/logger.md) | Represents a logger function. |
 | [PageDuration](./api/node/interfaces/pageduration.md) | - |
 | [Range](./api/node/interfaces/range.md) | An open range. |

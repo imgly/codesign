@@ -497,8 +497,17 @@ ICC color profiles, document CMYK profiles, and color management.
 
 | Code | Message | Hint | Docs |
 | --- | --- | --- | --- |
+| `COLOR.DOCUMENT_PROFILE_NOT_SET` | The document has no CMYK profile. | Set a CMYK profile before reading its information. |  |
 | `COLOR.IMAGE_DECODE_FAILED` | The CMYK image data could not be decoded. Size: \{byteCount} bytes. | The CMYK or YCCK samples of the image could not be read. The image loads without color management instead, so its colors can be wrong. |  |
 | `COLOR.IMAGE_TRANSFORM_FAILED` | The color profile of the image at \{uri} could not be applied. | The profile could be read, but the engine could not convert colors with it. The image loads without color management, so its colors can be wrong. |  |
+| `COLOR.IMPORTED_IMAGE_COLOR_SPACE_INVALID` | The imported image color space value \{value} is not valid. | Use DeviceGray, DeviceRGB, DeviceCMYK or ICCBased. |  |
+| `COLOR.IMPORTED_IMAGE_COLOR_TRANSFORM_INVALID` | The imported image color transform value \{value} is invalid. | Use 0 or 1, or omit the color transform. |  |
+| `COLOR.IMPORTED_IMAGE_DECODE_INVALID` | The imported image decode ranges are invalid. | Provide two finite numbers per image component, or omit decode for identity. |  |
+| `COLOR.IMPORTED_IMAGE_DEFINITION_NOT_FOUND` | The image fill has no active imported image definition. | Attach a definition to the fill's current image before reading it. |  |
+| `COLOR.IMPORTED_IMAGE_HAS_SOURCE_SET` | The image fill uses a source set. | Remove the source set before attaching a definition of imageFileURI. |  |
+| `COLOR.IMPORTED_IMAGE_NO_IMAGE` | The image fill has no image to describe. | Set fill/image/imageFileURI before attaching its imported image definition. |  |
+| `COLOR.IMPORTED_IMAGE_PROFILE_MISMATCH` | The imported image profile does not match its color space. | Provide profile bytes only for ICCBased, and declare ICCBased only when the effective space is ICCBased. |  |
+| `COLOR.IMPORTED_IMAGE_RECORD_INVALID` | The imported image record is invalid. | Keep the record below 64 KiB and name its format when it is present. |  |
 | `COLOR.PROFILE_ASSIGNMENT_SUPERSEDED` | The color profile at \{uri} was not assigned, because a later change replaced the request. | Another profile assignment, a profile removal or a scene load happened while this profile was loading. The later change is in effect. Set the profile again if you still want it. |  |
 | `COLOR.PROFILE_DATA_SPACE_MISMATCH` | The color profile data describes \{space}, but \{expected} is required here. | Pass the bytes of a profile whose color space matches the one it is used for. The document CMYK profile has to be a CMYK profile. The previous profile stays in use. |  |
 | `COLOR.PROFILE_INVALID` | The ICC profile data could not be read. Size: \{byteCount} bytes. | The bytes are not a valid ICC profile. Check that the file is complete and was not truncated by the download. |  |
@@ -787,6 +796,7 @@ License unlock, API-key handling, entitlement checks.
 | `LICENSE.CLAIM_INVALID` | The license has a missing or invalid "\{claim}" value. | The license server issued a license that this SDK version cannot read. Contact support@img.ly and include this message. |  |
 | `LICENSE.DEACTIVATION_TIMEOUT` | Deactivation timed out. | The license server did not acknowledge the deactivation in time. Retry, or contact support if the issue persists. |  |
 | `LICENSE.ENGINE_VERSION_INVALID` | The License Key (API Key) you are using requires a newer version of the IMG.LY SDK. Please update to the latest version. | Upgrade the CE.SDK engine to a version compatible with this license. |  |
+| `LICENSE.ENGINE_VERSION_OUT_OF_RANGE` | This license covers engine versions \{min} up to (but not including) \{max}; this build is \{current}. | Run an engine within the licensed range, or obtain a license that covers \{current}. An open bound is shown as '\*'. |  |
 | `LICENSE.EXPIRED` | Thanks for using IMG.LY for creative editing. Please note that your license file or commercial use is expired. | Renew your subscription at https://img.ly/pricing to continue commercial use. |  |
 | `LICENSE.IDENTIFIER_MISMATCH` | The License Key (API Key) you are using to access the IMG.LY SDK is invalid for this app identifier. Current app identifier "\{current}" differs from license app identifiers: \[\{allowed}] | Your license is tied to specific app identifiers. Adjust the application bundle id to one of '\{allowed}' or update the license. |  |
 | `LICENSE.INVALID` | The License Key (API Key) you are using to access the IMG.LY SDK is invalid. | Verify the License Key matches your IMG.LY subscription. If issues persist, contact support@img.ly. |  |
@@ -798,6 +808,7 @@ License unlock, API-key handling, entitlement checks.
 | `LICENSE.NO_ACTIVE_TO_DEACTIVATE` | No active license to deactivate. | The deactivation request targets a license that is not currently active. Unlock a license first. |  |
 | `LICENSE.NO_USER_ID` | License does not have a user ID. | User-specific entitlements require a license that carries a user id. Re-issue the license with a user id assigned. |  |
 | `LICENSE.PLATFORM_MISMATCH` | The License Key (API Key) you are using to access the IMG.LY SDK is invalid for this platform. Current platform: "\{current}" differs from license platforms: \[\{allowed}] | Your license restricts the platforms this engine may run on. Update the license to include '\{current}' or run on one of: \{allowed}. |  |
+| `LICENSE.PRERELEASE_NOT_ALLOWED` | This license does not cover prerelease engine builds, and this build is \{current}. | Run a release build of the engine, or obtain a license whose config sets 'allowPrerelease' to true. |  |
 | `LICENSE.PRODUCT_MISMATCH` | The License Key (API Key) you are using to access the IMG.LY SDK is invalid for this product. Current build product: "\{current}" differs from license product: "\{required}" | Your license is tied to a specific product. Use a build for '\{required}' or obtain a license for '\{current}'. |  |
 | `LICENSE.REQUEST_IN_PROGRESS` | License request already in progress. | A license fetch is in flight. Wait for it to finish before calling unlock again. |  |
 | `LICENSE.SERVER_ERROR` | License server reported an error: \{reason} | Server response: \{reason}. If the message is unexpected, contact IMG.LY support. |  |
