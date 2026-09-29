@@ -18,7 +18,7 @@ and the `judge` gate.
 
 ## Input
 
-One of three, resolved with the intake contract (`skill({ name: 'handbook', path: 'intake.md' })`):
+One of three, resolved with the intake contract (`../handbook/intake.md`):
 
 - **Channel link** — its latest 10 thumbnails set the style.
 - **Example thumbnails or designs** — one or more images, or design files (`.imgly`, `.psd`, …).
@@ -61,7 +61,7 @@ three distinct layouts gets one template per layout — name them and ask which 
 ## 3 — Design guideline (brand kit)
 
 Write the guideline as a brand kit in the `brand` skill's format — `brand-kit/tokens.json` +
-`brand-kit/BRAND.md`. Read `skill({ name: 'brand', path: 'reference/brandkit-spec.md' })` for the
+`brand-kit/BRAND.md`. Read `../brand/reference/brandkit-spec.md` for the
 shape and `reference/authoring.md` for the rules (screenshots are its source form D). Fill it from
 the analysis:
 
