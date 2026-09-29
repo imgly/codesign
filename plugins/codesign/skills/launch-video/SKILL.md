@@ -169,9 +169,9 @@ Save the code of every `edit` you run to `<out>/build/NN-<step>.js`, in order �
 - `preview` the page with `time` at the middle of every beat. Run the judge loop on those frames:
   every line readable at its hold time, nothing clipped at the canvas edge, the hierarchy clear at
   a glance. Fix in place and re-check.
-- `export({ format: "mp4", revision, blockId: page })` → `<out>/launch.mp4`. Check the transitions
-  in the mp4, not in `preview` — a still at a transition time can miss it: pull a frame at the
-  middle of each (`ffmpeg -ss <t> -i launch.mp4 -frames:v 1 <out>/build/t-<t>.png`) and look.
+- `preview` the middle of every transition too: the still shows it as the mp4 will. One clip whole
+  there means the transition is missing or off its cut — fix it before exporting.
+- `export({ format: "mp4", revision, blockId: page })` → `<out>/launch.mp4`.
 - Poster: pick the strongest frame from the previews, export it as `png` → `<out>/poster.png`.
 - `export({ format: "imgly", revision })` → `<out>/design.imgly`, the editable source.
 - Write `<out>/share-copy.txt`: a one-line post, a two-sentence post, and alt text.
