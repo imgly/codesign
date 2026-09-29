@@ -125,9 +125,11 @@ engine.block.setTransition(clipA, t); // clipA → the clip after it on the trac
 - **Replacing** one: `setTransition` with a new block leaves the old one alive
   and detached — `await engine.design.destroy(old)` it.
   `engine.block.removeTransition(clip)` clears a clip's transition.
-- **Verify transitions in the mp4, not in `preview`.** A still `preview` at a
-  transition time can show the outgoing clip as if there were no transition.
-  Export, then pull the frames: `ffmpeg -ss 1.5 -i video.mp4 -frames:v 1 f.png`.
+- **Verify transitions with `preview`.** A still at `time` inside a
+  transition renders it as the mp4 does — preview its middle
+  (`time` = cut + duration/2). A still that shows one clip whole there means
+  the transition is not applied or not where you think: check the clip is a
+  track child and the overlap equals the transition's duration.
 
 ## Notes
 
@@ -141,8 +143,7 @@ engine.block.setTransition(clipA, t); // clipA → the clip after it on the trac
   `../guide/animation/types.md`, `../guide/edit-video/add-captions.md`.
 - `preview` renders a STILL frame, not motion — pass `time` (seconds) to seek
   any page with a timeline, whatever the scene mode: verify a few salient
-  moments (start, mid-beat, the end; check
-  transitions in the exported mp4, a still at a transition time can miss them). Each timed preview returns
+  moments (start, mid-beat, the middle of each transition, the end). Each timed preview returns
   `{time, duration}` JSON next to the image. Export for the real thing.
 - Poster: a still `export` (png/jpeg/webp) renders the frame at the page's
   playhead — park it with `setProps(page, { playback: { time } })` in an edit.
