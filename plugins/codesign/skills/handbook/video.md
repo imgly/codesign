@@ -159,3 +159,15 @@ engine.block.setTransition(clipA, t); // clipA → the clip after it on the trac
   child offsets: `engine.block.setBool(track, 'track/automaticallyManageBlockOffsets', false)`.
   Under auto-arrange, a `timeOffset` read in the same edit that created the
   clip can come back `-1`; it is computed by the next edit.
+- **Never let two see-through groups each hold an undrawn child at the
+  same moment.** A group is see-through while its opacity is below 1 —
+  set directly, or mid-animation (seen with a `fade` in-animation and a
+  `slide` with `fade: true`). A child is undrawn when it's hidden or outside
+  its own playback window (e.g. it starts later than its group). When a frame
+  has two or more such groups, the engine renders it solid black, and every
+  frame after it too — the mp4 goes black to the end, with no error. Stagger
+  the groups so their fades don't overlap, make each child's window cover its
+  group's fade, or use `fade: false`. Check the exported mp4 for black
+  stretches. The engine stays black afterwards: later previews and exports,
+  of any design, come back black until the engine is recycled (after 5 idle
+  minutes by default, or a server restart).
