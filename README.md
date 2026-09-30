@@ -5,13 +5,13 @@
 
 **The design layer for the agent era.**
 
-> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.4.1-next.20260930162010.gf71a60f` —
+> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.4.1-next.20260930180749.gc651be7` —
 > unreleased builds, published on every merge to IMG.LY's development branch.
 > For the stable release, use the [`main` branch](https://github.com/imgly/codesign/tree/main).
 
 CoDesign gives your coding agent a real design engine. Generate, edit, and
 automate _fully editable_ designs — print, social, and video — straight from
-the chat, then export print-ready PDFs, images, and more. You steer, the agent
+the chat, then export print-ready PDFs, images, mp4 video, and more. You steer, the agent
 edits the same scene, and you keep control of the outcome.
 
 It ships as an MCP server (plus a Claude Code plugin) that hands your agent
@@ -39,6 +39,10 @@ Ask your agent, in plain language:
   and venue, export again."_
 - **Localize a design** — _"Translate this poster into German and re-fit the
   layout so nothing overflows."_
+- **Make a short video** (generated music and voiceover need the free IMG.LY
+  sign-in) — _"Turn this poster into a 15-second vertical reel: animate the
+  headline in, cut between the three product shots, and put a music bed and a
+  voiceover under it."_
 - **Create a launch graphic** — _"Make the v2.0 launch graphic with our logo
   and brand colors, in X, LinkedIn and OG-image sizes."_
 - **Create App Store graphics** — _"Make the App Store screenshots and the
@@ -89,7 +93,7 @@ print, video, and social:
   system Node. With no Node (or Node < 22.15) on `PATH`, the host reports the
   server as failed with no useful reason — typically `local: 0` and
   `MCP error -32000`. Install Node 22.15+ first: <https://nodejs.org>.
-- **Pin `@0.4.1-next.20260930162010.gf71a60f` — every recipe names that exact version on purpose.** The
+- **Pin `@0.4.1-next.20260930180749.gc651be7` — every recipe names that exact version on purpose.** The
   plugin ships the skills that version was built with, and a bare or dist-tagged
   `npx` would pair them with a different server. Each release republishes this
   repo with a new pin — update the plugin (or your recipe) to move forward.
@@ -112,7 +116,7 @@ claude plugin install codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add codesign -- npx -y @imgly/codesign-mcp@0.4.1-next.20260930162010.gf71a60f stdio
+claude mcp add codesign -- npx -y @imgly/codesign-mcp@0.4.1-next.20260930180749.gc651be7 stdio
 ```
 
 ### Codex
@@ -127,7 +131,7 @@ codex plugin add codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.4.1-next.20260930162010.gf71a60f stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.4.1-next.20260930180749.gc651be7 stdio
 ```
 
 ### Antigravity CLI
@@ -142,7 +146,7 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.4.1-next.20260930162010.gf71a60f stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.4.1-next.20260930180749.gc651be7 stdio
 ```
 
 ### Gemini CLI
@@ -165,7 +169,7 @@ Or add the server manually to `~/.gemini/settings.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.4.1-next.20260930162010.gf71a60f",
+        "@imgly/codesign-mcp@0.4.1-next.20260930180749.gc651be7",
         "stdio"
       ]
     }
@@ -185,7 +189,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.4.1-next.20260930162010.gf71a60f",
+        "@imgly/codesign-mcp@0.4.1-next.20260930180749.gc651be7",
         "stdio"
       ]
     }
@@ -209,7 +213,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.4.1-next.20260930162010.gf71a60f",
+        "@imgly/codesign-mcp@0.4.1-next.20260930180749.gc651be7",
         "stdio"
       ]
     }
@@ -227,7 +231,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.4.1-next.20260930162010.gf71a60f",
+          "@imgly/codesign-mcp@0.4.1-next.20260930180749.gc651be7",
           "stdio"
         ]
       }

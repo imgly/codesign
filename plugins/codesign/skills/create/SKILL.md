@@ -2,7 +2,8 @@
 name: create
 description: >-
   Use when the user asks to create / generate / make a NEW design from a prompt — a deck
-  or slides, poster, flyer, social post, business card, or a custom-size canvas. Runs the
+  or slides, poster, flyer, social post, business card, a video (animated post, reel, clip
+  with music or voiceover), or a custom-size canvas. Runs the
   guided intake: derive every brief parameter the prompt already answers (class, format,
   audience, vibe, brand, content), ask ONLY the missing questions — one round, chip-style
   options, "Decide automatically" defaults — then echo the design brief and hand off to the
@@ -36,8 +37,11 @@ every question and chip must follow; read it before wording any question of your
 Five steps, in order:
 
 1. **Classify.** Map the request to a design class: `deck`, `poster`, `flyer`,
-   `social-post`, `business-card`, or `custom` (explicit dimensions). If the class is
-   ambiguous, it becomes the first — often only — question.
+   `social-post`, `business-card`, `video`, or `custom` (explicit dimensions). If the
+   class is ambiguous, it becomes the first — often only — question. A request for
+   motion, a reel, an mp4, music or a voiceover is `video`; a launch or promo video for
+   a product or project goes to the `launch-video` skill instead, which runs its own
+   intake.
 
 2. **Derive.** Fill the class's parameter table (see `classes.md`) from everything
    already available: the prompt, earlier conversation, attached files/images, a

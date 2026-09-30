@@ -3,11 +3,13 @@
 Scenes are not "static" or "video" at creation time — add time-based content
 to the scene you already have, then `export({ format: "mp4" })` renders the
 authored timeline. Do NOT rebuild a scene with `scene.createVideo()` just to
-animate it. Do switch the scene to video mode once, so `preview` can seek:
-`time` is refused on a scene whose mode is not `Video`.
+animate it. `preview` seeks (`time`) and `export` renders the timeline in any
+scene mode.
 
 ```js
-engine.scene.setMode('Video'); // once per design; export renders either way
+// Optional: preview and export work in any mode; in Video mode every preview
+// also reports {time, duration}.
+engine.scene.setMode('Video');
 
 // Page duration = length of the exported video.
 await engine.design.setProps(page, { playback: { duration: 10 } }); // seconds
@@ -73,6 +75,38 @@ await engine.design.create(
 Several audio blocks can sit on the page at once — a music bed plus a short
 sound effect per cut, each placed with its own `playback.timeOffset`.
 
+## Sound: music, voiceover, sound effects
+
+Audio is part of the design, not an afterthought: it plays under the page's
+timeline and ships inside the mp4 (or alone as `wav`/`m4a`, see Notes). A silent video is a complete deliverable
+when the brief chose it — say so, rather than leaving sound out by omission.
+
+- **Sources.** The user's own file → `asset_add` (mp3, wav, m4a, ogg, aac).
+  Otherwise `asset_generate` (signed in): music and sound effects are provider
+  models (`capability: "text2audio", source: "all"`), a voiceover is
+  `elevenlabs/eleven-v3-tts`, and `elevenlabs/scribe-v2` transcribes speech with
+  word timings — prompts and parameters per model are in
+  `../models/audio.md`. Each returns a `workspace://` uri and, when the
+  file states it, a `duration` — size the page and the clips from it.
+- **Timing.** Put a voiceover on the timeline where its sentence belongs and cut
+  or animate to its words: the scribe transcript's `words[]` give each word's
+  start and end in seconds (captions and word-timed text use the same times).
+  Music drives the cuts when there is no voice — the `launch-video` skill has a
+  beat-map script for that.
+- **Levels.** One audio block per sound; `playback.volume` is 0–1. Duck the
+  music under a voiceover (0.3–0.5 while it speaks); a sound effect is a short
+  block at the cut, 0.5–0.8 under the music. Give the bed a `fadeOut` that ends with the page
+  (and a `fadeIn` unless it starts on a hit). A bed shorter than the page
+  leaves a silent tail — pick a longer track, or end the page with the music.
+- **Beat-tight sync: prefer WAV.** In the exported mp4 an MP3 plays about
+  40–100 ms later than the same audio as WAV. Harmless for a bed or a voiceover;
+  for cuts timed to single beats, convert the track to WAV with ffmpeg and
+  `asset_add` the WAV.
+- **Checking it.** `preview` renders pictures, not sound: the audio is only
+  heard in the exported mp4. Export once, after the judge gate passes, then confirm it has an audio stream as
+  long as the video (`ffprobe -show_streams out.mp4`) and listen to it when your
+  host can play it; otherwise tell the user which sounds sit where.
+
 ## Transitions between clips
 
 A transition joins a clip to the NEXT clip on the same track (`push`, `wipe`,
@@ -134,7 +168,8 @@ engine.block.setTransition(clipA, t); // clipA → the clip after it on the trac
 ## Notes
 
 - Export: `export({ format: "mp4", revision, blockId: page })`.
-  Duration/resolution come from the page — there are no export knobs.
+  Duration and resolution come from the page; `fps` (default 30) is the one
+  export knob. The page's audio blocks are mixed into the mp4.
 - Audio only: `export({ format: "wav" | "m4a", revision, blockId: page })`
   renders the page's audio mix (`wav` = 48 kHz stereo float). Page only; for one
   clip alone, export while it is the only audio on the page. A clip starting

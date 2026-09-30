@@ -95,6 +95,8 @@ case, ranges, path, decoration } })` — leaves apply in a safe order and
   edits it in place; a different type replaces it; `null` detaches (except
   `effects`, replaced wholesale — `[]` clears). Reads answer in the same
   shape, so `getProps` output feeds straight back in. Tree/layout verbs live on `engine.design` (group, appendChild, align); only export-style I/O stays on `engine.block.*`.
+- Video, animation, audio: `playback`, `animations`, `audio` and `track`
+  props; recipe and traps in `../handbook/video.md`.
 - Scalar wrappers (`setOpacity`, `setStrokeWidth`, …), `is*`/`supports*`
   predicates and editor-UI methods moved to the sub-file
   `signatures-extended.d.ts` — search there if you need an old name; prefer
