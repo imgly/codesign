@@ -14,7 +14,9 @@ engine.scene.setMode('Video');
 // Page duration = length of the exported video.
 await engine.design.setProps(page, { playback: { duration: 10 } }); // seconds
 
-// Tracks hold timed children; blocks get offsets + durations.
+// Timed visuals live on tracks, one track per layer (see "Timeline: one
+// track per layer" below) — never directly on the page. Tracks stack in
+// creation order: the first is the bottom layer.
 const track = await engine.design.create({ type: 'track' }, { parent: page });
 // Tracks auto-arrange children back-to-back (silently). Turn it off before
 // custom offsets, or timeOffset gets overwritten.
@@ -25,7 +27,7 @@ const block = await engine.design.create(
     type: 'graphic',
     props: { shape: { type: 'rect' }, width: 1920, height: 1080 }
   },
-  { parent: track }
+  { parent: track } // the next clip of this layer goes on the same track
 );
 await engine.design.setProps(block, {
   playback: { timeOffset: 1.0, duration: 5.0 } // enters at t=1s, visible 5s
@@ -75,6 +77,77 @@ await engine.design.create(
 Several audio blocks can sit on the page at once — a music bed plus a short
 sound effect per cut, each placed with its own `playback.timeOffset`.
 
+## Timeline: one track per layer
+
+A track holds a sequence of clips in one timeline row. A block placed
+directly on the page gets a row of its own, so a 30 s video built that way
+opens in the editor as 50+ rows, one per text and shape. Build the timeline
+the way an editor would:
+
+- **One track per layer, created bottom first** — for example backgrounds,
+  media, headline, subline, chip. Every beat's element for that layer goes
+  on the same track, one after another. Only audio sits on the page itself.
+- **Tracks are layers.** A later track draws above an earlier one, for the
+  whole video. Clips on one track never share a moment, except for the
+  overlap a transition needs (which equals its duration). Two things on
+  screen at the same time therefore sit on two tracks.
+- **Auto-arrange.** Leave `track/automaticallyManageBlockOffsets` on for a
+  gapless back-to-back sequence (the clips play in child order, and
+  transitions shorten it as described below). Turn it off for a layer
+  with gaps or hand-set offsets, and set each clip's `timeOffset`.
+- **A track is a layer, not an element.** Reuse it across beats: beat 2's
+  third line and beat 3's third chip can share one track, because they are
+  never on screen together. Aim for the number of layers a frame needs
+  (typically 3–6), not one track per element.
+- **Things that enter together are one clip.** A list of lines or a row of
+  chips that appears within one beat is a group on one track. Its children
+  keep their own `timeOffset`s and in-animations for the stagger, so the
+  group needs no track per item. A group takes no transition: transitions
+  join two leaf clips (graphic, text, video) that follow each other on one
+  track.
+- **Name clips by beat and layer** (`b3/bg`, `b3/headline`) so later edits
+  find them with `findByName`.
+
+```js
+// Three beats, two layers: a background sequence and a headline sequence.
+const bgs = await engine.design.create({ type: 'track' }, { parent: page }); // bottom
+const words = await engine.design.create({ type: 'track' }, { parent: page }); // above
+engine.block.setBool(words, 'track/automaticallyManageBlockOffsets', false); // engine.block: no track/* props path
+for (const [i, beat] of beats.entries()) {
+  const bg = await engine.design.create(
+    {
+      type: 'graphic',
+      name: `b${i}/bg`,
+      props: {
+        shape: { type: 'rect' },
+        width: W,
+        height: H,
+        fill: { type: 'color', color: { value: beat.color } }
+      }
+    },
+    { parent: bgs } // auto-arranged: back-to-back in creation order
+  );
+  await engine.design.setProps(bg, { playback: { duration: beat.length } });
+  const line = await engine.design.create(
+    {
+      type: 'text',
+      name: `b${i}/headline`,
+      props: { text: { string: beat.line, lineHeight: { visual: 1.1 } } }
+    },
+    { parent: words }
+  );
+  await engine.design.setProps(line, {
+    playback: { timeOffset: beat.start + 0.2, duration: beat.length - 0.4 }
+  });
+}
+```
+
+The `edit` result reports it when the timeline has more rows than its
+timing needs ("N timeline rows (… blocks directly on the page, … tracks); by
+their timing the clips fit on M tracks"). Move the blocks onto shared tracks
+in stacking order: each keeps its `timeOffset` and `duration`, and the frames
+stay the same.
+
 ## Sound: music, voiceover, sound effects
 
 Audio is part of the design, not an afterthought: it plays under the page's
@@ -113,9 +186,9 @@ A transition joins a clip to the NEXT clip on the same track (`push`, `wipe`,
 `cross-zoom`, …) and renders in the mp4. Only leaf clips on a track qualify —
 a graphic, text or video block that is a track's child;
 `engine.block.supportsTransition(id)` says whether one does. Blocks placed on
-the page directly, pages and tracks do not. So a sequence of beats is a track:
-backgrounds on one track, the words on a second track with the same timing,
-each with its own transitions.
+the page directly, pages and tracks do not. A layer's sequence of beats is
+one track (see "Timeline: one track per layer"), so each layer gets its own
+transitions.
 
 ```js
 const t = engine.block.createTransition('push');
