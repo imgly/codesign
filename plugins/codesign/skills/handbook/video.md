@@ -135,6 +135,10 @@ engine.block.setTransition(clipA, t); // clipA → the clip after it on the trac
 
 - Export: `export({ format: "mp4", revision, blockId: page })`.
   Duration/resolution come from the page — there are no export knobs.
+- Audio only: `export({ format: "wav" | "m4a", revision, blockId: page })`
+  renders the page's audio mix (`wav` = 48 kHz stereo float). Page only; for one
+  clip alone, export while it is the only audio on the page. A clip starting
+  after 0 s can land up to 1 s late in this export (the mp4 is exact).
 - Needs the native engine (the default). If the server fell back to WASM,
   video/audio tools refuse with the reason; `diagnostics` shows
   `status.config.videoAvailable`.
