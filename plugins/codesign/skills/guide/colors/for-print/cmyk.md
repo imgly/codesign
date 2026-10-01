@@ -206,6 +206,7 @@ try {
 
   // Convert RGB to CMYK
   const rgbBlue: RGBAColor = { r: 0.2, g: 0.4, b: 0.9, a: 1.0 };
+  await engine.editor.loadCMYKProfile();
   const convertedCmyk = engine.editor.convertColorToColorSpace(rgbBlue, 'CMYK');
   const { fill: convertedFill } = createColorBlock(50, 390, 150, 150);
   engine.block.setColor(convertedFill, 'fill/color/value', convertedCmyk);
@@ -433,6 +434,7 @@ Use `engine.editor.convertColorToColorSpace()` to convert colors between 'sRGB' 
 ```typescript highlight-convert
   // Convert RGB to CMYK
   const rgbBlue: RGBAColor = { r: 0.2, g: 0.4, b: 0.9, a: 1.0 };
+  await engine.editor.loadCMYKProfile();
   const convertedCmyk = engine.editor.convertColorToColorSpace(rgbBlue, 'CMYK');
   const { fill: convertedFill } = createColorBlock(50, 390, 150, 150);
   engine.block.setColor(convertedFill, 'fill/color/value', convertedCmyk);

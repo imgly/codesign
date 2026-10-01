@@ -218,6 +218,7 @@ async function main(): Promise<void> {
 
     // Convert a CMYK color to sRGB
     const cmykColor = { c: 0.0, m: 1.0, y: 1.0, k: 0.0, tint: 1.0 };
+    await engine.editor.loadCMYKProfile();
     const convertedToSrgb = engine.editor.convertColorToColorSpace(
       cmykColor,
       'sRGB'
@@ -367,6 +368,7 @@ We use `engine.editor.convertColorToColorSpace()` to convert CMYK or spot colors
 ```typescript highlight=highlight-convert-to-srgb
 // Convert a CMYK color to sRGB
 const cmykColor = { c: 0.0, m: 1.0, y: 1.0, k: 0.0, tint: 1.0 };
+await engine.editor.loadCMYKProfile();
 const convertedToSrgb = engine.editor.convertColorToColorSpace(
   cmykColor,
   'sRGB'

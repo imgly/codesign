@@ -4,7 +4,8 @@
 
 ---
 
-Convert colors between sRGB, CMYK, and spot color spaces programmatically in CE.SDK.
+Convert colors between sRGB, CMYK, and spot color spaces programmatically in
+CE.SDK.
 
 > **Reading time:** 10 minutes
 >
@@ -143,6 +144,7 @@ async function main() {
     const spotColor = engine.block.getColor(spotFill, 'fill/color/value');
 
     // Convert CMYK to sRGB
+    await engine.editor.loadCMYKProfile();
     const cmykToRgba = engine.editor.convertColorToColorSpace(
       cmykColor,
       'sRGB'
@@ -211,7 +213,7 @@ async function main() {
 main().catch(console.error);
 ```
 
-This guide covers how to convert colors between sRGB and CMYK, handle spot color conversions, identify color types with type guards, and understand how tint and alpha values are preserved during conversion.
+This guide covers how to convert colors between sRGB and CMYK, handle spot color conversions, identify color types with type guards, and understand how tint and alpha affect conversion.
 
 ## Initialize the Engine
 
@@ -228,11 +230,11 @@ const engine = await CreativeEngine.init({
 
 CE.SDK supports conversion between three color spaces:
 
-| Color Space | Format | Use Case |
-|-------------|--------|----------|
-| **sRGB** | `RGBAColor` with `r`, `g`, `b`, `a` (0.0-1.0) | Screen display, web output |
-| **CMYK** | `CMYKColor` with `c`, `m`, `y`, `k`, `tint` (0.0-1.0) | Print workflows |
-| **SpotColor** | `SpotColor` with `name`, `tint`, `externalReference` | Specialized printing |
+| Color Space   | Format                                                | Use Case                   |
+| ------------- | ----------------------------------------------------- | -------------------------- |
+| **sRGB**      | `RGBAColor` with `r`, `g`, `b`, `a` (0.0-1.0)         | Screen display, web output |
+| **CMYK**      | `CMYKColor` with `c`, `m`, `y`, `k`, `tint` (0.0-1.0) | Print workflows            |
+| **SpotColor** | `SpotColor` with `name`, `tint`, `externalReference`  | Specialized printing       |
 
 ## Setting Up Colors
 
@@ -311,6 +313,18 @@ engine.block.setHeight(spotBlock, blockHeight);
 engine.block.appendChild(page, spotBlock);
 ```
 
+## Loading the CMYK Profile
+
+In Managed scenes, RGB-to-CMYK conversion uses the document CMYK profile, or the fallback profile when no document profile is available. The synchronous conversion reports `COLOR.PROFILE_NOT_LOADED` only while a profile from a URI loads.
+
+Await `loadCMYKProfile()` before converting colors to avoid this loading error:
+
+```typescript
+await engine.editor.loadCMYKProfile();
+```
+
+The loading call can fail if no usable profile is available. RGB-to-CMYK conversion uses a simple formula if the profile cannot load or only converts CMYK to RGB. Legacy scenes always use the simple formula for RGB-to-CMYK conversion.
+
 ## Converting to sRGB
 
 Use `engine.editor.convertColorToColorSpace(color, 'sRGB')` to convert any color to sRGB format. This is useful for displaying color values on screen or when you need RGB components for CSS or other web-based color operations.
@@ -322,6 +336,7 @@ Use `engine.editor.convertColorToColorSpace(color, 'sRGB')` to convert any color
     const spotColor = engine.block.getColor(spotFill, 'fill/color/value');
 
     // Convert CMYK to sRGB
+    await engine.editor.loadCMYKProfile();
     const cmykToRgba = engine.editor.convertColorToColorSpace(
       cmykColor,
       'sRGB'
@@ -336,7 +351,7 @@ Use `engine.editor.convertColorToColorSpace(color, 'sRGB')` to convert any color
     console.log('Spot color converted to sRGB:', spotToRgba);
 ```
 
-When converting CMYK or spot colors to sRGB, the engine returns an `RGBAColor` object with `r`, `g`, `b`, `a` properties. The tint value from CMYK or spot colors becomes the alpha value in the returned sRGB color.
+When converting CMYK or spot colors to sRGB, the engine returns an `RGBAColor` object with `r`, `g`, `b`, `a` properties. The result is opaque. In Managed scenes, CMYK tint scales the ink values before conversion. RGB spot tint blends toward white.
 
 ## Converting to CMYK
 
@@ -360,9 +375,10 @@ Use `engine.editor.convertColorToColorSpace(color, 'CMYK')` to convert any color
     console.log('Spot color converted to CMYK:', spotToCmyk);
 ```
 
-When converting sRGB colors to CMYK, the alpha value becomes the tint value in the returned CMYK color. For spot colors, define a CMYK approximation with `setSpotColorCMYK()` before converting.
+RGB alpha does not generally become CMYK tint. Preserve transparency separately. Spot colors retain a registered CMYK approximation. In Managed scenes, a spot with only an RGB approximation converts through the CMYK profile with its tint applied.
 
-> **Note:** Color space conversions may not be perfectly reversible. Some sRGB colors cannot be exactly represented in CMYK due to different color gamuts.
+> **Note:** Color space conversions may not be perfectly reversible. Some sRGB colors
+> cannot be exactly represented in CMYK due to different color gamuts.
 
 ## Identifying Color Types
 
@@ -397,14 +413,14 @@ Import the type guards from `@cesdk/node` (or `@cesdk/node-native` — both expo
 
 ## Handling Tint and Alpha
 
-The tint and alpha values represent transparency in different color spaces:
+Alpha controls transparency. Tint controls color strength and does not generally preserve alpha:
 
-| Source | Target | Transformation |
-|--------|--------|----------------|
-| sRGB (alpha) | CMYK | Alpha becomes tint |
-| CMYK (tint) | sRGB | Tint becomes alpha |
-| SpotColor (tint) | sRGB | Tint becomes alpha |
-| SpotColor (tint) | CMYK | Tint is preserved |
+| Source           | Target | Transformation                                                                                |
+| ---------------- | ------ | --------------------------------------------------------------------------------------------- |
+| sRGB (alpha)     | CMYK   | Alpha is not generally preserved; keep transparency separately                                |
+| CMYK (tint)      | sRGB   | Tint scales ink values; the result is opaque                                                  |
+| SpotColor (tint) | sRGB   | Tint changes the approximation; the result is opaque                                          |
+| SpotColor (tint) | CMYK   | CMYK approximations retain tint; Managed RGB-only approximations apply tint before conversion |
 
 ## Exporting with Colors
 
@@ -443,8 +459,11 @@ for (const blockId of blocks) {
   if (engine.block.hasFill(blockId)) {
     const fillId = engine.block.getFill(blockId);
     const color = engine.block.getColor(fillId, 'fill/color/value');
+    await engine.editor.loadCMYKProfile();
     const cmykColor = engine.editor.convertColorToColorSpace(color, 'CMYK');
-    console.log(`Block ${blockId} CMYK: C${cmykColor.c} M${cmykColor.m} Y${cmykColor.y} K${cmykColor.k}`);
+    console.log(
+      `Block ${blockId} CMYK: C${cmykColor.c} M${cmykColor.m} Y${cmykColor.y} K${cmykColor.k}`
+    );
   }
 }
 ```
@@ -466,25 +485,25 @@ if (isRGBAColor(color)) {
 
 ## Troubleshooting
 
-| Issue | Cause | Solution |
-|-------|-------|----------|
-| Spot color converts to unexpected values | Spot color not defined | Call `setSpotColorRGB()` or `setSpotColorCMYK()` before conversion |
-| Colors look different after conversion | Color gamut differences | Some sRGB colors cannot be exactly represented in CMYK |
-| Type errors with converted colors | Wrong type assumption | Use type guards (`isRGBAColor`, `isCMYKColor`, `isSpotColor`) before accessing properties |
+| Issue                                    | Cause                   | Solution                                                                                  |
+| ---------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------- |
+| Spot color converts to unexpected values | Spot color not defined  | Call `setSpotColorRGB()` or `setSpotColorCMYK()` before conversion                        |
+| Colors look different after conversion   | Color gamut differences | Some sRGB colors cannot be exactly represented in CMYK                                    |
+| Type errors with converted colors        | Wrong type assumption   | Use type guards (`isRGBAColor`, `isCMYKColor`, `isSpotColor`) before accessing properties |
 
 ## API Reference
 
-| Method | Description |
-|--------|-------------|
+| Method                                                      | Description                                                                                             |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | `engine.editor.convertColorToColorSpace(color, colorSpace)` | Convert a color to the target color space. Returns an `RGBAColor` for 'sRGB' or `CMYKColor` for 'CMYK'. |
-| `engine.editor.setSpotColorRGB(name, r, g, b)` | Define a spot color with an RGB approximation. Components range from 0.0 to 1.0. |
-| `engine.editor.setSpotColorCMYK(name, c, m, y, k)` | Define a spot color with a CMYK approximation. Components range from 0.0 to 1.0. |
+| `engine.editor.setSpotColorRGB(name, r, g, b)`              | Define a spot color with an RGB approximation. Components range from 0.0 to 1.0.                        |
+| `engine.editor.setSpotColorCMYK(name, c, m, y, k)`          | Define a spot color with a CMYK approximation. Components range from 0.0 to 1.0.                        |
 
-| Type Guard | Description |
-|------------|-------------|
+| Type Guard           | Description                                        |
+| -------------------- | -------------------------------------------------- |
 | `isRGBAColor(color)` | Returns true if the color is an `RGBAColor` object |
-| `isCMYKColor(color)` | Returns true if the color is a `CMYKColor` object |
-| `isSpotColor(color)` | Returns true if the color is a `SpotColor` object |
+| `isCMYKColor(color)` | Returns true if the color is a `CMYKColor` object  |
+| `isSpotColor(color)` | Returns true if the color is a `SpotColor` object  |
 
 
 
