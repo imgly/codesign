@@ -206,6 +206,10 @@ engine.block.setTransition(clipA, t); // clipA → the clip after it on the trac
   (`timeOffset` of the next clip = the cut time; this clip's duration runs
   past it by the transition length) — keep that overlap equal to the
   transition's duration, or the transition drifts off the cut.
+- **Order.** `setTransition` needs the NEXT clip already on the track — it throws "no adjacent
+  following clip" otherwise. Place every clip first, then set transitions in a second pass.
+- **Read back in the next edit.** Clip offsets read in the same edit that called `setTransition`
+  can be stale; the committed values are right. Verify timings in a following read-only edit.
 - **Options.** Every transition has `playback.duration` (facade) and
   `animationEasing` (raw, default `EaseInOutQuint`; the animation easings).
   The `transition/<type>/*` options are raw engine properties — the facade
@@ -240,6 +244,12 @@ engine.block.setTransition(clipA, t); // clipA → the clip after it on the trac
 
 ## Notes
 
+- **Groups time their children.** A child's `timeOffset` inside a group counts from the group's
+  start, and a new group's `duration` defaults to 5 s — give every group a window that covers its
+  children (usually `timeOffset: 0, duration: <page duration>`), or everything in it disappears
+  after 5 s.
+- **Animating an existing still design?** The `animate` skill does it end to end:
+  `../animate/SKILL.md`.
 - Export: `export({ format: "mp4", revision, blockId: page })`.
   Duration and resolution come from the page; `fps` (default 30) is the one
   export knob. The page's audio blocks are mixed into the mp4.
