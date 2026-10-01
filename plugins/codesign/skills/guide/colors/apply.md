@@ -83,6 +83,7 @@ async function main() {
     engine.block.setColor(block, 'dropShadow/color', spotPink);
 
     // Convert colors between color spaces
+    await engine.editor.loadCMYKProfile();
     const cmykFromRgb = engine.editor.convertColorToColorSpace(
       rgbaBlue,
       'CMYK'
@@ -231,6 +232,7 @@ Use `engine.editor.convertColorToColorSpace()` to convert any color to a differe
 
 ```typescript highlight=highlight-convert-color
     // Convert colors between color spaces
+    await engine.editor.loadCMYKProfile();
     const cmykFromRgb = engine.editor.convertColorToColorSpace(
       rgbaBlue,
       'CMYK'
