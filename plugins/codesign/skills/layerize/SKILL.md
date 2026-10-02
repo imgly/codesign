@@ -5,7 +5,7 @@ description: >-
   creative (PNG / JPEG / WebP) — as an editable, layered CoDesign design or `.imgly` file; when
   asked to layerize, decompose, de-flatten or "make editable" an image; or when splitting an
   image into separate layers with live, editable text.
-argument-hint: <image> [output.imgly]
+argument-hint: "<image> [output.imgly]"
 ---
 
 # layerize

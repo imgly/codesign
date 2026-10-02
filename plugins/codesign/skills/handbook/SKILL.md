@@ -288,7 +288,7 @@ authored timeline. Do NOT rebuild a scene with `scene.createVideo()` just to
 animate it (`createVideo` and `scene.setMode('Video')` exist as conveniences;
 you rarely need either).
 
-The recipe — page duration, tracks and offsets, video fills and trims, audio,
+The recipe — page duration, one track per layer and offsets, video fills and trims, audio,
 `export`/`preview` for timelines — is `video.md`; read it
 before any timeline work.
 

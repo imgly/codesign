@@ -5,7 +5,7 @@ description: >-
   promo video (15–25 s, mp4): "make a launch video", "brag about this", "make a promo for what we
   built", "turn this into a video". Reads the project itself for the story, then builds, animates,
   scores and exports the video with CoDesign.
-argument-hint: [tone] [landscape|vertical|square] [music file]
+argument-hint: "[tone] [landscape|vertical|square] [music file]"
 ---
 
 # launch-video
@@ -124,9 +124,15 @@ Sound comes before the build, because the cuts are timed to it. Per
 ## 4 — Build
 
 One page is the whole video: size it per `format`, `engine.scene.setMode('Video')`, and set the
-page's `playback.duration` to the storyboard total. Beats live on tracks, because only track clips
-take transitions: one track for the backgrounds (colour, image or video clips), one for the words,
-cut at the same times. Name every block by beat (`b3/bg`, `b3/line`) so later edits find them.
+page's `playback.duration` to the storyboard total. Plan the tracks before the first `edit`: list
+the layers the storyboard uses (backgrounds, media, headline, subline, chip, …), bottom first, and
+write that track plan into `plan.md`. Each layer is ONE track that holds every beat's clip for that
+layer, one after another; nothing but audio goes on the page directly (`../handbook/video.md`,
+"Timeline: one track per layer"). Tracks also make transitions possible, since only track clips take
+them. Reuse each track across beats, and make items that enter together in one beat (a list, a row
+of chips) one group clip. Name every block by beat and layer (`b3/bg`, `b3/line`) so later edits
+find them. When an `edit` result says the clips "fit on M tracks", merge them onto that many tracks
+before going on.
 
 Animate entrances, exits and loops on top of the transitions. Type, options, duration, easing and
 text writing style are all facade keys:
@@ -169,9 +175,9 @@ Save the code of every `edit` you run to `<out>/build/NN-<step>.js`, in order �
 - `preview` the page with `time` at the middle of every beat. Run the judge loop on those frames:
   every line readable at its hold time, nothing clipped at the canvas edge, the hierarchy clear at
   a glance. Fix in place and re-check.
-- `export({ format: "mp4", revision, blockId: page })` → `<out>/launch.mp4`. Check the transitions
-  in the mp4, not in `preview` — a still at a transition time can miss it: pull a frame at the
-  middle of each (`ffmpeg -ss <t> -i launch.mp4 -frames:v 1 <out>/build/t-<t>.png`) and look.
+- `preview` the middle of every transition too: the still shows it as the mp4 will. One clip whole
+  there means the transition is missing or off its cut — fix it before exporting.
+- `export({ format: "mp4", revision, blockId: page })` → `<out>/launch.mp4`.
 - Poster: pick the strongest frame from the previews, export it as `png` → `<out>/poster.png`.
 - `export({ format: "imgly", revision })` → `<out>/design.imgly`, the editable source.
 - Write `<out>/share-copy.txt`: a one-line post, a two-sentence post, and alt text.

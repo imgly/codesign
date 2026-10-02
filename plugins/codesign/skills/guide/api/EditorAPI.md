@@ -954,6 +954,11 @@ getSpotColorForCutoutType(type: CutoutType): string
 ### convertColorToColorSpace()
 
 Converts a color to the given color space.
+In Managed scenes, converting sRGB colors or RGB-only spot approximations to CMYK
+uses the document or fallback CMYK profile.
+While the required profile loads from a URI, this conversion throws `COLOR.PROFILE_NOT_LOADED`.
+Await {@link loadCMYKProfile} first. RGB-to-CMYK conversion uses a simple formula
+if the profile only converts CMYK to RGB or cannot load.
 
 ```typescript
 convertColorToColorSpace(color: Color, colorSpace: 'sRGB'): RGBAColor
@@ -967,9 +972,9 @@ convertColorToColorSpace(color: Color, colorSpace: 'sRGB'): RGBAColor
 
 ### loadCMYKProfile()
 
-Loads the CMYK profile that this document previews and converts CMYK colors with.
-The profile is a resource, and a resource takes several update cycles to arrive, so a CMYK
-conversion made right after the engine starts fails. Await this once and every later
+Loads the CMYK profile used for managed color conversion and preview.
+The profile is a resource, and a resource takes several update cycles to arrive, so a
+conversion that needs it can fail right after the engine starts. Await this once and every later
 {@link convertColorToColorSpace} answers without handling `COLOR.PROFILE_NOT_LOADED`.
 Loads the profile the document names, otherwise the one the `fallbackCMYKProfileUri` setting
 names, which is the bundled default profile while that setting is unset. Call it again after

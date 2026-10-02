@@ -16,7 +16,7 @@ description: |
 
 ## Version Notice
 
-> **CE.SDK version**: 1.83.0-rc.3
+> **CE.SDK version**: 1.83.0
 >
 > This documentation is bundled with the server and re-vendored in lockstep
 > with the engine version above — it matches the running engine. Always

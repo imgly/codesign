@@ -75,6 +75,21 @@ chip row only when those disagree; otherwise take it and name it in the brief
 
 **Format:** chosen card size + 3 mm bleed; side 2 defaults to a brand/logo face.
 
+## video
+
+| Parameter | Kind | Chips / values                                                         | Default                                              |
+| --------- | ---- | ---------------------------------------------------------------------- | ---------------------------------------------------- |
+| placement | A    | Reel / TikTok / Story 9:16 · Feed 4:5 · Landscape 16:9 · Square 1:1    | Reel / TikTok / Story                                |
+| length    | A    | ~6 s · ~15 s · ~30 s · ~60 s                                           | ~15 s                                                |
+| sound     | A    | Music · Voiceover · Music + voiceover · Silent · the user's audio file | Music when signed in, else Silent                    |
+| footage   | D    | The user's clips/images · Generated clips · Motion graphics only       | the user's media if given, else Motion graphics only |
+
+**Format (derived from placement):** 9:16 1080×1920 px · 4:5 1080×1350 px · 16:9
+1920×1080 px · 1:1 1080×1080 px; the placement's safe zones come from the `formats`
+skill. Build per `../handbook/video.md` and deliver with
+`export({ format: "mp4" })`. Generated music, voiceover and clips need a sign-in
+(`login`); without one, say so in the brief and use the user's files or ship silent.
+
 ## custom
 
 | Parameter  | Kind | Chips / values                               | Default |

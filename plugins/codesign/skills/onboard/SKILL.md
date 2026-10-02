@@ -57,8 +57,8 @@ in your own words, about a paragraph:
 headline and only the headline moves.
 - **You can take over at any point.** Every design opens in a browser editor — move
   things yourself, save, and I carry on from your version.
-- **It ends in something usable:** print-quality PDF, or images in whatever size you
-  need.
+- **It ends in something usable:** print-quality PDF, images in whatever size you
+  need, or an mp4 video with its sound.
 
 ## Beat 2 — the six jobs
 
@@ -78,7 +78,7 @@ re-voice them. The job ids in the first column are values, never translated.
 
 | Job        | Card title                                             | Subtext                                                                                 | Then run                         |
 | ---------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------- | -------------------------------- |
-| `generate` | **Create: Make something**                             | Builds a deck, poster, flyer, social post, business card, or any custom size.           | `create`                         |
+| `generate` | **Create: Make something**                             | Builds a deck, poster, flyer, social post, business card, video, or any custom size.    | `create`                         |
 | `import`   | **Import: Convert an existing file**                   | Turns Photoshop, InDesign, PowerPoint, PDF, or images back into something you can edit. | `import`, then the handbook Loop |
 | `resize`   | **Resize: Ship one design in different sizes**         | Re-composes the layout per format and platform — not just scaled.                       | `resize`                         |
 | `rebrand`  | **Rebrand: Enforce your brand design rules**           | Applies your colors, fonts, and logo across the whole design.                           | `brand`                          |
