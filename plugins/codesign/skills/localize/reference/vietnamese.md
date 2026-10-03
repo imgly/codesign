@@ -31,7 +31,7 @@ Vietnamese uses the Latin set: “ ” ‘ ’ (per `language-rules.md` §5's sm
 ## Fonts
 
 **Playfair Display's single static file covers Vietnamese** — the verified pick for display; see
-`font-loading.md` for the table and the variable-bold trap before choosing anything else.
+`font-loading.md` for the table and declaring weights from a variable file before choosing anything else.
 
 ## Cross-references
 

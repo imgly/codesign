@@ -3,8 +3,8 @@
 `apply.js` builds all of this; this page is for reading a result and for edits the scheduler does
 not cover.
 
-The chosen pages are combined onto one video page (the first chosen page) in a new revision; pages
-left out of a pick are dropped from it. The multi-page still stays as the parent revision.
+The chosen pages are combined onto one video page (the first chosen page) in the animated design;
+pages left out of a pick are dropped from it. The saved multi-page still stays as it was.
 
 - **Order and length:** from intake. Each scene gets
   `max(entrance window + readability hold, total ÷ pages)`, and the echo reports the total.

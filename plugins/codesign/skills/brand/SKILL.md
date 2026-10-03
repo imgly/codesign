@@ -13,10 +13,26 @@ description: >-
 # brand
 
 Point this skill at the current design and a brand kit, and it re-skins the design to that brand
-under the brand's **strict rules**. It operates on the **latest revision of the current design**
-(re-ground via `list()` / `history()` if unsure — handbook §1); the restyle lands as a new
-revision, forked from the source. Single home for the brand workflow: the **role → token map**,
-the **restyle routine**, the **graded conformance pass**, and the brand **no-goes**.
+under the brand's **strict rules**. It operates on the **design in the current session**, and the
+restyle is **saved as its own `.imgly` file**. Single home for the brand workflow: the
+**role → token map**, the **restyle routine**, the **graded conformance pass**, and the brand
+**no-goes**.
+
+**Keep the source; restyle a copy.** A session holds one design and a restyle changes it in place
+(handbook §1), so take the source's `uri` first and `import` it — the restyle goes to the copy, and
+the source stays as it was:
+
+```
+export({ format: 'imgly' })                → SOURCE_URI   (the un-branded original, kept)
+import({ source: { uri: SOURCE_URI } })    → a copy of it is the session
+edit(…)  restyle + conform
+preview()                                  → diff against the source's render
+export({ format: 'imgly' })                → the restyled edition, its own file
+```
+
+Both editions then exist. Skipping the first two steps means the un-branded original is gone
+the moment you restyle — and the source-parity diff the `judge` gate requires has nothing to
+compare against.
 
 It builds on things it does _not_ restate: handbook §6.1–§6.5 (the general typography / colour /
 hierarchy / composition / craft thresholds), the handbook's engine mechanics (the `text.font`
@@ -44,7 +60,7 @@ beside it:
   applying — extraction per source form, the not-invent discipline, the avoid-list hard-stop, the
   font-subset trap. Read it whenever the kit isn't already a valid canonical folder.
 - **`reference/asset-loading.md`** — the **asset mechanics** (resolving brand fonts to a fetchable
-  URI incl. the local-TTF → `workspace://` bridge, the hex → 0-1 RGBA conversion, placing the
+  URI incl. the local-TTF → imported-`uri` bridge, the hex → 0-1 RGBA conversion, placing the
   wordmark SVG, recolouring monochrome icons, building the **kicker pill** on a text background,
   block-**opacity** vs colour-alpha, `text.color` vs colour-fill, the whole-block colour that
   flattens per-run colour). Unlike
@@ -74,22 +90,25 @@ Resolve these by the intake contract — derive, ask once, echo, invent nothing:
 `../handbook/intake.md`. **R** = required, no default; **A** = ask if
 underived; **D** = defaultable.
 
-| Parameter     | Kind    | Chips / values                                                            | Default                               |
-| ------------- | ------- | ------------------------------------------------------------------------- | ------------------------------------- |
-| brand kit     | **R**   | the kits found in the workspace · `Provide a brand source` · Other        | **none — never invented**             |
-| colour scheme | A       | the chosen kit's `colorSchemes.approved` · `Decide automatically` · Other | the neutral / `paper` scheme          |
-| source design | derived | —                                                                         | latest revision of the current design |
+| Parameter     | Kind    | Chips / values                                                            | Default                           |
+| ------------- | ------- | ------------------------------------------------------------------------- | --------------------------------- |
+| brand kit     | **R**   | the kits you can find · `Provide a brand source` · Other                  | **none — never invented**         |
+| colour scheme | A       | the chosen kit's `colorSchemes.approved` · `Decide automatically` · Other | the neutral / `paper` scheme      |
+| source design | derived | —                                                                         | the design in the current session |
 
-**1. The source** — the latest revision of the current design. A restyle preserves that revision's
-geometry and copy; only the style layer changes. If the user means an earlier design, find it via
-`list()` / `history()` first.
+**1. The source** — the design in the current session. **Save it first** (`export({ format: 'imgly' })`)
+and keep the `uri`: a restyle preserves that design's geometry and copy — only the style layer
+changes — and the saved file is both the un-branded original and your reference for the parity
+diff.
+If the user means a design saved earlier, its `uri` IS `SOURCE_URI`: `open` it to `preview` and
+capture it, skip the first save, then `import` a copy to restyle.
 
 **2. The brand kit** — a folder the user points you at (`<kit>/`), holding `tokens.json` (+
 `BRAND.md`, fonts, logos, icons, imagery, `do-dont/`). Parse `tokens.json` **first**; it is the
 machine-readable law. Validate it against `reference/brandkit-spec.md`.
 
 If no kit is named, **ask** — _**Which brand should this use?**_ — offering the kits you can find
-in the workspace plus `Provide a brand source`. A brand is the user's own fact: there is no
+plus `Provide a brand source`. A brand is the user's own fact: there is no
 defaulting to "a sensible brand", and no proceeding on an inferred one.
 
 If what the user gives you is **not** a canonical kit yet — an external source (a guidelines PDF, a
@@ -116,7 +135,7 @@ invention; free-choosing a `(bg, text, accent)` triple is. **One scheme per piec
 `denied` combination.
 
 Then echo what you resolved in one line ("acme restyle, paper scheme (defaulted), 1 design") and
-run the Workflow. The restyled revision gets a `note` naming the brand and scheme (e.g. "acme
+run the Workflow. The restyling `edit` gets a `note` naming the brand and scheme (e.g. "acme
 restyle, paper scheme").
 
 ## Core principle — re-skin by role, then conform to the brand's law
@@ -174,13 +193,16 @@ rows with no matching block; don't invent a subline to satisfy `typography.pairi
 
 1. **Load & validate the brand kit.** Parse `tokens.json`; read `avoid` + skim `do-dont/`. Resolve
    every needed font to a fetchable URI and `asset_add` the logo SVG(s) — **`reference/asset-loading.md`**.
-2. **Read the source.** The latest revision resolved in Inputs is the reference — its geometry and
-   copy are what the restyle preserves.
+2. **Read the source, and save it.** The design resolved in Inputs is the reference — its geometry
+   and copy are what the restyle preserves. `preview` it now and `export({ format: 'imgly' })` it:
+   that render is the only source render the parity diff in step 7 will have, and that file is the
+   un-branded original.
+   Then `import({ source: { uri: SOURCE_URI } })` — restyle the copy, never the source.
 3. **Capture source roles + style.** Walk the scene; classify blocks by role; read each block's
    current colour / font / geometry (see routine).
 4. **Pick one approved scheme** per piece (per `backgroundSelection`); pick the logo variant by the
    chosen background.
-5. **Layer 1 — Restyle.** Fork the source; for each block set the brand token for its role — recolour,
+5. **Layer 1 — Restyle.** For each block set the brand token for its role — recolour,
    refont (unique `typeface.name`), apply radius/shadow/accent, swap the logo. **Re-map the accent
    runs in the same write** — a font/size change auto-reshapes with ranges preserved, but the
    whole-block role colour flattens per-character colour, so the accent runs go back on as
@@ -188,18 +210,23 @@ rows with no matching block; don't invent a subline to satisfy `typography.pairi
 6. **Layer 2 — Graded conformance.** Fix every hard `avoid`/`denied` violation; apply the structural
    rules that fit the source (proportion ~ the brand's ratio, safe-area margins, kicker pill, card
    shadow, device placement, size thresholds). Flag any layout-level need as out-of-scope (→ resize).
-7. **Judge against the source** — a restyle is a **source-derived variant**: `preview` the source
-   revision too and diff the two renders. Copy, geometry, and composition must be the source's; only
-   the style layer moved. Then run the `judge` skill with the brand `avoid`/`do-dont` added to the
-   criteria; contrast ≥ 4.5:1 after every recolour. Fix anything < 8 or any hard violation.
-8. **`loadResources` → `preview` → export.** Preview every restyle — wrong face, lost colour,
-   low contrast, and a banned tell only show in the render.
+7. **Judge against the source** — a restyle is a **source-derived variant**: diff this render
+   against the source render you captured in step 2. Copy, geometry, and composition must be the
+   source's; only the style layer moved. (Lost that render? `export({ format: 'imgly' })` the
+   restyle for its `uri`, `open` the source, `preview` it, then `open` the restyle's `uri` to
+   return.) Then run the `judge` skill with the brand `avoid`/`do-dont`
+   added to the criteria; contrast ≥ 4.5:1 after every recolour. Fix anything < 8 or any hard
+   violation.
+8. **`loadResources` → `preview` → SAVE.** Preview the restyle — wrong face, lost colour, low
+   contrast, and a banned tell only show in the render. Then `export({ format: 'imgly' })`: that
+   file is the branded edition, and until it exists the restyle is not something the user has.
+   Report both `uri`s — original and restyle.
 
 Dry-run the conformance checklist (below) against each render before reporting done.
 
 ## The restyle routine
 
-Layer-1 as a CoDesign `edit`, run on a fork of the source revision. It classifies, maps role →
+Layer-1 as a CoDesign `edit`, run on the copy of the source. It classifies, maps role →
 token, and recolours/refonts with the accent re-map guard. It is a **judgment-driven
 first pass** (the role classification and the focal-moment choice need your eye), not a blind
 transform. Adapt the classification to the design; fill `SCHEME` and the font URIs from the kit
@@ -244,7 +271,7 @@ return {
 };
 ```
 
-**Apply brand tokens to a fork** (first pass, then conform + preview):
+**Apply brand tokens to the source** (first pass, then conform + preview):
 
 ```js
 // hex '#RRGGBB' -> CE.SDK 0-1 RGBA. See reference/asset-loading.md.
@@ -262,10 +289,10 @@ const tf = (name, uri) => ({
 // --- from the kit: the chosen approved scheme + resolved font URIs (unique names!) ---
 const SCHEME = { background: '#FBFBFC', text: '#2E2E2F', accent: '#471AFF' };
 const DISPLAY = {
-  uri: 'workspace://assets/<sha>.ttf',
+  uri: '<opaque handle>',
   name: 'GT Walsheim Pro Medium'
 }; // headlineWeight only
-const BODY = { uri: 'workspace://assets/<sha>.ttf', name: 'Inter' };
+const BODY = { uri: '<opaque handle>', name: 'Inter' };
 // A font swap changes the content area, so re-convert any target line-height from the NEW
 // font's metrics — not a fixed factor (handbook §6.1.3). Call after the font write; the
 // lineHeight write reshapes on its own, ranges preserved.
@@ -396,8 +423,8 @@ outright).
 
 **Craft / baseline**
 
-- [ ] **Fonts actually swapped** — unique `typeface.name` per URI; a static file where a bold is
-      needed (a variable TTF renders its default instance)
+- [ ] **Fonts actually swapped** — unique `typeface.name` per typeface; every weight you set is
+      declared in `typeface.fonts` (a variable TTF serves them all, one entry per weight)
 - [ ] **Accent colours survived the recolour** — the whole-block role colour flattens per-run
       colour, so every accent run went back on as a `text.ranges` entry in the same write; no block
       left at the engine default
@@ -417,8 +444,8 @@ outright).
   background variant (dot vanishes on a matching fill). Exact bundled SVG only; scale proportionally.
 - **Role colour flattened the accent** — a whole-block `text.color` write collapses every run to
   the role colour. Re-apply the accent runs as `text.ranges` in the same `setProps`.
-- **Font not actually swapped** — a new URI under a reused `typeface.name` silently no-ops; or a
-  variable TTF renders only its default instance (no bold). Unique names; static file for bold.
+- **Font not actually swapped** — a new URI under a reused `typeface.name` silently no-ops. Unique
+  names; and declare every weight you set (a variable TTF needs one `fonts[]` entry per weight).
 - **Tofu** — brand font lacks a glyph in the copy; only `preview` catches it.
 - **Contrast fail** — text < 4.5:1 after recolour (esp. on a colour field). Re-pick the role colour.
 - **Geometry drift** — moving/re-flowing blocks in a restyle. This is not resize; hold the source
@@ -443,7 +470,7 @@ outright).
   graceful degradation) — the _target shape_.
 - **`reference/authoring.md`** — the intake mode: ingesting an external brand (PDF / URL / Figma /
   asset dump) into that shape — _how to reach it_.
-- **`reference/asset-loading.md`** — font-URI resolution (CDN + local-TTF → `workspace://` bridge),
+- **`reference/asset-loading.md`** — font-URI resolution (CDN + local-TTF → the returned `uri` bridge),
   hex → RGBA, logo SVG placement, icon recolour, colour-fill mechanics.
 - handbook §6.1–§6.5 — the general typography / colour / hierarchy / composition / craft
   thresholds this skill applies through a brand's values; and the handbook's engine mechanics

@@ -1,9 +1,9 @@
 # Sound — music, beat map, effects, voice
 
 Reference for the `launch-video` skill: score the video before building it, then cut to the music.
-Generation runs through `asset_generate` and needs a signed-in account; how to find a model, read its
-input schema and pass its inputs is in the `models` skill. Placing audio in the design is the video
-recipe (`../handbook/video.md`).
+Generation runs through `asset_generate`; how to find a model, read its input schema and pass its
+inputs is in the `models` skill.
+Placing audio in the design is the video recipe (`../handbook/video.md`).
 
 ## Music
 
@@ -29,45 +29,50 @@ recipe (`../handbook/video.md`).
 
 ## Beat map
 
-Write this script to `<out>/build/beats.mjs` and run it on the track with the BPM you asked for (it
-needs `ffmpeg` on the PATH): `node <out>/build/beats.mjs music.mp3 --bpm 120 > <out>/build/beats.json`.
+The engine analyses the track itself — no program to install. Put the music on the video page as
+its own audio block first (`playback.timeOffset` where it starts), then run this as the tail of
+that `edit`, or alone in a read-only `edit` (`render: false`), with the block id and the BPM you
+asked for in its first line. Save the returned JSON as `<out>/build/beats.json`.
 
 ```js
-// node beats.mjs <audio> [--bpm <requested>] > beats.json — beat grid, onsets and accents from any audio ffmpeg reads.
-import { execFileSync } from 'node:child_process';
+// beats.js — the tail of the edit that placed the music, or ONE read-only edit; first line: const MUSIC = <audio block id>, BPM = <requested BPM or null>;
 const SR = 22050,
-  HOP = 512;
-const flag = process.argv.indexOf('--bpm');
-const requested = flag > 0 ? Number(process.argv[flag + 1]) : null;
-const pcm = execFileSync(
-  'ffmpeg',
-  [
-    '-v',
-    'error',
-    '-i',
-    process.argv[2],
-    '-ac',
-    '1',
-    '-ar',
-    String(SR),
-    '-f',
-    'f32le',
-    '-'
-  ],
-  { maxBuffer: 1 << 30 }
-);
-const x = new Float32Array(pcm.buffer, pcm.byteOffset, pcm.length / 4);
-const fps = SR / HOP,
-  n = Math.floor(x.length / HOP),
-  duration = x.length / SR;
-const energy = new Float64Array(n);
-for (let i = 0; i < n; i++) {
-  let s = 0;
-  for (let j = i * HOP; j < (i + 1) * HOP; j++) s += x[j] * x[j];
-  energy[i] = Math.log1p((1000 * s) / HOP);
-}
+  HOP = 512,
+  FPS = SR / HOP;
+await engine.block.forceLoadAVResource(MUSIC);
+const { playback: pb } = await engine.design.getProps(MUSIC, ['playback']);
+const speed = pb.speed || 1,
+  from = pb.trimOffset,
+  to = Math.min(
+    from + pb.duration * speed,
+    engine.block.getAVResourceTotalDuration(MUSIC)
+  );
+const n = Math.max(0, Math.floor((to - from) * FPS)),
+  duration = n / FPS;
+// The engine's decode at SR, one value per sample: |x| on a 50 dB scale (0 = −50 dBFS, 1 = full scale).
+const power = new Float64Array(n);
+await new Promise((resolve, reject) => {
+  let left = Math.ceil(n / 64);
+  if (!left) return resolve();
+  engine.block.generateAudioThumbnailSequence(
+    MUSIC,
+    64 * HOP,
+    from,
+    from + duration,
+    n * HOP,
+    1,
+    (c, r) => {
+      if (r instanceof Error) return reject(r);
+      for (let k = 0; k < r.length; k++)
+        if (r[k] > 0)
+          power[c * 64 + Math.floor(k / HOP)] += 10 ** (5 * (r[k] - 1));
+      if (!--left) resolve();
+    }
+  );
+});
+const energy = power.map((p) => Math.log1p((1000 * p) / HOP));
 const flux = energy.map((e, i) => (i ? Math.max(0, e - energy[i - 1]) : 0));
-const W = Math.round(fps / 2); // adaptive threshold: local mean over ±0.5 s
+const W = Math.round(FPS / 2); // adaptive threshold: local mean over ±0.5 s
 const onsets = [];
 for (let i = 1; i < n - 1; i++) {
   let m = 0;
@@ -80,7 +85,7 @@ for (let i = 1; i < n - 1; i++) {
     flux[i] > flux[i + 1]
   )
     onsets.push({
-      t: i / fps,
+      t: i / FPS,
       attack: flux[i],
       strength: Math.max(...energy.slice(i, i + 4))
     });
@@ -141,8 +146,8 @@ const ac = (l) => {
 };
 let lag = 0; // tempo guess: autocorrelation peak of the flux over 70–180 BPM
 for (
-  let l = Math.round((fps * 60) / 180);
-  l <= Math.round((fps * 60) / 70);
+  let l = Math.round((FPS * 60) / 180);
+  l <= Math.round((FPS * 60) / 70);
   l++
 )
   if (!lag || ac(l) > ac(lag)) lag = l;
@@ -152,33 +157,37 @@ let best = null;
 for (const r of [1, 2, 1 / 2, 3 / 2, 2 / 3, 4 / 3, 3 / 4]) {
   const f =
     onsets.length >= 8 &&
-    lag / fps / r >= 0.25 &&
-    lag / fps / r <= 1.5 &&
-    fit(lag / fps / r);
+    lag / FPS / r >= 0.25 &&
+    lag / FPS / r <= 1.5 &&
+    fit(lag / FPS / r);
   if (f && (!best || f.score > best.score)) best = f;
 }
 let grid = best && best.score > 3 * best.noise ? best : null;
-if (grid && requested) {
+if (grid && BPM) {
   const { period: p, phase: ph } = grid,
     half = [measure(2 * p, ph), measure(2 * p, ph + p)].sort(
       (a, b) => b.score - a.score
     )[0];
-  const off = (g) => Math.abs(Math.log(60 / g.period / requested));
+  const off = (g) => Math.abs(Math.log((60 * speed) / g.period / BPM));
   grid = [grid, half, measure(p / 2, ph)].sort((a, b) => off(a) - off(b))[0];
 }
+// Analysis time is source seconds from the trim point; report page time.
+const page = (t) => +(pb.timeOffset + t / speed).toFixed(3);
 const beats = [];
 for (let t = grid?.phase; grid && t < duration; t += grid.period)
-  beats.push(+t.toFixed(3));
+  beats.push(page(t));
 const max = Math.max(...onsets.map((o) => o.strength));
 const hits = onsets.map((o) => ({
-  t: +o.t.toFixed(3),
+  t: page(o.t),
   strength: +(o.strength / max).toFixed(2)
 }));
-console.log(
-  JSON.stringify({
-    duration: +duration.toFixed(3),
-    bpm: grid && +(60 / grid.period).toFixed(2),
-    requestedBpm: requested,
+return {
+  type: 'text',
+  text: JSON.stringify({
+    start: page(0),
+    duration: +(duration / speed).toFixed(3),
+    bpm: grid && +((60 * speed) / grid.period).toFixed(2),
+    requestedBpm: BPM,
     fit: grid && {
       onsets: onsets.length,
       onGrid: grid.onGrid,
@@ -188,16 +197,21 @@ console.log(
     accents: hits.filter((o) => o.strength >= 0.8).map((o) => o.t),
     onsets: hits
   })
-);
+};
 ```
 
-`beats.json` holds `bpm`, `beats` (the grid, seconds), `fit`, `accents` (the loudest hits) and
-`onsets` (every hit, `strength` 0–1). Checked against a click track (tempo within 1 %, beats within
-one 23 ms analysis frame) and a syncopated groove whose loud hits repeat every 1.5 beats (the beat,
-not the 2:3 alias).
+`beats.json` holds `bpm`, `beats` (the grid), `fit`, `accents` (the loudest hits) and `onsets`
+(every hit, `strength` 0–1) — every time in page seconds, from `start` (the block's `timeOffset`)
+for `duration`. Checked against a click track (tempo within 1 %, beats within one 23 ms analysis
+frame) and a syncopated groove whose loud hits repeat every 1.5 beats (the beat, not the 2:3 alias).
 
-- **Pass the tempo you asked for** as `--bpm`. The script settles related tempos itself — a grid at
-  2/3 or 3/4 of the beat carries less of the attack and loses — and uses `--bpm` only to choose
+- **Beat-tight sync: analyse and play a WAV.** The engine decodes an MP3 tens of milliseconds late,
+  and an mp4 export plays it later still. Render the track to WAV first: while the MP3 is the only
+  audio on the page, run `export({ format: 'wav', blockId: page })`, then set the music block's
+  `audio.fileURI` to the returned `uri` (with `timeOffset` and `trimOffset` 0 — the WAV is the
+  page's mix from 0 s) and run the beat map at the end of that `edit`. The analysis then reads exactly what the mp4 plays.
+- **Pass the tempo you asked for** as `BPM`. The recipe settles related tempos itself — a grid at
+  2/3 or 3/4 of the beat carries less of the attack and loses — and uses `BPM` only to choose
   between halving and doubling, which fit equally well. `bpm` may still differ from the request by a
   few tenths — that is the track's real tempo; use it.
 - **Check `fit`**: `meanErrMs` is how far the hits on the grid sit from it, `onGrid` of `onsets` how

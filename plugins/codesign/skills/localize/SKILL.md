@@ -12,7 +12,7 @@ description: >-
 
 # localize
 
-Point this skill at the current design and the target locales, and it produces or repairs the localized editions. It operates on the **latest revision of the current design** (re-ground via `list()` / `history()` if unsure — handbook §1); each locale lands as its own revision, forked from the source. Single home for localizing CoDesign designs: the **operational workflow**, the **font-loading mechanics**, and the **per-language quality rules**. It builds on two things it does _not_ restate: handbook §6.1 (general typographic thresholds — leading, tracking, all-caps, the content-area line-height conversion (`design.font`), smart punctuation, reshape-recolor) and handbook §6.7 (general Latin font mechanics — single-URI `text.font` declarations, static-vs-variable, blank-glyph diagnosis). This skill is the non-Latin / localization extension of both.
+Point this skill at the current design and the target locales, and it produces or repairs the localized editions. It operates on the **design in the current session**, and each locale is **saved as its own `.imgly` file**. Single home for localizing CoDesign designs: the **operational workflow**, the **font-loading mechanics**, and the **per-language quality rules**. It builds on two things it does _not_ restate: handbook §6.1 (general typographic thresholds — leading, tracking, all-caps, the content-area line-height conversion (`design.font`), smart punctuation, reshape-recolor) and handbook §6.7 (general Latin font mechanics — single-URI `text.font` declarations, static-vs-variable, blank-glyph diagnosis). This skill is the non-Latin / localization extension of both.
 
 **Scoring:** localizing is judged with the `judge` skill — every applicable axis ≥ 8, no averaging, N/A = 10. A single tofu glyph, an overflow after expansion, un-mirrored RTL, or a block that drifted off the source grid fails the edition (the `localization` axis).
 
@@ -23,7 +23,7 @@ classification, and the snap-to-reference routine. Two situational bodies of rul
 and are pulled in only when the task needs them:
 
 - **`reference/font-loading.md`** — getting a non-Latin / non-handbook face to render (jsDelivr
-  picks, the variable-bold trap, font-declaration gotchas, the silent-sans failure). Read it whenever the
+  picks, weights from a variable file, font-declaration gotchas, the silent-sans failure). Read it whenever the
   target locale needs a Cyrillic / CJK / Arabic / Vietnamese font, or copy came out tofu / wrong
   face.
 - **`reference/language-rules.md`** — the cross-language spine: preserve-vs-localize, translation
@@ -34,8 +34,8 @@ and are pulled in only when the task needs them:
   you're building, e.g. `reference/arabic.md`.
 
 Several locales of one design, or re-applying a master fix to locales you already built: the
-**master → editions** workflow, `../resize/editions.md`. For an animated or video design,
-read **Video and animated designs** below as well.
+**master → editions** workflow, `../resize/editions.md`.
+For an animated or video design, read **Video and animated designs** below as well.
 
 ## Inputs — what to localize, and into what
 
@@ -43,13 +43,25 @@ Resolved before any work by the intake contract — derive, ask once, echo, inve
 `../handbook/intake.md`. **R** = required, no default; **A** = ask if
 underived; **D** = defaultable.
 
-| Parameter      | Kind    | Chips / values                                                              | Default                               |
-| -------------- | ------- | --------------------------------------------------------------------------- | ------------------------------------- |
-| target locales | **R**   | `German` · `French` · `Spanish` · `Japanese` · `Chinese` · `Arabic` · Other | none                                  |
-| source locale  | A       | detected from the design's copy · Other                                     | detected, stated in the echo          |
-| source design  | derived | —                                                                           | latest revision of the current design |
+| Parameter      | Kind    | Chips / values                                                              | Default                           |
+| -------------- | ------- | --------------------------------------------------------------------------- | --------------------------------- |
+| target locales | **R**   | `German` · `French` · `Spanish` · `Japanese` · `Chinese` · `Arabic` · Other | none                              |
+| source locale  | A       | detected from the design's copy · Other                                     | detected, stated in the echo      |
+| source design  | derived | —                                                                           | the design in the current session |
 
-**1. The source (reference)** — the latest revision of the current design in its source language (usually `en`). That revision's geometry is the grid every target locale snaps to. Never localize _from_ a non-reference locale — always fork each locale from the source revision. If the user means an earlier design, find it via `list()` / `history()` first.
+**1. The source (reference)** — the design in the current session, in its source language (usually `en`). **Save it first** (`export({ format: 'imgly' })`) and keep the `uri`: its geometry is the grid every target locale snaps to, and every locale starts by re-importing that file. Never localize _from_ a non-reference locale.
+If the user means a design saved earlier, its `uri` IS the reference `uri`: `open` it to `preview` and capture it, skip the first save, then `import` a copy of it per locale.
+
+A session holds one design, so the locales are built in sequence and the saved reference is what you return to between them (handbook §1):
+
+```
+export({ format: 'imgly' })                   → REFERENCE_URI   (save the source FIRST)
+per locale:
+  import({ source: { uri: REFERENCE_URI } })  → a copy of the reference is the session
+  edit(…)  translate + swap the script font + snap to the reference geometry
+  preview()                                   → check it against the reference render
+  export({ format: 'imgly' })                 → that locale's own file
+```
 
 **2. The locales** — the target languages, e.g. `de ja ru ar`. If omitted, **ask** —
 _**Which languages do you need?**_ — with the chips above; there is no defaulting to a language the
@@ -60,7 +72,7 @@ building.
 or a term is a name/product you cannot safely render in the target script, ask rather than guess —
 see the keep-byte-identical list in `reference/language-rules.md` §1.
 
-**Per locale, then:** run the Workflow below (fork the source revision, or reuse+snap an existing localized revision). Give each locale's revision a `note` naming the locale. Preview every locale before reporting done.
+**Per locale, then:** run the Workflow below (re-import the reference, or load an existing localized file and snap it). Give each locale's `edit` a `note` naming the locale, `preview` it, and **save it** — an unsaved locale is one the user never receives. Report every locale's `uri` at the end.
 
 ## Core principle — localize, then snap back to the reference
 
@@ -100,19 +112,25 @@ the **size/format** — re-compose a design for a new aspect rather than transla
 
 ## Reuse an existing localized build vs build fresh
 
-- **The workspace already has the locale** (an earlier pass built it — check `history()`): **reuse its
-  build** — the translated copy, script fonts, and RTL are already solved — but still **snap it to
-  the reference geometry**. Earlier builds commonly drift; reuse the assets, fix the positions.
-- **No existing build:** fork the reference revision and swap text + font.
+- **A saved file for the locale already exists** (an earlier pass built it — the user has its `uri`):
+  **reuse its build** — `open({ uri })` it (`import` would give you a copy); the translated copy,
+  script fonts, and RTL are already solved — but still **snap it to the reference geometry**.
+  Earlier builds commonly drift; reuse the assets, fix the positions. Your fix goes to that design
+  itself.
+  Save it when you are done.
+- **No existing build:** `import` a copy of the reference file and swap text + font.
 
 Either way the last step is the same: every block lands on the reference grid.
 
 ## Workflow
 
-1. **Capture the reference geometry.** Load the source-locale variant of that size and read, per
+1. **Capture the reference geometry.** With the source-locale design in the session, `preview` it
+   (that render is your parity reference for the `judge` gate) and read, per
    block: `x, y, width, widthMode, heightMode, fontSize (Pixel), lineHeight, letterSpacing,
-alignment`, plus page `w/h`, the ghost's anchor (left / centered), and the rule position.
-2. **Load the target** — the localized scene to fix, or fork the reference for a fresh build.
+alignment`, plus page `w/h`, the ghost's anchor (left / centered), and the rule position. Do this
+   **once**; the captured JSON is what you carry from locale to locale.
+2. **Load the target** — `open` the existing localized file to fix, or `import` a copy of the
+   reference file for a fresh build.
 3. **Classify blocks by role** (see below).
 4. **Apply the reference geometry** to each corresponding block; keep the localized **text** and
    the **script font** (for a non-Latin/non-handbook face see `reference/font-loading.md`). Set
@@ -137,8 +155,8 @@ alignment`, plus page `w/h`, the ghost's anchor (left / centered), and the rule 
    verbatim; re-locate the styled substring in the target language (§ "Carrying rich text across
    a translation").
 8. **`loadResources` → `preview`.** One preview per locale — tofu / RTL / overflow /
-   position match are only visible in the render. A video design needs several per locale, at
-   different `time`s (below).
+   position match are only visible in the render.
+   A video design needs several per locale, at different `time`s (below).
 
 Then apply the per-locale quality rules in `reference/language-rules.md` **and the family
 file(s) for the target locale(s)** (`reference/latin-expansion.md`, `arabic.md`, `cjk.md`,
@@ -159,8 +177,8 @@ quote-card family the roles are:
 - **rule / divider** — the graphic (non-text) block.
 
 Roles are design-specific. The general rule: **map each localized block to its reference block by
-role, or by index across the shared fork lineage** (localized variants forked from the same base
-keep the same child order), then restore that reference block's geometry.
+role, or by index** (every locale is imported from the same reference file, so they keep the same
+child order), then restore that reference block's geometry.
 
 ## The snap-to-reference routine
 
@@ -395,7 +413,8 @@ new language's speech and reading time.
   existing audio block — `setProps(audio, { audio: { fileURI } })` — so its offset and volume stay.
 - **Captions come from the new take.** Transcribe it with a `speech2text` model
   (`elevenlabs/scribe-v2`, via `params` — check its inputs with `schema: true`); the result carries
-  word-level `start` / `end`. Rebuild the captions from those words: a caption per phrase (break at
+  word-level `start` / `end`.
+  Rebuild the captions from those words: a caption per phrase (break at
   sentence ends, and at commas once a phrase has two words), `timeOffset` = the audio block's
   offset + the first word's `start`, held until the next caption. Carry the master captions' frame
   and style onto **every** new caption (it is per caption, not shared) — and their typeface:
@@ -411,9 +430,9 @@ new language's speech and reading time.
   `wipe` `Left` ↔ `Right`, `caption/horizontalAlignment` `Left` ↔ `Right`. The do-not-mirror
   inventory (icons, logos, numerals, photos) holds for motion too.
 - **Preview at several `time`s, per locale.** Mid-reveal of each word-by-word line, the end of each
-  hold, each caption change and the last second (`preview({ revision, time })`; a scene that refuses
-  `time` needs the Video-mode switch in the `resize` skill), then export the
-  mp4 — a caption out of sync with the voice or a line that leaves mid-sentence shows only in time.
+  hold, each caption change and the last second (`preview({ time })`) — a caption out of sync with
+  the voice or a line that leaves mid-sentence shows only in time.
+  Then export the mp4.
 
 ## Carrying rich text across a translation
 
@@ -456,13 +475,13 @@ rich text **semantically**, not numerically.
   `(refAscent − targetAscent) × fontSize` (both `ascender/unitsPerEm` via `design.font({ uri }).metrics`), or
   align the block by a shared optical anchor rather than the frame top. Confirm against the source
   render (the `judge` source-parity check).
-- **"Bold" from a variable TTF** → renders Regular. Use a static Bold file (`reference/font-loading.md`).
+- **A weight the typeface does not declare** → "Failed to find a font with the specified weight". Declare it: a variable TTF takes one `fonts[]` entry per weight, same `uri` (`reference/font-loading.md`).
 - **Weight not carried onto the swapped face (text "too light / unreadable")** → the swap lands on
   the family's lightest cut. Capture the reference block's weight and re-apply it on the target
-  face (verify it actually renders — the variable-bold trap, `font-loading.md`); parity is checked
+  face (verify it actually renders — declare the weight, `font-loading.md`); parity is checked
   by the `judge` source-parity render diff.
 - **Appearance not carried (fill/gradient/effect/corner-radius/overlay differs from the source)** →
-  fork the source revision so surface styling is inherited; if you rebuilt instead of forked, or a
+  import the saved reference file so surface styling is inherited; if you rebuilt instead, or a
   reshape/recolor dropped it, re-capture and re-apply. Don't re-create a fill or effect "by eye" —
   read its values off the source.
 - **Reshape wiped the accent color / bold / underline** → capture with `getProps(id, ['text.ranges'])` before the

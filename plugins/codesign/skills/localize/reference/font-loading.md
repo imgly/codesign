@@ -2,7 +2,7 @@
 
 Reference for the `localize` skill. Read this when the target locale needs a non-Latin or
 non-handbook face (Cyrillic / CJK / Arabic / Vietnamese), or when a language swap produced tofu,
-a Latin-looking sans where a script font should be, or a "Bold" that renders Regular.
+a Latin-looking sans where a script font should be, or a weight that will not set.
 
 Mechanics for getting a non-Latin / non-handbook face to actually render. The CoDesign
 `handbook` §6 is the general Latin-font baseline (single-URI font declaration,
@@ -12,18 +12,21 @@ static-vs-variable, blank-glyph diagnosis); this file is what §6 lacks for exte
 
 `await engine.design.setProps(id, { text: { font: { typeface, uri } } })` takes **one `uri`**, and it
 must resolve to a **single, complete, static-or-variable TTF that already contains every glyph
-in the copy**.
+in the copy**. A variable TTF serves every weight the `typeface` declares (below).
 
 - **Source: jsDelivr's mirror of google/fonts.** Direct, fetchable, unversioned-stable:
   `https://cdn.jsdelivr.net/gh/google/fonts@main/ofl/<family-dir>/<FontFile>.ttf`
 - Pass the URL **directly** as the declaration's `uri`. Do not fetch bytes and inline them (see failures below).
 
-## Variable vs static — the bold trap
+## Weights from a variable file
 
-- A full jsDelivr variable TTF **renders**, but CE.SDK draws **only its default instance**
-  (usually Regular). **You cannot get a non-default weight (e.g. Bold) from a variable TTF.** For a
-  bold display face you need a **static Bold file**, not the variable one.
-- URL-encode axis brackets when you do use a variable file for its default weight:
+- A full jsDelivr variable TTF gives **every weight you declare**. List each as its own
+  `typeface.fonts` entry, all with the same `uri`:
+  `fonts: [{ uri, subFamily: 'Regular', weight: 'normal', style: 'normal' }, { uri, subFamily: 'Bold', weight: 'bold', style: 'normal' }]`.
+  A typeface that declares one entry has only that weight; asking for another fails with "Failed
+  to find a font with the specified weight".
+- A static family needs one file per weight instead: `ShipporiMincho-Regular.ttf` has no bold in it.
+- URL-encode axis brackets in a variable file's name:
   `PlayfairDisplay[wght].ttf` → `PlayfairDisplay%5Bwght%5D.ttf`.
 
 ## Verified picks
@@ -37,7 +40,7 @@ sans↔sans, script↔expressive. The table gives a pick for each character in e
 | **Arabic — sans** (match geometric/grotesque)       | IBM Plex Sans Arabic / Cairo / Tajawal                    | `ofl/ibmplexsansarabic/IBMPlexSansArabic-Regular.ttf` (Bold too); `ofl/cairo/…`; `ofl/tajawal/Tajawal-Bold.ttf` |
 | **Arabic — script/expressive** (match handwriting)  | Aref Ruqaa (Ruqʿah) / Lalezar (rounded display)           | `ofl/arefruqaa/ArefRuqaa-Regular.ttf` (+ `-Bold`); `ofl/lalezar/Lalezar-Regular.ttf`                            |
 | **Japanese — serif** (match editorial serif)        | Shippori Mincho / Noto Serif JP (Mincho)                  | `ofl/shipporimincho/ShipporiMincho-Regular.ttf` (+ `-Bold`)                                                     |
-| **Japanese — sans** (match geometric/grotesque)     | Noto Sans JP / Zen Kaku Gothic New (Gothic)               | `ofl/notosansjp/NotoSansJP%5Bwght%5D.ttf` (static Bold: `ofl/zenkakugothicnew/ZenKakuGothicNew-Bold.ttf`)       |
+| **Japanese — sans** (match geometric/grotesque)     | Noto Sans JP / Zen Kaku Gothic New (Gothic)               | `ofl/notosansjp/NotoSansJP%5Bwght%5D.ttf` (variable: all weights); `ofl/zenkakugothicnew/ZenKakuGothicNew-Bold.ttf` |
 | **Japanese — script/casual** (match handwriting)    | Yomogi / RocknRoll One                                    | `ofl/yomogi/Yomogi-Regular.ttf`; `ofl/rocknrollone/RocknRollOne-Regular.ttf`                                    |
 | **Korean — serif** (match editorial serif)          | Nanum Myeongjo / Gowun Batang (Myeongjo/명조)             | `ofl/nanummyeongjo/NanumMyeongjo-Regular.ttf` (+ `-Bold`, `-ExtraBold`); `ofl/gowunbatang/GowunBatang-Bold.ttf` |
 | **Korean — sans** (match geometric/grotesque)       | Gothic A1 / Nanum Gothic / IBM Plex Sans KR (Gothic/고딕) | `ofl/gothica1/GothicA1-Bold.ttf` (9 statics, Thin→Black); `ofl/nanumgothic/NanumGothic-Regular.ttf` (+ `-Bold`) |
@@ -50,27 +53,27 @@ sans↔sans, script↔expressive. The table gives a pick for each character in e
 those for a **sans** design is the exact "serif-into-a-sans-design" mismatch §6 warns against —
 match the character first, then pick the row.
 
-- **Cyrillic caveat:** **Poppins has no Cyrillic glyphs**, and **Montserrat is variable-only** on
-  jsDelivr (no static bold → no bold display weight, per the trap above). **Fira Sans** ships
+- **Cyrillic caveat:** **Poppins has no Cyrillic glyphs**. **Fira Sans** ships
   static `FiraSans-Bold.ttf` + `FiraSans-Regular.ttf` with full Cyrillic and reads as a clean
-  geometric sans — the default Cyrillic pick.
+  geometric sans — the default Cyrillic pick. Montserrat is variable on jsDelivr; it covers Cyrillic
+  too, with each weight declared as above.
 - CJK files are large — a Japanese page's PDF / archive embeds the whole font (~4.5 MB). Expected.
-- **CJK bold needs a static Bold file too.** `ShipporiMincho-Regular.ttf` renders Regular only; for
-  a bold Japanese heading load `ofl/shipporimincho/ShipporiMincho-Bold.ttf` (static) — the same
-  bold trap as Montserrat/variable faces. No static Bold available → carry the weight with
-  size/color, never faux-bold.
+- **CJK bold comes from a Bold file or a variable file.** `ShipporiMincho-Regular.ttf` is static
+  and Regular only; for a bold Mincho heading load `ofl/shipporimincho/ShipporiMincho-Bold.ttf`.
+  `NotoSansJP%5Bwght%5D.ttf` is variable: declare its bold as above. No bold available → carry
+  the weight with size/color, never faux-bold.
 - **A Japanese face has no Hangul, and a Korean face has no kana.** They are not interchangeable,
   and "it's a CJK font" is not a coverage claim — `NotoSansJP` on Korean copy renders the whole
   line as tofu. Pick the row for the actual script.
-- **Korean caveat:** **Noto Sans KR and Noto Serif KR are variable-only** on jsDelivr
-  (`NotoSansKR%5Bwght%5D.ttf`), so they render their default instance and give you no bold — the
-  trap above. **Gothic A1** ships nine static weights (Thin→Black) and is the default Korean sans
-  pick; **Nanum Myeongjo** is the serif counterpart with static Regular/Bold/ExtraBold.
+- **Korean:** **Noto Sans KR and Noto Serif KR are variable** on jsDelivr
+  (`NotoSansKR%5Bwght%5D.ttf`): declare every weight you set.
+  **Gothic A1** ships nine static weights (Thin→Black) and is the default Korean sans pick;
+  **Nanum Myeongjo** is the serif counterpart with static Regular/Bold/ExtraBold.
 
 ## What does **not** work (and why)
 
 - **`data:` URIs are rejected** — _"Scene contains disallowed schemes in resource URLs: data"_.
-  The scene may only reference fetchable schemes (`https://`, `workspace://`).
+  The scene may only reference fetchable sources: an `https://` URL, or a `uri` the server returned.
 - **Google Fonts `&text=` / `/l/font?kit=…` dynamic-subset endpoint is unusable.** It returns
   non-sfnt bytes to a programmatic fetch and content-negotiates on the _fetcher's_ User-Agent — so
   even if your fetch coaxes out a TTF, CE.SDK re-fetches with its own UA, gets woff, and **silently

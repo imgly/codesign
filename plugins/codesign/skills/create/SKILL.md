@@ -39,9 +39,9 @@ Five steps, in order:
 1. **Classify.** Map the request to a design class: `deck`, `poster`, `flyer`,
    `social-post`, `business-card`, `video`, or `custom` (explicit dimensions). If the
    class is ambiguous, it becomes the first — often only — question. A request for
-   motion, a reel, an mp4, music or a voiceover is `video`; a launch or promo video for
-   a product or project goes to the `launch-video` skill instead, which runs its own
-   intake.
+   motion, a reel, an mp4, music or a voiceover is `video`.
+   A launch or promo video for a product or project goes to the `launch-video` skill
+   instead, which runs its own intake.
 
 2. **Derive.** Fill the class's parameter table (see `classes.md`) from everything
    already available: the prompt, earlier conversation, attached files/images, a
@@ -75,9 +75,11 @@ Five steps, in order:
    confirmation: state the brief and proceed, unless the user asked to see options
    first (or picked "Explore a few options" for the vibe — see below).
 
-5. **Hand off.** Enter the handbook Loop: `parent: null`, `title` from the brief,
-   format/page setup from the class's derivation notes. Consult `brand` if a brand kit
-   is in play; finish through the `judge` gate as always.
+5. **Hand off.** Enter the handbook Loop: build the scene from scratch in your first
+   `edit` (`engine.scene.create('VerticalStack')`), with format/page setup from the
+   class's derivation notes. Consult `brand` if a brand kit is in play; finish through
+   the `judge` gate and the save (`export({ format: 'imgly' })`) as always — an
+   unsaved design is one the user never receives.
 
 ## Exemplar: the `deck` intake
 

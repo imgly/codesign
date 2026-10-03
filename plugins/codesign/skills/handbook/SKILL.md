@@ -1,16 +1,17 @@
 ---
 name: handbook
 description: |
-  The CoDesign design loop, tool contract, workspace cheatsheet, typeface
-  schema, common operations cheatsheet, and the full design-quality rubric.
-  **Read this skill before any edit call** — it contains the 5-step Loop
-  (decide parent → read API → exec → preview → judge), the tool roster and
-  cross-tool rules, the workspace revision model (list / history / rename),
-  rewind-recovery procedure, the typeface shape text.font declarations need,
-  and §6: the design-rules index — the full enforceable rubric (typography,
-  hierarchy, composition, craft) ships as this skill's design-rules.md, the
-  runtime-quirk reference as its quirks.md, and the input-resolution contract
-  every skill follows as its intake.md, all read on demand.
+  The CoDesign design loop, tool contract, session model, typeface schema,
+  common operations cheatsheet, and the full design-quality rubric.
+  **Read this skill before any edit call** — it contains the 6-step Loop
+  (resolve brief → read API → edit → verify → judge → SAVE), the tool roster
+  and cross-tool rules, the session model (one design context, checkpointed
+  after every edit, saved only by `export({ format: 'imgly' })`), the typeface
+  shape text.font declarations need, and §6: the design-rules index. The full
+  enforceable rubric (typography, hierarchy, composition, craft) ships as this
+  skill's design-rules.md, the runtime-quirk reference as its quirks.md, and
+  the input-resolution contract every skill follows as its intake.md — all read
+  on demand.
 
   Triggered for any task using this server's `edit` or `preview` tools.
 ---
@@ -19,21 +20,22 @@ description: |
 
 You MUST follow these steps in order for ANY canvas change:
 
-1. **Decide where you're editing from — based on what the user asked for, not what's in the workspace.** Either:
-   - **New design requested** (the default in a fresh conversation) → pass `parent: null` and supply a `title` (the design name). The workspace persists across all past conversations — designs in it are not yours to continue unless the user points at them. For a new design, run the `create` skill's intake first to assemble the brief — and when two or more of the five design-defining parameters (topic, audience, visual direction, brand, format) are neither stated nor safely inferable, that intake **asks** before this edit rather than defaulting them.
-   - **Continuing this conversation's design** → use the `revision` id from your last `edit` response as `parent`.
-   - **User explicitly asked to resume earlier work** ("keep working on yesterday's flyer") → call `list` to see designs newest-first, then `history({ revision })` on the design they meant; pass the leaf as `parent`. Never do this unprompted.
+1. **Resolve the brief before you build — from what the user asked for, not from what happens to be loaded.** For a new design, run the `create` skill's intake first to assemble the brief — and when two or more of the five design-defining parameters (topic, audience, visual direction, brand, format) are neither stated nor safely inferable, that intake **asks** before the first edit rather than defaulting them. Starting points:
+   - **New design** → `import({ title })` first, every time: after a save, the saved design stays current, so a `rename` or `export` before it acts on that one. Your first `edit` builds the scene: `engine.scene.create('VerticalStack')`. To start over on the same design, delete its pages and build again instead of creating a new scene.
+   - **Starting from a file** (a `.imgly`, a `.psd`, a PDF, an image) → `import({ source })` loads it as a new design; then `edit` from there.
+   - **Changing a saved design** → `open({ uri })` it, then `edit` from there. When the user names it without a `uri`, find it with `designs`. `import` of that `uri` would give you a copy instead.
+   - **Continuing what you already built this conversation** → just call `edit`. There is nothing to pass: `edit` always continues the current session.
+   - **Register the brief's acceptance checklist** before the first `edit`: `checklist({ items })` with the files the brief orders, its verbatim copy and the checks only you can make. `export` names what is unmet; treat that like a failing test.
 
 2. **Read the API docs** for every engine method you plan to use. `../api/SKILL.md` for signatures, `../guide/SKILL.md` for prose and recipes. NEVER guess parameters. **Read ALL remaining references in ONE message**, in parallel: the `api` and `judge` skills and `design-rules.md` (+ `quirks.md`/`fonts.md` if needed, the `models` skill before any `asset_generate`).
-3. **Register the brief's acceptance checklist** (first edit only). Extract the machine-checkable claims from the brief and record them: `checklist({ revision, items })` — `{ kind: 'output', path }` for every file the brief orders delivered, `{ kind: 'copy', text }` for every string of approved copy that must land verbatim (translations, offers, legal lines), `{ kind: 'note', text }` for constraints only you can check. Every `export` verifies the list and reports unmet items — treat one like a failing test. Skip this step only when the brief fixes no outputs or copy.
-4. **Run `edit({ parent, code, note? })`** — execute the JS body. The response's first text part is JSON `{ revision, parent }` — save `revision`; it's your `parent` for the next edit.
-5. **Visually verify.** A mutating `edit`'s result already shows the changed page — read that render. Call `preview({ blockIds, revision })` only for full-size judging or multi-page looks; never re-preview a rendered revision. Never tell the user something "looks good" without seeing it yourself.
+3. **Run `edit({ code, note? })`** — execute the JS body against the live engine. The response's first text part is JSON `{ names? }`: every named block now in the scene, and exactly the strings `engine.design.findByName(name)` will resolve in your next edit. Name what you build and re-find it by name.
+4. **Visually verify.** A mutating `edit`'s result already shows the changed page — read that render. Call `preview({ blockIds? })` only for full-size judging or multi-page looks; never re-preview content you already rendered. Never tell the user something "looks good" without seeing it yourself.
+5. **Judge & remediate before reporting done.** When the design is a candidate for "done", run the `judge` loop: score the 8 axes against your actual `preview` renders, dry-run the §6.1.11 + §6.5.2 checklists (design-rules.md), remediate any applicable axis below 8 via further `edit`s, re-preview, re-judge. On pass, record `scorecard({ verdict: 'pass' })`; any later `edit`, `import` or `open` clears that verdict and re-arms this step. Never report an unjudged design as done.
+6. **SAVE — `export({ format: 'imgly' })`.** Nothing in steps 3–5 produced a file. An edit advances the session; only this writes the design out as a real, portable `.imgly` archive the user can open, move, back up or send. **If you never call it, the user gets nothing.** Do it after the judge passes, before you report done, and hand back the `uri` it returns.
 
-6. **Judge & remediate before reporting done.** When the design is a candidate for "done", run the `judge` loop: score the 8 axes against your actual `preview` renders, dry-run the §6.1.11 + §6.5.2 checklists (design-rules.md), remediate any applicable axis below 8 via further `edit`s, re-preview, re-judge. On pass, record `scorecard({ revision, verdict: 'pass' })`; later content `edit`s re-arm this step. Never report an unjudged design as done.
+Steps 1, 2, 4, 5 and 6 are NOT optional. Step 3's `note` is encouraged: a one-liner describing what the edit accomplished.
 
-Steps 1, 2, 5, and 6 are NOT optional. Step 4's `note` is encouraged: a one-liner describing what you accomplished, so you can re-ground later.
-
-**Resolve your inputs before step 3, whichever skill you are in.** Derive what the request already answers, ask **once** for what is genuinely missing, echo what you resolved, never invent a value that belongs to the user — a brand colour, a licensed font, a locale's wording. Ask through your environment's own question UI when it has one; a design's visual direction and brand are never silently defaulted on a first build. The contract is this skill's `intake.md` (`intake.md`); `create`, `brand`, `resize` and `localize` each carry the parameter table it applies to. `judge` alone asks nothing — it is the gate on every build.
+**Resolve your inputs before the first `edit`, whichever skill you are in.** Derive what the request already answers, ask **once** for what is genuinely missing, echo what you resolved, never invent a value that belongs to the user — a brand colour, a licensed font, a locale's wording. Ask through your environment's own question UI when it has one; a design's visual direction and brand are never silently defaulted on a first build. The contract is this skill's `intake.md` (`intake.md`); `create`, `brand`, `resize` and `localize` each carry the parameter table it applies to. `judge` alone asks nothing — it is the gate on every build.
 
 ### Speak the user's language
 
@@ -45,93 +47,74 @@ Steps 1, 2, 5, and 6 are NOT optional. Step 4's `note` is encouraged: a one-line
 - **Design copy** — follows the brief. When the user has stated or implied a language for the content, that wins outright: someone writing to you in German may well want an English poster, and an English speaker may ask for an Arabic edition. Only when nothing implies otherwise does design copy **default** to the conversation's language — and when it does, say so in the echo ("Textsprache: Deutsch"), so a wrong guess costs one word to correct.
 - Changing an existing design's content language is never a side effect of the conversation — that is the `localize` skill, on request.
 
-**Never translate these**, in any language, because they are values rather than copy: skill and tool names (`judge`, `asset_generate`); typed argument values; format ids and sizes (`ig-story`, `A4`, `1080×1350`); colour values; URLs, handles and channel names (`#showcase`); and revision ids. Translate a chip's **label**, never its **value** — a translated value breaks the call it feeds.
+**Never translate these**, in any language, because they are values rather than copy: skill and tool names (`judge`, `asset_generate`); typed argument values; format ids and sizes (`ig-story`, `A4`, `1080×1350`); colour values; URLs, handles and channel names (`#showcase`); and the `uri` values the server returns. Translate a chip's **label**, never its **value** — a translated value breaks the call it feeds.
 
 **These documents stay English.** Every skill, handbook section and reference file is agent-facing instruction, not user-facing copy. Read them in English; speak to the user in theirs. The copy grammar in `../create/choice-copy.md` — system-POV headers, verb-led titles, no pronouns in titles, lists parallel within themselves — applies in whatever language you are writing.
 
-### Re-grounding after a rewind / restart
+### The session: one design context, and nothing to address
 
-If your conversation was rewound (double-ESC in Claude Code), or your process restarted mid-conversation, your in-memory "current revision" is wrong. The engine's state is the truth, but the server can't tell you've been rewound. Recovery:
+There are no revision ids and no `parent` argument anywhere on this server. **You work in a session, and a session has exactly one current state.** `edit` advances it; `preview` renders it; `scorecard` judges it; `export` writes it out. Nothing takes an id that says _which_ state you mean, because there is only one.
 
-1. Call `list` — see the workspace's designs and their `latestLeaf` revisions.
-2. Call `history({ revision: latestLeaf })` — read the notes to find where the user wanted to be.
-3. Pass that revision id as `parent` on your next `edit`. The server reloads the engine to that scene before running your code — your edits land on top of the right state.
-
-Re-grounding recovers the design this conversation was already working on. It is not for starting a new conversation — a fresh session with a new request starts at `parent: null`.
-
-Editing on top of an OLDER revision (not the latest leaf) is fine: it creates a **non-destructive fork**. The previous leaves stay in storage; you can switch back any time by passing one of their ids as `parent`.
+- **There is no rewind.** You cannot go back to an earlier state, branch off one, or compare two. Fix what is wrong with a further `edit` — surgically, in place (§5). If you need a state you can return to, **save it** (`export({ format: 'imgly' })`) and come back to its `uri` later (§3).
+- **Checkpoints are the server's business, not yours.** After every successful `edit` and `import` the server checkpoints the session automatically. That is what lets it survive the engine being released, a hibernating server, or an edit that throws — the next call picks up exactly where you were. It is invisible, it has no id, and **it is not a save**: the user never sees a checkpoint and cannot open one.
+- **Unsaved work survives a server restart, but a new server starts on an empty canvas.** `designs` lists what an earlier session left unsaved, marked `"unsaved": true`; `open` its `uri` to continue it, then save.
+- **Saving is `export({ format: 'imgly' })` (step 6), and it is the only thing the user gets** — a self-contained `.imgly` archive, scene plus every asset byte. A checkpoint keeps _you_ working; only a save produces a file. Save at the end of every unit of work; an unsaved session is work the user cannot see. §3 has the rest of the persistence model.
 
 ## 2. Tools
 
 Each tool's full contract lives on the tool itself — its description in tools/list is authoritative and always in front of you. This section is only the roster plus the rules that span tools.
 
-- `edit({ parent, code, title?, note? })` — THE mutating tool: runs async JS (`engine` in scope, plus `engine.design` — the preferred facade: awaited `create` for a block or subtree, `setProps`/`getProps`, `measure`, `align`/`distribute`; full contract in the api skill) and commits a revision. The response's first text part is JSON `{ revision, parent }` — save `revision`; it is your `parent` for the next edit.
-- `preview({ blockIds, revision })` — render blocks to inline PNGs; omit `blockIds` for every page (max 10).
-- `export({ format, revision, blockId?, outPath? })` — write a deliverable (`pdf`/`png`/`jpeg`/`webp`/`svg`/`pdfx`/`html`, or `imgly` to stay editable); omit `blockId` for the whole document; returns `{ uri, httpUrl, bytes, format, revision }` (+ `path` with `outPath`). `uri` is the durable handle; `httpUrl` is process-scoped — never persist it. Pass `outPath` (absolute) when your environment cannot fetch localhost URLs. Full contract on the tool itself.
+- `edit({ code, note? })` — THE mutating tool: runs async JS (`engine` in scope, plus `engine.design` — the preferred facade: awaited `create` for a block or subtree, `setProps`/`getProps`, `measure`, `align`/`distribute`; full contract in the api skill) against the live engine and checkpoints the session when it returns. The response's first text part is JSON `{ names? }` — the named blocks now in the scene.
+- `preview({ blockIds? })` — render blocks of the current session to inline PNGs; omit `blockIds` for every page (max 10). Takes no other argument.
+- `export({ format, blockId?, outPath? })` — **`format: 'imgly'` SAVES the design** (whole-design only; no `blockId`); every other format writes a deliverable (`pdf`/`png`/`jpeg`/`webp`/`svg`/`pdfx`/`html`), and omitting `blockId` takes the whole document. Returns `{ uri, httpUrl, bytes, format }` (+ `path` with `outPath`). `uri` is the durable handle; `httpUrl` is process-scoped — never persist it. Pass `outPath` (absolute) when your environment cannot fetch localhost URLs.
 - `export` also accepts `format: "mp4"` — renders the block's authored timeline (recipe: `video.md`); needs the native engine (the default).
-- `import({ source, title? })` — ingest a design FILE as a NEW root (was `load`): native `.imgly` (also legacy `.scene` / `.zip`), foreign Photoshop `.psd` / InDesign `.idml` / PowerPoint `.pptx` / PDF (translated in; `warnings` are your touch-up list — preview, then repair with `edit`), or a plain image/SVG (one page sized to it). Continue with `edit({ parent: revision })`.
-- `asset_add({ source: { path } })` — bring a local file (image or font) into the workspace for use in a design (was `import`); embed the returned `workspace://` uri in `edit` code — never a fetch/file URL, and never the original local path or a `file://` URI (renders server-side but breaks portability).
+- `import({ source, title? })` — load a design FILE: native `.imgly` (also legacy `.scene` / `.zip`), foreign Photoshop `.psd` / InDesign `.idml` / PowerPoint `.pptx` / PDF (translated in; `warnings` are your touch-up list — preview, then repair with `edit`), or a plain image/SVG (one page sized to it).
+Every `import` starts a **new** design and puts it in front of you: `import({ source: { uri: '<saved uri>' } })` gives you a copy of a saved design to change, while the saved one — and the design you were on — stay as they were. Then continue with `edit`.
+Edits you have not saved with `export({ format: 'imgly' })` are dropped when it loads — save first.
+- `open({ uri })` — continue a saved design itself: your later edits go to it. Pass a `uri` an `export` gave you, verbatim — an imported design has one only once you have saved it. Edits you have not saved are dropped when it loads — save first.
+- `designs()` — the saved designs, newest first, each with its `uri` and title; pass that `uri` to `open` or `import` verbatim. Use it when the user refers to an earlier design without handing you its `uri`.
+- `scorecard({ verdict })` — record that you completed a judge loop against the session's current state. See §1 step 5 and the `judge` skill.
+- `asset_add({ source: { path } })` — bring a local file (image or font) into the workspace for use in a design; embed the returned `uri` in `edit` code — never `httpUrl`, and never the original local path or a `file://` URI (renders server-side but breaks portability).
 - `asset_search({ sourceId?, query?, page?, perPage? })` — discover and search the engine's asset sources; apply results inside `edit` (the exact patterns are in the tool's description). The `ly.img.workspace.images` source also lists images the human uploaded — searchable by their original filename, newest first.
-- `list()` / `history({ revision })` / `changes({ revision })` / `inspect({ revision })` / `rename({ revision, title })` — the workspace tools; usage in §3.
-- `view({ revision, pin? })` — human-facing viewer URL. Print it once; the viewer keeps it live.
+- `view(…)` — the URL a human opens to see and edit **saved** designs in the browser. Print it once; the viewer keeps it live. A design appears there only after `export({ format: 'imgly' })`.
 
 Cross-tool rules:
 
-- **Revision ids are durable, block ids are not.** Everything flows through revisions: `edit` produces one, `preview`/`export` consume one, `history`/`inspect` walk them. Block ids are session-scoped — re-discover blocks in the current engine; never persist or replay literal block ids (see `inspect`'s description).
-- **The single mutating tool is `edit`.** `asset_add`, `asset_search`, and `view` never change the scene; placement and application always happen inside `edit` code. (`import` is the exception: it creates a new root to `edit` from.)
+- **The only identifier you hold is a saved design's `uri`** — no revision ids, no `parent`, no design ids; every tool addresses the current session. Block ids are per-edit: re-discover blocks by `name` in the current engine, never persist or replay literal block ids across edits.
+- **The single mutating tool is `edit`.** `preview`, `export` and every other tool leave the scene as it is; placement and application always happen inside `edit` code. (`import` and `open` are the exceptions: each puts a whole design in front of you, and edits you have not saved with `export({ format: 'imgly' })` are dropped — save first.)
+- **Only `export({ format: 'imgly' })` produces something the user can see.** `edit` is invisible, `preview` is for your eyes, `scorecard` records a judgement. Finish the job.
 
-## 3. Workspace cheatsheet
+## 3. What persists, and what the user sees
 
-The workspace is your durable memory: every revision you commit via `edit` is there, addressable by id, walkable via `history`. It survives a process restart and a Claude rewind.
+Three different things, and conflating them is the mistake this section exists to prevent:
 
 ```
-list()                            → [{ rootRevision, title, latestLeaf, updatedAt, headOrigin?, headNote? }, …]
-history({ revision: leaf })       → [{ revision, parent, note?, origin?, createdAt }, …]   (root first)
-changes({ revision })             → { head, state, design, since?, wouldOrphanEditorWork, guidance }   (what landed AFTER it)
-inspect({ revision })             → { revision, parent, note?, origin?, createdAt, title?, code? }
-edit({ parent: leaf, code })      → linear edit, no engine reload
-edit({ parent: olderRev, code })  → fork; engine reloads to olderRev first
-edit({ parent: null, title })     → new design
-rename({ revision: any, title })  → updates the root title
+edit / import      → checkpoint   automatic, invisible, last one wins, no id.
+                                  Keeps you working. The user can never open it.
+export imgly       → a SAVED DESIGN: a portable .imgly archive at a durable
+                                  uri. The only thing the user can open.
+export pdf/png/…   → a DELIVERABLE in exports/: a file to send or print.
+                                  Not a design; not editable; not resumable.
 ```
 
-A revision id is a 12-hex-char string. You never construct it; the server hands it back from `edit`. Treat it as opaque.
+The save `uri` is your handle on a design. Hand it to the user, keep it to continue the design later (`open({ uri })`) or to start a copy of it (`import({ source: { uri } })`), and give it to another skill that needs to start from this design.
+`designs` lists the saved designs.
+On a local server the viewer (`view`) is where a human browses what has been saved.
+**One verb, two jobs: export as `imgly` to save the design, export as `pdf`/`png` to deliver it.**
 
+**Saving can fail in a way `edit` cannot.** The archive inlines every referenced asset, so the server force-loads the scene's resources first and **refuses rather than ship a truncated archive**. A failure means a font or image URI never finished loading: check the URIs your edit code set, then retry. Never report done on a failed save.
 
-### Human edits from the browser editor
+**Re-saving updates the same file — last save wins.** Saving twice does not accumulate copies; it revises the design you are on, which is what you want when you fix something and save again. For a separate edition (a locale, a format, a restyle), **`import` a copy of the saved design first**: every `import` starts a new design, so the edition's save is its own file and the one you started from stays as it was. For an unrelated new design, `import({ title })`.
 
-The `view` URL is a full editor. When the human clicks **Save**,
-their edits land as a normal child revision with `origin: "editor"`, no code,
-and a note that starts `Edited in the browser editor. Engine-computed diff vs
-parent:` followed by block-level changes.
+### When someone else saved your design
 
-- **Finding their revision**: `changes({ revision })`, passing the revision you
-  hold — normally the one your last `edit` returned. It tells you whether that
-  revision is still the design head, lists what was written since it (oldest
-  first, each with its `note` and `origin`), and names the revision to build
-  on. Do NOT use `history` for this: it walks _ancestors_, so called with your
-  own last revision it will never show their newer save — and previewing your
-  own last revision renders the pre-edit scene, which looks exactly like
-  "nothing changed". In a fresh conversation you hold no revision to pass;
-  there `list` is the signal — it reports `headOrigin: "editor"` and the
-  `headNote` for a design whose newest revision came from the editor.
-- **Call `changes` before your first `edit`** of a design the user may have had
-  open in the browser. `edit` REFUSES a parent whose path to the head contains
-  one of their editor saves — building from it would orphan their work on a
-  sibling branch — and the refusal names the revision to pass instead. Pass
-  `fork: true` only when the user explicitly asked you to discard their own
-  browser changes and branch from the older revision.
-- **That note is authoritative.** It is computed by the engine, not
-  free-typed. Do NOT re-derive it with preview loops or read-only `edit`
-  dumps — that burns your edit budget and mints junk revisions.
-- **Continue from the human revision**: `edit(parent=<their revision>)`. Their
-  changes are already in that scene.
-- A `Note: this design has newer revision(s)…` line on an `edit`/`preview`/
-  `inspect`/`export` result means someone committed after the revision you
-  passed. When that someone is you (your own earlier branch), the note is
-  advisory and the fork is legal; the human's saves come back as the refusal
-  above instead. Unless you are deliberately rewinding, rerun with the newer
-  revision.
+A person can open the design you saved in an editor, change it and save it back while you wait for their next message. The server notices on your next call, and says so in its result — **"changed outside this session"**:
+
+- **`edit` or `export` refused, "the session now holds that version"** — you had nothing unsaved, so the server loaded their version and your call did **not** run. `preview` it, then redo your change on what they made. Find blocks by name: what your code referred to may have moved, changed or gone.
+- **Refused, "this session holds edits that were never saved"** — both versions exist and nothing was touched. **Ask the user which to keep**, then make the call the message names: `export({ format: 'imgly', overwrite: true })` keeps yours; `open({ uri, discard: true })` with that design's uri keeps theirs.
+- **`preview` leading with that note** — it already shows their version.
+
+**Save at the end of every unit of work.** A session with nothing unsaved picks up their changes by itself; one with unsaved edits has to stop and ask.
 
 ## 4. Engine recipes
 
@@ -192,9 +175,9 @@ await engine.design.setProps(title, {
 return { type: 'text', text: `page=${page} ready` };
 ```
 
-The edit result already carries a render of the changed page — that IS your capture. **One `edit` per page; `preview` only for full-size judging or multi-page review. Then STOP.**
+The edit result's render IS your capture (§1 step 4). **One `edit` per page. Then STOP.**
 
-**Name every block you may touch again — that is how you find it.** `create` returns only the root id; `create` writes each `name` onto its block and `findByName` resolves it here and in every later edit — re-grounding in one line instead of walking the tree matching strings (which breaks on an NBSP, a line break, or shared copy):
+**Name every block you may touch again — that is how you find it.** `create` returns only the root id, but writes each `name` onto its block, and `findByName` resolves it here and in every later edit — re-grounding in one line instead of walking the tree matching strings (which breaks on an NBSP, a line break, or shared copy):
 
 ```js
 const [headline] = await engine.design.findByName('headline'); // [] when nothing matches
@@ -203,7 +186,7 @@ await engine.design.setProps(headline, { text: { fontSize: '52px' } });
 
 `findText(copy)` / `findAllText(copy)` are in scope too — they fold NBSP/space variants, which a hand-rolled `===` does not.
 
-**Unnamed blocks: address by uuid** — every id member also takes a block's `uuid` string, valid across edits and revisions. `getProps(root, { children: true, props: [...] })` reads the subtree as a uuid-keyed node tree; filter it in JS, and `setProps(root, { children: [{ uuid, props }...] })` patches by identity (absent props untouched).
+**Unnamed blocks: address by uuid** — every id member also takes a block's `uuid` string, which stays valid across edits. `getProps(root, { children: true, props: [...] })` reads the subtree as a uuid-keyed node tree; filter it in JS, and `setProps(root, { children: [{ uuid, props }...] })` patches by identity (absent props untouched).
 
 ### Multi-page designs: page by page, page 1 first
 
@@ -217,9 +200,9 @@ The objective-bug bar below applies per page: fix an overflow on page 3 with a t
 
 **Editing an existing multi-page design:** a mechanical change applied uniformly (swap a font everywhere, recolor a brand accent) is one `edit` looping over `engine.scene.getPages()` — that's one logical change, not a batch. Substantial per-page rework (rewriting layouts, restructuring content) goes page by page like a build, with a `preview` per reworked page.
 
-After the capture, fire a 2nd `edit` ONLY if the rendered PNG shows a specific, OBJECTIVE bug (text overflowing the page bounds, blocks visibly overlapping, missing characters, blank glyphs). Aesthetic refinement does NOT warrant another exec — sub-pixel nudges, compositional balance, vertical centering, whitespace distribution ("top-heavy", "feels off-center") are all DISALLOWED, even when the imbalance is large or intentional. If in doubt, STOP — a needless 3rd or 4th call far outweighs any aesthetic gain. A read-only `edit` (returns data, mutates nothing — `getTextFontSizes` etc.) still counts against the limit and forces a follow-up capture. Only fire a read-only exec if you'd otherwise be guessing at a number you can't read off the captured PNG.
+After the capture, fire a 2nd `edit` ONLY if the rendered PNG shows a specific, OBJECTIVE bug (text overflowing the page bounds, blocks visibly overlapping, missing characters, blank glyphs). Aesthetic refinement does NOT warrant another exec — sub-pixel nudges, compositional balance, vertical centering, whitespace distribution ("top-heavy", "feels off-center") are all DISALLOWED, however large the imbalance. If in doubt, STOP. A read-only `edit` (returns data, mutates nothing — `getTextFontSizes` etc.) still counts against the limit and forces a follow-up capture; fire one only if you'd otherwise be guessing at a number you can't read off the captured PNG.
 
-**Scope of these stop-rules: the build phase, before a `judge` pass.** They cap self-initiated polish between build and capture, not Loop step 5. Once the `judge` skill has scored the design, remediating a failed axis (including composition or whitespace) is required work, not aesthetic refinement: apply the scorecard's fixes via `edit`, then re-preview and re-judge. The boundary is the scorecard — without one, only objective bugs warrant another `edit`; with one, its fixes do.
+**Scope of these stop-rules: the build phase, before a `judge` pass.** They cap self-initiated polish between build and capture, not Loop step 5. Once the `judge` skill has scored the design, remediating a failed axis (including composition or whitespace) is required work, not aesthetic refinement: apply the scorecard's fixes via `edit`, then re-preview and re-judge.
 
 ### Font sizes are PIXELS, not points
 
@@ -242,41 +225,29 @@ Line-height: write `text: { lineHeight: { visual: n } }` — the CSS multiplier 
 
 ### Text sizing — Auto + read frame dims
 
-For text blocks, the canonical CE.SDK pattern is **Auto width/height + `getFrameWidth` / `getFrameHeight`** for measured dims. The engine shapes the text and exposes the actual frame extent through these reads — use them for centering, stacking, and overflow checks. Manual `setWidth`/`setHeight` on text is fragile: too small and the engine silently drops the render (no glyphs drawn, no error); too large and your alignment math is off.
+For text blocks the canonical CE.SDK pattern is **Auto width/height + a measured frame** (`getFrameWidth` / `getFrameHeight`, or `engine.design.measure`): the engine shapes the text and reports its real extent — use that for centering, stacking and overflow checks. Manual `setWidth`/`setHeight` on text is fragile: too small and the engine silently drops the render (no glyphs drawn, no error); too large and your alignment math is off.
 
 ```js
-const text = await engine.design.create(
-  {
-    type: 'text',
-    props: {
-      text: { string: 'Alex & Jordan', fontSize: '64px' },
-      widthMode: 'Auto',
-      heightMode: 'Auto'
-    }
-  },
-  { parent: page }
-);
-// font: text: { font: { family, weight } } — create looks the family up;
-// setProps takes a resolved text.font: { typeface, uri }.
-
+// Build with widthMode/heightMode: 'Auto' (see the page example above). Font goes in
+// as text: { font: { family, weight } } — create looks the family up; setProps takes a
+// resolved text.font: { typeface, uri }.
 // IMPORTANT: width/height props read 0 in Auto mode. Measure the frame instead.
 const { width: w, height: h } = await engine.design.measure(text);
 await engine.design.setProps(text, { position: { x: (pageW - w) / 2, y } });
 ```
 
-Use absolute `setWidth`/`setHeight` only when you specifically want to constrain a wrap box (e.g. multi-line body copy with a fixed column width). Even then, set `setProps(id, { widthMode: 'Absolute' })` and pick height ≥ `fontSize × 1.6` for body sans, `≥ 1.8` for display serifs (Playfair, Cormorant) and scripts (Great Vibes, Caveat) — ascenders/descenders need the headroom or the engine drops the render.
+Use absolute `setWidth`/`setHeight` only to constrain a wrap box (multi-line body copy at a fixed column width). Even then, set `setProps(id, { widthMode: 'Absolute' })` and pick height ≥ `fontSize × 1.6` for body sans, `≥ 1.8` for display serifs (Playfair, Cormorant) and scripts (Great Vibes, Caveat) — ascenders/descenders need the headroom or the engine drops the render.
 
 ### Font-load barrier: `loadResources`
 
 ```js
-await engine.design.loadResources([page]); // recurses into children
-// now await engine.design.measure() returns real values for every text block
-// (engine.design.create runs this barrier itself before returning)
+await engine.design.loadResources([page]); // resolves once every font/image/fill
+// bound to these blocks AND their descendants has loaded. No setTimeout, no polling.
+// Now await engine.design.measure() returns real values for every text block.
+// (engine.design.create runs this barrier itself before returning.)
 ```
 
-`loadResources(blocks)` returns `Promise<void>` that resolves once all fonts/images/fills bound to those blocks (and descendants) have finished loading. Pass `[page]` to await everything on the page. **No `setTimeout`, no polling.**
-
-This barrier is for **your own measuring** inside `edit` code — positioning by measured frame width needs the fonts loaded first. Capturing is covered server-side: `preview`, `export`, and the commit at the end of every `edit` all force-load the scene's resources before rendering or serializing, so you never need a separate wait-for-fonts edit.
+This barrier is for **your own measuring** inside `edit` code — positioning by measured frame width needs the fonts loaded first. Capturing is covered server-side: `preview`, `export`, and the checkpoint at the end of every `edit` all force-load the scene's resources before rendering or serializing, so you never need a separate wait-for-fonts edit.
 
 `getFrameWidth(id) > 0` after the await is your "font loaded + shaped successfully" signal. **Never** use `getWidth(id) === 0` as a font-load probe — it returns 0 by design in Auto mode regardless of font state.
 
@@ -348,7 +319,7 @@ const panel = await engine.design.create(
       position: { x, y },
       shape: 'rect', // or a { type: 'vector_path', … } spec — recipe below
       fill: { type: 'color', color: { value: { r, g, b, a } } }
-      // image: fill: { type: 'image', uri: 'workspace://assets/<sha>.png' } — create awaits the load
+      // image: fill: { type: 'image', uri: '<opaque handle>' } — create awaits the load
     }
   },
   { parent: page }
@@ -395,14 +366,13 @@ await engine.design.setProps(text, {
 //   underlineColor / underlineThickness / underlineOffset / skipInk (keep skipInk on
 //   so descenders stay legible).
 
-// ALL-CAPS: set the PROPERTY, don't type capitals into the string. The case prop re-cases
-// on render, so the string stays real words — translatable, searchable, and correct in
-// scripts that have no case at all. Typed capitals are frozen English. (§6.1.6)
+// ALL-CAPS: set the PROPERTY, don't type capitals into the string. `case` re-cases on
+// render, so the string stays real words — translatable, searchable, correct in caseless
+// scripts. Typed capitals are frozen English. (§6.1.6)
 await engine.design.setProps(text, { text: { string: s, case: 'Uppercase' } }); // 'Normal'|'Uppercase'|'Lowercase'|'Titlecase'
 
 // Read styling back — one entry per styled run ({ from, to, color?, weight?,
-// style?, size?, case? }). setProps handles the wipe-and-replay dance for you:
-// string writes and lineHeight writes auto-preserve these ranges. (§6.1.9)
+// style?, size?, case? }); setProps handles the wipe-and-replay for you. (§6.1.9)
 const {
   text: { ranges: runs }
 } = await engine.design.getProps(text, ['text.ranges']);
@@ -426,8 +396,7 @@ await engine.design.setProps(text, {
   text: {
     horizontalAlignment: 'Center', // "Left" | "Center" | "Right"
     verticalAlignment: 'Center', // "Top"  | "Center" | "Bottom"
-    letterSpacing: 0.05, // ratio of em
-    lineHeight: 1.2 // ratio of font size — auto-reshapes, ranges preserved
+    letterSpacing: 0.05 // ratio of em (line-height: see the §4 rule above)
   }
 });
 
@@ -487,8 +456,8 @@ await engine.design.setProps(t, {
 // Font declarations REQUIRE a real typeface object (the engine reads
 // typeface.name — a bare uri throws). For Google families DON'T build it by
 // hand — look it up from ly.img.gfonts (design-rules.md §6.7). Hand-built
-// typefaces are for brand fonts imported to workspace:// URIs:
-const uri = 'workspace://assets/abc123def456.ttf';
+// typefaces are for brand fonts imported via asset_add:
+const uri = '<opaque handle>';
 const typeface = {
   name: 'Acme Grotesk',
   fonts: [{ uri, subFamily: 'Regular', weight: 'normal', style: 'normal' }]
@@ -590,12 +559,10 @@ Two traps worth knowing before you lose an hour to either:
 #### Holes are real holes
 
 A `vector_path` hole shows whatever is behind the block — page ground, another
-graphic, a photograph. That is usually what you want on a flat ground and
-usually **not** what you want over a photograph, where it reads as a hard-edged
-cut-out rather than a printed mark. Over imagery, emit the solid subpaths only
-and drop the holes. Faking a hole with a ground-coloured shape on top is a bug
-waiting to happen: it only matches a flat, known ground, and it visibly fails
-over a photograph.
+graphic, a photograph. Over a flat ground that is what you want; over a
+photograph it reads as a hard-edged cut-out rather than a printed mark, so emit
+the solid subpaths only and drop the holes. Never fake a hole with a
+ground-coloured shape on top: it only matches a flat, known ground.
 
 ### Z-order via child order (no z-index property)
 
@@ -618,9 +585,9 @@ await engine.design.getChildren(parent); // current children, back-to-front
 7. headline / display text
 8. foreground decoration (corner brackets, stickers)
 
-Append in this order. If you create text before its background pill, the pill will cover the text. Deviate from the canonical order when intent demands — it is a default, not a rule.
+Append in this order. If you create text before its background pill, the pill will cover the text. Deviate when intent demands — it is a default, not a rule.
 
-**Fix without rebuilding** — to demote an existing sibling underneath another, use `insertChild` with a measured index:
+**Fix without rebuilding, never destroy + recreate** — to demote an existing sibling underneath another, use `insertChild` with a measured index:
 
 ```js
 // text block already exists at top of stack; demote a sibling pill behind it
@@ -630,8 +597,6 @@ await engine.design.insertChild(page, pillId, textIdx); // pillId now sits just 
 ```
 
 Stack-layout pages (`VerticalStack` / `HorizontalStack`): the stack arranges pages along an axis; the same child-order rule applies WITHIN each page's children.
-
-**Never destroy + recreate to fix ordering.** Use `insertChild`.
 
 ### Group blocks & hierarchy — structure every page as a tree
 
@@ -657,7 +622,7 @@ const gDetail = group([divider1, divider2, ...detailCells]);
 const gMasthead = group([gHeader, gHero]);
 ```
 
-Guardrails: group only **direct siblings**; never group across pages; a block already in a group makes `isGroupable` return `false` (ungroup first if you must re-cluster); measure text frames (`engine.design.loadResources` → `engine.design.measure`) and position **before** grouping. Close the build by returning the group manifest in the edit `note` (e.g. `groups: masthead=… detail=… lineup=…`) so the hierarchy is legible when you re-ground.
+Guardrails: never group across pages, and measure text frames (`engine.design.loadResources` → `engine.design.measure`) and position **before** grouping. Close the build by returning the group manifest in the edit `note` (e.g. `groups: masthead=… detail=… lineup=…`) so the hierarchy is legible when you re-ground.
 
 ## 5. Quirks
 
@@ -673,7 +638,7 @@ Enforceable design best practices with numeric thresholds — what you build to,
 
 - **Web vs print** — where the two media diverge (line height, minimum sizes) the rules are split **Web** / **Print**; "web" values apply to screen-destined canvases (social posts, banners). An unqualified rule applies to both.
 - **N/A = 10** — a rule that cannot apply to a given design scores N/A, i.e. 10.
-- **Defaults fill silence** — when the user's brief gives an explicit value for a property, use it; when it is silent, apply this section's defined **default** rather than leaving it unset or letting the engine default stand. Every numeric rule below that names a _default_ (line-height §6.1.3, type scale §6.1.2, measure §6.1.4, all-caps tracking §6.1.6, margins §6.4) is that fallback. A brief value that violates a hard threshold is clamped to the threshold — except line-height, which is judged by the rendered gap after conversion, never by the raw number (§6.1.3).
+- **Defaults fill silence** — where the brief gives an explicit value, use it; where it is silent, apply this section's defined **default** rather than leaving it unset or letting the engine default stand. Every numeric rule below that names a _default_ (line-height §6.1.3, type scale §6.1.2, measure §6.1.4, all-caps tracking §6.1.6, margins §6.4) is that fallback. A brief value that violates a hard threshold is clamped to it — except line-height, judged by the rendered gap after conversion, never by the raw number (§6.1.3).
 
 **The full rubric lives in this skill's `design-rules.md`** — read it BEFORE building, batched in parallel with your `api` and `judge` reads: `design-rules.md`. Section map:
 
