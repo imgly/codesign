@@ -1,9 +1,9 @@
 # Sound — music, beat map, effects, voice
 
 Reference for the `launch-video` skill: score the video before building it, then cut to the music.
-Generation runs through `asset_generate` and needs a signed-in account; how to find a model, read its
-input schema and pass its inputs is in the `models` skill. Placing audio in the design is the video
-recipe (`../handbook/video.md`).
+Generation runs through `asset_generate`; how to find a model, read its input schema and pass its
+inputs is in the `models` skill.
+Placing audio in the design is the video recipe (`../handbook/video.md`).
 
 ## Music
 

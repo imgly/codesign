@@ -5,7 +5,8 @@ description: >-
   promo video (15–25 s, mp4): "make a launch video", "brag about this", "make a promo for what we
   built", "turn this into a video". Reads the project itself for the story, then builds, animates,
   scores and exports the video with CoDesign.
-argument-hint: [tone] [landscape|vertical|square] [music file]
+requires: video, export, asset_add
+argument-hint: "[tone] [landscape|vertical|square] [music file]"
 ---
 
 # launch-video
@@ -17,7 +18,8 @@ verify it frame by frame, and export an `mp4` plus a poster and share copy.
 Builds on, without restating: the handbook loop, the video recipe
 (`../handbook/video.md` — timing, tracks, transitions, video fills, audio), the intake
 contract (`../handbook/intake.md`), the `brand` skill (a project's colours, fonts and logo),
-the `models` skill (generating music, sound and voice), the `formats` skill and the `judge` gate.
+the `formats` skill and the `judge` gate.
+Generating music, sound and voice: the `models` skill.
 Inspired by the MIT-licensed `/brag` skill (github.com/latent-spaces/brag); this one builds on
 CoDesign instead of HTML.
 
@@ -40,8 +42,8 @@ plain language:
 | `out`       | output folder                                                     | `./launch-video/`                      |
 
 Generating sound needs a signed-in account (`login`); without one, use the user's file or ship
-silent — a silent video is a complete deliverable. If `out` already holds a previous run, use
-`out-YYYYMMDD-HHMMSS/` instead of overwriting.
+silent — a silent video is a complete deliverable.
+If `out` already holds a previous run, use `out-YYYYMMDD-HHMMSS/` instead of overwriting.
 
 ## 1 — Inspect the project
 
@@ -177,15 +179,15 @@ Save the code of every `edit` you run to `<out>/build/NN-<step>.js`, in order �
   a glance. Fix in place and re-check.
 - `preview` the middle of every transition too: the still shows it as the mp4 will. One clip whole
   there means the transition is missing or off its cut — fix it before exporting.
-- `export({ format: "mp4", revision, blockId: page })` → `<out>/launch.mp4`.
+- `export({ format: "mp4", blockId: page })` → `<out>/launch.mp4`.
 - Poster: pick the strongest frame from the previews, export it as `png` → `<out>/poster.png`.
-- `export({ format: "imgly", revision })` → `<out>/design.imgly`, the editable source.
+- `export({ format: "imgly" })` → `<out>/design.imgly`, the editable source.
 - Write `<out>/share-copy.txt`: a one-line post, a two-sentence post, and alt text.
 - Report: the `mp4` path, its length, and one sentence per beat.
 
 ## 6 — Editions
 
-The exported revision is the master. Derive every other edition from it rather than rebuilding:
+The exported design is the master. Derive every other edition from it rather than rebuilding:
 the `resize` skill for `vertical` and `square` cuts (re-check that each beat's line still fills the
 new frame and clears the edges), the `localize` skill for other languages (captions and the
 voiceover re-generated in that language, the cut times kept). Export each to

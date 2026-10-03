@@ -86,9 +86,10 @@ chip row only when those disagree; otherwise take it and name it in the brief
 
 **Format (derived from placement):** 9:16 1080×1920 px · 4:5 1080×1350 px · 16:9
 1920×1080 px · 1:1 1080×1080 px; the placement's safe zones come from the `formats`
-skill. Build per `../handbook/video.md` and deliver with
-`export({ format: "mp4" })`. Generated music, voiceover and clips need a sign-in
-(`login`); without one, say so in the brief and use the user's files or ship silent.
+skill. Build per `../handbook/video.md`.
+Deliver with `export({ format: "mp4" })`.
+Generated music, voiceover and clips need a sign-in (`login`); without one, say so in
+the brief and use the user's files or ship silent.
 
 ## custom
 

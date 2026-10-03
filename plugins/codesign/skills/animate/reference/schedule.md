@@ -452,7 +452,7 @@ if (process.argv[1] && realpathSync(fileURLToPath(import.meta.url)) === realpath
 
 ## apply.js — one edit
 
-Prepend `const PLAN = <plan.json contents>;`. Run it as one `edit`: the first apply from the still's revision, every re-apply with a transformed plan from the latest animated revision (the still has no `codesign/motion-beat` tags, and a stored plan carries no ids).
+Prepend `const PLAN = <plan.json contents>;`. Run it as one `edit` on the design you animate: the first apply on the copy of the still, every re-apply with a transformed plan on the animated design (the still has no `codesign/motion-beat` tags, and a stored plan carries no ids).
 
 <!-- prettier-ignore -->
 ```js

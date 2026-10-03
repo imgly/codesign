@@ -57,7 +57,8 @@ const { width } = await engine.design.getProps(page, ['width']);
 - A spec node carries exactly `type`, `name`, `props` and `children` (nested,
   same shape). Everything else IS props — including the font: naming a
   family (`text: { font: { family, weight } }`) makes `create` — and
-  `setProps` — do the Google-Fonts lookup and pick that weight's file. Every
+  `setProps` — look the family up in this deployment's typeface sources and
+  pick that weight's file. Every
   `engine.design` member returns a Promise: always `await` it (the edit gate
   rejects un-awaited calls).
   `text: { string, ranges }` (style ranges
@@ -139,12 +140,12 @@ whole-class reads are cheap (`BlockAPI` is the largest):
 
 | Class        | Start line |
 | ------------ | ---------- |
-| AssetAPI     | 1208       |
-| **BlockAPI** | **1505**   |
-| EditorAPI    | 1755       |
-| EventAPI     | 1887       |
-| **SceneAPI** | **1988**   |
-| VariableAPI  | 2209       |
+| AssetAPI     | 1207       |
+| **BlockAPI** | **1504**   |
+| EditorAPI    | 1754       |
+| EventAPI     | 1886       |
+| **SceneAPI** | **1987**   |
+| VariableAPI  | 2208       |
 
 (If a start line looks off, search for `class BlockAPI` instead.)
 
@@ -242,7 +243,7 @@ interface DesignApi {
     setSettings(props: SettingsProps): Promise<void>;
     getSettings(select?: string[]): Promise<SettingsProps>;
     /** Resolve a font AND its metrics in one call — by family (the same
-     *  Google-Fonts lookup create runs) or by uri (brand fonts). Also warms
+     *  typeface lookup create runs) or by uri (a font you already have). Also warms
      *  the metrics cache behind text.lineHeight: { visual } — after create
      *  with text.font, font(), or loadResources, visual line-heights need
      *  no fetch. No other metrics call is needed. */
@@ -281,6 +282,7 @@ interface DesignApi {
     // to wipe); font/size/lineHeight writes auto-reshape. Read the per-run
     // truth via getProps(id, ['text.ranges']); paragraphs (read-only) carry
     // listStyle + listLevel.
+    // CAPTIONS: page→captionTrack→caption, caption.* as text.*; style+layout TRACK-WIDE
     adjustCropToFillFrame(id: BlockRef, minScaleRatio: number): Promise<number>;
     // Multi-block layout verbs:
     /** Axis-keyed ('Center' is never ambiguous); one call may do both axes. */
@@ -386,35 +388,27 @@ interface BlockProps {
     };
     caption?: {
         automaticFontSizeEnabled?: boolean;
-        backgroundCornerRadius?: number;
-        backgroundPadding?: {
-            bottom?: number;
-            left?: number;
-            right?: number;
-            top?: number;
-        };
         clipLinesOutsideOfFrame?: boolean;
-        externalReference?: string;
-        fontFileUri?: string;
-        fontSize?: number;
-        hasClippedLines?: boolean;
+        color?: Color;
+        font?: { family: string; weight?: FontWeight } | { typeface: Typeface; uri?: string };
+        fontSize?: string /* '48px' */;
         horizontalAlignment?: 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto';
         letterSpacing?: number;
-        lineHeight?: number;
+        lineHeight?: number | { visual: number };
         maxAutomaticFontSize?: number;
         minAutomaticFontSize?: number;
         paragraphSpacing?: number;
-        pathExternalRef?: string;
         pathFlipped?: boolean;
         pathOffset?: number;
+        style?: string;
         text?: string;
-        typeface?: string;
         useContextualAlternates?: boolean;
         useContextualLigatures?: boolean;
         useDiscretionaryLigatures?: boolean;
         useKerning?: boolean;
         useLigatures?: boolean;
         verticalAlignment?: 'Top' | 'Bottom' | 'Center';
+        weight?: string;
     };
     captionTrack?: {
         automaticallyManageBlockOffsets?: boolean;

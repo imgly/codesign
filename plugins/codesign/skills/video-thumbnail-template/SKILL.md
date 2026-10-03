@@ -5,6 +5,7 @@ description: >-
   (YouTube and other 16:9 video platforms) — from a channel link whose latest thumbnails set the
   style, from one or more example thumbnails or designs, or from scratch; or when making new
   thumbnails from such a template, one at a time or in a batch.
+requires: asset_generate, asset_add, export, import, scorecard
 ---
 
 # video-thumbnail-template
@@ -118,9 +119,12 @@ the slots and any `$meta.gaps`.
 
 ## 6 — New thumbnails
 
-For each thumbnail, `edit` with `parent` = the **template revision** — never chain one
-thumbnail onto the previous — fill the slots, hide the empty ones, fit the headline, and export
-JPEG (`export({ format: 'jpeg', blockId: <page>, outPath })`; YouTube rejects uploads over 2 MB).
+For each thumbnail, start from the **saved template** — `import({ source: { uri } })` with the
+`uri` its save returned — never chain one thumbnail onto the previous. Fill the slots, hide the
+empty ones, fit the headline, and export JPEG (`export({ format: 'jpeg', blockId: <page>, outPath })`;
+YouTube rejects uploads over 2 MB).
+Each `import` is a copy, so the template stays as it was; `export({ format: 'imgly' })` a filled
+thumbnail only when the user wants it editable too.
 Look at every export and check it against the kit's `avoid` list.
 
 For a batch, agree on a simple table with the user (e.g. a CSV with one row per video: headline

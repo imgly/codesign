@@ -53,7 +53,7 @@ and the font swap goes on Hangul blocks only.
 
 ⚠ **A Japanese face has no Hangul.** `Noto Sans JP` on Korean copy is a page of tofu, and "it is a
 CJK font" is not a coverage claim — the scripts do not share faces. Note also that **Noto Sans KR
-and Noto Serif KR are variable-only** on jsDelivr, so they give you no bold; see `font-loading.md`.
+and Noto Serif KR are variable** on jsDelivr: declare each weight you set; see `font-loading.md`.
 
 ## Quotation marks
 
@@ -76,10 +76,10 @@ A CJK-covering face is mandatory, **matched to the Latin face's character** (`la
 Loading mechanics + jsDelivr paths are in `font-loading.md`. Latin faces have zero CJK coverage — a
 wrong font is instant tofu; `preview` every edition.
 
-For **bold** CJK headings load a **static Bold CJK file**
-(`ofl/shipporimincho/ShipporiMincho-Bold.ttf`) — a single Regular file (or a variable face's
-default instance) renders **Regular only** (the bold trap, `font-loading.md`). If no static Bold
-is available, carry the heading's weight with **size/color** instead of a faux-bold.
+For **bold** CJK headings use a Bold file (`ofl/shipporimincho/ShipporiMincho-Bold.ttf`) or a
+variable file with its bold declared (`font-loading.md`) — a static Regular file renders **Regular
+only**. If no bold is available, carry the heading's weight with **size/color** instead of a
+faux-bold.
 
 ## Cross-references
 

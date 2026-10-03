@@ -8,6 +8,7 @@ description: >-
   demo design or on the user's own idea — closing with the optional (never required)
   IMG.LY sign-in and the ways to earn more credits. Not a design manual: the handbook
   remains the required read before any edit.
+requires: import, export, drafts
 ---
 
 # onboard — introduce CoDesign, then do one real job
@@ -48,15 +49,16 @@ recite.
 
 ## Beat 1 — what this is, in plain words
 
-No jargon. Do not say "CE.SDK", "engine", "revision DAG", "blocks" or "scene". Cover,
+No jargon. Do not say "CE.SDK", "engine", "session", "checkpoint", "blocks" or
+"scene". Cover,
 in your own words, about a paragraph:
 
 - **I make a real design document, not a picture of one.** Text stays text, shapes
   stay shapes, layers stay layers.
 - **So one word can change without re-rolling everything.** Ask for a different
-headline and only the headline moves.
-- **You can take over at any point.** Every design opens in a browser editor — move
-  things yourself, save, and I carry on from your version.
+  headline and only the headline moves.
+- **You can take over at any point.** Every design I save opens in a browser editor — move
+  things yourself, save, and I pick your version up from there.
 - **It ends in something usable:** print-quality PDF, images in whatever size you
   need, or an mp4 video with its sound.
 
@@ -85,11 +87,9 @@ re-voice them. The job ids in the first column are values, never translated.
 | `localize` | **Localize: Translate a design to multiple languages** | Keeps the layout intact, right-to-left included.                                        | `localize`                       |
 | `judge`    | **Judge: Give feedback to an existing design**         | Scores a design against a rubric, then fixes what's weak.                               | `judge`                          |
 
-
 Always add the closing line: **however you start, you can finish with a print-ready
 PDF or a link that hands the design to a colleague.** That is not a seventh option —
 it is true of all six.
-
 
 If the user answers with something not on this list, take them at their word and go to
 the closest skill; don't force the menu.
@@ -137,22 +137,19 @@ already has not answered any of those.
   over it. That contrast is the point — a variation appears in seconds and nothing was
   regenerated from scratch.
 
-
-Whichever path ran, finish with `view` and give them the editor link, plus an `export`
-when a file makes sense for that job. Say explicitly that the link is live and
+Whichever path ran, **save the design first** — `export({ format: 'imgly' })`. That is
+what turns the work into a file, and nothing appears in the editor until it exists.
+Then give them the `view` link, plus a further `export` (`pdf`, `png`, …) when a
+deliverable makes sense for that job. Say explicitly that the link is live and
 editable, and that whatever they change there comes back to you.
-
 
 ## Beat 4 — the optional account (ask once)
 
 Do this **after** the job, once, and never raise it again in the session.
 
-First check what is actually available:
-
-- If `asset_generate` is already in your tool list, say so in one line — image
-  generation is on, nothing to do — and skip the rest of this beat.
-- If there is no `login` tool, mention the account only as a pointer
-  (<https://img.ly/signup>) and ask nothing.
+First check what is actually available: if `asset_generate` is already in your tool
+list, say so in one line — image generation is on, nothing to do — and skip the rest
+of this beat.
 
 Otherwise, say this honestly:
 
@@ -202,10 +199,11 @@ Where you stand:
   Terms     https://img.ly/tos/codesign
 ```
 
-Row 1 is always ticked — installing is free and stays free. Row 2 is ticked **only if
-`login` actually succeeded in this session**; if they declined, or there was no `login`
-tool to call, leave it unticked and point at <https://img.ly/signup>. Rows 3–5 are
-never ticked: you have no way to know, and guessing would breach the honesty rules.
+Row 1 is always ticked — installing is free and stays free.
+Row 2 is ticked **only if `login` actually succeeded in this session**; if they
+declined, leave it unticked and point at <https://img.ly/signup>.
+Rows 3–5 are never ticked: you have no way to know, and guessing would breach the
+honesty rules.
 
 The code fence is a layout, not a string: write the rows in the user's language
 (handbook §1). The three URLs and `#showcase` are values and stay exactly as they are.

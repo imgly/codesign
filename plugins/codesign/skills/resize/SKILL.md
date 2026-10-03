@@ -11,7 +11,20 @@ description: >-
 
 # resize
 
-Point this skill at the current design and one or more target formats, and it produces or repairs the size/format editions by **re-composing** each for its new aspect. It operates on the **latest revision of the current design** (re-ground via `list()` / `history()` if unsure — handbook §1); each produced format is a new revision (a non-destructive fork of the source). Single home for the resize workflow, the re-composition technique, and the reformat **no-goes**.
+Point this skill at the current design and one or more target formats, and it produces or repairs the size/format editions by **re-composing** each for its new aspect. It operates on the **design in the current session**, and each produced format is **saved as its own `.imgly` file**. Single home for the resize workflow, the re-composition technique, and the reformat **no-goes**.
+
+**The one mechanic to understand before anything else.** A session holds one design, so N formats are produced in sequence, not in parallel, and the **saved source file is what you return to between them** (handbook §1):
+
+```
+export({ format: 'imgly' })                     → SOURCE_URI   (save the source FIRST)
+per format:
+  import({ source: { uri: SOURCE_URI } })       → a copy of the source is the session
+  edit(…)  re-compose for the new canvas
+  preview()                                     → check it
+  export({ format: 'imgly' })                   → this format's own file
+```
+
+Save the source before you touch it. Re-importing is what makes every format a re-composition **of the source** rather than of the previous format — and it is why "never resize a resize" is a mechanical rule here, not just advice.
 
 Builds on two things it does _not_ restate: handbook §6.3 Hierarchy + §6.4 Composition & grid (margins as % of the shortest dimension, the spacing ladder, balanced whitespace / no dead void, nothing off-canvas) and §6.1.2 type-scale bands; and the handbook's engine mechanics (the `text.font` declaration, auto-reshape, `loadResources`). For the _same-aspect, translate-the-strings_ case, use the `localize` skill instead.
 
@@ -26,8 +39,8 @@ aspect, and platform safe zones, one file per format: `../formats/SKILL.md` for 
 `../formats/<id>.md` for the format(s) you're building.
 
 Building several editions of one design, or re-applying a fix to editions you already built: the
-**master → editions** workflow, `editions.md`. For an animated or video design,
-read **Video and animated designs** below as well.
+**master → editions** workflow, `editions.md`.
+For an animated or video design, read **Video and animated designs** below as well.
 
 ## Localize vs resize — snap vs re-compose
 
@@ -48,12 +61,14 @@ Two inputs, resolved before any work by the intake contract — derive, ask once
 nothing: `../handbook/intake.md`. **R** = required, no default; **A** =
 ask if underived; **D** = defaultable.
 
-| Parameter      | Kind    | Chips / values                                                                                       | Default                               |
-| -------------- | ------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| target formats | **R**   | `Instagram post` · `Instagram story` · `LinkedIn` · `Widescreen` · `A4 print` · `Custom W×H` · Other | none                                  |
-| source design  | derived | —                                                                                                    | latest revision of the current design |
+| Parameter      | Kind    | Chips / values                                                                                       | Default                           |
+| -------------- | ------- | ---------------------------------------------------------------------------------------------------- | --------------------------------- |
+| target formats | **R**   | `Instagram post` · `Instagram story` · `LinkedIn` · `Widescreen` · `A4 print` · `Custom W×H` · Other | none                              |
+| source design  | derived | —                                                                                                    | the design in the current session |
 
-**1. The source** — the latest revision of the current design. Every target format is re-composed _from_ that source — **never resize a resize** (don't chain: fork each format from the native source revision). If the user asks to resize an earlier design, find it via `list()` and its latest revision via `history()` first. If the request is a brief (no design exists yet), **build the native base first** at the brief's canvas per handbook §6, preview and sanity-check it, then treat that revision as the source.
+**1. The source** — the design in the current session. **Save it first** (`export({ format: 'imgly' })`) and hold onto the `uri`: every target format is re-composed _from_ that file — **never resize a resize** (don't chain; re-import the source between formats).
+If the user asks to resize a design saved earlier, its `uri` IS the source `uri`: `open` it to `preview` and capture it, skip the first save, then `import` a copy of it per format.
+If the request is a brief (no design exists yet), **build the native base first** at the brief's canvas per handbook §6, preview and sanity-check it, then save it and treat that file as the source.
 
 **2. The formats** — named formats (`ig-post`, `ig-square`, `ig-story`, `widescreen`, and the
 rest of the `formats` skill's index) or a custom `W×H`. Resolve each named format's exact size,
@@ -76,7 +91,7 @@ system** constant:
   each decoration's _role_ (a ghost quote stays a ghost quote); the **element inventory** (every
   content cluster on the source has a counterpart on the new canvas — see below); and the
   **appearance** of every block (fill/gradient, effect/blur stack, opacity, corner radius, stroke,
-  shadow, and font weight — carried by forking, not re-created by eye).
+  shadow, and font weight — carried in by re-importing the source, not re-created by eye).
 - **Element inventory — nothing silently dropped.** A reformat re-composes; a tight format tempts
   you to drop elements, and the result reads "way too simplistic / missing elements from the
   original." Before finishing, **count**: every text cluster, image, chip, icon, and decoration on
@@ -92,10 +107,14 @@ by re-flow, not by scaling the canvas contents). Never leave a **lopsided void**
 
 ## Workflow
 
+0. **Save the source and keep its `uri`** — `export({ format: 'imgly' })`. Everything below
+   re-imports it, once per format.
 1. **Read the source's design system** (palette, accent, type bands, margin %, spacing rhythm,
    hierarchy) and **capture its layout as fractions** of the source canvas (positions/sizes as % of
-   source W/H — see routine).
-2. **Fork the source** per target format; **capture the region of interest** of every image/video
+   source W/H — see routine). Do this once, on the source; the JSON it returns is what you carry
+   from format to format.
+2. **Re-import the source** for this target format (`import({ source: { uri: SOURCE_URI } })`);
+   **capture the region of interest** of every image/video
    fill first (ROI section below); **set the page** to the new W×H and resize the full-bleed
    background to cover it; then **restore each fill's ROI** so the same region of the image stays
    framed — never let a `Cover` fill silently re-center the subject on the new aspect.
@@ -117,9 +136,13 @@ by re-flow, not by scaling the canvas contents). Never leave a **lopsided void**
    `text: { color }` collapses the whole block to run 0's formatting. Don't re-apply whole-block
    styling in a resize; if you must, pass the runs from `getProps(id, ['text.ranges'])` back as
    `text: { ranges: [...] }` in the same `setProps` — **every** run, not just the accent.
-8. **`loadResources` → `preview` each format** (dead void / crop / tofu only show in the
-   render; for a video design, at several `time`s — see below). Each format lands as its own revision — give each a `note` naming the format (e.g.
-   "ig-story 1080×1920").
+8. **`loadResources` → `preview` this format** (dead void / crop / tofu only show in the
+   render), then **save it**: `export({ format: 'imgly' })`. That file is the format's edition —
+   until you save, it exists nowhere the user can reach, and the next `import` will replace it.
+   Collect the returned `uri`s and report them all at the end. Give each build's `edit` a `note`
+   naming the format (e.g. "ig-story 1080×1920"). Then go back to step 2 for the next format.
+   For a video design, preview each format at several `time`s — see **Video and animated
+   designs** below.
 
 ## Proportional re-composition routine
 
@@ -166,7 +189,7 @@ await walk(page);
 return { type: 'text', text: JSON.stringify({ PW, PH, blocks: out }, null, 1) };
 ```
 
-**Apply to a forked source at the new size** (first pass, then clamp):
+**Apply to the re-imported source at the new size** (first pass, then clamp):
 
 ```js
 const NW = 1080,
@@ -332,11 +355,9 @@ Applies when the page has a `playback.duration`, blocks carry `playback.timeOffs
   it at the start, middle and end of every video clip and of every `ken_burns` / `pan` move — a
   crop that frames the subject at 0 s can cut it at 3 s.
 - **Preview at several `time`s, per edition.** One frame of a video proves nothing about the
-  rest: `preview({ revision, time })` at the first frame, mid-entrance of each timed block, each
-  hold, each caption change and the last second. Then `export({ format: 'mp4', blockId: page })`
-  for the real motion. `preview` accepts `time` on a Video-mode scene only; if it answers "not a
-  video scene", switch it once — `engine.scene.setMode('Video')`, move the page under the scene
-  (`engine.design.appendChild(engine.scene.get(), page)`) and destroy the now-empty `stack`.
+  rest: `preview({ time })` at the first frame, mid-entrance of each timed block, each hold, each
+  caption change and the last second.
+  Then `export({ format: 'mp4', blockId: page })` for the real motion.
 
 ## No-goes / red flags
 
@@ -359,7 +380,7 @@ Applies when the page has a `playback.duration`, blocks carry `playback.timeOffs
   against the new canvas; omit only deliberately, never by oversight.
 - **Appearance drift** — a block's fill/gradient/effect/corner-radius/overlay differs from the
   source, or an overlay was added/removed the source didn't have (a cover that "became darker").
-  Appearance is inherited by forking; don't re-create or restyle it by eye.
+  Appearance is inherited by re-importing the saved source; don't re-create or restyle it by eye.
 - **Crop broken** — a fill leaves a gap inside its frame, or was stretched non-uniformly. See the
   three crop invariants (coverage, uniform scale, subject-in-window).
 - **Flattened hierarchy** — the resize dropped the source's group blocks and shipped a flat list of

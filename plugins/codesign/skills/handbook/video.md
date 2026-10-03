@@ -7,11 +7,11 @@ animate it. `preview` seeks (`time`) and `export` renders the timeline in any
 scene mode.
 
 ```js
-// Optional: preview and export work in any mode; in Video mode every preview
+// Optional: the timeline plays in any mode; in Video mode every preview
 // also reports {time, duration}.
 engine.scene.setMode('Video');
 
-// Page duration = length of the exported video.
+// Page duration = length of the video.
 await engine.design.setProps(page, { playback: { duration: 10 } }); // seconds
 
 // Timed visuals live on tracks, one track per layer (see "Timeline: one
@@ -33,9 +33,9 @@ await engine.design.setProps(block, {
   playback: { timeOffset: 1.0, duration: 5.0 } // enters at t=1s, visible 5s
 });
 
-// Video fill — use the workspace:// URI from `asset_add`.
+// Video fill — use the `uri` that `asset_add` returned.
 await engine.design.setProps(block, {
-  fill: { type: 'video', video: { fileURI: 'workspace://assets/<sha>.mp4' } }
+  fill: { type: 'video', video: { fileURI: '<opaque handle>' } }
 });
 // Trim writes need the video's metadata — load first, else they throw
 // "The video has not been loaded yet." Trim lives on the FILL.
@@ -60,7 +60,7 @@ await engine.design.create(
   {
     type: 'audio',
     props: {
-      audio: { fileURI: 'workspace://assets/<sha>.mp3' },
+      audio: { fileURI: '<opaque handle>' },
       playback: {
         timeOffset: 0,
         duration: 10,
@@ -155,15 +155,19 @@ timeline and ships inside the mp4 (or alone as `wav`/`m4a`, see Notes). A silent
 when the brief chose it — say so, rather than leaving sound out by omission.
 
 - **Sources.** The user's own file → `asset_add` (mp3, wav, m4a, ogg, aac).
-  Otherwise `asset_generate` (signed in): music and sound effects are provider
+  Otherwise `asset_generate`: music and sound effects are provider
   models (`capability: "text2audio", source: "all"`), a voiceover is
-  `elevenlabs/eleven-v3-tts`, and `elevenlabs/scribe-v2` transcribes speech with
-  word timings — prompts and parameters per model are in
-  `../models/audio.md`. Each returns a `workspace://` uri and, when the
+  `elevenlabs/eleven-v3-tts`, and `elevenlabs/scribe-v2` transcribes speech
+  into a `transcriptUri` plus one timed line per sentence (its description
+  says whether it also takes video and long recordings). Prompts and
+  parameters per model are in
+  `../models/audio.md`. Each returns a `uri` and, when the
   file states it, a `duration` — size the page and the clips from it.
 - **Timing.** Put a voiceover on the timeline where its sentence belongs and cut
-  or animate to its words: the scribe transcript's `words[]` give each word's
-  start and end in seconds (captions and word-timed text use the same times).
+  or animate to its words: inside `edit`,
+  `engine.design.readTranscript(transcriptUri, { from, to })` gives each
+  word's start and end in seconds of the source (captions and word-timed text
+  use the same times).
   Music drives the cuts when there is no voice — the `launch-video` skill has a
   beat-map script for that.
 - **Levels.** One audio block per sound; `playback.volume` is 0–1. Duck the
@@ -183,7 +187,7 @@ when the brief chose it — say so, rather than leaving sound out by omission.
 ## Transitions between clips
 
 A transition joins a clip to the NEXT clip on the same track (`push`, `wipe`,
-`cross-zoom`, …) and renders in the mp4. Only leaf clips on a track qualify —
+`cross-zoom`, …) and renders in the video. Only leaf clips on a track qualify —
 a graphic, text or video block that is a track's child;
 `engine.block.supportsTransition(id)` says whether one does. Blocks placed on
 the page directly, pages and tracks do not. A layer's sequence of beats is
@@ -242,6 +246,54 @@ engine.block.setTransition(clipA, t); // clipA → the clip after it on the trac
   the transition is not applied or not where you think: check the clip is a
   track child and the overlap equals the transition's duration.
 
+## Captions
+
+Native captions burn into the mp4 and stay editable in the editor:
+page → one `captionTrack` → one `caption` per phrase.
+
+```js
+const track = await engine.design.create(
+  { type: 'captionTrack' },
+  { parent: page }
+);
+const ids = [];
+for (const p of phrases) // { text, start, end } from transcript word times
+  ids.push(
+    await engine.design.create(
+      {
+        type: 'caption',
+        props: {
+          caption: { text: p.text },
+          playback: { timeOffset: p.start, duration: p.end - p.start }
+        }
+      },
+      { parent: track }
+    )
+  );
+// style ONCE — every caption on the track takes it
+await engine.design.setProps(ids[0], {
+  caption: {
+    font: { family: 'Inter', weight: 'bold' },
+    fontSize: '56px',
+    color: { r: 1, g: 1, b: 1, a: 1 },
+    horizontalAlignment: 'Center'
+  },
+  position: { x: 90, y: 1500 },
+  width: 900,
+  height: 200
+});
+```
+
+- **Style and layout are track-wide.** Position, size, font, font size, colour,
+  alignment, `backgroundColor` and stroke written on ANY caption apply to every
+  caption on its track, and a new caption adopts them. Write them once; text,
+  `playback` timing, opacity and animations are per caption.
+- **One track per page.** A second track is a second, independent style.
+- **Phrases, not words.** Group transcript words into 2–6-word phrases that
+  fit the frame; consecutive captions should not overlap in time.
+- **Background box = the whole caption frame** plus `backgroundColor` padding,
+  not the glyphs: size the frame to the text before enabling it.
+
 ## Notes
 
 - **Groups time their children.** A child's `timeOffset` inside a group counts from the group's
@@ -250,10 +302,10 @@ engine.block.setTransition(clipA, t); // clipA → the clip after it on the trac
   after 5 s.
 - **Animating an existing still design?** The `animate` skill does it end to end:
   `../animate/SKILL.md`.
-- Export: `export({ format: "mp4", revision, blockId: page })`.
+- Export: `export({ format: "mp4", blockId: page })`.
   Duration and resolution come from the page; `fps` (default 30) is the one
   export knob. The page's audio blocks are mixed into the mp4.
-- Audio only: `export({ format: "wav" | "m4a", revision, blockId: page })`
+- Audio only: `export({ format: "wav" | "m4a", blockId: page })`
   renders the page's audio mix (`wav` = 48 kHz stereo float). Page only; for one
   clip alone, export while it is the only audio on the page. A clip starting
   after 0 s can land up to 1 s late in this export (the mp4 is exact).
@@ -265,8 +317,9 @@ engine.block.setTransition(clipA, t); // clipA → the clip after it on the trac
   `../guide/animation/types.md`, `../guide/edit-video/add-captions.md`.
 - `preview` renders a STILL frame, not motion — pass `time` (seconds) to seek
   any page with a timeline, whatever the scene mode: verify a few salient
-  moments (start, mid-beat, the middle of each transition, the end). Each timed preview returns
-  `{time, duration}` JSON next to the image. Export for the real thing.
+  moments (start, mid-beat, the middle of each transition, the end). Each
+  timed preview returns `{time, duration}` JSON next to the image.
+  Export for the real thing.
 - Poster: a still `export` (png/jpeg/webp) renders the frame at the page's
   playhead — park it with `setProps(page, { playback: { time } })` in an edit.
 - Resource loading during export is handled server-side — you do NOT need a
@@ -275,7 +328,7 @@ engine.block.setTransition(clipA, t); // clipA → the clip after it on the trac
   trimming a video fill (see the recipe above).
 - **Multi-clip tracks with your own offsets: disable auto-arrange first.**
   `track/automaticallyManageBlockOffsets` defaults to `true` and silently
-  overwrites every child's `setTimeOffset` with an auto-computed back-to-back
+  overwrites every child's offset with an auto-computed back-to-back
   value — no error. It looks fine with one clip (offset 0 either way), which
   is why it hides until you need two clips to overlap. Before setting any
   child offsets: `engine.block.setBool(track, 'track/automaticallyManageBlockOffsets', false)`.
@@ -287,9 +340,10 @@ engine.block.setTransition(clipA, t); // clipA → the clip after it on the trac
   `slide` with `fade: true`). A child is undrawn when it's hidden or outside
   its own playback window (e.g. it starts later than its group). When a frame
   has two or more such groups, the engine renders it solid black, and every
-  frame after it too — the mp4 goes black to the end, with no error. Stagger
+  frame after it too — the video goes black to the end, with no error. Stagger
   the groups so their fades don't overlap, make each child's window cover its
-  group's fade, or use `fade: false`. Check the exported mp4 for black
-  stretches. The engine stays black afterwards: later previews and exports,
-  of any design, come back black until the engine is recycled (after 5 idle
-  minutes by default, or a server restart).
+  group's fade, or use `fade: false`.
+  Check the exported mp4 for black stretches.
+  The engine stays black afterwards: later previews and exports, of any
+  design, come back black until the engine is recycled.
+  This server recycles it after 5 idle minutes by default, or on a restart.

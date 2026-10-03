@@ -66,7 +66,7 @@ Use a script face with full Arabic coverage **matched to the Latin face's charac
 - **Handwritten / script** accent → **Aref Ruqaa** (Ruqʿah calligraphy) or **Lalezar** (rounded
   playful display), never a flat sans.
 
-Loading mechanics + jsDelivr paths + the variable-bold trap are in `font-loading.md`. A Latin face
+Loading mechanics + jsDelivr paths + declaring weights are in `font-loading.md`. A Latin face
 silently falling back to a system sans is the classic failure — `preview` every Arabic edition.
 
 ## Cross-references

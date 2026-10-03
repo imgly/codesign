@@ -7,7 +7,7 @@ against this server.
 ## 1. Fonts — resolve every brand font to a fetchable URI
 
 `engine.block.setFont(id, uri, typeface)` takes **one `uri`** that must resolve to a **single,
-complete, static-or-variable TTF**, over a **fetchable scheme only** (`https://` or `workspace://`
+complete, static-or-variable TTF**, over a **fetchable source only** (an `https://` URL, or a `uri` from `asset_add`
 — `data:` and local `file:` paths are rejected when the scene is saved). The `typeface` is the
 3-arg object `{ name, fonts:[{ uri, subFamily, weight, style }] }`; omitting it throws
 `Cannot read properties of undefined (reading 'name')`.
@@ -22,26 +22,26 @@ this way (the IMG.LY kit's Inter does).
 
 **B. Proprietary / not-on-a-CDN (e.g. GT Walsheim):** pass the bundled font file straight to
 `asset_add` — it accepts `.ttf`, `.otf`, `.woff` and `.woff2` alongside images, and returns the
-`workspace://` URI to use:
+`uri` to use:
 
 ```js
 // asset_add({ source: { path: '<kit>/fonts/<Font>.ttf' } })
-//   -> { uri: 'workspace://assets/<sha>.ttf', kind: 'font', ... }
+//   -> { uri: '<opaque handle>', kind: 'font', ... }
 ```
 
 Then `setFont(id, uri, tf('<Brand Display Name>', uri))` — the returned `uri` goes in BOTH places:
-`setFont`'s second argument and every `typeface.fonts[].uri`. `workspace://` is a sanctioned,
+`setFont`'s second argument and every `typeface.fonts[].uri`. That handle is a sanctioned,
 persistable scheme, so the saved `design.imgly` stays loadable (the bytes are in the store). Never
 hand-copy files into the workspace store: `asset_add` content-addresses them for you, and a
 hand-placed file with the wrong hash is unreachable. On a hosted CoDesign server (no disk access,
 so no `{ path }` arm), host the proprietary font at an `https://` URL instead and use that.
 
-### The variable-bold trap
+### Weights from a variable file
 
-A variable TTF renders **only its default instance** (usually Regular). You cannot get Bold from a
-variable file. If a brand's `typography` role needs a specific weight the variable file can't give,
-supply a **static** per-weight TTF (instance it with `fonttools varLib.instancer` — see the kit's
-`fonts/README.md`). The IMG.LY kit ships **no Bold GT Walsheim on purpose** (`headlineWeight` = 500
+A variable TTF gives **every weight you declare**: list each one as its own `typeface.fonts` entry,
+all pointing at the same file (`{ uri, subFamily: 'Bold', weight: 'bold', style: 'normal' }`), and
+the engine draws that weight. A typeface that declares one entry has only that weight — asking for
+another fails with "Failed to find a font with the specified weight". The IMG.LY kit ships **no Bold GT Walsheim on purpose** (`headlineWeight` = 500
 Medium); honour that — never fake a heavier weight.
 
 ### setFont gotchas (script-agnostic)
@@ -96,7 +96,7 @@ to the fraction (`rgba('#2E2E2F', 0.16)`).
 an image fill on a graphic block sized to the logo's aspect (IMG.LY wordmark = 142×30 ≈ 4.7:1):
 
 ```js
-// asset_add returns { uri:'workspace://assets/<sha>.svg', ... } — embed uri, never httpUrl
+// asset_add returns { uri:'<opaque handle>', ... } — embed uri, never httpUrl
 const logo = await engine.design.create(
   {
     type: 'graphic',

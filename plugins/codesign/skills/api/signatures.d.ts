@@ -75,7 +75,7 @@ interface DesignApi {
     setSettings(props: SettingsProps): Promise<void>;
     getSettings(select?: string[]): Promise<SettingsProps>;
     /** Resolve a font AND its metrics in one call — by family (the same
-     *  Google-Fonts lookup create runs) or by uri (brand fonts). Also warms
+     *  typeface lookup create runs) or by uri (a font you already have). Also warms
      *  the metrics cache behind text.lineHeight: { visual } — after create
      *  with text.font, font(), or loadResources, visual line-heights need
      *  no fetch. No other metrics call is needed. */
@@ -114,6 +114,7 @@ interface DesignApi {
     // to wipe); font/size/lineHeight writes auto-reshape. Read the per-run
     // truth via getProps(id, ['text.ranges']); paragraphs (read-only) carry
     // listStyle + listLevel.
+    // CAPTIONS: page→captionTrack→caption, caption.* as text.*; style+layout TRACK-WIDE
     adjustCropToFillFrame(id: BlockRef, minScaleRatio: number): Promise<number>;
     // Multi-block layout verbs:
     /** Axis-keyed ('Center' is never ambiguous); one call may do both axes. */
@@ -219,35 +220,27 @@ interface BlockProps {
     };
     caption?: {
         automaticFontSizeEnabled?: boolean;
-        backgroundCornerRadius?: number;
-        backgroundPadding?: {
-            bottom?: number;
-            left?: number;
-            right?: number;
-            top?: number;
-        };
         clipLinesOutsideOfFrame?: boolean;
-        externalReference?: string;
-        fontFileUri?: string;
-        fontSize?: number;
-        hasClippedLines?: boolean;
+        color?: Color;
+        font?: { family: string; weight?: FontWeight } | { typeface: Typeface; uri?: string };
+        fontSize?: string /* '48px' */;
         horizontalAlignment?: 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto';
         letterSpacing?: number;
-        lineHeight?: number;
+        lineHeight?: number | { visual: number };
         maxAutomaticFontSize?: number;
         minAutomaticFontSize?: number;
         paragraphSpacing?: number;
-        pathExternalRef?: string;
         pathFlipped?: boolean;
         pathOffset?: number;
+        style?: string;
         text?: string;
-        typeface?: string;
         useContextualAlternates?: boolean;
         useContextualLigatures?: boolean;
         useDiscretionaryLigatures?: boolean;
         useKerning?: boolean;
         useLigatures?: boolean;
         verticalAlignment?: 'Top' | 'Bottom' | 'Center';
+        weight?: string;
     };
     captionTrack?: {
         automaticallyManageBlockOffsets?: boolean;
@@ -1138,6 +1131,12 @@ type TextDecorationStyle = 'Solid' | 'Double' | 'Dotted' | 'Dashed' | 'Wavy';
 // (create/appendChild via engine.design.create, group, text ranges,
 // fills/effects attachment, export) and everything BlockProps lacks.
 // ============================================================================
+interface DesignApi {
+    /** Words of a transcript asset_generate stored — pass its transcriptUri —
+     *  whose start lies in [from, to) seconds of the transcribed source (omit a
+     *  bound for open). Map them onto the timeline for captions or cuts. */
+    readTranscript(uri: string, range?: { from?: number; to?: number }): Promise<{ words: Array<{ text: string; start: number; end: number }> }>;
+}
 // Scalar get/set wrappers (setOpacity, setStrokeWidth, setPositionX, …),
 // is*/supports*/has* predicates, and editor-UI machinery are in
 // signatures-extended.d.ts — prefer engine.design.setProps/getProps/
