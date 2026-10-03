@@ -120,16 +120,70 @@ different background pick a different file.
 
 ## 4. Icons — recolour the monochrome set
 
-Brand icons usually ship as monochrome SVG with a single fixed ink hex (the IMG.LY set is
-`#2E2E2F`). To put one on brand, one find-and-replace of the ink hex → the target colour recolours
-the whole glyph, then `asset_add` the recoloured SVG and place it (§3):
+Brand icons usually ship as monochrome SVG with a single fixed ink hex (the IMG.LY set uses
+`#282F35` and `#2E2E2F`). Rebuild the icon from its paths in the design instead of placing the
+file: read the SVG's text (it is small) and run this block inside an `edit`. Each `<path>` becomes a
+`vector_path` graphic in one group named `NAME` (its id is `icon`), with the ink — fill or stroke —
+set to `INK` and any white kept white, so it stays vector and sharp at every size. It refuses
+anything that is not a monochrome path icon (masks, clip paths, gradients, several inks,
+transforms):
+place that file unchanged with `asset_add` and an image fill (§3).
+For several icons in one edit, wrap each run of the block, first line included, in its own `{ … }`.
 
-```bash
-sed 's/#2E2E2F/#471AFF/g' <kit>/icons/<Icon>.svg > /tmp/<Icon>-brand.svg
+<!-- prettier-ignore -->
+```js
+// icon.js — part of an edit; first line: const SVG = `<the icon file's text>`, INK = '#471AFF', NAME = 'icon/search', PARENT = <page or group id>, BOX = { x: 96, y: 96, size: 48 };
+const src = SVG.replace(/<!--[\s\S]*?-->/g, '');
+const attrs = (tag) => Object.fromEntries([...tag.matchAll(/([\w:-]+)="([^"]*)"/g)].map((m) => [m[1], m[2]]));
+const refuse = (why) => {
+  throw new Error(`icon.js: ${why} — not a monochrome icon; place the file unchanged as an image fill (§3), never recolour it`);
+};
+const root = attrs(/<svg\b[^>]*>/.exec(src)?.[0] ?? refuse('no <svg> element'));
+const [vx, vy, vw, vh] = (root.viewBox ?? `0 0 ${parseFloat(root.width)} ${parseFloat(root.height)}`).split(/[\s,]+/).map(Number);
+if (vx || vy || !(vw > 0) || !(vh > 0)) refuse(`viewBox "${root.viewBox}"`);
+const extra = /<(mask|clipPath|linearGradient|radialGradient|pattern|filter|image|text|use|rect|circle|ellipse|line|polyline|polygon)\b/.exec(src);
+if (extra) refuse(`<${extra[1]}>`);
+for (const g of src.match(/<g\b[^>]*>/g) ?? []) if (Object.keys(attrs(g)).some((k) => k !== 'id')) refuse(`styled group ${g}`);
+const paths = (src.match(/<path\b[^>]*>/g) ?? []).map(attrs);
+if (!paths.length) refuse('no <path>');
+const styled = paths.flatMap(Object.keys).find((k) => /^(transform|opacity|fill-opacity|stroke-opacity|style|stroke-dasharray)$/.test(k));
+if (styled) refuse(`path attribute ${styled}`);
+const isWhite = (c) => /^(white|#fff|#ffffff)$/i.test(c);
+const fillOf = (p) => p.fill ?? root.fill ?? 'black';
+const strokeOf = (p) => p.stroke ?? root.stroke ?? 'none';
+const inks = new Set(paths.flatMap((p) => [fillOf(p), strokeOf(p)]).filter((c) => c !== 'none' && !isWhite(c)).map((c) => c.toLowerCase()));
+if (inks.size > 1) refuse(`${inks.size} ink colours (${[...inks].join(', ')})`);
+const rgba = (hex) => {
+  const h = hex.length === 4 ? hex.slice(1).replace(/./g, '$&$&') : hex.slice(1);
+  return { r: parseInt(h.slice(0, 2), 16) / 255, g: parseInt(h.slice(2, 4), 16) / 255, b: parseInt(h.slice(4, 6), 16) / 255, a: 1 };
+};
+const paint = (c) => rgba(isWhite(c) ? '#FFFFFF' : INK);
+const k = BOX.size / Math.max(vw, vh);
+const JOIN = { miter: 'Miter', round: 'Round', bevel: 'Bevel' };
+const icon = await engine.design.create(
+  {
+    type: 'group',
+    name: NAME,
+    children: paths.map((p) => ({
+      type: 'graphic',
+      props: {
+        shape: { type: 'vector_path', vector_path: { path: p.d, width: vw, height: vh, fillRule: p['fill-rule'] === 'evenodd' ? 'EvenOdd' : 'NonZero' } },
+        width: vw * k,
+        height: vh * k,
+        position: { x: BOX.x, y: BOX.y },
+        fill: fillOf(p) === 'none' ? null : { type: 'color', color: { value: paint(fillOf(p)) } },
+        ...(strokeOf(p) === 'none'
+          ? {}
+          : { stroke: { enabled: true, color: paint(strokeOf(p)), width: parseFloat(p['stroke-width'] ?? '1') * k, position: 'Center', cornerGeometry: JOIN[p['stroke-linejoin'] ?? 'miter'] } })
+      }
+    }))
+  },
+  { parent: PARENT }
+);
 ```
 
-Watch the kit's exceptions: two-tone marks keep an intentional white knockout (recolour the ink,
-leave the white); full-colour logo icons must **not** be flattened. Keep icons monochrome, one ink
+Watch the kit's exceptions: two-tone marks keep an intentional white knockout (the block recolours
+the ink and leaves the white); full-colour logo icons must **not** be flattened (the block refuses them). Keep icons monochrome, one ink
 per context, on the 24px grid — never gradients/shadows, and don't mix in a third-party icon set.
 
 ## 5. Kicker pill (eyebrow → pill badge)

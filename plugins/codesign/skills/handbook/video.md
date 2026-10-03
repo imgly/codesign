@@ -169,7 +169,7 @@ when the brief chose it — say so, rather than leaving sound out by omission.
   word's start and end in seconds of the source (captions and word-timed text
   use the same times).
   Music drives the cuts when there is no voice — the `launch-video` skill has a
-  beat-map script for that.
+  beat-map recipe for that.
 - **Levels.** One audio block per sound; `playback.volume` is 0–1. Duck the
   music under a voiceover (0.3–0.5 while it speaks); a sound effect is a short
   block at the cut, 0.5–0.8 under the music. Give the bed a `fadeOut` that ends with the page
@@ -177,12 +177,16 @@ when the brief chose it — say so, rather than leaving sound out by omission.
   leaves a silent tail — pick a longer track, or end the page with the music.
 - **Beat-tight sync: prefer WAV.** In the exported mp4 an MP3 plays about
   40–100 ms later than the same audio as WAV. Harmless for a bed or a voiceover;
-  for cuts timed to single beats, convert the track to WAV with ffmpeg and
-  `asset_add` the WAV.
+  for cuts timed to single beats, render the MP3 to WAV: while it is the only
+  audio on the page, run `export({ format: 'wav', blockId: page })` and set the
+  block's `audio.fileURI` to the returned `uri`, with `timeOffset` and
+  `trimOffset` 0 — the WAV is the page's mix from 0 s. Time the cuts on that
+  WAV — the engine's decode of it is what the mp4 plays.
 - **Checking it.** `preview` renders pictures, not sound: the audio is only
-  heard in the exported mp4. Export once, after the judge gate passes, then confirm it has an audio stream as
-  long as the video (`ffprobe -show_streams out.mp4`) and listen to it when your
-  host can play it; otherwise tell the user which sounds sit where.
+  heard in the exported mp4. Export once, after the judge gate passes, then confirm from the export result that
+  `audioDuration` is present and about equals `duration` (no `audioDuration` means
+  the mp4 has no audio track), and listen to it when your host can play it;
+  otherwise tell the user which sounds sit where.
 
 ## Transitions between clips
 
@@ -343,7 +347,8 @@ await engine.design.setProps(ids[0], {
   frame after it too — the video goes black to the end, with no error. Stagger
   the groups so their fades don't overlap, make each child's window cover its
   group's fade, or use `fade: false`.
-  Check the exported mp4 for black stretches.
   The engine stays black afterwards: later previews and exports, of any
   design, come back black until the engine is recycled.
   This server recycles it after 5 idle minutes by default, or on a restart.
+  So right after an mp4 export, `preview` its last frame: black where the
+  design is not means the export went black too.

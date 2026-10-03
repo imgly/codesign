@@ -1,6 +1,6 @@
 # Styles
 
-The numbers live in `schedule.mjs` (`STYLES`); this page explains them. Change both together.
+The numbers live in `schedule.js` (`STYLES`); this page explains them. Change both together.
 
 | Style     | Entrances                         | Easing                      | Stagger | Entrance duration | Text                     | Loop                     | Transitions                   |
 | --------- | --------------------------------- | --------------------------- | ------- | ----------------- | ------------------------ | ------------------------ | ----------------------------- |

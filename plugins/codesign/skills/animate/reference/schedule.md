@@ -1,8 +1,7 @@
 # Scheduler and applier
 
-`schedule.mjs` turns a layer inventory into a timed plan; `apply.js` applies the
-plan in ONE `edit`. Write the module to disk and run it with node; never work
-out timings by hand.
+`schedule.js` turns a layer inventory into a timed plan in a read-only `edit`; `apply.js`
+applies the plan in ONE `edit`. Never work out timings by hand.
 
 ## Inventory — one read-only edit
 
@@ -42,13 +41,13 @@ for (const page of engine.scene.getPages()) {
 return { type: 'text', text: JSON.stringify({ pages }) };
 ```
 
-Turn it into `input.json`: one entry in `pages` per chosen page, a key and role per layer, every
+Turn it into the schedule input: one entry in `pages` per chosen page, a key and role per layer, every
 group's key in that page's `containers`, and every id — each page as `"s<n>"`, each layer and each
 group — under `ids`.
 
 ## Input
 
-`input.json` is the layer inventory plus the resolved intake. `key` is the tag the agent writes on
+The input is the layer inventory plus the resolved intake. `key` is the tag the agent writes on
 each block (`codesign/motion-beat`); `ids` maps keys to this session's block ids. On the first
 apply `ids` must also map every page id to its page (`"s1": <page id>`): `apply.js` builds the
 video on the first planned page and copies a page's fill when it has no background layer. Re-applies
@@ -117,17 +116,18 @@ or its children vanish when the group's 5 s default ends. A Frankfurt poster, ca
 `intake` carries `style`, `length` (seconds, omit to fit to content), `ending` (`hold`, `loop` or
 `outro`) and `hero` (a layer key). A key in `hero`, `static` or `order` that names no layer, or any
 other `ending`, throws. One entry in `pages` per page; multi-page layers also carry `sig`.
-The script prints the plan; `plan.apply` is what `apply.js` walks.
+Run the block below as the whole code of a read-only `edit` (`render: false`), its first line
+`const INPUT = <the input>, CHANGE = null;`. It returns the plan as JSON; `plan.apply` is what
+`apply.js` walks. To iterate, `INPUT` is the page's stored `codesign/motion` metadata and `CHANGE`
+the change (the animate skill's Iterate table) — it returns the new plan.
 
 <!-- prettier-ignore -->
 ```js
-// schedule.mjs
-import { readFileSync, realpathSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
+// schedule.js — the whole body of ONE read-only edit (render: false); first line: const INPUT = <input>, CHANGE = null;
 
-export const PI = Math.PI;
+const PI = Math.PI;
 
-export const TYPES = {
+const TYPES = {
   slide: { easing: true, opts: ['direction', 'fade'] },
   pan: { easing: true, opts: ['direction', 'distance', 'fade'] },
   fade: { easing: true, opts: [] },
@@ -156,7 +156,7 @@ export const TYPES = {
 };
 const COMMON = new Set(['type', 'duration', 'writingStyle', 'overlap']);
 
-export function legal(spec) {
+function legal(spec) {
   const t = TYPES[spec.type];
   if (!t) throw new Error(`unknown animation type '${spec.type}'`);
   const out = {};
@@ -173,7 +173,7 @@ export function legal(spec) {
   return out;
 }
 
-export const STYLES = {
+const STYLES = {
   calm: {
     stagger: 0.25, dur: 1.0, heroDur: 1.2, easing: 'EaseOutQuint',
     image: { type: 'fade' }, text: { type: 'fade', writingStyle: 'Line' },
@@ -203,13 +203,13 @@ export const STYLES = {
     transition: { type: 'fade-to-black', duration: 1.0, easing: 'EaseInOutQuart' }
   }
 };
-export const STYLE_ORDER = ['cinematic', 'calm', 'playful', 'energetic'];
+const STYLE_ORDER = ['cinematic', 'calm', 'playful', 'energetic'];
 const RANK = { background: 0, image: 1, body: 2, decoration: 3, headline: 4, logo: 5, cta: 6, hero: 7 };
-export const TEXT_MIN = (words) => Math.max(0.8, 0.3 * words);
+const TEXT_MIN = (words) => Math.max(0.8, 0.3 * words);
 const r3 = (x) => Math.round(x * 1000) / 1000;
 const up = (x) => Math.ceil(x * 10 - 1e-9) / 10;
 
-export function slideFrom(bbox, canvas) {
+function slideFrom(bbox, canvas) {
   const edges = [
     [bbox.x, 0],
     [bbox.y, PI / 2],
@@ -328,7 +328,7 @@ function single(i, S, o) {
   return { length: L, stretched: !!i.intake.length && fit > i.intake.length, T: 0, scenes: [{ id: p.id, start: 0, length: L }], beats: timed, apply };
 }
 
-export function schedule(input) {
+function schedule(input) {
   const { ids, ...rest } = input;
   const S = STYLES[rest.intake.style];
   if (!S) throw new Error(`unknown style '${rest.intake.style}'`);
@@ -421,7 +421,7 @@ function multi(i, S, o) {
   };
 }
 
-export function transform(plan, change) {
+function transform(plan, change) {
   const input = structuredClone(plan.input);
   const x = input.intake;
   switch (change.kind) {
@@ -443,20 +443,16 @@ export function transform(plan, change) {
   return schedule({ ...input, ...(plan.ids ? { ids: plan.ids } : {}) });
 }
 
-if (process.argv[1] && realpathSync(fileURLToPath(import.meta.url)) === realpathSync(process.argv[1])) {
-  const doc = JSON.parse(readFileSync(process.argv[2], 'utf8'));
-  const out = process.argv[3] ? transform(doc, JSON.parse(process.argv[3])) : schedule(doc);
-  process.stdout.write(JSON.stringify(out, null, 2) + '\n');
-}
+return { type: 'text', text: JSON.stringify(CHANGE ? transform(INPUT, CHANGE) : schedule(INPUT)) };
 ```
 
 ## apply.js — one edit
 
-Prepend `const PLAN = <plan.json contents>;`. Run it as one `edit` on the design you animate: the first apply on the copy of the still, every re-apply with a transformed plan on the animated design (the still has no `codesign/motion-beat` tags, and a stored plan carries no ids).
+Prepend `const PLAN = <the plan schedule.js returned>;`. Run it as one `edit` on the design you animate: the first apply on the copy of the still, every re-apply with a transformed plan on the animated design (the still has no `codesign/motion-beat` tags, and a stored plan carries no ids).
 
 <!-- prettier-ignore -->
 ```js
-// apply.js — the body of ONE edit; first line of that edit: const PLAN = <schedule.mjs output>;
+// apply.js — the body of ONE edit; first line of that edit: const PLAN = <schedule.js output>;
 const b = engine.block, d = engine.design;
 const TAG = 'codesign/motion-beat';
 engine.scene.setMode('Video');
