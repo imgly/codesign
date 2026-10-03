@@ -307,8 +307,8 @@ await engine.design.setProps(ids[0], {
   export knob. The page's audio blocks are mixed into the mp4.
 - Audio only: `export({ format: "wav" | "m4a", blockId: page })`
   renders the page's audio mix (`wav` = 48 kHz stereo float). Page only; for one
-  clip alone, export while it is the only audio on the page. A clip starting
-  after 0 s can land up to 1 s late in this export (the mp4 is exact).
+  clip alone, export while it is the only audio on the page. Every clip sounds
+  over exactly its own window (within a few ms) — same timing as the mp4.
 - Needs the native engine (the default). If the server fell back to WASM,
   video/audio tools refuse with the reason; `diagnostics` shows
   `status.config.videoAvailable`.
