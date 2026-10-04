@@ -229,8 +229,7 @@ For text blocks the canonical CE.SDK pattern is **Auto width/height + a measured
 
 ```js
 // Build with widthMode/heightMode: 'Auto' (see the page example above). Font goes in
-// as text: { font: { family, weight } } — create looks the family up; setProps takes a
-// resolved text.font: { typeface, uri }.
+// as text: { font: { family, weight } } — create and setProps both look the family up.
 // IMPORTANT: width/height props read 0 in Auto mode. Measure the frame instead.
 const { width: w, height: h } = await engine.design.measure(text);
 await engine.design.setProps(text, { position: { x: (pageW - w) / 2, y } });
@@ -453,10 +452,9 @@ await engine.design.setProps(t, {
 // measure the flat glyph-run width with Auto modes BEFORE computing offsets.
 // One subpath only (a single 'M'), parseable SVG — else BLOCK.TEXT_ON_PATH_* throws.
 
-// Font declarations REQUIRE a real typeface object (the engine reads
-// typeface.name — a bare uri throws). For Google families DON'T build it by
-// hand — look it up from ly.img.gfonts (design-rules.md §6.7). Hand-built
-// typefaces are for brand fonts imported via asset_add:
+// Fonts: by family — looked up, weight picked, no URI needed (§6.7):
+await engine.design.setProps(text, { text: { font: { family: 'Inter', weight: 'normal' } } });
+// Only a font file you hold a uri for gets a hand-built typeface (a bare uri throws):
 const uri = '<opaque handle>';
 const typeface = {
   name: 'Acme Grotesk',
@@ -648,7 +646,7 @@ Enforceable design best practices with numeric thresholds — what you build to,
 - **§6.4 Composition & grid** — margins 8–12% of the shortest dimension, the spacing ladder, no dead void
 - **§6.5 Craft & finish** — §6.5.1 chips/pills/badges as native text backgrounds; §6.5.2 the craft pass checklist
 - **§6.6 Localization & RTL** — pointer to the `localize` skill
-- **§6.7 Font discovery & pairing** — the `ly.img.gfonts` lookup pattern, variable-font weights, context→pairing table
+- **§6.7 Font discovery & pairing** — setting fonts by family (`ly.img.gfonts`), variable-font weights, context→pairing table
 - **§6.8 Copy** — bundled into the `judge` skill read
 
 ---

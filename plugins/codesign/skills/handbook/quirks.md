@@ -58,6 +58,6 @@ Cheap → expensive:
 1. **Did you await fonts?** — `await engine.design.loadResources([page])` inside the same edit before measuring. (Capturing is covered: `preview`, `export`, and the commit itself run this barrier server-side.)
 2. **Height vs font size** — `getHeight(id) >= getTextFontSizes(id)[0] * 1.6`?
 3. **Position on page** — block within `[0, pageWidth] × [0, pageHeight]`?
-4. **Font URI valid** — was `text.font` declared with a looked-up typeface + uri? Was the typeface looked up from `ly.img.gfonts` (§6.7) rather than hand-built with a guessed URI?
+4. **Font URI valid** — was `text.font` declared by `family` (§6.7), or — for a brand file imported with `asset_add` — with that returned `uri`? Never a hand-built typeface with a guessed URI.
 
 After `loadResources`, every text block's `getFrameWidth(id)` returns its measured shaped width. If that's still `0`, the URI didn't deliver a renderable font — look the typeface up from `ly.img.gfonts` instead of hardcoding a URI (design-rules.md §6.7).
