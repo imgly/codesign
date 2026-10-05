@@ -89,7 +89,7 @@ print, video, and social:
   system Node. With no Node (or Node < 22.15) on `PATH`, the host reports the
   server as failed with no useful reason — typically `local: 0` and
   `MCP error -32000`. Install Node 22.15+ first: <https://nodejs.org>.
-- **Pin `@0.4.1` — every recipe names that exact version on purpose.** The
+- **Pin `@0.4.2` — every recipe names that exact version on purpose.** The
   plugin ships the skills that version was built with, and a bare or dist-tagged
   `npx` would pair them with a different server. Each release republishes this
   repo with a new pin — update the plugin (or your recipe) to move forward.
@@ -112,7 +112,7 @@ claude plugin install codesign@imgly-codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add codesign -- npx -y @imgly/codesign-mcp@0.4.1 stdio
+claude mcp add codesign -- npx -y @imgly/codesign-mcp@0.4.2 stdio
 ```
 
 ### Codex
@@ -127,7 +127,7 @@ codex plugin add codesign@imgly-codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.4.1 stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.4.2 stdio
 ```
 
 ### Antigravity CLI
@@ -142,7 +142,7 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.4.1 stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.4.2 stdio
 ```
 
 ### Gemini CLI
@@ -165,7 +165,7 @@ Or add the server manually to `~/.gemini/settings.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.4.1",
+        "@imgly/codesign-mcp@0.4.2",
         "stdio"
       ]
     }
@@ -185,7 +185,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.4.1",
+        "@imgly/codesign-mcp@0.4.2",
         "stdio"
       ]
     }
@@ -209,7 +209,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.4.1",
+        "@imgly/codesign-mcp@0.4.2",
         "stdio"
       ]
     }
@@ -227,7 +227,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.4.1",
+          "@imgly/codesign-mcp@0.4.2",
           "stdio"
         ]
       }
