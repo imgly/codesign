@@ -1,13 +1,13 @@
 {
   "name": "codesign",
-  "version": "0.4.3-next.20261006123323.ga46222a",
+  "version": "0.4.3-next.20261007075756.gcada325",
   "description": "CoDesign gives AI agents like Claude Code, Codex and PI a real design engine for genuine, editable designs, not flat images. Bring in what you have: InDesign, Photoshop, PowerPoint and PDF files stay editable. Exports print PDFs (CMYK, bleed) and videos. Every design opens in a built-in editor for manual fixes. Runs on your machine, no account.",
   "mcpServers": {
     "codesign": {
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.4.3-next.20261006123323.ga46222a",
+        "@imgly/codesign-mcp@0.4.3-next.20261007075756.gcada325",
         "stdio"
       ]
     }

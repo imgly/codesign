@@ -161,7 +161,8 @@ when the brief chose it — say so, rather than leaving sound out by omission.
   into a `transcriptUri` plus one timed line per sentence (its description
   says whether it also takes video and long recordings). Prompts and
   parameters per model are in
-  `../models/audio.md`. Each returns a `uri` and, when the
+  `../models/audio.md`, including how to write brand names in a
+  voiceover's text so they are said right. Each returns a `uri` and, when the
   file states it, a `duration` — size the page and the clips from it.
 - **Timing.** Put a voiceover on the timeline where its sentence belongs and cut
   or animate to its words: inside `edit`,
