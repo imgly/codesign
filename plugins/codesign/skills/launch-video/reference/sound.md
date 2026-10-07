@@ -238,7 +238,9 @@ lands on it, a hit starting exactly on the accent. Volume 0.5–0.8 under the mu
 Only with `voiceover=on`. Write the script to the beat table's timing (~2.5 words per second), then:
 
 1. **Voice** — a text-to-speech model; the voice is an enum in its schema. Its result's `duration`
-   says how long the line runs — fit the beat to it, not the other way around.
+   says how long the line runs — fit the beat to it, not the other way around. Spell brand names
+   the way they are spoken in the voice's text, never in the captions
+   (`../models/audio.md`).
 2. **Word timings** — a speech-to-text model on that file returns every word with `start`/`end`
    seconds. Group words into caption lines of 2–4 words by those timings; each line is a text clip
    on a captions track at its first word's `start`.

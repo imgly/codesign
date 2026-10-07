@@ -411,6 +411,8 @@ new language's speech and reading time.
   `elevenlabs/eleven-v3-tts`); keep the master's voice across locales via `params`
   (`asset_generate({ model, schema: true })` names the model's inputs). Swap the file on the
   existing audio block — `setProps(audio, { audio: { fileURI } })` — so its offset and volume stay.
+  Respell names in the translated script as they are said in that language, and keep the written
+  names in the captions (`../models/audio.md`).
 - **Captions come from the new take.** Transcribe it with a `speech2text` model
   (`elevenlabs/scribe-v2`, via `params` — check its inputs with `schema: true`); the result carries
   word-level `start` / `end`.
