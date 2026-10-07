@@ -6,7 +6,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.4.3-canary.20261007075756.gcada325",
+        "@imgly/codesign-mcp@0.4.3-canary.20261007124715.g15079cc",
         "stdio"
       ]
     }
