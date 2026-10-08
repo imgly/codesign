@@ -3,7 +3,7 @@
   "name": "codesign",
   "displayName": "CoDesign",
   "description": "CoDesign gives AI agents like Claude Code, Codex and PI a real design engine for genuine, editable designs, not flat images. Bring in what you have: InDesign, Photoshop, PowerPoint and PDF files stay editable. Exports print PDFs (CMYK, bleed) and videos. Every design opens in a built-in editor for manual fixes. Runs on your machine, no account.",
-  "version": "0.4.3-next.20261008143550.g51723f8",
+  "version": "0.4.3-next.20261008144730.ga80ca7e",
   "author": {
     "name": "IMG.LY GmbH",
     "url": "https://img.ly"
