@@ -404,7 +404,7 @@ Any "no" on an applicable line drops the axis below 8.
 - [ ] Margins 8–12% of the new shortest dimension; on the shared grid / one alignment
 - [ ] Whitespace balanced — **no lopsided dead void / letterbox**; content occupies or balances the canvas
 - [ ] Consistent spacing scale (§6.4 ladder); nothing off-canvas, clipped, or overlapping
-- [ ] Primary content within the format's safe band (per its `formats` file; story/reel: clear of top ~250px / bottom ~320px)
+- [ ] Primary content within the format's safe band (per its `formats` file; story/reel: clear of top 269px / bottom 672px)
 
 **Hierarchy (§6.3) & identity**
 

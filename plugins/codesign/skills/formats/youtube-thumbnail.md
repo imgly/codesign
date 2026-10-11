@@ -7,7 +7,8 @@
 
 ## Safe zones
 
-- **Bottom-right ~140 × 50 px:** the player's duration badge covers it in feeds and search.
+- **Bottom-right ~120 × 60 px:** the player's duration badge covers it in feeds and search
+  (YouTube publishes no figure; guides differ by a few pixels).
 - **Bottom edge:** a red watch-progress bar overlays it on videos the viewer has started.
 
 ## Notes

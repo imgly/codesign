@@ -19,11 +19,11 @@ size, aspect, medium and safe zones / print for every format.
 
 | id                  | size                             | aspect  | medium | safe zones / print                         | file                   |
 | ------------------- | -------------------------------- | ------- | ------ | ------------------------------------------ | ---------------------- |
-| `ig-post`           | 1080 × 1350 px                   | 4:5     | screen | none (no chrome)                           | `ig-post.md`           |
+| `ig-post`           | 1080 × 1350 px                   | 4:5     | screen | profile grid crops 34 px left · right      | `ig-post.md`           |
 | `ig-square`         | 1080 × 1080 px                   | 1:1     | screen | none (no chrome)                           | `ig-square.md`         |
-| `ig-story`          | 1080 × 1920 px                   | 9:16    | screen | **top ~250 px · bottom ~320 px**           | `ig-story.md`          |
-| `tiktok`            | 1080 × 1920 px                   | 9:16    | screen | **top ~150 · bottom ~420 · right ~140 px** | `tiktok.md`            |
-| `yt-shorts`         | 1080 × 1920 px                   | 9:16    | screen | **top ~200 · bottom ~380 · right ~190 px** | `yt-shorts.md`         |
+| `ig-story`          | 1080 × 1920 px                   | 9:16    | screen | **top 269 · bottom 672 · sides 65 px**     | `ig-story.md`          |
+| `tiktok`            | 1080 × 1920 px                   | 9:16    | screen | **top 240 · bottom 660 · sides 120 px**    | `tiktok.md`            |
+| `yt-shorts`         | 1080 × 1920 px                   | 9:16    | screen | **top 288 · bottom 672 · right 192 px**    | `yt-shorts.md`         |
 | `widescreen`        | 1920 × 1080 px                   | 16:9    | screen | none (no chrome)                           | `widescreen.md`        |
 | `linkedin-post`     | 1200 × 627 px                    | ≈1.91:1 | screen | none; feed may crop edges                  | `linkedin-post.md`     |
 | `x-post`            | 1600 × 900 px                    | 16:9    | screen | none; timeline may crop edges              | `x-post.md`            |
@@ -40,7 +40,7 @@ dimensions as-is; print medium adds **3 mm bleed** and targets **≥300 dpi**.
 
 - **Safe zones (screen):** platform chrome overlays the canvas edges on some placements — keep
   primary content inside the safe band. Per-format numbers live in each format's file;
-  content-only formats (post, square, widescreen) have no chrome and use the full frame inside
+  content-only formats (square, widescreen) have no chrome and use the full frame inside
   the margins.
 - **Print basics:** every print format adds **3 mm bleed** on all sides; target **≥300 dpi**;
   keep text out of the bleed and inside the **~8% safe margin** (handbook §6.1.10, §6.4); fonts
