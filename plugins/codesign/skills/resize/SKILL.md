@@ -222,7 +222,7 @@ if (bg !== undefined) {
 // content blocks → position/size by captured fractions (fill), then you clamp + balance below
 // for each captured fraction f matched to its block id:
 //   await engine.design.setProps(id, { position: { x: f.fx*NW, y: f.fy*NH } }); // fills the taller canvas
-//   if (f.fw) await engine.design.setProps(id, { width: f.fw*NW });
+//   if (f.fw) await engine.design.setProps(id, { width: f.fw*NW }); // a logo: set height by the same factor
 //   if (f.ffs) await engine.design.setProps(id, { text: { fontSize: clampToBand(f.ffs*NH) + 'pt' } });
 //              // the unit is required; the write auto-reshapes, ranges preserved
 //
@@ -305,16 +305,19 @@ path. Default to keeping the ROI **centered**; when the brief or the asset's met
 `alignment` (Cover) or `translation` (Crop) toward it. `preview` each format and confirm the subject
 is still framed — the render is the only place ROI drift shows.
 
-**Crop invariants — the three properties every fill-in-a-frame must hold** (checked in `preview`;
+**Crop invariants — the three properties every photo-in-a-frame must hold** (checked in `preview`;
 they fail independently of ROI focus, and a shape frame — circle/rounded card — makes them easy to
-miss):
+miss). A **logo or other mark is the exception**: it is shown whole, never cropped — keep its frame
+at the logo's own aspect (scale width and height by the same factor) or its `Contain` mode, and
+leave the space around it empty (handbook design rules, "A logo is shown whole").
 
 1. **Full coverage, zero gap.** The fill covers its frame completely — no sliver of empty frame at
    any edge (the "gap at the top of the circle" defect). If the aspect change exposed a gap,
    `adjustCropToFillFrame` (Crop) or the Cover mode refills it; never leave the frame partly unfilled.
-2. **Uniform scale — no stretch.** The image scales the **same on both axes**; a fill stretched to
-   fit a new aspect (`Contain` into a non-matching frame, or a hand-set non-uniform crop) distorts
-   the subject. Scale is one ratio, not two.
+2. **Uniform scale — no stretch.** The image scales the **same on both axes**; a hand-set
+   non-uniform crop distorts the subject. Scale is one ratio, not two. (`Contain` never stretches:
+   it scales uniformly and leaves the rest of the frame empty — which is why it suits a logo and
+   breaks invariant 1 for a photo.)
 3. **Subject inside the window.** After 1–2, the focal point is still within the visible crop, not
    pushed out by the refill. This is the ROI check above — do it last, after coverage is guaranteed.
 

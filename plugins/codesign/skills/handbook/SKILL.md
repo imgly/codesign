@@ -75,7 +75,7 @@ Edits you have not saved with `export({ format: 'imgly' })` are dropped when it 
 - `designs()` — the saved designs, newest first, each with its `uri` and title; pass that `uri` to `open` or `import` verbatim. Use it when the user refers to an earlier design without handing you its `uri`.
 - `scorecard({ verdict })` — record that you completed a judge loop against the session's current state. See §1 step 5 and the `judge` skill.
 - `asset_add({ source: { path } })` — bring a local file (image or font) into the workspace for use in a design; embed the returned `uri` in `edit` code — never `httpUrl`, and never the original local path or a `file://` URI (renders server-side but breaks portability).
-- `asset_search({ sourceId?, query?, page?, perPage? })` — discover and search the engine's asset sources; apply results inside `edit` (the exact patterns are in the tool's description). The `ly.img.workspace.images` source also lists images the human uploaded — searchable by their original filename, newest first.
+- `asset_search({ query?, source?, mimeType?, page? })` — search the engine's asset sources; apply results inside `edit` (the exact patterns are in the tool's description). The `ly.img.workspace.images` source also lists images the human uploaded — searchable by their original filename, newest first.
 - `view(…)` — the URL a human opens to see and edit **saved** designs in the browser. Print it once; the viewer keeps it live. A design appears there only after `export({ format: 'imgly' })`.
 
 Cross-tool rules:
@@ -318,7 +318,9 @@ const panel = await engine.design.create(
       position: { x, y },
       shape: 'rect', // or a { type: 'vector_path', … } spec — recipe below
       fill: { type: 'color', color: { value: { r, g, b, a } } }
-      // image: fill: { type: 'image', uri: '<opaque handle>' } — create awaits the load
+      // image: fill: { type: 'image', uri: '<opaque handle>' } — create awaits the load.
+      // The default contentFill mode is 'Cover' (fills the frame, crops the rest): a logo
+      // gets a frame at its asset's width:height, or contentFill: { mode: 'Contain' }.
     }
   },
   { parent: page }
