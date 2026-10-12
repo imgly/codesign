@@ -3,7 +3,7 @@
   "name": "codesign",
   "displayName": "CoDesign",
   "description": "CoDesign gives AI agents like Claude Code, Codex and PI a real design engine for genuine, editable designs, not flat images. Bring in what you have: InDesign, Photoshop, PowerPoint and PDF files stay editable. Exports print PDFs (CMYK, bleed) and videos. Every design opens in a built-in editor for manual fixes. Runs on your machine, no account.",
-  "version": "0.4.3-next.20261011165137.geb86f26",
+  "version": "0.4.3-next.20261012102016.g578dab8",
   "author": {
     "name": "IMG.LY GmbH",
     "url": "https://img.ly"
@@ -32,12 +32,13 @@
     "video-processing"
   ],
   "icon": "./.claude-plugin/icon.png",
+  "hooks": "./hooks/claude-code.json",
   "termsOfServiceUrl": "https://img.ly/tos/codesign/",
   "userConfig": {
     "error_reports": {
       "type": "boolean",
       "title": "Send error reports to IMG.LY",
-      "description": "Crash and internal-error reports: error type, a scrubbed message, stack frames, versions and OS. Never your prompts, files or designs.",
+      "description": "Crash and failed-tool-call reports: error type, a scrubbed message, stack frames, versions and OS. Never your prompts, files or designs.",
       "default": true
     },
     "usage_telemetry": {
