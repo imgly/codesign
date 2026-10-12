@@ -43,7 +43,7 @@ chip row only when those disagree; otherwise take it and name it in the brief
 | venue     | A    | Print · Screen                  | Print    |
 | imagery   | D    | Provided · Searched · Type only | Searched |
 
-**Format:** print → A2 portrait (420×594 mm) + 3 mm bleed; A1/A3 on request; screen →
+**Format:** print → A2 portrait (420×594 mm) page, 3 mm bleed set on it; A1/A3 on request; screen →
 1080×1920 px unless stated.
 
 ## flyer
@@ -53,7 +53,7 @@ chip row only when those disagree; otherwise take it and name it in the brief
 | print format | A    | A5 · A4 · DL   | A5      |
 | sides        | D    | 1 · 2          | 1       |
 
-**Format:** chosen print size + 3 mm bleed; two-sided → one page per side.
+**Format:** chosen print size as the page, 3 mm bleed set on it; two-sided → one page per side.
 
 ## social-post
 
@@ -73,7 +73,7 @@ chip row only when those disagree; otherwise take it and name it in the brief
 | region format          | A    | EU 85×55 mm · US 3.5×2 in | EU      |
 | sides                  | D    | 1 · 2                     | 2       |
 
-**Format:** chosen card size + 3 mm bleed; side 2 defaults to a brand/logo face.
+**Format:** chosen card size as the page, 3 mm bleed set on it; side 2 defaults to a brand/logo face.
 
 ## video
 
@@ -96,7 +96,7 @@ the brief and use the user's files or ship silent.
 | Parameter  | Kind | Chips / values                               | Default |
 | ---------- | ---- | -------------------------------------------- | ------- |
 | dimensions | R    | explicit width × height (+ unit; px, mm, in) | —       |
-| medium     | D    | Print (adds 3 mm bleed, dpi 300) · Screen    | Screen  |
+| medium     | D    | Print (3 mm page bleed, dpi 300) · Screen    | Screen  |
 
 Use `custom` whenever the request names explicit dimensions or none of the classes
 fit; everything else about the intake is unchanged.

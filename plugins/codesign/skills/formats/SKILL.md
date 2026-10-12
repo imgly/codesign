@@ -29,12 +29,12 @@ size, aspect, medium and safe zones / print for every format.
 | `x-post`            | 1600 × 900 px                    | 16:9    | screen | none; timeline may crop edges              | `x-post.md`            |
 | `youtube-thumbnail` | 1280 × 720 px                    | 16:9    | screen | bottom-right duration badge                | `youtube-thumbnail.md` |
 | `deck`              | 1920 × 1080 px per slide         | 16:9    | screen | none                                       | `deck.md`              |
-| `poster`            | A2 420 × 594 mm / 1080 × 1920 px | —       | both   | print: +3 mm bleed · ≥300 dpi              | `poster.md`            |
-| `flyer`             | A5 · A4 · DL                     | —       | print  | +3 mm bleed · ≥300 dpi                     | `flyer.md`             |
-| `business-card`     | EU 85 × 55 mm · US 3.5 × 2 in    | —       | print  | +3 mm bleed · ≥300 dpi                     | `business-card.md`     |
+| `poster`            | A2 420 × 594 mm / 1080 × 1920 px | —       | both   | print: 3 mm bleed · ≥300 dpi               | `poster.md`            |
+| `flyer`             | A5 · A4 · DL                     | —       | print  | 3 mm bleed · ≥300 dpi                      | `flyer.md`             |
+| `business-card`     | EU 85 × 55 mm · US 3.5 × 2 in    | —       | print  | 3 mm bleed · ≥300 dpi                      | `business-card.md`     |
 
-**Custom sizes:** an explicit `W×H` (+ unit: px, mm, in) is always valid. Screen medium uses the
-dimensions as-is; print medium adds **3 mm bleed** and targets **≥300 dpi**.
+**Custom sizes:** an explicit `W×H` (+ unit: px, mm, in) is always valid, and is the page size on
+both media; print medium sets **3 mm bleed** on that page (Print basics) and targets **≥300 dpi**.
 
 ## Shared rules
 
@@ -42,12 +42,19 @@ dimensions as-is; print medium adds **3 mm bleed** and targets **≥300 dpi**.
   primary content inside the safe band. Per-format numbers live in each format's file;
   content-only formats (square, widescreen) have no chrome and use the full frame inside
   the margins.
-- **Print basics:** every print format adds **3 mm bleed** on all sides; target **≥300 dpi**;
-  keep text out of the bleed and inside the **~8% safe margin** (handbook §6.1.10, §6.4); fonts
-  embedded/outlined.
+- **Print basics:** the page is the **trim size** (A5 is 148 × 210 mm), never trim plus bleed.
+  Bleed is the page's own setting and lies outside the page:
+  `await engine.design.setProps(page, { page: { marginEnabled: true, margin: { top: '3mm', right: '3mm', bottom: '3mm', left: '3mm' } } })`
+  — **3 mm** unless the printer states another. A background or image that touches an edge runs to
+  the bleed's outer edge (a full background: position `'-3mm'`, 6 mm wider and taller). Text stays
+  inside the **~8% safe margin**, or the margin the printer states, measured from the page edge
+  (handbook §6.1.10, §6.4). Target **≥300 dpi**; fonts embedded/outlined.
 - **Composition is relative to the canvas** — margins, spacing, and type bands all scale with the
   page (handbook §6.4, §6.1.2), so the design rules hold across every format here.
-- **Export at native dimensions** — the page's own pixel (or bleed-inclusive print) size.
+- **Export at native dimensions** — the page's own size. A page with bleed carries it into every
+  file: a `pdf` or `pdfx` page is trim plus bleed with the trim marked (TrimBox), and an image or a
+  `preview` shows the bleed around the page. With `marginEnabled: false` the same files are the
+  trim size.
 
 ## Boundaries
 
