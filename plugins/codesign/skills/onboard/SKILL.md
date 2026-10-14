@@ -8,7 +8,7 @@ description: >-
   demo design or on the user's own idea — closing with the optional (never required)
   IMG.LY sign-in and the ways to earn more credits. Not a design manual: the handbook
   remains the required read before any edit.
-requires: import, export, drafts
+requires: import, export, drafts, interactive
 ---
 
 # onboard — introduce CoDesign, then do one real job
