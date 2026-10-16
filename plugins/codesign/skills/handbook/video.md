@@ -37,13 +37,10 @@ await engine.design.setProps(block, {
 await engine.design.setProps(block, {
   fill: { type: 'video', video: { fileURI: '<opaque handle>' } }
 });
-// Trim writes need the video's metadata — load first, else they throw
-// "The video has not been loaded yet." Trim lives on the FILL.
-const fillId = engine.block.getFill(block);
-await engine.block.forceLoadAVResource(fillId); // engine.block: AV metadata load has no facade verb
-await engine.design.setProps(fillId, {
+// Trim lives on the FILL; setProps/create load the clip before writing it.
+await engine.design.setProps(block, {
   playback: { trimOffset: 2.0, trimLength: 5.0 } // start 2s in, play 5s
-}); // setProps(block, { playback: { trimOffset } }) reaches the fill too
+}); // reaches the fill; so does fill: { type: 'video', …, playback: { trimOffset } } in create
 
 // Animation timing and text styling are spec keys — no raw animation ids.
 await engine.design.setProps(block, {
@@ -329,8 +326,16 @@ await engine.design.setProps(ids[0], {
   playhead — park it with `setProps(page, { playback: { time } })` in an edit.
 - Resource loading during export is handled server-side — you do NOT need a
   `loadResources` barrier before `export` (unlike the handbook's font barrier).
-  The one load you DO need is `forceLoadAVResource(fill)` before reading or
-  trimming a video fill (see the recipe above).
+  Trim writes (`playback.trimOffset`/`trimLength`) and an audio block's
+  `playback.speed` load the clip themselves; the one load you DO need is
+  `engine.block.forceLoadAVResource(fill)` before READING a clip's own length
+  (`getAVResourceTotalDuration`).
+- Speed is per audio block (0.25–3). With a speed set, `trimOffset` reads back
+  divided by it (timeline time, not source time). On an audio block
+  `trimLength` and `duration` are one value: writing either sets both. A later
+  speed-only `setProps` rescales them, so give `speed` in the same write as
+  `duration`, or give `duration` again. On video, the fill's `trimLength` sets
+  the block's `duration`, one way only.
 - **Multi-clip tracks with your own offsets: disable auto-arrange first.**
   `track/automaticallyManageBlockOffsets` defaults to `true` and silently
   overwrites every child's offset with an auto-computed back-to-back

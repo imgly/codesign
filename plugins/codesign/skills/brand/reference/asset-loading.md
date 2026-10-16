@@ -8,7 +8,8 @@ against this server.
 
 `engine.block.setFont(id, uri, typeface)` takes **one `uri`** that must resolve to a **single,
 complete, static-or-variable TTF**, over a **fetchable source only** (an `https://` URL, or a `uri` from `asset_add`
-— `data:` and local `file:` paths are rejected when the scene is saved). The `typeface` is the
+— local `file:` paths are rejected when the scene is saved, and a `data:` URI is kept only by a host
+with an asset source that takes uploaded files). The `typeface` is the
 3-arg object `{ name, fonts:[{ uri, subFamily, weight, style }] }`; omitting it throws
 `Cannot read properties of undefined (reading 'name')`.
 

@@ -129,6 +129,8 @@ interface DesignApi {
     scale(id: BlockRef, factor: number, opts?: { anchorX?: number; anchorY?: number }): Promise<void>;
     resizeContentAware(ids: BlockRef[], size: { width: number; height: number }): Promise<void>;
     /** Measured layout frame (post-layout px) — the numbers you position by.
+     *  Rotated: x/y = unrotated origin = pivot corner (rotation set without
+     *  position in one call turns about the centre and moves x/y).
      *  textLines: visible line count, text blocks only. */
     measure(id: BlockRef): Promise<{ x: number; y: number; width: number; height: number; textLines?: number }>;
     /** Await pending font/image loads for these subtrees (create does this itself). */

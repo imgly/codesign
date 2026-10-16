@@ -72,8 +72,9 @@ match the character first, then pick the row.
 
 ## What does **not** work (and why)
 
-- **`data:` URIs are rejected** — _"Scene contains disallowed schemes in resource URLs: data"_.
-  The scene may only reference fetchable sources: an `https://` URL, or a `uri` the server returned.
+- **Don't inline a font as a `data:` URI.** Its bytes outlive the session only on a host with an
+  asset source that takes uploaded files (they are stored there and the design names the stored
+  uri); elsewhere the edit may fail to checkpoint. Use an `https://` URL, or a `uri` a tool result gave you.
 - **Google Fonts `&text=` / `/l/font?kit=…` dynamic-subset endpoint is unusable.** It returns
   non-sfnt bytes to a programmatic fetch and content-negotiates on the _fetcher's_ User-Agent — so
   even if your fetch coaxes out a TTF, CE.SDK re-fetches with its own UA, gets woff, and **silently
