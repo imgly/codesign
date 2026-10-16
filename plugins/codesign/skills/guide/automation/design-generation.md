@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Automate Design Generation"
+description: "Generate on-brand designs programmatically using templates, variables, and CE.SDK’s headless API."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/automation/design-generation-98a99e/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Automate Workflows](./automation.md) > [Design Generation](./automation/design-generation.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Automate Workflows](https://img.ly/docs/cesdk/archive/v1.84/node/automation-715209/) > [Design Generation](https://img.ly/docs/cesdk/archive/v1.84/node/automation/design-generation-98a99e/)
 
 ---
 
@@ -34,7 +41,7 @@ The generation process **replaces** the placeholders with actual data to create 
 
 ### Create or Edit Templates
 
-You can create or edit design templates programmatically in a Node.js app. Learn more in the [Create Templates guide](./create-templates.md).
+You can create or edit design templates programmatically in a Node.js app. Learn more in the [Create Templates guide](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates-3aef79/).
 
 ### Dynamic Content Sources
 
@@ -44,13 +51,13 @@ Populate templates with data from sources such as:
 - **External APIs:** Ideal for real-time updates and dynamic integrations.
 - **User Input:** Where the user directly provides data through a UI.
 
-For detailed information on using and managing templates, see [Use Templates](./use-templates/overview.md).
+For detailed information on using and managing templates, see [Use Templates](https://img.ly/docs/cesdk/archive/v1.84/node/use-templates/overview-ae74e1/).
 
 ### Data Merge Workflow
 
 Below is a diagram illustrating how data is merged into a template to produce a final design:
 
-![Template data merge process diagram showing how variables and assets flow into the final output](https://img.ly/docs/cesdk/./assets/schema.excalidraw.svg)
+![Template data merge process diagram showing how variables and assets flow into the final output](./assets/schema.excalidraw.svg)
 
 ## Example Workflow
 
@@ -61,7 +68,7 @@ Start by designing a template with text variables. This scene example contains:
 - A postcard template
 - Placeholders for the recipient’s details
 
-![Example postcard template with highlighted variable placeholders for name and address](https://img.ly/docs/cesdk/./assets/scene-example-backside.png)
+![Example postcard template with highlighted variable placeholders for name and address](./assets/scene-example-backside.png)
 
 ### 2. Load the Template into the Editor
 
@@ -123,9 +130,9 @@ On success, the **output** variable contains the generated design as a PDF Blob.
 
 Here’s what your final output should look like:
 
-![Exported postcard design showing populated name and address fields](https://img.ly/docs/cesdk/./assets/scene-example-backside-export.png)
+![Exported postcard design showing populated name and address fields](./assets/scene-example-backside-export.png)
 
-Need help with exports? Check out the [Export Guide](./export-save-publish/export.md) for detailed instructions and options.
+Need help with exports? Check out the [Export Guide](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export-82f968/) for detailed instructions and options.
 
 <details>
   <summary>Full code</summary>
@@ -172,7 +179,7 @@ If you have issues during the generation process:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

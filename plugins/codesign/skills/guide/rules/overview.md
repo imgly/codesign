@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Overview"
+description: "Define and enforce layout, branding, and safety rules to ensure consistent and compliant designs."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/rules/overview-e27832/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Rules](./rules.md) > [Overview](./rules/overview.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Rules](https://img.ly/docs/cesdk/archive/v1.84/node/rules-1427c0/) > [Overview](https://img.ly/docs/cesdk/archive/v1.84/node/rules/overview-e27832/)
 
 ---
 
@@ -10,11 +17,11 @@ Learn how CE.SDK's rules system enforces design constraints and controls editing
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-rules-overview-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-rules-overview-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-rules-overview-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-rules-overview-server-js)
 
 In CE.SDK, "rules" refer to design constraints and guardrails that control what editing operations are permitted. The primary mechanism for enforcing rules is the **scopes system**—permission flags that enable you to create guided editing experiences maintaining brand consistency, ensuring design quality, and preventing unauthorized modifications.
 
@@ -455,7 +462,7 @@ The scopes system supports various rule enforcement scenarios:
 - **Define safe zones** — Mark areas where content must remain for proper trimming
 - **Enforce brand guidelines** — Restrict fonts, colors, and styles to approved options
 
-For content appropriateness checking, see the [Moderate Content](./rules/moderate-content.md) guide which covers integrating external moderation services.
+For content appropriateness checking, see the [Moderate Content](https://img.ly/docs/cesdk/archive/v1.84/node/rules/moderate-content-d5ff7e/) guide which covers integrating external moderation services.
 
 ## API Reference
 
@@ -473,7 +480,7 @@ For content appropriateness checking, see the [Moderate Content](./rules/moderat
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

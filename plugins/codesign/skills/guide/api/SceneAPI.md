@@ -243,7 +243,8 @@ saveToString(options?: {
   - onDisallowedResourceScheme: An optional callback that is called for each resource URL that has a scheme absent from
     `resourceSchemesAllowed`. The `url` parameter is the resource URL and the `dataHash` parameter is the hash of the
     resource's data. The callback should return a new URL for the resource, which will be used in the serialized
-    scene. The callback is expected to return the original URL if no persistence is needed.
+    scene. The callback is expected to return the original URL if no persistence is needed. If the callback
+    throws, rejects, or returns no string, the returned promise rejects and the scene keeps its URLs.
   - compression: Optional compression settings containing:
     - format: Compression format (None or Zstd). Defaults to Zstd.
     - level: Compression level (Fastest, Default, or Best). Defaults to Default.
@@ -542,6 +543,38 @@ getCurrentPage(): DesignBlockId | null
 ```
 
 **Returns:** The current page in the scene or null.
+
+### setCurrentPages()
+
+Set the pages that single page mode shows. All other pages leave the view but
+stay in the document and in the saved file.
+Takes visible effect while the setting `features/singlePageModeEnabled` is enabled.
+Exporting a page holds that page, even while it is out of view. Exporting a scene holds
+every page, except pages hidden with `block.setVisible`.
+```javascript
+engine.scene.setCurrentPages([page]);
+```
+
+```typescript
+setCurrentPages(pages: DesignBlockId[]): void
+```
+
+**Parameters:**
+- `pages` - The pages to show. Two pages form a facing-page view. Each page must be distinct.
+
+### getCurrentPages()
+
+Get the pages that single page mode shows.
+```javascript
+const currentPages = engine.scene.getCurrentPages();
+```
+
+```typescript
+getCurrentPages(): DesignBlockId[]
+```
+
+**Returns:** The shown pages, or an empty list when the setting
+`features/singlePageModeEnabled` is disabled.
 
 ### findNearestToViewPortCenterByType()
 

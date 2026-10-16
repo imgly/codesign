@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Templating"
+description: "Templates enable dynamic, reusable designs with text variables and placeholder media. Learn to create, load, and personalize templates programmatically."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/concepts/templating-f94385/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Templating](./concepts/templating.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Templating](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/templating-f94385/)
 
 ---
 
@@ -10,11 +17,11 @@ Templates transform static designs into dynamic, data-driven content. They combi
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-concepts-templating-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-concepts-templating-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-concepts-templating-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-concepts-templating-server-js)
 
 A template is a regular CE.SDK scene that contains **variable tokens** in text and **placeholder blocks** for media. When you load a template, you can populate the variables with data and swap placeholder content—producing personalized designs without modifying the underlying layout.
 
@@ -153,7 +160,7 @@ console.log('Variables set successfully.');
 
 Variables are scene-scoped and persist when you save the template.
 
-[Learn more about text variables →](./create-templates/add-dynamic-content/text-variables.md)
+[Learn more about text variables →](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content/text-variables-7ecb50/)
 
 ## Placeholders
 
@@ -176,7 +183,7 @@ console.log('Template placeholders:', placeholders.length);
 - Placeholder blocks are marked for content replacement
 - You can programmatically replace placeholder content with new images or media
 
-[Learn more about placeholders →](./create-templates/add-dynamic-content/placeholders.md)
+[Learn more about placeholders →](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content/placeholders-d9ba8a/)
 
 ## Template Workflows
 
@@ -232,7 +239,7 @@ Use a `try/finally` block to ensure cleanup happens even if an error occurs duri
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

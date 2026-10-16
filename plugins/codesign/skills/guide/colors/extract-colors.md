@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Extract Dominant Colors (Node.js)"
+description: "Read the most prominent colors from the rendered appearance of a block with the CE.SDK engine in Node.js."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/colors/extract-colors-d4c0a1/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Colors](./colors.md) > [Extract Dominant Colors](./colors/extract-colors.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors-a9b79c/) > [Extract Dominant Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors/extract-colors-d4c0a1/)
 
 ---
 
@@ -129,8 +136,8 @@ This is expected. The palette is taken from the rendered block, so any crop, col
 
 ## Next Steps
 
-- [Color Basics](./colors/basics.md) — Review the three color spaces CE.SDK supports and when to use each
-- [Apply Colors](./colors/apply.md) — Apply colors to design elements programmatically
+- [Color Basics](https://img.ly/docs/cesdk/archive/v1.84/node/colors/basics-307115/) — Review the three color spaces CE.SDK supports and when to use each
+- [Apply Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors/apply-2211e3/) — Apply colors to design elements programmatically
 
 
 
@@ -138,7 +145,7 @@ This is expected. The palette is taken from the rendered block, so any crop, col
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

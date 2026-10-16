@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Edit or Remove Assets"
+description: "Manage assets in local asset sources by updating metadata, removing individual assets, or deleting entire sources in CE.SDK."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/import-media/edit-or-remove-assets-ce072c/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Import Media Assets](./import-media.md) > [Edit or Remove Assets](./import-media/edit-or-remove-assets.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Import Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/import-media-4e3703/) > [Edit or Remove Assets](https://img.ly/docs/cesdk/archive/v1.84/node/import-media/edit-or-remove-assets-ce072c/)
 
 ---
 
@@ -10,11 +17,11 @@ Manage assets in local asset sources programmatically on the server by updating 
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-import-media-edit-or-remove-assets-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-import-media-edit-or-remove-assets-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-import-media-edit-or-remove-assets-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-import-media-edit-or-remove-assets-server-js)
 
 Assets in local sources can be modified or removed programmatically in server-side workflows. CE.SDK provides methods to query, update, and remove assets, as well as entire asset sources. This guide demonstrates how to manage assets in headless mode for batch processing, cleanup tasks, and automated workflows.
 
@@ -479,7 +486,7 @@ For processing multiple designs or assets:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

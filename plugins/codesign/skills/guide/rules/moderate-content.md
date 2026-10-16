@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Moderate Content"
+description: "Extract images and text from CE.SDK designs using engine APIs in Node.js and integrate with third-party moderation services to detect inappropriate content"
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/rules/moderate-content-d5ff7e/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Rules](./rules.md) > [Moderate Content](./rules/moderate-content.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Rules](https://img.ly/docs/cesdk/archive/v1.84/node/rules-1427c0/) > [Moderate Content](https://img.ly/docs/cesdk/archive/v1.84/node/rules/moderate-content-d5ff7e/)
 
 ---
 
@@ -10,11 +17,11 @@ Use CE.SDK's engine APIs to extract images and text from designs in Node.js, the
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-rules-moderate-content-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-rules-moderate-content-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-rules-moderate-content-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-rules-moderate-content-server-js)
 
 CE.SDK does not provide prebuilt content moderation workflows. Instead, it provides powerful engine APIs that make it straightforward to extract images and text from designs for moderation by third-party services of your choice. This approach is intentional: content moderation requirements are highly specific to each business, including which categories to check, what thresholds to apply, and which services to use. Similarly, when and where to check content (during editing, before export, on upload) varies based on your workflow and user experience goals.
 
@@ -756,7 +763,7 @@ console.log('✓ Scene contains sample content for moderation\n');
 
 Now that you understand content moderation in Node.js, explore related features:
 
-- [Rules Overview](./rules/overview.md) — Understand the scopes and permission model behind CE.SDK rules
+- [Rules Overview](https://img.ly/docs/cesdk/archive/v1.84/node/rules/overview-e27832/) — Understand the scopes and permission model behind CE.SDK rules
 
 
 
@@ -764,7 +771,7 @@ Now that you understand content moderation in Node.js, explore related features:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

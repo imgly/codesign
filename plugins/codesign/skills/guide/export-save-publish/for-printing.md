@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Export for Printing"
+description: "Export designs from CE.SDK as print-ready PDFs with professional output options including high compatibility mode, underlayers for special media, and scene DPI configuration."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/for-printing-bca896/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Export Media Assets](./export-save-publish/export.md) > [For Printing](./export-save-publish/for-printing.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Export Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export-82f968/) > [For Printing](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/for-printing-bca896/)
 
 ---
 
@@ -12,11 +19,11 @@ resolution.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-export-save-publish-for-printing-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-export-save-publish-for-printing-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-export-save-publish-for-printing-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-export-save-publish-for-printing-server-js)
 
 CE.SDK exports designs as PDFs, but professional print workflows require specific configurations beyond standard export. This guide covers PDF export options for print, including high compatibility mode for complex designs, underlayers for printing on special media, and output resolution settings.
 
@@ -170,7 +177,7 @@ An exclusion area marks a region of a page that content must stay out of, such a
 
 Set `exclusionArea/punchOut` to `true` on an exclusion area to cut it out of the export instead. The page and everything on it get a hole where the exclusion area is, so a die cut window in the design becomes a window in the exported PDF. The hole is transparent, which a print workflow reads as an absence of ink rather than as white. It is off by default.
 
-See [Exclusion Areas](./concepts/exclusion-areas.md) for how to create and place an exclusion area.
+See [Exclusion Areas](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/exclusion-areas-c2b87b/) for how to create and place an exclusion area.
 
 ## PDF Export Options for Print
 
@@ -284,7 +291,7 @@ console.log(
 
 For CMYK color space and ICC profile embedding, use the **Print Ready PDF plugin**. This plugin post-processes exports to convert RGB to CMYK with embedded ICC profiles.
 
-See the [Print Ready PDF Plugin](./plugins/print-ready-pdf.md) for setup and usage.
+See the [Print Ready PDF Plugin](https://img.ly/docs/cesdk/archive/v1.84/node/plugins/print-ready-pdf-iroalu/) for setup and usage.
 
 ## Troubleshooting
 
@@ -323,10 +330,10 @@ Increase the negative `underlayerOffset` value to shrink the underlayer further 
 
 ## Next Steps
 
-- [Print Ready PDF Plugin](./plugins/print-ready-pdf.md) - CMYK PDFs with ICC profiles
-- [CMYK Colors](./colors/for-print/cmyk.md) - Configure CMYK colors
-- [Spot Colors](./colors/for-print/spot.md) - Define and use spot colors
-- [Export to PDF](./export-save-publish/export/to-pdf.md) - General PDF export options
+- [Print Ready PDF Plugin](https://img.ly/docs/cesdk/archive/v1.84/node/plugins/print-ready-pdf-iroalu/) - CMYK PDFs with ICC profiles
+- [CMYK Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors/for-print/cmyk-8a1334/) - Configure CMYK colors
+- [Spot Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors/for-print/spot-c3a150/) - Define and use spot colors
+- [Export to PDF](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/to-pdf-95e04b/) - General PDF export options
 
 
 
@@ -334,7 +341,7 @@ Increase the negative `underlayerOffset` value to shrink the underlayer further 
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

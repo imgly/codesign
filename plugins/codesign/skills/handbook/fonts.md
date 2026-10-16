@@ -18,7 +18,7 @@ const { typeface: tf } = await engine.design.font({ family: 'Playfair Display' }
 - A family no source carries throws (with any near matches it found) — pick an available family rather than guessing a URI.
 - **Always pass a `weight` after declaring a font** (via `text: { font: { family, weight } }` in `create`, or `text`'s `weight` in `setProps`). `tf.fonts[0]` is the family's **first declared weight** — in Google's catalogue usually the lightest — not its regular one: for Inter and Roboto that is Thin (`wght=100`). See "Weights & italics" below.
 - Barrier rules are unchanged: batch your font declarations, then `await engine.design.loadResources([page])` before measuring or capturing (`engine.design.create` runs the barrier itself).
-- `asset_search({ sourceId: 'ly.img.gfonts', query })` shows what exists — each hit carries `typeface: { name, weights, styles }` and deliberately no font URIs: use it to check availability or browse, then set the family by name as above.
+- `asset_search({ source: 'ly.img.gfonts', query })` shows what exists — each hit carries `typeface: { name, weights, styles }` and deliberately no font URIs: use it to check availability or browse, then set the family by name as above.
 
 #### Weights & italics
 

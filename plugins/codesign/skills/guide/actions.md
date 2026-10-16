@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Actions API"
+description: "Learn how to use the Actions API to register and customize action handlers in CE.SDK on Node.js"
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/actions-6ch24x/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Actions](./actions.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Actions](https://img.ly/docs/cesdk/archive/v1.84/node/actions-6ch24x/)
 
 ---
 
@@ -62,7 +69,10 @@ async function main() {
     const audit = await engine.actions.run('myCompany.audit', 'export');
     console.log('Audit result:', audit); // { event: 'export', selectedBlocks: 1 }
 
-    // Override an engine default: hide instead of destroy
+    // Keep the engine's delete to put it back later
+    const deleteSelection = engine.actions.get('selection.delete')!;
+
+    // Replace it: hide instead of destroy
     engine.actions.register('selection.delete', () => {
       const selected = engine.block.findAllSelected();
       selected.forEach((id) => engine.block.setVisible(id, false));
@@ -72,8 +82,8 @@ async function main() {
     const hidden = await engine.actions.run('selection.delete');
     console.log('Hidden blocks:', hidden); // 1
 
-    // Unregistering an overridden engine default restores the built-in behavior
-    engine.actions.unregister('selection.delete');
+    // Register the engine's delete again to restore it
+    engine.actions.register('selection.delete', deleteSelection);
 
     // Discover registered actions, optionally filtered by a glob matcher
     const all = engine.actions.list();
@@ -93,8 +103,9 @@ async function main() {
       console.log('Sync call:', auditFn('archive'));
     }
 
-    // ... and undefined for engine-default native actions - use run() for those
-    console.log('Get nudge:', engine.actions.get('nudge')); // undefined
+    // ... and an async function for the actions the engine registered
+    const nudge = engine.actions.get('nudge');
+    console.log('Get nudge:', typeof nudge); // function
 
     // Remove a custom action entirely
     engine.actions.unregister('myCompany.audit');
@@ -156,7 +167,21 @@ engine.actions.register('selection.delete', () => {
 });
 ```
 
-An action you register runs directly in JavaScript, so arguments and results pass by reference — non-serializable values such as `Buffer`s or callbacks work. The engine's own dispatches and calls that reach an engine-default native action go through a JSON boundary, so values that cross it must be JSON-serializable.
+Registering an id replaces the action there, whoever registered it. To build on it instead, get it with `engine.actions.get(id)` before you register over it, and call it from yours. To put it back, register what `get` returned.
+
+```ts
+// Log every undo, then undo as usual.
+const undo = engine.actions.get('history.undo')!;
+engine.actions.register('history.undo', async () => {
+  console.log('undo');
+  return undo();
+});
+
+// Later: restore the engine's undo.
+engine.actions.register('history.undo', undo);
+```
+
+An action you register runs directly in JavaScript, so arguments and results pass by reference — non-serializable values such as `Buffer`s or callbacks work. The engine's own dispatches and calls that reach an action the engine registered go through a JSON boundary, so values that cross it must be JSON-serializable.
 
 ### Listing and Inspecting
 
@@ -166,12 +191,12 @@ Call `list(options?)` to discover registered actions. It returns an array of `{ 
 // Every registered action.
 const all = engine.actions.list();
 
-// Just the engine defaults under the `text.` namespace.
+// Just the actions under the `text.` namespace.
 const textActions = engine.actions.list({ matcher: 'text.*' });
 // => [{ id: 'text.toggleBold', enabled: true, argSchema: '…' }, …]
 ```
 
-Use `has(id)` to test for an action, `unregister(id)` to remove a custom action or revert an overridden built-in to its default, and `get(id)` to read back a function you registered so you can call it synchronously (it returns `undefined` for engine-default native actions; use `run` for those).
+Use `has(id)` to test for an action, `unregister(id)` to remove the action registered under an id, and `get(id)` to read an action back as a function. `get` returns a function you registered as it is, so you can call it synchronously; for an action the engine registered it returns an async function. `unregister` puts nothing back in its place: unregistering an id the engine runs on input, such as `select`, turns that interaction off, so register a replacement instead to change it.
 
 ```ts
 engine.actions.has('zoom'); // true
@@ -308,6 +333,8 @@ The engine seeds its registry with the editor's command vocabulary. These run wh
 - `text.letterSpacing` - Set the letter spacing
 - `text.list` - Set the list style (none/unordered/ordered)
 - `text.typeface` - Set the typeface
+- `text.tab` - The Tab text-editing command: indent the list item at a paragraph start, otherwise insert a tab character
+- `text.tabBack` - The Shift+Tab text-editing command: outdent the list item at a paragraph start, and do nothing outside a list
 
 ### Pages
 
@@ -425,7 +452,7 @@ Prefer `list()` over hardcoding assumptions when your code needs to know whether
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

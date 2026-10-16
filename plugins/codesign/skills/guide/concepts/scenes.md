@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Scenes"
+description: "Create, configure, save, and load scenes—the root container for all design elements in CE.SDK."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/concepts/scenes-e8596d/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Scenes](./concepts/scenes.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Scenes](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/scenes-e8596d/)
 
 ---
 
@@ -12,11 +19,11 @@ manages only one active scene at a time.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-concepts-scenes-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-concepts-scenes-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-concepts-scenes-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-concepts-scenes-server-js)
 
 Every design you create starts with a scene. Scenes contain pages, and pages contain the visible design elements—text, images, shapes, and other blocks. Understanding how scenes work is essential for building, saving, and restoring user designs.
 
@@ -254,7 +261,7 @@ Query or configure how measurements are interpreted using `engine.scene.getDesig
     console.log('Scene layout:', layout);
 ```
 
-Supported units are `'Pixel'`, `'Millimeter'`, and `'Inch'`. For more details, see the [Design Units](./concepts/design-units.md) guide.
+Supported units are `'Pixel'`, `'Millimeter'`, and `'Inch'`. For more details, see the [Design Units](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/design-units-cc6597/) guide.
 
 ### Scene Layout
 
@@ -419,7 +426,7 @@ This section describes the properties available for the **Scene Type** (`//ly.im
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

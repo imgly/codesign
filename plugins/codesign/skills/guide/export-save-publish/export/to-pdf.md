@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "To PDF"
+description: "Export your designs as PDF documents with options for print compatibility, underlayer generation, and output control."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/to-pdf-95e04b/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Export Media Assets](./export-save-publish/export.md) > [To PDF](./export-save-publish/export/to-pdf.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Export Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export-82f968/) > [To PDF](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/to-pdf-95e04b/)
 
 ---
 
@@ -10,11 +17,11 @@ Export your designs as PDF documents with high compatibility mode and underlayer
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-export-save-publish-export-to-pdf-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-export-save-publish-export-to-pdf-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-export-save-publish-export-to-pdf-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-export-save-publish-export-to-pdf-server-js)
 
 PDF provides a universal document format for sharing and printing designs. CE.SDK exports PDF files that preserve vector graphics, support multi-page documents, and include options for print compatibility. You can configure high compatibility mode to ensure consistent rendering across different PDF viewers, and generate underlayers for special media printing like fabric, glass, or DTF transfers.
 
@@ -355,10 +362,10 @@ For print output, calculate the target dimensions based on your desired DPI:
 
 ## Next Steps
 
-- [Export Overview](./export-save-publish/export/overview.md) - Compare all supported export formats
-- [Export for Printing](./export-save-publish/for-printing.md) - Print workflows with DPI and color management
-- [Spot Colors](./colors/for-print/spot.md) - Define and use spot colors in designs
-- [Export Size Limits](./export-save-publish/export/size-limits.md) - Check device limits before exporting large designs
+- [Export Overview](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/overview-9ed3a8/) - Compare all supported export formats
+- [Export for Printing](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/for-printing-bca896/) - Print workflows with DPI and color management
+- [Spot Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors/for-print/spot-c3a150/) - Define and use spot colors in designs
+- [Export Size Limits](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/size-limits-6f0695/) - Check device limits before exporting large designs
 
 
 
@@ -366,7 +373,7 @@ For print output, calculate the target dimensions based on your desired DPI:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Create Cutout"
+description: "Create cutout paths for cutting printers to produce die-cut stickers, iron-on decals, and custom-shaped prints."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/stickers-and-shapes/create-cutout-384be3/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Stickers](./stickers.md) > [Create Cutout](./stickers-and-shapes/create-cutout.md) > [Plugins](./plugins.md) > [Cutout Library](./stickers-and-shapes/create-cutout.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Stickers](https://img.ly/docs/cesdk/archive/v1.84/node/stickers-3d4e5f/) > [Create Cutout](https://img.ly/docs/cesdk/archive/v1.84/node/stickers-and-shapes/create-cutout-384be3/) > [Plugins](https://img.ly/docs/cesdk/archive/v1.84/node/plugins-693c48/) > [Cutout Library](https://img.ly/docs/cesdk/archive/v1.84/node/stickers-and-shapes/create-cutout-384be3/)
 
 ---
 
@@ -11,11 +18,11 @@ decals, and custom-shaped prints programmatically.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-stickers-and-shapes-create-cutout-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-stickers-and-shapes-create-cutout-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-stickers-and-shapes-create-cutout-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-stickers-and-shapes-create-cutout-server-js)
 
 Cutouts define outline paths that cutting printers cut with a blade rather than print with ink. CE.SDK supports creating cutouts from SVG paths, generating them from block contours, and combining them with boolean operations.
 
@@ -274,9 +281,9 @@ Combined cutouts inherit the type from the first cutout in the array. Reorder th
 
 ## Next Steps
 
-- **[Combine Shapes](./stickers-and-shapes/combine.md)** - Boolean operations on graphic blocks
-- **[Create Shapes](./stickers-and-shapes/create-edit/create-shapes.md)** - Create geometric shapes programmatically
-- **[Export for Printing](./export-save-publish/for-printing.md)** - Export print-ready PDFs with spot colors
+- **[Combine Shapes](https://img.ly/docs/cesdk/archive/v1.84/node/stickers-and-shapes/combine-2a9e26/)** - Boolean operations on graphic blocks
+- **[Create Shapes](https://img.ly/docs/cesdk/archive/v1.84/node/stickers-and-shapes/create-edit/create-shapes-64acc0/)** - Create geometric shapes programmatically
+- **[Export for Printing](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/for-printing-bca896/)** - Export print-ready PDFs with spot colors
 
 ## Cutout Type
 
@@ -332,7 +339,7 @@ This section describes the properties available for the **Cutout Type** (`//ly.i
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

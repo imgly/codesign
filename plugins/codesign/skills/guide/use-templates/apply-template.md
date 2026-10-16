@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Apply a Template"
+description: "Learn how to apply template scenes via API in the CreativeEditor SDK."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/use-templates/apply-template-35c73e/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Use Templates](./create-templates.md) > [Apply a Template](./use-templates/apply-template.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Use Templates](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates-3aef79/) > [Apply a Template](https://img.ly/docs/cesdk/archive/v1.84/node/use-templates/apply-template-35c73e/)
 
 ---
 
@@ -10,11 +17,11 @@ Apply template content to an existing scene while preserving your canvas dimensi
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-use-templates-apply-template-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-use-templates-apply-template-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-use-templates-apply-template-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-use-templates-apply-template-server-js)
 
 Unlike loading a scene which replaces everything, applying a template merges template content into your current scene. CE.SDK preserves the current page dimensions and design unit while automatically adjusting template content to fit. This approach is ideal for automation pipelines that standardize output sizes across varying template sources, or batch processing workflows that need consistent export dimensions.
 
@@ -71,13 +78,14 @@ async function run() {
     await engine.scene.applyTemplateFromURL(templateUrl);
     console.log('✓ Template applied from URL');
 
-    // Verify that page dimensions are preserved after applying template
-    const width = engine.block.getWidth(page);
-    const height = engine.block.getHeight(page);
+    // Applying a template replaces the page, so read the page again
+    const appliedPage = engine.scene.getPages()[0];
+    const width = engine.block.getWidth(appliedPage);
+    const height = engine.block.getHeight(appliedPage);
     console.log(`✓ Page dimensions preserved: ${width}x${height}`);
 
     // Export the result with consistent dimensions
-    const blob = await engine.block.export(page, {
+    const blob = await engine.block.export(appliedPage, {
       mimeType: 'image/png',
       targetWidth: 1080,
       targetHeight: 1920
@@ -95,12 +103,13 @@ async function run() {
     console.log('✓ Switched to alternative template');
 
     // Verify dimensions remain the same
-    const newWidth = engine.block.getWidth(page);
-    const newHeight = engine.block.getHeight(page);
+    const switchedPage = engine.scene.getPages()[0];
+    const newWidth = engine.block.getWidth(switchedPage);
+    const newHeight = engine.block.getHeight(switchedPage);
     console.log(`✓ Dimensions after switch: ${newWidth}x${newHeight}`);
 
     // Export the alternative template
-    const blob2 = await engine.block.export(page, {
+    const blob2 = await engine.block.export(switchedPage, {
       mimeType: 'image/png',
       targetWidth: 1080,
       targetHeight: 1920
@@ -191,12 +200,13 @@ To apply a template from a URL, call `engine.scene.applyTemplateFromURL()` with 
 
 ## Verify Preserved Dimensions
 
-After applying the template, the page dimensions remain unchanged. You can verify this by checking the width and height of the page.
+After applying the template, the page dimensions remain unchanged. Applying a template replaces the page, so read the page again with `engine.scene.getPages()` before you check its width and height.
 
 ```typescript highlight=highlight-verify-dimensions
-// Verify that page dimensions are preserved after applying template
-const width = engine.block.getWidth(page);
-const height = engine.block.getHeight(page);
+// Applying a template replaces the page, so read the page again
+const appliedPage = engine.scene.getPages()[0];
+const width = engine.block.getWidth(appliedPage);
+const height = engine.block.getHeight(appliedPage);
 console.log(`✓ Page dimensions preserved: ${width}x${height}`);
 ```
 
@@ -206,7 +216,7 @@ Export the result with the same dimensions you configured. This ensures all outp
 
 ```typescript highlight=highlight-export
     // Export the result with consistent dimensions
-    const blob = await engine.block.export(page, {
+    const blob = await engine.block.export(appliedPage, {
       mimeType: 'image/png',
       targetWidth: 1080,
       targetHeight: 1920
@@ -230,12 +240,13 @@ You can apply multiple templates to the same scene. Each application replaces th
     console.log('✓ Switched to alternative template');
 
     // Verify dimensions remain the same
-    const newWidth = engine.block.getWidth(page);
-    const newHeight = engine.block.getHeight(page);
+    const switchedPage = engine.scene.getPages()[0];
+    const newWidth = engine.block.getWidth(switchedPage);
+    const newHeight = engine.block.getHeight(switchedPage);
     console.log(`✓ Dimensions after switch: ${newWidth}x${newHeight}`);
 
     // Export the alternative template
-    const blob2 = await engine.block.export(page, {
+    const blob2 = await engine.block.export(switchedPage, {
       mimeType: 'image/png',
       targetWidth: 1080,
       targetHeight: 1920
@@ -270,13 +281,13 @@ Verify network connectivity and URL validity. In server environments, ensure you
 
 ### Content Not Scaling as Expected
 
-Template content scales to fit the current page dimensions. Verify page dimensions are set before applying the template.
+Template content scales to `scene/pageDimensions/width` and `scene/pageDimensions/height`. Until you set them, the engine uses the size of the first page. A value that you set wins over the page size, and a loaded scene keeps its saved value. When there is no page size to use, the template keeps its own.
 
 ## Related Guides
 
-- [Use Templates Programmatically](./use-templates/programmatic.md) — Comprehensive programmatic template workflows
-- [Templates Overview](./use-templates/overview.md) — Understanding templates in CE.SDK
-- [Headless Mode](./concepts/headless-mode.md) — Server-side template processing
+- [Use Templates Programmatically](https://img.ly/docs/cesdk/archive/v1.84/node/use-templates/programmatic-9349f3/) — Comprehensive programmatic template workflows
+- [Templates Overview](https://img.ly/docs/cesdk/archive/v1.84/node/use-templates/overview-ae74e1/) — Understanding templates in CE.SDK
+- [Headless Mode](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/headless-mode-24ab98/) — Server-side template processing
 
 
 
@@ -284,7 +295,7 @@ Template content scales to fit the current page dimensions. Verify page dimensio
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

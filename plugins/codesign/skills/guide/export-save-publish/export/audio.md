@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "For Audio Processing"
+description: "Learn how to export audio in WAV or MP4 format from any block type in CE.SDK for Node.js server environments."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/audio-68de25/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Export Media Assets](./export-save-publish/export.md) > [For Audio Processing](./export-save-publish/export/audio.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Export Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export-82f968/) > [For Audio Processing](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/audio-68de25/)
 
 ---
 
@@ -222,9 +229,9 @@ async function saveAudio(audioBuffer, fileName = 'exported_audio.wav') {
 
 Now that you understand audio export, explore related audio and video features:
 
-- [Add Captions](./edit-video/add-captions.md) - Learn how to create and sync caption blocks with audio content
-- [Control Audio and Video](./create-video/control.md) - Master time offset, duration, and playback controls for audio blocks
-- [Trim Video Clips](./edit-video/trim.md) - Apply the same trim concepts to isolate audio segments
+- [Add Captions](https://img.ly/docs/cesdk/archive/v1.84/node/edit-video/add-captions-f67565/) - Learn how to create and sync caption blocks with audio content
+- [Control Audio and Video](https://img.ly/docs/cesdk/archive/v1.84/node/create-video/control-daba54/) - Master time offset, duration, and playback controls for audio blocks
+- [Trim Video Clips](https://img.ly/docs/cesdk/archive/v1.84/node/edit-video/trim-4f688b/) - Apply the same trim concepts to isolate audio segments
 
 
 
@@ -232,7 +239,7 @@ Now that you understand audio export, explore related audio and video features:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

@@ -1,7 +1,8 @@
 # poster
 
-- **Print size:** A2 portrait, 420 × 594 mm + **3 mm bleed** (A1 594 × 841 mm / A3 297 × 420 mm
-  on request)
+- **Print size:** A2 portrait, 420 × 594 mm (A1 594 × 841 mm / A3 297 × 420 mm on request) — the
+  page is this trim size; **3 mm bleed** is the page's bleed setting, outside it (`SKILL.md`, Print
+  basics)
 - **Screen size:** 1080 × 1920 px (9:16) unless stated
 - **Medium:** both — ask (or derive) print vs screen; print is the default venue
 
@@ -9,7 +10,7 @@
 
 - ≥300 dpi; fonts embedded/outlined; text inside the **~8% safe margin**, out of the bleed
   (handbook §6.1.10, §6.4).
-- Work in mm/points against the trimmed size; the bleed is trim allowance, not layout space.
+- Work in mm/points against the trim size; the bleed is trim allowance, not layout space.
 
 ## Notes
 

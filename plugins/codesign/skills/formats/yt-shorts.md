@@ -8,13 +8,14 @@
 
 Platform UI overlays the edges — keep primary content, captions and CTAs clear of:
 
-- **Top ~200 px** — search, menu.
-- **Bottom ~380 px** — title, channel, subscribe, sound.
-- **Right ~190 px** — like / dislike / comment / share / remix column.
+- **Top 288 px** — search, menu.
+- **Bottom 672 px** — title, channel, subscribe, sound.
+- **Right 192 px** — like / dislike / comment / share / remix column.
+- **Left 48 px.**
 
-UI placement shifts between app versions; treat these as minimums.
+These are Google's published figures for vertical video on YouTube; treat them as minimums.
 
 ## Notes
 
-- Same canvas as `ig-story` / `tiktok`; the right column is the widest of the three, so a layout
-  that clears it clears all three.
+- Same canvas as `ig-story` / `tiktok`, with the tallest top band of the three. A layout that has
+  to work on all three keeps its text inside x 120–780, y 288–1248.

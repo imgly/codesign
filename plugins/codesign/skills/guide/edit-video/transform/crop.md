@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Crop Videos"
+description: "Cut out specific areas of a video to focus on key content or change aspect ratio."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/edit-video/transform/crop-8b1741/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Videos](./create-video.md) > [Transform](./edit-video/transform.md) > [Crop](./edit-video/transform/crop.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Videos](https://img.ly/docs/cesdk/archive/v1.84/node/create-video-c41a08/) > [Transform](https://img.ly/docs/cesdk/archive/v1.84/node/edit-video/transform-369f28/) > [Crop](https://img.ly/docs/cesdk/archive/v1.84/node/edit-video/transform/crop-8b1741/)
 
 ---
 
@@ -10,7 +17,7 @@ You can crop videos both through the built-in user interface and programmaticall
 
 [Launch Web Demo](https://img.ly/showcases/cesdk)
 
-[Get Started](./get-started/overview.md)
+[Get Started](https://img.ly/docs/cesdk/archive/v1.84/node/get-started/overview-e18f40/)
 
 ## Cropping Methods
 
@@ -43,7 +50,7 @@ Video cropping works seamlessly with other transformation operations like rotati
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

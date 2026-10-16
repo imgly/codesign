@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Node.js - Clone GitHub Project"
+description: "Getting started with CE.SDK Engine in Node.js using Vanilla JS and a clone of the GitHub project."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/get-started/vanilla-clone-github-project-n1fe4a/"
+---
 
-**Navigation:** [Get Started](./get-started/overview.md) > [Quickstart Node.js](./get-started/vanilla.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Get Started](https://img.ly/docs/cesdk/archive/v1.84/node/get-started/overview-e18f40/) > [Quickstart Node.js](https://img.ly/docs/cesdk/archive/v1.84/node/get-started/vanilla-n1234a/)
 
 ---
 
@@ -32,7 +39,7 @@ Before getting started, ensure you have the following:
 
 - **Git** - Required to clone the project repository. [Download Git](https://git-scm.com/downloads).
 - **The latest LTS version of Node.js and npm** - Necessary for installing dependencies and running the script. [Download Node.js](https://nodejs.org/).
-- A valid **CE.SDK license key** ([Get a free trial](https://img.ly/forms/free-trial)).
+- A valid **CE.SDK license key** ([Request a license](https://img.ly/forms/contact-sales/)).
 
 ## Step 1: Clone the GitHub Repository
 
@@ -107,10 +114,10 @@ This loads an existing scene and generates an image file named `example-output.p
 
 Congratulations! You’ve successfully integrated CE.SDK with Node.js. When you’re ready, dive deeper into the SDK and continue with the next steps:
 
-- [Serve assets from your server](./serve-assets.md)
-- [Import media](./import-media/concepts.md)
-- [Automate creative workflows](./automation/overview.md)
-- [Running on AWS Lambda](./get-started/vanilla-aws-lambda.md)
+- [Serve assets from your server](https://img.ly/docs/cesdk/archive/v1.84/node/serve-assets-b0827c/)
+- [Import media](https://img.ly/docs/cesdk/archive/v1.84/node/import-media/concepts-5e6197/)
+- [Automate creative workflows](https://img.ly/docs/cesdk/archive/v1.84/node/automation/overview-34d971/)
+- [Running on AWS Lambda](https://img.ly/docs/cesdk/archive/v1.84/node/get-started/vanilla-aws-lambda-fee18b/)
 
 
 
@@ -118,7 +125,7 @@ Congratulations! You’ve successfully integrated CE.SDK with Node.js. When you�
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

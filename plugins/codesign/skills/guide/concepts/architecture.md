@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Architecture"
+description: "Understand how CE.SDK is structured around the CreativeEngine—the core runtime with six APIs for scenes, blocks, assets, events, variables, and editor state."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/concepts/architecture-6ea9b2/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Architecture](./concepts/architecture.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Architecture](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/architecture-6ea9b2/)
 
 ---
 
@@ -28,7 +35,7 @@ CE.SDK organizes content in a tree: *Scene* → *Pages* → *Blocks*.
 - **Pages**: Containers within a scene. Artboards for static designs, time-based compositions for video editing.
 - **Blocks**: The atomic units—graphics, text, audio, video. Everything visible is a block.
 
-The **Scene API** manages this hierarchy. The **Block API** manipulates individual blocks within it. See [Scenes](./concepts/scenes.md), [Pages](./concepts/pages.md), and [Blocks](./concepts/blocks.md) for details.
+The **Scene API** manages this hierarchy. The **Block API** manipulates individual blocks within it. See [Scenes](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/scenes-e8596d/), [Pages](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/pages-7b6bae/), and [Blocks](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/blocks-90241e/) for details.
 
 ## The Six APIs
 
@@ -78,14 +85,14 @@ CE.SDK scenes support a range of capabilities:
 - **Static designs**: Social posts, print materials, graphics. Blocks positioned spatially.
 - **Time-based content**: Duration, playback time, and animation. Blocks arranged across time.
 
-The scene configuration determines which *Block API* properties and *Editor API* capabilities are available. See [Scenes](./concepts/scenes.md) for details.
+The scene configuration determines which *Block API* properties and *Editor API* capabilities are available. See [Scenes](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/scenes-e8596d/) for details.
 
 ## Integration Patterns
 
 CE.SDK runs in two contexts:
 
 - **Browser**: The engine renders to a canvas element. Append `engine.element` to your DOM. Use with the built-in UI or build your own.
-- **Headless**: Rendering without a visible canvas — the WASM package renders in software, the native package on the GPU where available. Use for server-side exports, automation, and batch operations. See [Headless Mode](./concepts/headless-mode.md).
+- **Headless**: Rendering without a visible canvas — the WASM package renders in software, the native package on the GPU where available. Use for server-side exports, automation, and batch operations. See [Headless Mode](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/headless-mode-24ab98/).
 
 Both contexts use the same six APIs—only rendering differs.
 
@@ -95,7 +102,7 @@ Both contexts use the same six APIs—only rendering differs.
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

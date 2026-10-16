@@ -33,9 +33,9 @@ Per-family guidance lives in one file each: `<file>`.
 - `params` — every other model input, verbatim, under the schema's field names: `voice`,
   `duration`, `lyrics_prompt`, `duration_seconds`, … . Provider (`@falai/…`) models take the
   provider's own value formats (`"8s"`, not `8`, where the schema says so). A `uri` inside
-  `params` that you got back from `import` or an earlier `asset_generate` is uploaded first, so
+  `params` that an earlier tool result gave you (never one you assembled) is uploaded first, so
   `{ audio_url: '<that uri>' }` works.
-- `format` (an aspect ratio such as `"16:9"`) and `image_uris` (server-returned `uri` inputs for
+- `format` (an aspect ratio such as `"16:9"`) and `image_uris` (tool-returned `uri` inputs for
   image-to-image) — the catalog image models' fields.
 
 There is no negative prompt, seed, strength or style parameter on the catalog image models —

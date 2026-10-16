@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Import Remote Assets"
+description: "Load asset definitions from remote JSON files hosted on CDNs or servers into CE.SDK's asset library with filtering and custom base URLs."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/import-media/from-remote-source/remote-asset-484685/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Import Media Assets](./import-media.md) > [Import From Remote Source](./import-media/from-remote-source.md) > [Import Remote Asset](./import-media/from-remote-source/remote-asset.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Import Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/import-media-4e3703/) > [Import From Remote Source](https://img.ly/docs/cesdk/archive/v1.84/node/import-media/from-remote-source-b65faf/) > [Import Remote Asset](https://img.ly/docs/cesdk/archive/v1.84/node/import-media/from-remote-source/remote-asset-484685/)
 
 ---
 
@@ -10,11 +17,11 @@ Load asset definitions from remote JSON files hosted on CDNs or servers into CE.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-import-media-from-remote-source-remote-asset-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-import-media-from-remote-source-remote-asset-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-import-media-from-remote-source-remote-asset-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-import-media-from-remote-source-remote-asset-server-js)
 
 Remote asset loading enables you to host asset definitions on a CDN or server and load them dynamically into CE.SDK. This approach separates asset management from your application code, allowing you to update available assets without deploying new app versions. CE.SDK provides `engine.asset.addLocalAssetSourceFromJSONURI()` for loading from URLs and `engine.asset.addLocalAssetSourceFromJSONString()` for loading from JSON content you already have.
 
@@ -397,7 +404,7 @@ Common issues include:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

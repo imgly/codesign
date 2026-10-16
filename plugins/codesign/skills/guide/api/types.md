@@ -28,7 +28,7 @@ Types: OffscreenCanvas, Canvas
 
 ## capabilities
 
-Types: EngineCapability
+Types: EngineCapability, EngineCapabilityState
 
 ## color
 

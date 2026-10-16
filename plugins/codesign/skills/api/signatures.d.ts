@@ -107,7 +107,7 @@ interface DesignApi {
     // styles → ranges) whatever the key order:
     //   await setProps(id, { text: { string, font: { typeface }, weight, case,
     //     listStyle, path, pathOffset, pathFlipped,
-    //     ranges: [{ from, to, color?, weight?, style?, size?, case?,
+    //     ranges: [{ from, to, color?, weight?, style?, size?, case?, scriptStyle?,
     //       decoration?, kerning? }] } })
     // A string write WITHOUT other text styling auto-preserves existing
     // ranges; with styling, ranges reset (pass ranges to keep or ranges: []
@@ -233,6 +233,10 @@ interface BlockProps {
         pathFlipped?: boolean;
         pathOffset?: number;
         style?: string;
+        subscriptFontScale?: number;
+        subscriptVerticalShift?: number;
+        superscriptFontScale?: number;
+        superscriptVerticalShift?: number;
         text?: string;
         useContextualAlternates?: boolean;
         useContextualLigatures?: boolean;
@@ -445,8 +449,12 @@ interface BlockProps {
         pathExternalRef?: string;
         pathFlipped?: boolean /* true = underside, reversed direction */;
         pathOffset?: number /* proportional start offset along the path */;
-        ranges?: { from: number; to: number; color?: Color; weight?: FontWeight; style?: string; size?: string /* px string */; case?: TextCase; typeface?: Typeface; decoration?: TextDecorationConfig; kerning?: number }[];
+        ranges?: { from: number; to: number; color?: Color; weight?: FontWeight; style?: string; size?: string /* px string */; case?: TextCase; scriptStyle?: ScriptStyle; typeface?: Typeface; decoration?: TextDecorationConfig; kerning?: number }[];
         style?: string;
+        subscriptFontScale?: number;
+        subscriptVerticalShift?: number;
+        superscriptFontScale?: number;
+        superscriptVerticalShift?: number;
         string?: string;
         typeface?: string;
         useContextualAlternates?: boolean;
@@ -1050,6 +1058,7 @@ interface SettingsProps {
     rotationSnappingThreshold?: number;
     showBuildVersion?: boolean;
     snappingGuideColor?: Color;
+    tabStopInterval?: number;
     textVariableHighlightColor?: Color;
     timeline?: {
         trackVisibility?: string;
@@ -1121,6 +1130,7 @@ type FontStyle = 'normal' | 'italic';
 type FontWeight = 'thin' | 'extraLight' | 'light' | 'normal' | 'medium' | 'semiBold' | 'bold' | 'extraBold' | 'heavy';
 type ListStyle = 'None' | 'Unordered' | 'Ordered';
 type Scope = 'text/edit' | 'text/character' | 'fill/change' | 'fill/changeType' | 'stroke/change' | 'shape/change' | 'layer/move' | 'layer/resize' | 'layer/rotate' | 'layer/flip' | 'layer/crop' | 'layer/opacity' | 'layer/blendMode' | 'layer/visibility' | 'layer/clipping' | 'appearance/adjustments' | 'appearance/filter' | 'appearance/effect' | 'appearance/blur' | 'appearance/shadow' | 'appearance/animation' | 'lifecycle/destroy' | 'lifecycle/duplicate' | 'editor/add' | 'editor/select';
+type ScriptStyle = 'Normal' | 'Superscript' | 'Subscript';
 type TextCase = 'Normal' | 'Uppercase' | 'Lowercase' | 'Titlecase';
 type TextDecorationLine = 'None' | 'Underline' | 'Strikethrough' | 'Overline';
 type TextDecorationStyle = 'Solid' | 'Double' | 'Dotted' | 'Dashed' | 'Wavy';
@@ -1258,6 +1268,14 @@ interface AssetContentAspectRatio {
 interface AssetDefinition extends Asset {
     label?: Record<Locale, string>;
     tags?: Record<Locale, string[]>;
+}
+interface AssetDropPayload {
+    sourceId: string;
+    assetId: string;
+    target: DesignBlockId | null;
+    page: DesignBlockId | null;
+    pageX: number;
+    pageY: number;
 }
 interface AssetEnumProperty {
     property: string;
@@ -1543,6 +1561,8 @@ class BlockAPI {
     getTextFontWeights(id: DesignBlockId, from?: number, to?: number): FontWeight[];
     getTextFontSizes(id: DesignBlockId, options?: TextFontSizeOptions): number[];
     getTextFontStyles(id: DesignBlockId, from?: number, to?: number): FontStyle[];
+    getTextScriptStyles(id: DesignBlockId, from?: number, to?: number): ScriptStyle[];
+    setTextScriptStyle(id: DesignBlockId, scriptStyle: ScriptStyle, from?: number, to?: number): void;
     getTextDecorations(id: DesignBlockId, from?: number, to?: number): TextDecorationConfig[];
     canToggleBoldFont(id: DesignBlockId, from?: number, to?: number): boolean;
     canToggleItalicFont(id: DesignBlockId, from?: number, to?: number): boolean;
@@ -1753,7 +1773,9 @@ type DropShadowOptions = {
 };
 class EditorAPI {
     #private;
+    /** @deprecated Use {@link EditorAPI.getCapabilityState}, which says whether the capability has * been measured yet. To ask whether this browser can play or export video, run the * `video.decode.checkSupport` or `video.encode.checkSupport` action, which measures first. * * */
     isCapabilitySupported(capability: EngineCapability): boolean;
+    getCapabilityState(capability: EngineCapability): EngineCapabilityState;
     checkCapabilities(): Promise<void>;
     onStateChanged: (callback: () => void) => (() => void);
     unstable_isInteractionHappening(): boolean;
@@ -1858,19 +1880,18 @@ class EditorAPI {
     setMovementConstraint(rules: MovementConstraintRule | MovementConstraintRule[]): void;
     removeMovementConstraint(scopes?: MovementConstraintScope | MovementConstraintScope[]): void;
 }
-type EngineActionId = keyof EngineActionsRegistry & string;
 interface EngineActionInfo {
     id: string;
     enabled: boolean;
     argSchema: string | null;
 }
-class EngineActions {
+class EngineActions<Registry extends object = EngineActionsRegistry> {
     #private;
-    register<K extends EngineActionId>(id: K, fn: EngineActionsRegistry[K] extends (...args: any[]) => any ? EngineActionsRegistry[K] : EngineCustomActionFunction): void;
+    register<K extends keyof Registry & string>(id: K, fn: Registry[K] extends (...args: any[]) => any ? Registry[K] : EngineCustomActionFunction): void;
     register(id: string, fn: EngineCustomActionFunction): void;
-    get<K extends EngineActionId>(id: K): EngineActionsRegistry[K] | undefined;
+    get<K extends keyof Registry & string>(id: K): Registry[K] | undefined;
     get(id: string): EngineCustomActionFunction | undefined;
-    run<K extends EngineActionId>(id: K, ...args: EngineActionsRegistry[K] extends (...args: infer A) => any ? A : unknown[]): Promise<EngineActionsRegistry[K] extends (...args: any[]) => infer R ? Awaited<R> : unknown>;
+    run<K extends keyof Registry & string>(id: K, ...args: Registry[K] extends (...args: infer A) => any ? A : unknown[]): Promise<Registry[K] extends (...args: any[]) => infer R ? Awaited<R> : unknown>;
     run<R = unknown>(id: string, ...args: unknown[]): Promise<R>;
     has(id: string): boolean;
     unregister(id: string): boolean;
@@ -1879,15 +1900,19 @@ class EngineActions {
     }): EngineActionInfo[];
 }
 interface EngineActionsRegistry {
+    'asset.drop': (payload: AssetDropPayload) => void | Promise<void>;
+    'video.decode.checkSupport': () => Promise<boolean>;
+    'video.encode.checkSupport': () => Promise<boolean>;
 }
 type EngineCapability = 'aacEncode' | 'opusEncode' | 'h264Encode' | 'hevcEncode' | 'vp9Encode' | 'av1Encode' | 'h264Decode' | 'hevcDecode' | 'vp9Decode' | 'av1Decode' | 'tempFileStorage' | 'concurrentFileRead';
+type EngineCapabilityState = 'unchecked' | 'pending' | 'supported' | 'unsupported';
 type EngineCustomActionFunction = (...args: any[]) => unknown;
 type EnumPropertyName = 'blend/mode' | 'contentFill/horizontalAlignment' | 'contentFill/mode' | 'contentFill/verticalAlignment' | 'height/mode' | 'position/x/mode' | 'position/y/mode' | 'scene/colorConversionMode' | 'scene/designUnit' | 'scene/fontSizeUnit' | 'scene/layout' | 'scene/mode' | 'width/mode' | 'page/guides/source' | 'stroke/cap' | 'stroke/cornerGeometry' | 'stroke/dashEndCap' | 'stroke/dashStartCap' | 'stroke/endCap' | 'stroke/position' | 'stroke/startCap' | 'stroke/style' | 'playback/fadeIn/easing' | 'playback/fadeOut/easing' | 'text/horizontalAlignment' | 'text/verticalAlignment' | 'cutout/type' | 'caption/horizontalAlignment' | 'caption/verticalAlignment' | 'animationEasing' | 'textAnimationWritingStyle' | 'animation/grow/direction' | 'animation/wipe/direction' | 'animation/baseline/direction' | 'animation/spin/direction' | 'animation/spin_loop/direction' | 'animation/jump_loop/direction' | 'animation/typewriter_text/writingStyle' | 'animation/block_swipe_text/direction' | 'animation/merge_text/direction' | 'animation/ken_burns/direction' | 'fill/pixelStream/orientation' | 'shape/vector_path/fillRule' | (string & {});
 class EventAPI {
     #private;
     subscribe: (blocks: DesignBlockId[], callback: (events: BlockEvent[]) => void) => (() => void);
 }
-type FloatPropertyName = 'globalBoundingBox/height' | 'globalBoundingBox/width' | 'globalBoundingBox/x' | 'globalBoundingBox/y' | 'height' | 'lastFrame/height' | 'lastFrame/width' | 'lastFrame/x' | 'lastFrame/y' | 'movement/constraint' | 'position/x' | 'position/y' | 'rotation' | 'scene/dpi' | 'scene/pageDimensions/height' | 'scene/pageDimensions/width' | 'scene/pixelScaleFactor' | 'width' | 'camera/pixelRatio' | 'camera/resolution/height' | 'camera/resolution/width' | 'camera/zoomLevel' | 'dropShadow/blurRadius/x' | 'dropShadow/blurRadius/y' | 'dropShadow/offset/x' | 'dropShadow/offset/y' | 'page/guides/gridSpacingX' | 'page/guides/gridSpacingY' | 'page/margin/bottom' | 'page/margin/left' | 'page/margin/right' | 'page/margin/top' | 'page/marginScale' | 'page/safetyInset/bottom' | 'page/safetyInset/left' | 'page/safetyInset/right' | 'page/safetyInset/top' | 'playback/speed' | 'playback/volume' | 'stroke/dashOffset' | 'stroke/width' | 'opacity' | 'backgroundColor/cornerRadius' | 'backgroundColor/paddingBottom' | 'backgroundColor/paddingLeft' | 'backgroundColor/paddingRight' | 'backgroundColor/paddingTop' | 'text/backgroundCornerRadius' | 'text/backgroundPadding/bottom' | 'text/backgroundPadding/left' | 'text/backgroundPadding/right' | 'text/backgroundPadding/top' | 'text/fontSize' | 'text/letterSpacing' | 'text/lineHeight' | 'text/maxAutomaticFontSize' | 'text/minAutomaticFontSize' | 'text/paragraphSpacing' | 'text/pathOffset' | 'cutout/offset' | 'cutout/smoothing' | 'caption/backgroundCornerRadius' | 'caption/backgroundPadding/bottom' | 'caption/backgroundPadding/left' | 'caption/backgroundPadding/right' | 'caption/backgroundPadding/top' | 'caption/fontSize' | 'caption/letterSpacing' | 'caption/lineHeight' | 'caption/maxAutomaticFontSize' | 'caption/minAutomaticFontSize' | 'caption/paragraphSpacing' | 'caption/pathOffset' | 'animation/slide/direction' | 'textAnimationOverlap' | 'animation/pan/direction' | 'animation/pan/distance' | 'animation/blur/intensity' | 'animation/grow/scaleFactor' | 'animation/crop_zoom/scale' | 'animation/spin/intensity' | 'animation/blur_loop/intensity' | 'animation/pulsating_loop/intensity' | 'animation/breathing_loop/intensity' | 'animation/jump_loop/intensity' | 'animation/sway_loop/intensity' | 'animation/spread_text/intensity' | 'animation/merge_text/intensity' | 'animation/ken_burns/travelDistanceRatio' | 'animation/ken_burns/zoomIntensity' | 'blur/uniform/intensity' | 'blur/linear/blurRadius' | 'blur/linear/x1' | 'blur/linear/x2' | 'blur/linear/y1' | 'blur/linear/y2' | 'blur/mirrored/blurRadius' | 'blur/mirrored/gradientSize' | 'blur/mirrored/size' | 'blur/mirrored/x1' | 'blur/mirrored/x2' | 'blur/mirrored/y1' | 'blur/mirrored/y2' | 'blur/radial/blurRadius' | 'blur/radial/gradientRadius' | 'blur/radial/radius' | 'blur/radial/x' | 'blur/radial/y' | 'effect/adjustments/blacks' | 'effect/adjustments/brightness' | 'effect/adjustments/clarity' | 'effect/adjustments/contrast' | 'effect/adjustments/exposure' | 'effect/adjustments/gamma' | 'effect/adjustments/highlights' | 'effect/adjustments/saturation' | 'effect/adjustments/shadows' | 'effect/adjustments/sharpness' | 'effect/adjustments/temperature' | 'effect/adjustments/whites' | 'effect/cross_cut/offset' | 'effect/cross_cut/slices' | 'effect/cross_cut/speedV' | 'effect/cross_cut/time' | 'effect/dot_pattern/blur' | 'effect/dot_pattern/dots' | 'effect/dot_pattern/size' | 'effect/duotone_filter/intensity' | 'effect/extrude_blur/amount' | 'effect/glow/amount' | 'effect/glow/darkness' | 'effect/glow/size' | 'effect/green_screen/colorMatch' | 'effect/green_screen/smoothness' | 'effect/green_screen/spill' | 'effect/half_tone/angle' | 'effect/half_tone/scale' | 'effect/linocut/scale' | 'effect/liquid/amount' | 'effect/liquid/scale' | 'effect/liquid/time' | 'effect/lut_filter/intensity' | 'effect/outliner/amount' | 'effect/outliner/passthrough' | 'effect/posterize/levels' | 'effect/radial_pixel/radius' | 'effect/radial_pixel/segments' | 'effect/recolor/brightnessMatch' | 'effect/recolor/colorMatch' | 'effect/recolor/smoothness' | 'effect/shifter/amount' | 'effect/shifter/angle' | 'effect/tilt_shift/amount' | 'effect/tilt_shift/position' | 'effect/tv_glitch/distortion' | 'effect/tv_glitch/distortion2' | 'effect/tv_glitch/rollSpeed' | 'effect/tv_glitch/speed' | 'effect/vignette/darkness' | 'effect/vignette/offset' | 'fill/gradient/linear/endPointX' | 'fill/gradient/linear/endPointY' | 'fill/gradient/linear/startPointX' | 'fill/gradient/linear/startPointY' | 'fill/gradient/radial/centerPointX' | 'fill/gradient/radial/centerPointY' | 'fill/gradient/radial/radius' | 'fill/gradient/conical/centerPointX' | 'fill/gradient/conical/centerPointY' | 'fill/stripe/angle' | 'fill/stripe/gap' | 'fill/stripe/width' | 'shape/rect/cornerRadiusBL' | 'shape/rect/cornerRadiusBR' | 'shape/rect/cornerRadiusTL' | 'shape/rect/cornerRadiusTR' | 'shape/polygon/cornerRadius' | 'shape/star/cornerRadius' | 'shape/star/innerDiameter' | 'shape/vector_path/cornerRadius' | 'shape/vector_path/height' | 'shape/vector_path/width' | (string & {});
+type FloatPropertyName = 'globalBoundingBox/height' | 'globalBoundingBox/width' | 'globalBoundingBox/x' | 'globalBoundingBox/y' | 'height' | 'lastFrame/height' | 'lastFrame/width' | 'lastFrame/x' | 'lastFrame/y' | 'movement/constraint' | 'position/x' | 'position/y' | 'rotation' | 'scene/dpi' | 'scene/pageDimensions/height' | 'scene/pageDimensions/width' | 'scene/pixelScaleFactor' | 'width' | 'camera/pixelRatio' | 'camera/resolution/height' | 'camera/resolution/width' | 'camera/zoomLevel' | 'dropShadow/blurRadius/x' | 'dropShadow/blurRadius/y' | 'dropShadow/offset/x' | 'dropShadow/offset/y' | 'page/guides/gridSpacingX' | 'page/guides/gridSpacingY' | 'page/margin/bottom' | 'page/margin/left' | 'page/margin/right' | 'page/margin/top' | 'page/marginScale' | 'page/safetyInset/bottom' | 'page/safetyInset/left' | 'page/safetyInset/right' | 'page/safetyInset/top' | 'playback/speed' | 'playback/volume' | 'stroke/dashOffset' | 'stroke/width' | 'opacity' | 'backgroundColor/cornerRadius' | 'backgroundColor/paddingBottom' | 'backgroundColor/paddingLeft' | 'backgroundColor/paddingRight' | 'backgroundColor/paddingTop' | 'text/backgroundCornerRadius' | 'text/backgroundPadding/bottom' | 'text/backgroundPadding/left' | 'text/backgroundPadding/right' | 'text/backgroundPadding/top' | 'text/fontSize' | 'text/letterSpacing' | 'text/lineHeight' | 'text/maxAutomaticFontSize' | 'text/minAutomaticFontSize' | 'text/paragraphSpacing' | 'text/pathOffset' | 'text/subscriptFontScale' | 'text/subscriptVerticalShift' | 'text/superscriptFontScale' | 'text/superscriptVerticalShift' | 'cutout/offset' | 'cutout/smoothing' | 'caption/backgroundCornerRadius' | 'caption/backgroundPadding/bottom' | 'caption/backgroundPadding/left' | 'caption/backgroundPadding/right' | 'caption/backgroundPadding/top' | 'caption/fontSize' | 'caption/letterSpacing' | 'caption/lineHeight' | 'caption/maxAutomaticFontSize' | 'caption/minAutomaticFontSize' | 'caption/paragraphSpacing' | 'caption/pathOffset' | 'caption/subscriptFontScale' | 'caption/subscriptVerticalShift' | 'caption/superscriptFontScale' | 'caption/superscriptVerticalShift' | 'animation/slide/direction' | 'textAnimationOverlap' | 'animation/pan/direction' | 'animation/pan/distance' | 'animation/blur/intensity' | 'animation/grow/scaleFactor' | 'animation/crop_zoom/scale' | 'animation/spin/intensity' | 'animation/blur_loop/intensity' | 'animation/pulsating_loop/intensity' | 'animation/breathing_loop/intensity' | 'animation/jump_loop/intensity' | 'animation/sway_loop/intensity' | 'animation/spread_text/intensity' | 'animation/merge_text/intensity' | 'animation/ken_burns/travelDistanceRatio' | 'animation/ken_burns/zoomIntensity' | 'blur/uniform/intensity' | 'blur/linear/blurRadius' | 'blur/linear/x1' | 'blur/linear/x2' | 'blur/linear/y1' | 'blur/linear/y2' | 'blur/mirrored/blurRadius' | 'blur/mirrored/gradientSize' | 'blur/mirrored/size' | 'blur/mirrored/x1' | 'blur/mirrored/x2' | 'blur/mirrored/y1' | 'blur/mirrored/y2' | 'blur/radial/blurRadius' | 'blur/radial/gradientRadius' | 'blur/radial/radius' | 'blur/radial/x' | 'blur/radial/y' | 'effect/adjustments/blacks' | 'effect/adjustments/brightness' | 'effect/adjustments/clarity' | 'effect/adjustments/contrast' | 'effect/adjustments/exposure' | 'effect/adjustments/gamma' | 'effect/adjustments/highlights' | 'effect/adjustments/saturation' | 'effect/adjustments/shadows' | 'effect/adjustments/sharpness' | 'effect/adjustments/temperature' | 'effect/adjustments/whites' | 'effect/cross_cut/offset' | 'effect/cross_cut/slices' | 'effect/cross_cut/speedV' | 'effect/cross_cut/time' | 'effect/dot_pattern/blur' | 'effect/dot_pattern/dots' | 'effect/dot_pattern/size' | 'effect/duotone_filter/intensity' | 'effect/extrude_blur/amount' | 'effect/glow/amount' | 'effect/glow/darkness' | 'effect/glow/size' | 'effect/green_screen/colorMatch' | 'effect/green_screen/smoothness' | 'effect/green_screen/spill' | 'effect/half_tone/angle' | 'effect/half_tone/scale' | 'effect/linocut/scale' | 'effect/liquid/amount' | 'effect/liquid/scale' | 'effect/liquid/time' | 'effect/lut_filter/intensity' | 'effect/outliner/amount' | 'effect/outliner/passthrough' | 'effect/posterize/levels' | 'effect/radial_pixel/radius' | 'effect/radial_pixel/segments' | 'effect/recolor/brightnessMatch' | 'effect/recolor/colorMatch' | 'effect/recolor/smoothness' | 'effect/shifter/amount' | 'effect/shifter/angle' | 'effect/tilt_shift/amount' | 'effect/tilt_shift/position' | 'effect/tv_glitch/distortion' | 'effect/tv_glitch/distortion2' | 'effect/tv_glitch/rollSpeed' | 'effect/tv_glitch/speed' | 'effect/vignette/darkness' | 'effect/vignette/offset' | 'fill/gradient/linear/endPointX' | 'fill/gradient/linear/endPointY' | 'fill/gradient/linear/startPointX' | 'fill/gradient/linear/startPointY' | 'fill/gradient/radial/centerPointX' | 'fill/gradient/radial/centerPointY' | 'fill/gradient/radial/radius' | 'fill/gradient/conical/centerPointX' | 'fill/gradient/conical/centerPointY' | 'fill/stripe/angle' | 'fill/stripe/gap' | 'fill/stripe/width' | 'shape/rect/cornerRadiusBL' | 'shape/rect/cornerRadiusBR' | 'shape/rect/cornerRadiusTL' | 'shape/rect/cornerRadiusTR' | 'shape/polygon/cornerRadius' | 'shape/star/cornerRadius' | 'shape/star/innerDiameter' | 'shape/vector_path/cornerRadius' | 'shape/vector_path/height' | 'shape/vector_path/width' | (string & {});
 interface FontMetrics {
     ascender: number;
     descender: number;
@@ -2014,6 +2039,8 @@ class SceneAPI {
     setLayout(layout: SceneLayout): void;
     getPages(): DesignBlockId[];
     getCurrentPage(): DesignBlockId | null;
+    setCurrentPages(pages: DesignBlockId[]): void;
+    getCurrentPages(): DesignBlockId[];
     findNearestToViewPortCenterByType(type: DesignBlockType): DesignBlockId[];
     findNearestToViewPortCenterByKind(kind: string): DesignBlockId[];
     unstable_enableCameraPositionClamping(ids: DesignBlockId[], paddingLeft?: number, paddingTop?: number, paddingRight?: number, paddingBottom?: number, scaledPaddingLeft?: number, scaledPaddingTop?: number, scaledPaddingRight?: number, scaledPaddingBottom?: number): void;
@@ -2040,7 +2067,7 @@ type SettingEnumType = {
     'colorPicker/colorMode': ColorPickerColorMode;
     'timeline/trackVisibility': TimelineTrackVisibility;
 };
-type SettingFloatPropertyName = 'positionSnappingThreshold' | 'rotationSnappingThreshold' | 'grid/spacingX' | 'grid/spacingY' | 'dragToSwapFills/longPressDurationMs' | 'controlGizmo/blockScaleDownLimit' | 'listIndentPerLevel' | (string & {});
+type SettingFloatPropertyName = 'positionSnappingThreshold' | 'rotationSnappingThreshold' | 'grid/spacingX' | 'grid/spacingY' | 'dragToSwapFills/longPressDurationMs' | 'controlGizmo/blockScaleDownLimit' | 'listIndentPerLevel' | 'tabStopInterval' | (string & {});
 type SettingIntPropertyName = 'maxImageSize' | 'maxPreviewResolution' | (string & {});
 type SettingKey = keyof Settings;
 interface Settings {
@@ -2111,6 +2138,7 @@ interface Settings {
     'web/fetchCredentials': 'omit' | 'same-origin' | 'include';
     'controlGizmo/blockScaleDownLimit': number;
     listIndentPerLevel: number;
+    tabStopInterval: number;
     positionSnappingThreshold: number;
     rotationSnappingThreshold: number;
     'grid/spacingX': number;
@@ -2154,6 +2182,7 @@ interface Settings {
     'colorPicker/colorMode': 'RGB' | 'CMYK' | 'Any';
     'timeline/trackVisibility': 'all' | 'active';
     'timeline/transitionControlVisibility': 'hover' | 'always';
+    'features/textEditModeTransformHandlesEnabled': boolean;
     'features/automaticSourceSetsEnabled': boolean;
 }
 type SettingsBool = SettingBoolPropertyName;

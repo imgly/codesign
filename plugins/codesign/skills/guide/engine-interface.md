@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Engine Interface"
+description: "Understand CE.SDK's architecture and learn when to use direct Engine access for automation workflows"
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/engine-interface-6fb7cf/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Engine](./engine-interface.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Engine](https://img.ly/docs/cesdk/archive/v1.84/node/engine-interface-6fb7cf/)
 
 ---
 
@@ -82,8 +89,8 @@ try {
 
 ## Next Steps
 
-- [Automation Overview](./automation/overview.md) for workflow examples
-- [Data Merge](./automation/data-merge.md) for template personalization
+- [Automation Overview](https://img.ly/docs/cesdk/archive/v1.84/node/automation/overview-34d971/) for workflow examples
+- [Data Merge](https://img.ly/docs/cesdk/archive/v1.84/node/automation/data-merge-ae087c/) for template personalization
 
 
 
@@ -91,7 +98,7 @@ try {
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

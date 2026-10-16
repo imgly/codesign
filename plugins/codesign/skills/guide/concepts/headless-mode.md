@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Headless"
+description: "Run CE.SDK programmatically without any user interface (UI)."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/concepts/headless-mode-24ab98/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Headless Mode](./concepts/headless-mode.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Headless Mode](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/headless-mode-24ab98/)
 
 ---
 
@@ -53,7 +60,7 @@ You are responsible for:
 ### Requirements to Run CreativeEngine on Node.js
 
 - **Node.js 22+** (or the matching runtime for your serverless provider).
-- **@cesdk/node@$UBQ\_VERSION$** installed locally: `npm install @cesdk/node@$UBQ_VERSION$`.
+- **@cesdk/node@1.84.0** installed locally: `npm install @cesdk/node@1.84.0`.
 - A valid **CE.SDK license key**.
 - A **base asset bundle** reachable from the runtime (CDN or self-hosted path). The CDN URLs shown below work for quick tests.
 
@@ -67,7 +74,7 @@ To try out the CE.SDK headless mode:
 2. Install the Node.js package:
 
 ```bash
-npm install @cesdk/node@$UBQ_VERSION$
+npm install @cesdk/node@1.84.0
 ```
 
 ### 1. Create a CE.SDK Helper
@@ -221,9 +228,9 @@ buildGreeting().catch((error) => {
 
 ## Go Further
 
-- [Dig into the Node.js SDK reference](./what-is-cesdk.md) for every available Engine call.
-- [Start a new Node.js headless project](./get-started/vanilla.md) with a complete project template.
-- Need to mix headless logic with UI-driven editing? [Engine interface guides](./engine-interface.md) show hybrid patterns.
+- [Dig into the Node.js SDK reference](https://img.ly/docs/cesdk/archive/v1.84/node/what-is-cesdk-2e7acd/) for every available Engine call.
+- [Start a new Node.js headless project](https://img.ly/docs/cesdk/archive/v1.84/node/get-started/vanilla-n1234a/) with a complete project template.
+- Need to mix headless logic with UI-driven editing? [Engine interface guides](https://img.ly/docs/cesdk/archive/v1.84/node/engine-interface-6fb7cf/) show hybrid patterns.
 
 
 
@@ -231,7 +238,7 @@ buildGreeting().catch((error) => {
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Import a Design"
+description: "Load previously saved scenes, self-contained archives, or create editable scenes from images and videos in Node.js."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design-73b9c5/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Open the Editor](./open-the-editor.md) > [Import a Design](./open-the-editor/import-design.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Open the Editor](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor-23a1db/) > [Import a Design](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design-73b9c5/)
 
 ---
 
@@ -10,11 +17,11 @@ Import existing designs in headless Node.js environments using CE.SDK, including
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-open-the-editor-import-design-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-open-the-editor-import-design-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-open-the-editor-import-design-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-open-the-editor-import-design-server-js)
 
 ```typescript file=@cesdk_web_examples/guides-open-the-editor-import-design-server-js/server-js.ts reference-only
 import CreativeEngine from '@cesdk/node';
@@ -174,7 +181,7 @@ try {
 
   // Create a scene configured for video editing
   const videoUrl =
-    'https://cdn.img.ly/assets/demo/v3/ly.img.video/videos/pexels-drone-footage-of-a-surfer-barreling-a-wave-18069232.mp4';
+    'https://cdn.img.ly/assets/demo/v3/ly.img.video/videos/pexels-drone-footage-of-a-surfer-barrelling-a-wave-12715991.mp4';
 
   // Create a video scene with timeline support
   await engine.scene.createFromVideo(videoUrl);
@@ -200,7 +207,7 @@ This guide covers how to load saved CE.SDK scenes and create scenes from media f
 CE.SDK provides several approaches for importing designs in headless mode:
 
 - **Scene files** – Load lightweight JSON files that reference assets by URL
-- **Archives** – Load self-contained packages that bundle scenes with all assets ([See dedicated guide](./open-the-editor/import-design/from-archive.md))
+- **Archives** – Load self-contained packages that bundle scenes with all assets ([See dedicated guide](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design/from-archive-dde9fa/))
 - **Media imports** – Create editable designs from source images or videos
 
 ## Import from other Design Tools
@@ -247,7 +254,7 @@ This approach works well for scenes stored in databases or when integrating with
 
 ### From an Archive
 
-For self-contained packages that bundle the scene with all assets, use archives. The same `engine.scene.load()` call opens them — the kind is detected automatically from the content. See the [Import Design from Archive](./open-the-editor/import-design/from-archive.md) guide for complete details on working with archive files.
+For self-contained packages that bundle the scene with all assets, use archives. The same `engine.scene.load()` call opens them — the kind is detected automatically from the content. See the [Import Design from Archive](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design/from-archive-dde9fa/) guide for complete details on working with archive files.
 
 ## Create Scenes from Media
 
@@ -276,7 +283,7 @@ Use `engine.scene.createFromVideo()` to create a scene from a video file, automa
 ```typescript highlight-create-from-video
   // Create a scene configured for video editing
   const videoUrl =
-    'https://cdn.img.ly/assets/demo/v3/ly.img.video/videos/pexels-drone-footage-of-a-surfer-barreling-a-wave-18069232.mp4';
+    'https://cdn.img.ly/assets/demo/v3/ly.img.video/videos/pexels-drone-footage-of-a-surfer-barrelling-a-wave-12715991.mp4';
 
   // Create a video scene with timeline support
   await engine.scene.createFromVideo(videoUrl);
@@ -292,7 +299,7 @@ Choose your import method based on your source and requirements:
 
 - **Resuming previous work?** Use `engine.scene.load()` with a URL or string for scenes you previously saved with CE.SDK.
 
-- **Need self-contained files?** Use archives that bundle scenes with all assets ([see guide](./open-the-editor/import-design/from-archive.md)).
+- **Need self-contained files?** Use archives that bundle scenes with all assets ([see guide](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design/from-archive-dde9fa/)).
 
 - **Coming from design tools?** Use the respective importers to convert Photoshop or InDesign files.
 
@@ -426,16 +433,16 @@ When `createFromImage()` or `createFromVideo()` fails:
 
 ## Related Pages
 
-- [From InDesign](./open-the-editor/import-design/from-indesign.md) - Import Adobe InDesign files (IDML format) into CE.SDK, converting them into editable scenes while preserving text, shapes, images, and positioning.
-- [From Photoshop](./open-the-editor/import-design/from-photoshop.md) - Import Adobe Photoshop (PSD) files into CE.SDK, converting them into editable scenes while preserving layers, text, shapes, and positioning.
-- [Import Design from Archive](./open-the-editor/import-design/from-archive.md) - Load self-contained CE.SDK archive files that bundle scene structure with all referenced assets for portable, reliable design imports in Node.js.
+- [From InDesign](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design/from-indesign-ba3988/) - Import Adobe InDesign files (IDML format) into CE.SDK, converting them into editable scenes while preserving text, shapes, images, and positioning.
+- [From Photoshop](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design/from-photoshop-cca6bb/) - Import Adobe Photoshop (PSD) files into CE.SDK, converting them into editable scenes while preserving layers, text, shapes, and positioning.
+- [Import Design from Archive](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design/from-archive-dde9fa/) - Load self-contained CE.SDK archive files that bundle scene structure with all referenced assets for portable, reliable design imports in Node.js.
 
 
 ---
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

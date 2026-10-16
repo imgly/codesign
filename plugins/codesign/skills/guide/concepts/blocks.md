@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Blocks"
+description: "Learn how blocks define elements in a scene and how to structure them for rendering in CE.SDK."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/concepts/blocks-90241e/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Blocks](./concepts/blocks.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Blocks](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/blocks-90241e/)
 
 ---
 
@@ -11,11 +18,11 @@ CE.SDK designs.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-concepts-blocks-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-concepts-blocks-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-concepts-blocks-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-concepts-blocks-server-js)
 
 Every visual element in CE.SDK—images, text, shapes, and audio—is represented as a block. Blocks are organized in a tree structure within scenes and pages, where parent-child relationships determine rendering order and visibility. Each block has properties you can read and modify, a `Type` that defines its core behavior, and an optional `Kind` for custom categorization.
 
@@ -249,15 +256,9 @@ async function main(): Promise<void> {
     const loadedBlocks = await engine.block.loadFromString(savedString);
     console.log('Loaded blocks from string:', loadedBlocks.length);
 
-    // Alternatively, blocks can also be loaded from an archive
-    // const loadedBlocks = await engine.block.loadFromArchiveURL(
-    //   'https://cdn.img.ly/assets/demo/v3/ly.img.template/templates/cesdk_postcard_1_blocks.zip'
-    // );
-    // console.log('Loaded blocks from archive URL:', loadedBlocks.length);
-
     // Alternatively, blocks can be loaded from an extracted zip file created with block.saveToArchive
     // const loadedBlocks = await engine.block.loadFromURL(
-    //   'https://cdn.img.ly/assets/v6/ly.img.text.components/box/blocks.blocks'
+    //   'https://cdn.img.ly/assets/v6/ly.img.text.components/data/Box.blocks'
     // );
     // console.log('Loaded blocks from URL:', loadedBlocks.length);
 
@@ -402,7 +403,7 @@ Graphic blocks display content through fills. We create a fill, attach it to a b
     engine.block.setEnum(graphic, 'contentFill/mode', 'Cover');
 ```
 
-CE.SDK supports several fill types including image, video, color, and gradient fills. See the [Fills guide](./fills/gradient.md) for details on available fill types.
+CE.SDK supports several fill types including image, video, color, and gradient fills. See the [Fills guide](https://img.ly/docs/cesdk/archive/v1.84/node/fills/gradient-0ff079/) for details on available fill types.
 
 ## Creating Text Blocks
 
@@ -437,7 +438,7 @@ Text blocks display formatted text content. We create a text block, position it,
     console.log('Text block type:', textType); // '//ly.img.ubq/text'
 ```
 
-Text blocks support extensive typography controls covered in the [Text guides](./text.md).
+Text blocks support extensive typography controls covered in the [Text guides](https://img.ly/docs/cesdk/archive/v1.84/node/text-8a993a/).
 
 ## Block Properties
 
@@ -605,15 +606,9 @@ Save blocks to strings for persistence and restore them later.
     const loadedBlocks = await engine.block.loadFromString(savedString);
     console.log('Loaded blocks from string:', loadedBlocks.length);
 
-    // Alternatively, blocks can also be loaded from an archive
-    // const loadedBlocks = await engine.block.loadFromArchiveURL(
-    //   'https://cdn.img.ly/assets/demo/v3/ly.img.template/templates/cesdk_postcard_1_blocks.zip'
-    // );
-    // console.log('Loaded blocks from archive URL:', loadedBlocks.length);
-
     // Alternatively, blocks can be loaded from an extracted zip file created with block.saveToArchive
     // const loadedBlocks = await engine.block.loadFromURL(
-    //   'https://cdn.img.ly/assets/v6/ly.img.text.components/box/blocks.blocks'
+    //   'https://cdn.img.ly/assets/v6/ly.img.text.components/data/Box.blocks'
     // );
     // console.log('Loaded blocks from URL:', loadedBlocks.length);
 
@@ -648,7 +643,7 @@ Loaded blocks are not automatically attached to the scene—you must parent them
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

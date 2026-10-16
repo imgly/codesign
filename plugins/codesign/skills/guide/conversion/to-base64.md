@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "To Base64"
+description: "Convert CE.SDK exports to Base64-encoded strings for embedding in URLs, storing in databases, or transmitting via APIs."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/conversion/to-base64-39ff25/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Conversion](./conversion.md) > [To Base64](./conversion/to-base64.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Conversion](https://img.ly/docs/cesdk/archive/v1.84/node/conversion-c3fbb3/) > [To Base64](https://img.ly/docs/cesdk/archive/v1.84/node/conversion/to-base64-39ff25/)
 
 ---
 
@@ -10,11 +17,11 @@ Convert CE.SDK exports to Base64-encoded strings for storing in databases, trans
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-conversion-to-base64-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-conversion-to-base64-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-conversion-to-base64-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-conversion-to-base64-server-js)
 
 Base64 encoding transforms binary image data into ASCII text, enabling you to store images in text-only databases, transmit them through JSON APIs, or embed them in HTML email templates.
 
@@ -177,10 +184,10 @@ Base64 encoding works well for:
 
 ## Next Steps
 
-- [Export Options](./export-save-publish/export/overview.md) — Explore all available export formats and configuration
-- [Export to PDF](./export-save-publish/export/to-pdf.md) — Generate PDFs for print and document workflows
-- [Partial Export](./export-save-publish/export/partial-export.md) — Export specific regions or individual elements
-- [Size Limits](./export-save-publish/export/size-limits.md) — Handle large exports and memory constraints
+- [Export Options](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/overview-9ed3a8/) — Explore all available export formats and configuration
+- [Export to PDF](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/to-pdf-95e04b/) — Generate PDFs for print and document workflows
+- [Partial Export](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/partial-export-89aaf6/) — Export specific regions or individual elements
+- [Size Limits](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/size-limits-6f0695/) — Handle large exports and memory constraints
 
 
 
@@ -188,7 +195,7 @@ Base64 encoding works well for:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

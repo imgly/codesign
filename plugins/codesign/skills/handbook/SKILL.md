@@ -75,7 +75,7 @@ Edits you have not saved with `export({ format: 'imgly' })` are dropped when it 
 - `designs()` — the saved designs, newest first, each with its `uri` and title; pass that `uri` to `open` or `import` verbatim. Use it when the user refers to an earlier design without handing you its `uri`.
 - `scorecard({ verdict })` — record that you completed a judge loop against the session's current state. See §1 step 5 and the `judge` skill.
 - `asset_add({ source: { path } })` — bring a local file (image or font) into the workspace for use in a design; embed the returned `uri` in `edit` code — never `httpUrl`, and never the original local path or a `file://` URI (renders server-side but breaks portability).
-- `asset_search({ sourceId?, query?, page?, perPage? })` — discover and search the engine's asset sources; apply results inside `edit` (the exact patterns are in the tool's description). The `ly.img.workspace.images` source also lists images the human uploaded — searchable by their original filename, newest first.
+- `asset_search({ query?, source?, mimeType?, page? })` — search the engine's asset sources; apply results inside `edit` (the exact patterns are in the tool's description). The `ly.img.workspace.images` source also lists images the human uploaded — searchable by their original filename, newest first.
 - `view(…)` — the URL a human opens to see and edit **saved** designs in the browser. Print it once; the viewer keeps it live. A design appears there only after `export({ format: 'imgly' })`.
 
 Cross-tool rules:
@@ -318,7 +318,9 @@ const panel = await engine.design.create(
       position: { x, y },
       shape: 'rect', // or a { type: 'vector_path', … } spec — recipe below
       fill: { type: 'color', color: { value: { r, g, b, a } } }
-      // image: fill: { type: 'image', uri: '<opaque handle>' } — create awaits the load
+      // image: fill: { type: 'image', uri: '<opaque handle>' } — create awaits the load.
+      // The default contentFill mode is 'Cover' (fills the frame, crops the rest): a logo
+      // gets a frame at its asset's width:height, or contentFill: { mode: 'Contain' }.
     }
   },
   { parent: page }
@@ -341,9 +343,8 @@ engine.block.getTextFontSizes(text, { unit: 'Pixel' }); // read-only diagnostic
 // Rich text — STYLE RANGES inside ONE block. Every setter below takes an optional
 // (from, to) character range; omit it to style the whole string. An accent word, a
 // bold lead-in, an inline price, a struck-through old price: all are RANGES on one
-// text block, never a second block placed beside the first. Two blocks look identical
-// in a render and are caught by reading the scene graph — they also re-break on every
-// copy/font/locale change, because nothing binds them to each other. (§6.1.9)
+// text block, never a second block placed beside the first: nothing binds the two,
+// so they re-break on every copy/font/locale change. (§6.1.9)
 await engine.design.setProps(text, {
   text: {
     string: s,
@@ -352,7 +353,8 @@ await engine.design.setProps(text, {
       { from, to, style: 'italic' },
       { from, to, typeface: tf }, // a second face inline
       { from, to, size: '48px' },
-      { from, to, decoration: { lines: ['Underline'] } } // per-range decoration
+      { from, to, decoration: { lines: ['Underline'] } }, // per-range decoration
+      { from, to, scriptStyle: 'Superscript' } // ®, ™, m²; 'Subscript' for H₂O (§6.1.9)
     ]
   }
 });
@@ -362,8 +364,7 @@ await engine.design.setProps(text, {
 // Decoration is configurable, not just on/off:
 //   lines: 'Underline' | 'Strikethrough' | 'Overline' (combinable)
 //   style: 'Solid' | 'Double' | 'Dotted' | 'Dashed' | 'Wavy'
-//   underlineColor / underlineThickness / underlineOffset / skipInk (keep skipInk on
-//   so descenders stay legible).
+//   underlineColor / underlineThickness / underlineOffset / skipInk (§6.1.9).
 
 // ALL-CAPS: set the PROPERTY, don't type capitals into the string. `case` re-cases on
 // render, so the string stays real words — translatable, searchable, correct in caseless
@@ -371,7 +372,7 @@ await engine.design.setProps(text, {
 await engine.design.setProps(text, { text: { string: s, case: 'Uppercase' } }); // 'Normal'|'Uppercase'|'Lowercase'|'Titlecase'
 
 // Read styling back — one entry per styled run ({ from, to, color?, weight?,
-// style?, size?, case? }); setProps handles the wipe-and-replay for you. (§6.1.9)
+// style?, size?, case?, scriptStyle? }); setProps handles the wipe-and-replay for you. (§6.1.9)
 const {
   text: { ranges: runs }
 } = await engine.design.getProps(text, ['text.ranges']);

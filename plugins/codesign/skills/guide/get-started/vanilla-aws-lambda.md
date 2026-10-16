@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Node.js - AWS Lambda"
+description: "Learn how to set up a scalable architecture on AWS to automatically generate images using the Creative Engine node package."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/get-started/vanilla-aws-lambda-fee18b/"
+---
 
-**Navigation:** [Get Started](./get-started/overview.md) > [Quickstart Node.js](./get-started/vanilla.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Get Started](https://img.ly/docs/cesdk/archive/v1.84/node/get-started/overview-e18f40/) > [Quickstart Node.js](https://img.ly/docs/cesdk/archive/v1.84/node/get-started/vanilla-n1234a/)
 
 ---
 
@@ -26,7 +33,7 @@ We are going to use AWS CDK to provision the infrastructure (API Gateway, Lambda
 
 - [Install and configure](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) the AWS CLI.
 - [Install the AWS CDK](https://docs.aws.amazon.com/cdk/v2/guide/getting_started.html) npm package and bootstrap the necessary resources.
-- Get a valid [CE.SDK license key](https://img.ly/forms/free-trial).
+- Get a valid [CE.SDK license key](https://img.ly/forms/contact-sales/).
 
 ## Step 1: Create the AWS CDK App
 
@@ -127,7 +134,7 @@ Create an `src` directory and run `npm init`.
 We'll install all necessary dependencies inside the `src` directory, since only code specified via `code: lambda.Code.fromAsset("src")` in our service file will be made available to our lambda function.
 
 ```bash
-yarn add @cesdk/node@$UBQ_VERSION$ @aws-sdk/client-dynamodb uuid
+yarn add @cesdk/node@1.84.0 @aws-sdk/client-dynamodb uuid
 ```
 
 Next initialize an `images-handler.js` file inside it. This lambda function handles the `POST` and `GET` image requests.
@@ -449,7 +456,7 @@ exports.main = async function (event) {
 2. Run `cdk deploy` to deploy the stack.
 3. Access API Gateway in your AWS console and select `CESDK Service`. Under Resources menu, select to `/images` POST.
 
-![Screenshot for /images POST API test](https://img.ly/docs/cesdk/screenshot-post.png)
+![Screenshot for /images POST API test](screenshot-post.png)
 
 Then on 'Test' tab, test the API with a JSON body like this:
 
@@ -463,11 +470,11 @@ You'll receive a 200 response with the resulting image id. For the image renderi
 
 4. Now select `/images/{id}` GET and test the API with the image id you received from the previous step. You should receive a 200 response with a response body including `url` and `creationStatus`.
 
-![Screenshot for /images POST API test](https://img.ly/docs/cesdk/screenshot-get.png)
+![Screenshot for /images POST API test](screenshot-get.png)
 
 5. Check your S3 bucket for the newly created image, or test the image URL in your browser. You should see the rendered image with the headline you provided in the request.
 
-![Screenshot for rendered image](https://img.ly/docs/cesdk/awesome-headline.png)
+![Screenshot for rendered image](awesome-headline.png)
 
 ## Troubleshooting & Common Errors
 
@@ -489,10 +496,10 @@ We now have a simple API endpoint that renders and stores a CE.SDK template from
 
 It’s easy to extrapolate this setup to any number of design automation use cases. We could load the template dynamically based on the request, provide images to replace template placeholders and provide more detailed specifications such as font, size and color of the text:
 
-- [Images Source Sets](./import-media/source-sets.md)
-- [Text Variables](./create-templates/add-dynamic-content/text-variables.md)
-- [Placeholders](./create-templates/add-dynamic-content/placeholders.md)
-- [Text Styling](./text/styling.md)
+- [Images Source Sets](https://img.ly/docs/cesdk/archive/v1.84/node/import-media/source-sets-5679c8/)
+- [Text Variables](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content/text-variables-7ecb50/)
+- [Placeholders](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content/placeholders-d9ba8a/)
+- [Text Styling](https://img.ly/docs/cesdk/archive/v1.84/node/text/styling-269c48/)
 
 
 
@@ -500,7 +507,7 @@ It’s easy to extrapolate this setup to any number of design automation use cas
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

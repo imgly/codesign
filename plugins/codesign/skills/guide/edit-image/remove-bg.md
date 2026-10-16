@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Remove Background"
+description: "Remove image backgrounds to isolate subjects or prepare assets for compositing and reuse."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/edit-image/remove-bg-9dfcf7/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Images](./edit-image.md) > [Remove Background](./edit-image/remove-bg.md) > [Plugins](./plugins.md) > [Background Removal](./edit-image/remove-bg.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Images](https://img.ly/docs/cesdk/archive/v1.84/node/edit-image-c64912/) > [Remove Background](https://img.ly/docs/cesdk/archive/v1.84/node/edit-image/remove-bg-9dfcf7/) > [Plugins](https://img.ly/docs/cesdk/archive/v1.84/node/plugins-693c48/) > [Background Removal](https://img.ly/docs/cesdk/archive/v1.84/node/edit-image/remove-bg-9dfcf7/)
 
 ---
 
@@ -10,11 +17,11 @@ Remove image backgrounds programmatically on the server for automated processing
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-edit-image-remove-bg-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-edit-image-remove-bg-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-edit-image-remove-bg-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-edit-image-remove-bg-server-js)
 
 The `@imgly/background-removal-node` package provides AI-powered background removal for Node.js applications. Processing runs entirely on your server using native bindings, eliminating external API dependencies and ensuring data privacy.
 
@@ -141,10 +148,10 @@ This guide covers installing the library, configuring processing options, and in
 Install the background removal library alongside the CE.SDK Node engine:
 
 ```bash
-npm install @cesdk/node@$UBQ_VERSION$ @imgly/background-removal-node
+npm install @cesdk/node@1.84.0 @imgly/background-removal-node
 ```
 
-Using the native Node.js package? Install `@cesdk/node-native@$UBQ_VERSION$` instead of `@cesdk/node` — the engine API is identical.
+Using the native Node.js package? Install `@cesdk/node-native@1.84.0` instead of `@cesdk/node` — the engine API is identical.
 
 Import the `removeBackground` function and `Config` type:
 
@@ -352,9 +359,9 @@ For production deployments, consider:
 
 ## Next Steps
 
-- [Chroma Key](./filters-and-effects/chroma-key-green-screen.md) - Alternative background removal using green screen
-- [Export Overview](./export-save-publish/export/overview.md) - Export options for images with transparency
-- [Replace Colors](./edit-image/replace-colors.md) - Replace specific colors in images
+- [Chroma Key](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/chroma-key-green-screen-1e3e99/) - Alternative background removal using green screen
+- [Export Overview](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/overview-9ed3a8/) - Export options for images with transparency
+- [Replace Colors](https://img.ly/docs/cesdk/archive/v1.84/node/edit-image/replace-colors-6ede17/) - Replace specific colors in images
 
 
 
@@ -362,7 +369,7 @@ For production deployments, consider:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

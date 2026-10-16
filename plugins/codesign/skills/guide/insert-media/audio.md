@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Insert Audio"
+description: "Add audio files to your video projects programmatically, configure timeline position, volume, and playback properties."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/insert-media/audio-c10f10/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Insert Media Assets](./insert-media.md) > [Insert Audio](./insert-media/audio.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Insert Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/insert-media-a217f5/) > [Insert Audio](https://img.ly/docs/cesdk/archive/v1.84/node/insert-media/audio-c10f10/)
 
 ---
 
@@ -11,11 +18,11 @@ background music, sound effects, and voiceovers.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-insert-media-audio-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-insert-media-audio-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-insert-media-audio-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-insert-media-audio-server-js)
 
 Audio blocks are time-based blocks that play sound alongside video content. Unlike video fills that attach to graphic blocks, audio blocks exist independently in the composition with their own duration, position, and volume controls.
 
@@ -278,13 +285,13 @@ To remove an audio block, call `destroy()`. This removes the block from the scen
 
 ## Next Steps
 
-[Insert Media Overview](./insert-media/overview.md) - Learn about adding different media types to your projects
+[Insert Media Overview](https://img.ly/docs/cesdk/archive/v1.84/node/insert-media/overview-491658/) - Learn about adding different media types to your projects
 
-[Split Video](./edit-video/split.md) - Split video clips on the timeline
+[Split Video](https://img.ly/docs/cesdk/archive/v1.84/node/edit-video/split-464167/) - Split video clips on the timeline
 
-[Load Scene](./open-the-editor/load-scene.md) - Save and reload your scenes with audio
+[Load Scene](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/load-scene-478833/) - Save and reload your scenes with audio
 
-[Store Custom Metadata](./export-save-publish/store-custom-metadata.md) - Save custom data with your scenes
+[Store Custom Metadata](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/store-custom-metadata-337248/) - Save custom data with your scenes
 
 
 
@@ -292,7 +299,7 @@ To remove an audio block, call `destroy()`. This removes the block from the scen
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

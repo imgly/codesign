@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Save"
+description: "Save design progress locally or to a backend service to allow for later editing or publishing."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/save-c8b124/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Save](./export-save-publish/save.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Save](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/save-c8b124/)
 
 ---
 
@@ -10,7 +17,7 @@ Save and serialize designs in CE.SDK for later retrieval, sharing, or storage us
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
 > - [View source on GitHub](https://github.com/imgly/cesdk-web-examples)
 >
@@ -285,10 +292,10 @@ Archives are portable and work offline since all assets are bundled within the f
 
 ## Next Steps
 
-- [Export Overview](./export-save-publish/export/overview.md) - Export designs to image, PDF, and video formats
-- [Load Scene](./open-the-editor/load-scene.md) - Load scenes from remote URLs and archives
-- [Store Custom Metadata](./export-save-publish/store-custom-metadata.md) - Attach metadata like tags or version info to designs
-- [Partial Export](./export-save-publish/export/partial-export.md) - Export individual blocks or selections
+- [Export Overview](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/overview-9ed3a8/) - Export designs to image, PDF, and video formats
+- [Load Scene](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/load-scene-478833/) - Load scenes from remote URLs and archives
+- [Store Custom Metadata](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/store-custom-metadata-337248/) - Attach metadata like tags or version info to designs
+- [Partial Export](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/partial-export-89aaf6/) - Export individual blocks or selections
 
 
 
@@ -296,7 +303,7 @@ Archives are portable and work offline since all assets are bundled within the f
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

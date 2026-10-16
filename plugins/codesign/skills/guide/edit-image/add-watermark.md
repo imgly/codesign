@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Add Watermark"
+description: "Add text and image watermarks to protect designs, indicate ownership, or add branding using CE.SDK in Node.js."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/edit-image/add-watermark-679de0/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Images](./edit-image.md) > [Add Watermark](./edit-image/add-watermark.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Images](https://img.ly/docs/cesdk/archive/v1.84/node/edit-image-c64912/) > [Add Watermark](https://img.ly/docs/cesdk/archive/v1.84/node/edit-image/add-watermark-679de0/)
 
 ---
 
@@ -10,11 +17,11 @@ Add text and image watermarks to designs programmatically using CE.SDK's block A
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-edit-image-add-watermark-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-edit-image-add-watermark-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-edit-image-add-watermark-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-edit-image-add-watermark-server-js)
 
 Watermarks protect intellectual property, indicate ownership, add branding, or mark content as drafts. CE.SDK supports two types of watermarks: **text watermarks** created from text blocks for copyright notices and brand names, and **image watermarks** created from graphic blocks with image fills for logos and symbols.
 
@@ -434,9 +441,9 @@ Always use a try-finally block to ensure the engine is disposed even if errors o
 
 ## Next Steps
 
-- [Text Styling](./text/styling.md) — Style text blocks with fonts, colors, and effects
-- [Export Overview](./export-save-publish/export/overview.md) — Export options and formats for watermarked images
-- [Crop Images](./edit-image/transform/crop.md) — Transform images before watermarking
+- [Text Styling](https://img.ly/docs/cesdk/archive/v1.84/node/text/styling-269c48/) — Style text blocks with fonts, colors, and effects
+- [Export Overview](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/overview-9ed3a8/) — Export options and formats for watermarked images
+- [Crop Images](https://img.ly/docs/cesdk/archive/v1.84/node/edit-image/transform/crop-f67a47/) — Transform images before watermarking
 
 
 
@@ -444,7 +451,7 @@ Always use a try-finally block to ensure the engine is disposed even if errors o
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

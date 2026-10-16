@@ -351,6 +351,8 @@ destroyHistory(history: HistoryId): void
 
 Set a history as the active undo/redo stack.
 All other histories lose their active state. Undo/redo operations only apply to the active history.
+A new history starts from the current scene, including edits without an undo step and the selection;
+returning to a history restores its last undo step.
 ```javascript
 engine.editor.setActiveHistory(newHistory);
 ```

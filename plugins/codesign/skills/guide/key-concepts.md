@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Key Concepts"
+description: "Explore CE.SDK’s key features—manual editing, automation, templates, AI tools, and full UI and API control."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/key-concepts-21a270/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Key Concepts](./key-concepts.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Key Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/key-concepts-21a270/)
 
 ---
 
@@ -9,7 +16,7 @@ CE.SDK is built on two distinct technical layers that work together seamlessly:
 - **User Interface** — Pre-built editors optimized for different use cases
 - **Engine Interface** — Core rendering and processing engine
 
-![The different layers CE.SDK is made of, see description below.](https://img.ly/docs/cesdk/layers.png)
+![The different layers CE.SDK is made of, see description below.](layers.png)
 
 This intentional separation gives you powerful advantages:
 
@@ -41,7 +48,7 @@ Use the engine without any UI for powerful automation scenarios:
 Perfect for in-browser batch operations and dynamic content generation without server dependencies.
 
 **Server-side automation with Node.js**
-Use the [Node.JS SDK](./what-is-cesdk.md) for following scenarios:
+Use the [Node.JS SDK](https://img.ly/docs/cesdk/archive/v1.84/node/what-is-cesdk-2e7acd/) for following scenarios:
 
 - **High-resolution processing** – Edit on the client with preview quality, then render server-side with full-resolution assets
 - **Bulk generation** – Create a large volume of design variations for variable data printing
@@ -79,7 +86,7 @@ The plugin architecture lets you add custom buttons and panels throughout the in
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

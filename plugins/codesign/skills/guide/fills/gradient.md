@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Gradient Fills"
+description: "Documentation for Gradient Fills"
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/fills/gradient-0ff079/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Fills](./fills.md) > [Gradient](./fills/gradient.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Fills](https://img.ly/docs/cesdk/archive/v1.84/node/fills-402ddc/) > [Gradient](https://img.ly/docs/cesdk/archive/v1.84/node/fills/gradient-0ff079/)
 
 ---
 
@@ -12,11 +19,11 @@ gradients.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-fills-gradient-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-fills-gradient-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-fills-gradient-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-fills-gradient-server-js)
 
 Gradient fills are one of the fundamental fill types in CE.SDK, allowing you to paint design blocks with smooth color transitions. Unlike solid color fills that apply a uniform color or image fills that display photo content, gradient fills create dynamic visual effects with depth and visual interest. The gradient fill system supports three types: linear gradients that transition along a straight line, radial gradients that emanate from a center point, and conical gradients that rotate around a center point like a color wheel.
 
@@ -1162,7 +1169,7 @@ type Color =
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

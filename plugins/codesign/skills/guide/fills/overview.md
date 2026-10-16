@@ -1,12 +1,19 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Fills"
+description: "Apply solid colors, gradients, images, or videos as fills to shapes, text, and other design elements."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/fills/overview-3895ee/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Fills](./fills.md) > [Overview](./fills/overview.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Fills](https://img.ly/docs/cesdk/archive/v1.84/node/fills-402ddc/) > [Overview](https://img.ly/docs/cesdk/archive/v1.84/node/fills/overview-3895ee/)
 
 ---
 
-Some [design blocks](./concepts/blocks.md) in CE.SDK allow you to modify or replace their fill. The fill is an object that defines the contents within the shape of a block. CreativeEditor SDK supports many different types of fills, such as images, solid colors, gradients and videos.
+Some [design blocks](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/blocks-90241e/) in CE.SDK allow you to modify or replace their fill. The fill is an object that defines the contents within the shape of a block. CreativeEditor SDK supports many different types of fills, such as images, solid colors, gradients and videos.
 
-Similarly to blocks, each fill has a numeric id which can be used to query and [modify its properties](./concepts/blocks.md).
+Similarly to blocks, each fill has a numeric id which can be used to query and [modify its properties](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/blocks-90241e/).
 
 We currently support the following fill types:
 
@@ -43,7 +50,7 @@ Just like design blocks, fills with different types have different properties th
 
 For the solid color fill in this example, the call would return `["fill/color/value", "type"]`.
 
-Please refer to the [design blocks](./concepts/blocks.md) for a complete list of all available properties for each type of fill.
+Please refer to the [design blocks](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/blocks-90241e/) for a complete list of all available properties for each type of fill.
 
 ```javascript
 const allFillProperties = engine.block.findAllProperties(colorFill);
@@ -141,7 +148,7 @@ engine.block.setFill(sharedFillBlock, engine.block.getFill(block));
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Editing Workflow"
+description: "Control editing access with Creator, Adopter, Viewer, and Presenter roles using global and block-level scopes for tailored permissions."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/concepts/editing-workflow-032d27/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Editing Workflow](./concepts/editing-workflow.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Editing Workflow](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/editing-workflow-032d27/)
 
 ---
 
@@ -10,7 +17,7 @@ CE.SDK controls editing access through roles and scopes, enabling template workf
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
 > - [View source on GitHub](https://github.com/imgly/cesdk-web-examples)
 >
@@ -173,9 +180,9 @@ This pattern ensures brand consistency while enabling personalization.
 
 For detailed implementation, see these guides:
 
-[Lock Design Elements](./create-templates/lock.md) — Step-by-step instructions for locking specific elements in templates
+[Lock Design Elements](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/lock-131489/) — Step-by-step instructions for locking specific elements in templates
 
-[Set Editing Constraints](./create-templates/add-dynamic-content/set-editing-constraints.md) — Configure which properties users can modify
+[Set Editing Constraints](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content/set-editing-constraints-c892c0/) — Configure which properties users can modify
 
 
 
@@ -183,7 +190,7 @@ For detailed implementation, see these guides:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

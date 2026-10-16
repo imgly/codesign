@@ -12,10 +12,8 @@ description: |
   — the engine.design facade, the props trees, the attachment unions and the
   capability matrix: all edit code needs, in one read.
 
-  The sub-file "signatures.d.ts" is the same surface plus the upstream CE.SDK
-  core — JSDoc-free, every string-vocabulary type (property names, block
-  types, enum values) flattened to its literal union; the entry document
-  explains how to look a member up in it.
+  The sub-file "signatures.d.ts" adds the upstream CE.SDK core, JSDoc-free,
+  with every vocabulary type flattened to its literal union.
 ---
 
 ## Start here: `engine.design` (inside `edit` code)
@@ -75,7 +73,8 @@ const { width } = await engine.design.getProps(page, ['width']);
   round-trip as `{ type, ...props }` specs through setProps/getProps —
   attachment ids never circulate.
 - Text is all props too: `setProps(id, { text: { string, font, weight,
-case, ranges, path, decoration } })` — leaves apply in a safe order and
+case, ranges, path, decoration } })` (a range also takes
+  `scriptStyle: 'Superscript' | 'Subscript'`) — leaves apply in a safe order and
   a string-only write auto-preserves style ranges. Read back via
   `getProps(id, ['text.ranges'])` / `['text.paragraphs']`.
 - Length props take unit strings: `width: '210mm'`, `fontSize: '32pt'`,
@@ -88,8 +87,6 @@ case, ranges, path, decoration } })` — leaves apply in a safe order and
   throws listing all bad paths with suggestions, and nothing is applied.
 - `getProps(id, ['opacity', 'stroke'])` reads leaves or whole subtrees; an
   unknown selector throws — it never answers a typo with `undefined`.
-- The full `BlockProps` / `SettingsProps` trees are at the TOP of
-  `signatures.d.ts` (search `interface BlockProps`).
 - Attachment state is a discriminated union: assign `{ type, ...props }` to
   `fill`/`shape`/`blur`/`effects`/`animations`. The type picks the arm and
   the arm names every prop it carries. A type MATCHING what is attached
@@ -98,22 +95,15 @@ case, ranges, path, decoration } })` — leaves apply in a safe order and
   shape, so `getProps` output feeds straight back in. Tree/layout verbs live on `engine.design` (group, appendChild, align); only export-style I/O stays on `engine.block.*`.
 - Video, animation, audio: `playback`, `animations`, `audio` and `track`
   props; recipe and traps in `../handbook/video.md`.
-- Scalar wrappers (`setOpacity`, `setStrokeWidth`, …), `is*`/`supports*`
-  predicates and editor-UI methods moved to the sub-file
-  `signatures-extended.d.ts` — search there if you need an old name; prefer
-  the facade + the capability matrix.
+- Scalar wrappers (`setOpacity`, …), `is*`/`supports*` predicates and
+  editor-UI methods are in `signatures-extended.d.ts`; prefer the facade.
 
 ## Single file: `signatures.d.ts`
 
-The whole CE.SDK call surface is in `signatures.d.ts` (~2000 lines) —
-signatures only, no doc comments, with every alias flattened, so a hit is
-usually the whole answer:
-
-1. Find the member (e.g. `setProps`) in `signatures.d.ts` —
-   search the file if your host can search skill files, otherwise read it
-   once and look the member up.
-2. Read about 20 lines of context around the match when the matched line is
-   not enough.
+The whole CE.SDK call surface is in `signatures.d.ts` (~2000 lines),
+signatures only, so a hit is usually the whole answer: find the member in
+`signatures.d.ts` (search it if your host can, else read it
+once), plus ~2000 lines of context when one line is not enough.
 
 What the flattening means for you:
 
@@ -134,18 +124,17 @@ CE.SDK updates, a line number does not.
 
 ## Browsing a whole class
 
-A name lookup can't answer "what can `engine.scene` do?" — for that, read the
-contiguous run that starts at the class declaration. At ~2000 lines total,
-whole-class reads are cheap (`BlockAPI` is the largest):
+For "what can `engine.scene` do?", read the run that starts at the class
+declaration (`BlockAPI` is the largest):
 
 | Class        | Start line |
 | ------------ | ---------- |
-| AssetAPI     | 1207       |
-| **BlockAPI** | **1504**   |
-| EditorAPI    | 1754       |
-| EventAPI     | 1886       |
-| **SceneAPI** | **1987**   |
-| VariableAPI  | 2208       |
+| AssetAPI     | 1217       |
+| **BlockAPI** | **1522**   |
+| EditorAPI    | 1774       |
+| EventAPI     | 1911       |
+| **SceneAPI** | **2012**   |
+| VariableAPI  | 2237       |
 
 (If a start line looks off, search for `class BlockAPI` instead.)
 
@@ -275,7 +264,7 @@ interface DesignApi {
     // styles → ranges) whatever the key order:
     //   await setProps(id, { text: { string, font: { typeface }, weight, case,
     //     listStyle, path, pathOffset, pathFlipped,
-    //     ranges: [{ from, to, color?, weight?, style?, size?, case?,
+    //     ranges: [{ from, to, color?, weight?, style?, size?, case?, scriptStyle?,
     //       decoration?, kerning? }] } })
     // A string write WITHOUT other text styling auto-preserves existing
     // ranges; with styling, ranges reset (pass ranges to keep or ranges: []
@@ -401,6 +390,10 @@ interface BlockProps {
         pathFlipped?: boolean;
         pathOffset?: number;
         style?: string;
+        subscriptFontScale?: number;
+        subscriptVerticalShift?: number;
+        superscriptFontScale?: number;
+        superscriptVerticalShift?: number;
         text?: string;
         useContextualAlternates?: boolean;
         useContextualLigatures?: boolean;
@@ -613,8 +606,12 @@ interface BlockProps {
         pathExternalRef?: string;
         pathFlipped?: boolean /* true = underside, reversed direction */;
         pathOffset?: number /* proportional start offset along the path */;
-        ranges?: { from: number; to: number; color?: Color; weight?: FontWeight; style?: string; size?: string /* px string */; case?: TextCase; typeface?: Typeface; decoration?: TextDecorationConfig; kerning?: number }[];
+        ranges?: { from: number; to: number; color?: Color; weight?: FontWeight; style?: string; size?: string /* px string */; case?: TextCase; scriptStyle?: ScriptStyle; typeface?: Typeface; decoration?: TextDecorationConfig; kerning?: number }[];
         style?: string;
+        subscriptFontScale?: number;
+        subscriptVerticalShift?: number;
+        superscriptFontScale?: number;
+        superscriptVerticalShift?: number;
         string?: string;
         typeface?: string;
         useContextualAlternates?: boolean;
@@ -1218,6 +1215,7 @@ interface SettingsProps {
     rotationSnappingThreshold?: number;
     showBuildVersion?: boolean;
     snappingGuideColor?: Color;
+    tabStopInterval?: number;
     textVariableHighlightColor?: Color;
     timeline?: {
         trackVisibility?: string;
@@ -1289,6 +1287,7 @@ type FontStyle = 'normal' | 'italic';
 type FontWeight = 'thin' | 'extraLight' | 'light' | 'normal' | 'medium' | 'semiBold' | 'bold' | 'extraBold' | 'heavy';
 type ListStyle = 'None' | 'Unordered' | 'Ordered';
 type Scope = 'text/edit' | 'text/character' | 'fill/change' | 'fill/changeType' | 'stroke/change' | 'shape/change' | 'layer/move' | 'layer/resize' | 'layer/rotate' | 'layer/flip' | 'layer/crop' | 'layer/opacity' | 'layer/blendMode' | 'layer/visibility' | 'layer/clipping' | 'appearance/adjustments' | 'appearance/filter' | 'appearance/effect' | 'appearance/blur' | 'appearance/shadow' | 'appearance/animation' | 'lifecycle/destroy' | 'lifecycle/duplicate' | 'editor/add' | 'editor/select';
+type ScriptStyle = 'Normal' | 'Superscript' | 'Subscript';
 type TextCase = 'Normal' | 'Uppercase' | 'Lowercase' | 'Titlecase';
 type TextDecorationLine = 'None' | 'Underline' | 'Strikethrough' | 'Overline';
 type TextDecorationStyle = 'Solid' | 'Double' | 'Dotted' | 'Dashed' | 'Wavy';

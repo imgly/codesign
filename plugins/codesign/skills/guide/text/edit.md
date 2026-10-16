@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Edit Text"
+description: "Edit text content directly on the canvas or through the properties panel."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/text/edit-c5106b/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Text](./text.md) > [Edit Text](./text/edit.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Text](https://img.ly/docs/cesdk/archive/v1.84/node/text-8a993a/) > [Edit Text](https://img.ly/docs/cesdk/archive/v1.84/node/text/edit-c5106b/)
 
 ---
 
@@ -11,11 +18,11 @@ formatting, and querying text.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-text-edit-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-text-edit-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-text-edit-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-text-edit-server-js)
 
 CE.SDK provides text editing through range-based APIs for programmatic editing. This guide covers how to replace text, apply formatting to specific ranges, and query text properties in a server-side context.
 
@@ -88,6 +95,20 @@ try {
 
   // Remove "Hello " to get "CE.SDK Guide!" (positions 0-6)
   engine.block.removeText(text, 0, 6);
+
+  // A tab character moves the text after it to the next tab stop.
+  // Tabs align the two columns of this second text block.
+  const table = engine.block.create("text");
+  engine.block.appendChild(page, table);
+  engine.block.setPositionX(table, 50);
+  engine.block.setPositionY(table, 380);
+  engine.block.setWidthMode(table, "Auto");
+  engine.block.setHeightMode(table, "Auto");
+  engine.block.setTextFontSize(table, 60);
+  engine.block.replaceText(table, "Name:\tCE.SDK\nSize:\tA4");
+
+  // Tab stops repeat every `tabStopInterval` multiples of the base font size.
+  engine.editor.setSettingFloat("tabStopInterval", 3.0);
 
   // Apply bold formatting to "CE.SDK" (positions 0-6)
   engine.block.setTextFontWeight(text, "bold", 0, 6);
@@ -225,6 +246,28 @@ engine.block.removeText(text, 0, 6);
 
 The `removeText()` method deletes characters in the specified range. When we omit indices, operations apply to the entire text content.
 
+## Using Tab Stops
+
+We align text into columns with tab characters. A tab moves the text after it to the next tab stop. Tab stops repeat at a fixed interval from the start of each line, in both left-to-right and right-to-left text. A tab whose stop lies past the frame edge wraps to the next line.
+
+```typescript highlight=highlight-tab-stops
+  // A tab character moves the text after it to the next tab stop.
+  // Tabs align the two columns of this second text block.
+  const table = engine.block.create("text");
+  engine.block.appendChild(page, table);
+  engine.block.setPositionX(table, 50);
+  engine.block.setPositionY(table, 380);
+  engine.block.setWidthMode(table, "Auto");
+  engine.block.setHeightMode(table, "Auto");
+  engine.block.setTextFontSize(table, 60);
+  engine.block.replaceText(table, "Name:\tCE.SDK\nSize:\tA4");
+
+  // Tab stops repeat every `tabStopInterval` multiples of the base font size.
+  engine.editor.setSettingFloat("tabStopInterval", 3.0);
+```
+
+The `tabStopInterval` setting defines the distance between tab stops as a multiple of the base font size. The default is `2`. A value of `0` or less makes tab characters advance no width.
+
 ## Applying Text Formatting
 
 We apply formatting to specific character ranges using setter methods. Each method accepts optional `from` and `to` parameters to target specific ranges.
@@ -314,6 +357,8 @@ The `getFontMetrics()` method returns the font's `ascender`, `descender`, `units
 
 **Line count is zero**: Ensure the text block has content and is rendered. Empty text blocks return zero lines.
 
+**Tab characters show no width**: Check that the `tabStopInterval` setting is greater than `0`.
+
 ## API Reference
 
 | Method                                                   | Purpose                                     |
@@ -330,6 +375,7 @@ The `getFontMetrics()` method returns the font's `ascender`, `descender`, `units
 | `engine.block.getTextVisibleLineCount()`                 | Get number of rendered lines                |
 | `engine.block.getTextVisibleLineContent()`               | Get text content of a specific line         |
 | `engine.block.getTextVisibleLineGlobalBoundingBoxXYWH()` | Get line bounds in scene coordinates        |
+| `engine.editor.setSettingFloat()`                        | Set the distance between text tab stops     |
 
 ## Text Type
 
@@ -423,6 +469,10 @@ This section describes the properties available for the **Text Type** (`//ly.img
 | `text/pathExternalRef`            | `String` | `""`                                    | A hint recording which asset last populated the baseline path. Ignored for layout; used by the UI to highlight the active curve preset.                                                                                                                                                                                                                                                                                                                                   |
 | `text/pathFlipped`                | `Bool`   | `false`                                 | Whether text is placed on the opposite (under) side of the baseline path. Has no effect when no path is set.                                                                                                                                                                                                                                                                                                                                                              |
 | `text/pathOffset`                 | `Float`  | `0`                                     | The start offset along the baseline path as a proportion of the path length in \[-1, 1]. Has no effect when no path is set.                                                                                                                                                                                                                                                                                                                                                |
+| `text/subscriptFontScale`         | `Float`  | `0.583`                                 | The font scale of subscript text relative to the font size.                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `text/subscriptVerticalShift`     | `Float`  | `0.333`                                 | The downward shift of subscript text relative to the font size.                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `text/superscriptFontScale`       | `Float`  | `0.583`                                 | The font scale of superscript text relative to the font size.                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `text/superscriptVerticalShift`   | `Float`  | `0.333`                                 | The upward shift of superscript text relative to the font size.                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `text/text`                       | `String` | `"Text"`                                | The text content.                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `text/typeface`                   | `String` | `""`                                    | The typeface of the font.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `text/useContextualAlternates`    | `Bool`   | `true`                                  | Whether contextual alternates (calt) are enabled for text shaping.                                                                                                                                                                                                                                                                                                                                                                                                        |
@@ -443,7 +493,7 @@ This section describes the properties available for the **Text Type** (`//ly.img
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Key Capabilities"
+description: "Explore CE.SDK’s key features—manual editing, automation, templates, AI tools, and full UI and API control."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/key-capabilities-dbb5b1/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Key Capabilities](./key-capabilities.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Key Capabilities](https://img.ly/docs/cesdk/archive/v1.84/node/key-capabilities-dbb5b1/)
 
 ---
 
@@ -13,6 +20,40 @@ It’s designed for developers, product teams, and technical decision-makers eva
 - 100% in-process processing — no external services required
 - Custom-built rendering engine for consistent cross-platform performance
 - Flexible enough for both low-code and fully custom implementations
+
+## Design Creation and Editing
+
+CE.SDK provides comprehensive tools for creating and editing images, videos, and multi-page layouts directly in your application with full feature parity to desktop applications.
+
+### Core Capabilities
+
+- Create, edit, compose, and customize visual content
+- Dual control: Use the built-in editor UI or programmatic API
+- Rich editing tools: filters, text styling, stickers, layers, and layout controls
+
+### Supported Workflows
+
+- Social media content creation and user-generated content flows
+- Marketing tools for creative teams
+- Branded asset creation (slides, product visuals, templates)
+- Composition tools for multi-page layouts, collages, and background blending
+
+## Templates and Reusable Layouts
+
+Define reusable templates to simplify design creation. These templates support:
+
+- Role-based editing (lock/unlock elements based on user type)
+- Smart placeholders (predefined image/text drop zones)
+- Preset styles for consistent branding
+- Programmatic or user-driven updates
+
+Templates make it easy to scale consistent design output while keeping editing intuitive.
+
+## Automation and Dynamic Content
+
+You can generate visuals automatically by combining templates with structured data.
+
+Common use cases include personalized ads, localizations, product catalogs, or A/B testing. The SDK works in headless mode and supports batch workflows, making it easy to automate at scale.
 
 ## Multi-modal
 
@@ -50,7 +91,7 @@ This makes it easy to deliver a seamless editing experience—no matter how many
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

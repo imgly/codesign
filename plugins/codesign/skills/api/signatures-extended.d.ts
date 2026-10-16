@@ -531,6 +531,7 @@ interface Buffer_2 {
 type EditMode = 'Transform' | 'Crop' | 'Text' | 'Playback' | 'Trim' | 'Vector' | (string & {});
 type EffectType = 'adjustments' | 'cross_cut' | 'dot_pattern' | 'duotone_filter' | 'extrude_blur' | 'glow' | 'green_screen' | 'half_tone' | 'linocut' | 'liquid' | 'lut_filter' | 'mirror' | 'outliner' | 'pixelize' | 'posterize' | 'radial_pixel' | 'recolor' | 'sharpie' | 'shifter' | 'tilt_shift' | 'tv_glitch' | 'vignette'; // each also valid as '//ly.img.ubq/effect/<name>'
 type EffectTypeLonghand = `//ly.img.ubq/effect/${EffectTypeShorthand}`;
+type EngineActionId = keyof EngineActionsRegistry & string;
 interface EnginePlugin {
     name: string;
     version: string;
@@ -610,9 +611,7 @@ interface SaveToArchiveOptions {
 }
 interface SaveToStringOptions {
     resourceSchemesAllowed?: string[];
-    persistenceCallback?: (url: string, dataHash: string, persistedCallback?: {
-        invoke(url: string, persistedUrl: string): void;
-    }) => void;
+    persistenceCallback?: (url: string, dataHash: string, persistedCallback: PersistedCallback) => void;
     compression?: CompressionOptions;
 }
 type SettingEnumPropertyName = 'touch/pinchAction' | 'touch/rotateAction' | 'camera/clamping/overshootMode' | 'controlGizmo/moveHandleVisibility' | 'controlGizmo/resizeHandlesVisibility' | 'controlGizmo/scaleHandlesVisibility' | 'controlGizmo/rotateHandlesVisibility' | 'doubleClickSelectionMode' | 'colorPicker/colorMode' | 'timeline/trackVisibility' | (string & {});
@@ -637,6 +636,7 @@ interface TextRunInfo {
     typeface: Typeface;
     resolvedFontFileUri: string;
     textDecoration: TextDecorationConfig;
+    scriptStyle: ScriptStyle;
     kerning: number;
 }
 interface UBQAudioFromVideoOptions {
@@ -762,6 +762,7 @@ type ImageMimeType = Extract<MimeType_2, 'image/png' | 'image/jpeg' | 'image/web
 type ObjectTypeLonghand = DesignBlockTypeLonghand | ShapeTypeLonghand | FillTypeLonghand | EffectTypeLonghand | BlurTypeLonghand | AnimationTypeLonghand | TransitionTypeLonghand;
 type ObjectTypeShorthand = DesignBlockTypeShorthand | `shape/${ShapeTypeShorthand}` | `fill/${FillTypeShorthand}` | `effect/${EffectTypeShorthand}` | `blur/${BlurTypeShorthand}` | `animation/${AnimationTypeShorthand}` | `transition/${TransitionTypeShorthand}`;
 type PageGuidesSource = 'Document' | 'Custom';
+type PersistedCallback = (url: string, persistedUrl: unknown, error: string | undefined) => void;
 type PlaybackFadeInEasing = 'Linear' | 'EaseIn' | 'EaseOut' | 'EaseInOut' | 'EaseInQuart' | 'EaseOutQuart' | 'EaseInOutQuart' | 'EaseInQuint' | 'EaseOutQuint' | 'EaseInOutQuint' | 'EaseInBack' | 'EaseOutBack' | 'EaseInOutBack' | 'EaseInSpring' | 'EaseOutSpring' | 'EaseInOutSpring';
 type PlaybackFadeOutEasing = 'Linear' | 'EaseIn' | 'EaseOut' | 'EaseInOut' | 'EaseInQuart' | 'EaseOutQuart' | 'EaseInOutQuart' | 'EaseInQuint' | 'EaseOutQuint' | 'EaseInOutQuint' | 'EaseInBack' | 'EaseOutBack' | 'EaseInOutBack' | 'EaseInSpring' | 'EaseOutSpring' | 'EaseInOutSpring';
 type PositionXMode = 'Absolute' | 'Percent' | 'Auto';

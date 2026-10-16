@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "From Photoshop"
+description: "Import Adobe Photoshop (PSD) files into CE.SDK, converting them into editable scenes while preserving layers, text, shapes, and positioning."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design/from-photoshop-cca6bb/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Open the Editor](./open-the-editor.md) > [Import a Design](./open-the-editor/import-design.md) > [From Photoshop](./open-the-editor/import-design/from-photoshop.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Open the Editor](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor-23a1db/) > [Import a Design](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design-73b9c5/) > [From Photoshop](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design/from-photoshop-cca6bb/)
 
 ---
 
@@ -10,13 +17,13 @@ Convert Adobe Photoshop (PSD) files to CE.SDK scene archives at build-time using
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-open-the-editor-import-design-from-photoshop-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-open-the-editor-import-design-from-photoshop-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-open-the-editor-import-design-from-photoshop-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-open-the-editor-import-design-from-photoshop-server-js)
 
-The `@imgly/psd-importer` package converts Photoshop files into CE.SDK scene format on the server, allowing you to distribute pre-converted templates without client-side processing. This guide covers batch conversion of PSD template files to CE.SDK scene archives that can be shipped with your product. For enabling end-users to upload PSD files directly in the browser, see the [browser guide](./open-the-editor/import-design/from-photoshop.md).
+The `@imgly/psd-importer` package converts Photoshop files into CE.SDK scene format on the server, allowing you to distribute pre-converted templates without client-side processing. This guide covers batch conversion of PSD template files to CE.SDK scene archives that can be shipped with your product. For enabling end-users to upload PSD files directly in the browser, see the [browser guide](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design/from-photoshop-cca6bb/).
 
 ```typescript file=@cesdk_web_examples/guides-open-the-editor-import-design-from-photoshop-server-js/server-js.ts reference-only
 import CreativeEngine from '@cesdk/node';
@@ -337,10 +344,10 @@ main().catch(console.error);
 Install the `@imgly/psd-importer` package alongside the CE.SDK Node.js engine and the `pngjs` package for PNG encoding:
 
 ```bash
-npm install @imgly/psd-importer @cesdk/node@$UBQ_VERSION$ pngjs
+npm install @imgly/psd-importer @cesdk/node@1.84.0 pngjs
 ```
 
-Using the native Node.js package? Install `@cesdk/node-native@$UBQ_VERSION$` instead of `@cesdk/node` — the engine API is identical.
+Using the native Node.js package? Install `@cesdk/node-native@1.84.0` instead of `@cesdk/node` — the engine API is identical.
 
 The server environment requires `pngjs` because Node.js doesn't have native browser APIs for PNG encoding. The `createPNGJSEncodeBufferToPNG(PNG)` function provides this capability.
 
@@ -836,7 +843,7 @@ These are the highlights only—the [`@imgly/psd-importer`](https://www.npmjs.co
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support
