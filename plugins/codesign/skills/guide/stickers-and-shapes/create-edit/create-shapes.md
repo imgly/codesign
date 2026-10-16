@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Create Shapes"
+description: "Learn how to programmatically create and configure shapes in CE.SDK for server-side Node.js applications."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/stickers-and-shapes/create-edit/create-shapes-64acc0/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Shapes](./shapes.md) > [Create Shapes](./stickers-and-shapes/create-edit/create-shapes.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Shapes](https://img.ly/docs/cesdk/archive/v1.84/node/shapes-9f1b2c/) > [Create Shapes](https://img.ly/docs/cesdk/archive/v1.84/node/stickers-and-shapes/create-edit/create-shapes-64acc0/)
 
 ---
 
@@ -12,7 +19,7 @@ combined with fills.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
 > - [View source on GitHub](https://github.com/imgly/cesdk-web-examples)
 >
@@ -557,7 +564,7 @@ Shapes define geometry but remain invisible without fills. Fills provide the vis
 
 Shapes and fills operate independently—change one without affecting the other. We can replace a shape while keeping its fill, or change a fill while maintaining the shape geometry. This enables flexible design workflows where shapes and fills can be modified separately.
 
-For comprehensive fill system documentation, see the [Fills Overview](./fills/overview.md) guide.
+For comprehensive fill system documentation, see the [Fills Overview](https://img.ly/docs/cesdk/archive/v1.84/node/fills/overview-3895ee/) guide.
 
 ## Managing Shapes
 
@@ -775,7 +782,7 @@ This section describes the properties available for the **Vector Path Type** (`/
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

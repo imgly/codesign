@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Resize"
+description: "Change image dimensions by setting explicit width and height values using absolute units, percentage-based sizing, or auto-sizing modes."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/edit-image/transform/resize-407242/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Images](./edit-image.md) > [Transform](./edit-image/transform.md) > [Resize](./edit-image/transform/resize.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Images](https://img.ly/docs/cesdk/archive/v1.84/node/edit-image-c64912/) > [Transform](https://img.ly/docs/cesdk/archive/v1.84/node/edit-image/transform-9d189b/) > [Resize](https://img.ly/docs/cesdk/archive/v1.84/node/edit-image/transform/resize-407242/)
 
 ---
 
@@ -10,11 +17,11 @@ Change image dimensions using absolute pixel values, percentage-based sizing for
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-edit-image-transform-resize-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-edit-image-transform-resize-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-edit-image-transform-resize-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-edit-image-transform-resize-server-js)
 
 Image resizing changes actual dimensions rather than applying scale multipliers. Use `engine.block.setWidth()` and `engine.block.setHeight()` for individual dimensions, or `engine.block.setSize()` for both at once.
 
@@ -325,7 +332,7 @@ Calculate and set both dimensions proportionally. Use `maintainCrop: true` when 
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

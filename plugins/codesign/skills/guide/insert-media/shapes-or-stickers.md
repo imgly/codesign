@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Insert Shapes or Stickers"
+description: "Add shapes and stickers to your designs using CE.SDK in a Node.js environment. Create rectangles, ellipses, stars, polygons, lines, and custom vector paths programmatically."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/insert-media/shapes-or-stickers-20ac68/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Insert Media Assets](./insert-media.md) > [Insert Shapes or Stickers](./insert-media/shapes-or-stickers.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Insert Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/insert-media-a217f5/) > [Insert Shapes or Stickers](https://img.ly/docs/cesdk/archive/v1.84/node/insert-media/shapes-or-stickers-20ac68/)
 
 ---
 
@@ -12,11 +19,11 @@ type-specific properties like corner radius and star points.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-insert-media-shapes-or-stickers-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-insert-media-shapes-or-stickers-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-insert-media-shapes-or-stickers-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-insert-media-shapes-or-stickers-server-js)
 
 Shapes are vector graphics created with `engine.block.createShape()` and attached to graphic blocks. CE.SDK supports six shape types: **rect**, **ellipse**, **star**, **polygon**, **line**, and **vector\_path**. Stickers are pre-made graphic assets loaded via URLs. Both require fills or strokes to be visible.
 
@@ -767,9 +774,9 @@ If `createShape()` throws an error:
 
 ## Next Steps
 
-- [Colors](./colors.md) - Work with colors, fills, and gradients
-- [Filters and Effects](./filters-and-effects.md) - Apply visual effects to design elements
-- [Position and Align](./create-composition/position-and-align.md) - Position elements precisely on the canvas
+- [Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors-a9b79c/) - Work with colors, fills, and gradients
+- [Filters and Effects](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects-6f88ac/) - Apply visual effects to design elements
+- [Position and Align](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/position-and-align-cc6b6a/) - Position elements precisely on the canvas
 
 
 
@@ -777,7 +784,7 @@ If `createShape()` throws an error:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

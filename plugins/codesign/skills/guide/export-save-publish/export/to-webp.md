@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "To WebP"
+description: "Export your CE.SDK designs to WebP format for optimized web delivery with lossy and lossless compression options."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/to-webp-aef6f4/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Export Media Assets](./export-save-publish/export.md) > [To WebP](./export-save-publish/export/to-webp.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Export Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export-82f968/) > [To WebP](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/to-webp-aef6f4/)
 
 ---
 
@@ -10,11 +17,11 @@ Export designs to WebP format for optimized web delivery with smaller file sizes
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-export-save-publish-export-to-webp-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-export-save-publish-export-to-webp-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-export-save-publish-export-to-webp-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-export-save-publish-export-to-webp-server-js)
 
 WebP delivers smaller file sizes than PNG and JPEG while preserving image quality and transparency support. This makes it ideal for server-side processing where bandwidth and storage costs matter.
 
@@ -211,13 +218,13 @@ The export returns a `Blob`. Convert it to an `ArrayBuffer`, then wrap in a `Buf
 
 ## Next Steps
 
-[Export Overview](./export-save-publish/export/overview.md) - Learn about all supported export formats and their options.
+[Export Overview](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/overview-9ed3a8/) - Learn about all supported export formats and their options.
 
-[Export to PDF](./export-save-publish/export/to-pdf.md) - Generate print-ready PDF documents from your designs.
+[Export to PDF](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/to-pdf-95e04b/) - Generate print-ready PDF documents from your designs.
 
-[Size Limits](./export-save-publish/export/size-limits.md) - Understand export size constraints and optimization strategies.
+[Size Limits](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/size-limits-6f0695/) - Understand export size constraints and optimization strategies.
 
-[Partial Export](./export-save-publish/export/partial-export.md) - Export specific blocks or regions instead of the full design.
+[Partial Export](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/partial-export-89aaf6/) - Export specific blocks or regions instead of the full design.
 
 
 
@@ -225,7 +232,7 @@ The export returns a `Blob`. Convert it to an `ArrayBuffer`, then wrap in a `Buf
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

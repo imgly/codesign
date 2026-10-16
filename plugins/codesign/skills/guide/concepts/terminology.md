@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Terminology"
+description: "Definitions for the core terms and concepts used throughout CE.SDK documentation, including Engine, Scene, Block, Fill, Shape, Effect, and more."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/concepts/terminology-99e82d/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Terminology](./concepts/terminology.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Terminology](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/terminology-99e82d/)
 
 ---
 
@@ -20,13 +27,13 @@ The root container for all design content. A *Scene* contains *Pages*, which con
 
 *Scenes* support both static designs (social posts, print materials, graphics) and time-based content (duration, playback time, animation).
 
-See [Scenes](./concepts/scenes.md) for details.
+See [Scenes](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/scenes-e8596d/) for details.
 
 ### Page
 
 *Pages* are containers within a *Scene* that hold content *Blocks* (see below) and define working area dimensions.
 
-For static designs, pages are individual artboards. For video editing, pages are time-based compositions where *Blocks* are arranged across time. See [Pages](./concepts/pages.md) for details.
+For static designs, pages are individual artboards. For video editing, pages are time-based compositions where *Blocks* are arranged across time. See [Pages](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/pages-7b6bae/) for details.
 
 ### Block
 
@@ -37,7 +44,7 @@ Each *Block* has two identifiers:
 - **DesignBlockId**: A numeric handle (integer) used in API calls
 - **UUID**: A stable string identifier that persists across save and load operations
 
-See [Blocks](./concepts/blocks.md) for details.
+See [Blocks](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/blocks-90241e/) for details.
 
 ## Block Anatomy
 
@@ -52,7 +59,7 @@ Modify a *Block's* appearance and behavior by attaching *Fills*, *Shapes*, and *
 - **Image Fill**: Image content
 - **Video Fill**: Video content
 
-See the [Color Fills](./fills/color.md), [Gradient Fills](./fills/gradient.md), [Image Fills](./fills/image.md), and [Video Fills](./fills/video.md) guides.
+See the [Color Fills](https://img.ly/docs/cesdk/archive/v1.84/node/fills/color-7129cd/), [Gradient Fills](https://img.ly/docs/cesdk/archive/v1.84/node/fills/gradient-0ff079/), [Image Fills](https://img.ly/docs/cesdk/archive/v1.84/node/fills/image-e9cb5c/), and [Video Fills](https://img.ly/docs/cesdk/archive/v1.84/node/fills/video-ec7f9f/) guides.
 
 ### Shape
 
@@ -65,7 +72,7 @@ See the [Color Fills](./fills/color.md), [Gradient Fills](./fills/gradient.md), 
 - **Line**: Straight lines
 - **Vector Path**: Custom vector shapes
 
-Like *Fills*, *Shapes* are created separately and attached to *Blocks*. See [Shapes](./shapes.md) for details.
+Like *Fills*, *Shapes* are created separately and attached to *Blocks*. See [Shapes](https://img.ly/docs/cesdk/archive/v1.84/node/shapes-9f1b2c/) for details.
 
 ### Effect
 
@@ -79,7 +86,7 @@ Like *Fills*, *Shapes* are created separately and attached to *Blocks*. See [Sha
 - **Color**: Recolor, green screen (chroma key)
 - **Other**: Glow, TV glitch
 
-The order determines how multiple effects attached to a single block interact. See [Filters and Effects](./filters-and-effects.md) for details.
+The order determines how multiple effects attached to a single block interact. See [Filters and Effects](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects-6f88ac/) for details.
 
 ### Blur
 
@@ -91,7 +98,7 @@ A modifier that reduces sharpness. *Blur* types include:
 
 > **Note:** **Blur has a dedicated API because it composites differently than other effects.** While most effects like brightness or saturation operate only on a block's own pixels, blur needs to sample pixels from the surrounding area to calculate the blurred result. This means blur interacts with the scene's layering and transparency in ways other effects don't—when you blur a partially transparent block, the engine must handle how that blur blends with whatever content sits behind it.
 
-See [Blur](./filters-and-effects/blur.md) for details.
+See [Blur](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/blur-71d642/) for details.
 
 ### Drop Shadow
 
@@ -135,7 +142,7 @@ A custom string label you assign to categorize *Blocks* for your application. Un
 
 A configurable attribute of a *Block*. *Properties* have types (`Bool`, `Int`, `Float`, `String`, `Color`, `Enum`) and paths like `text/fontSize` or `fill/image/imageFileURI`.
 
-Access *Properties* using type-specific getter and setter methods. Each *Block* type exposes different properties, which you can discover programmatically. See [Blocks](./concepts/blocks.md) for details.
+Access *Properties* using type-specific getter and setter methods. Each *Block* type exposes different properties, which you can discover programmatically. See [Blocks](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/blocks-90241e/) for details.
 
 ## Assets and Resources
 
@@ -161,13 +168,13 @@ Register *Asset Sources* with the *Engine* to make *Assets* available throughout
 
 ### Resource
 
-Loaded data from an *Asset* URI. When you reference an image or video URL in a *Block*, the *Engine* fetches and caches the *Resource*. *Resources* include binary data and metadata for rendering. See [Resources](./concepts/resources.md) for details.
+Loaded data from an *Asset* URI. When you reference an image or video URL in a *Block*, the *Engine* fetches and caches the *Resource*. *Resources* include binary data and metadata for rendering. See [Resources](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/resources-a58d71/) for details.
 
 ### Buffer
 
 A resizable container for arbitrary binary data. *Buffers* are useful for dynamically generated content that doesn't come from a URL, such as synthesized audio or programmatically created images.
 
-Create a *Buffer*, write data to it, and reference it by URI in *Block* properties. *Buffer* data is not serialized with scenes and changes cannot be undone. See [Buffers](./concepts/buffers.md) for details.
+Create a *Buffer*, write data to it, and reference it by URI in *Block* properties. *Buffer* data is not serialized with scenes and changes cannot be undone. See [Buffers](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/buffers-9c565b/) for details.
 
 ## Templating and Automation
 
@@ -183,13 +190,13 @@ A reusable design with predefined structure and styling. *Templates* typically c
 
 A *Block* marked for content replacement. When a *Block's* placeholder property is enabled, it signals that the *Block* expects user-provided content—an image drop zone or editable text field.
 
-*Placeholders* indicate which parts of a design should be customized versus fixed. See [Placeholders](./create-templates/add-dynamic-content/placeholders.md) for details.
+*Placeholders* indicate which parts of a design should be customized versus fixed. See [Placeholders](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content/placeholders-d9ba8a/) for details.
 
 ### Variable
 
 A named value referenced in text blocks using `{{variableName}}` syntax. *Variables* enable data-driven design generation by populating templates with dynamic content.
 
-Define *Variables* at the scene level and reference them in text blocks. When a *Variable* value changes, all referencing text blocks update automatically. See [Text Variables](./create-templates/add-dynamic-content/text-variables.md) for details.
+Define *Variables* at the scene level and reference them in text blocks. When a *Variable* value changes, all referencing text blocks update automatically. See [Text Variables](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content/text-variables-7ecb50/) for details.
 
 ## Permissions and Scopes
 
@@ -208,7 +215,7 @@ Common scopes:
 - `lifecycle/destroy` — Allow or prevent deletion
 - `editor/select` — Allow or prevent selection
 
-Enable or disable *Scopes* per *Block* to create controlled editing experiences. See [Lock Design Elements](./create-templates/lock.md) for details.
+Enable or disable *Scopes* per *Block* to create controlled editing experiences. See [Lock Design Elements](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/lock-131489/) for details.
 
 ### Role
 
@@ -231,7 +238,7 @@ The measurement unit for dimensions in a *Scene*. The choice affects how positio
 - **Millimeter**: Metric measurement for print
 - **Inch**: Imperial measurement for print
 
-Set the design unit at the scene level—all dimension values are interpreted in that unit. See [Design Units](./concepts/design-units.md) for details.
+Set the design unit at the scene level—all dimension values are interpreted in that unit. See [Design Units](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/design-units-cc6597/) for details.
 
 ### DPI (Dots Per Inch)
 
@@ -250,7 +257,7 @@ Every *Scene* supports the full range of features:
 - **Static designs**: Content arranged spatially on pages.
 - **Video editing**: Blocks can have duration, time offset, playback time, and animation properties.
 
-See [Scenes](./concepts/scenes.md) for details.
+See [Scenes](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/scenes-e8596d/) for details.
 
 ### Headless Mode
 
@@ -261,7 +268,7 @@ Running CE.SDK without the built-in UI. Used for:
 - Custom UI implementations
 - Batch processing
 
-In *Headless Mode*, you work directly with *Engine* APIs without the visual editor. See [Headless Mode](./concepts/headless-mode.md) for setup.
+In *Headless Mode*, you work directly with *Engine* APIs without the visual editor. See [Headless Mode](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/headless-mode-24ab98/) for setup.
 
 ## Events and State
 
@@ -275,7 +282,7 @@ A callback mechanism for reacting to changes in the *Engine*. Subscribe to event
 - Block state changes
 - History (undo/redo) changes
 
-Subscriptions return an unsubscribe function to call when you no longer need notifications. See [Events](./concepts/events.md) for details.
+Subscriptions return an unsubscribe function to call when you no longer need notifications. See [Events](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/events-353f97/) for details.
 
 ### Block State
 
@@ -293,7 +300,7 @@ The current status of a *Block* indicating readiness or issues:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

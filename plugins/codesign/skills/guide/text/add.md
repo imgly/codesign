@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Add Text"
+description: "Insert text blocks into your CE.SDK scene."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/text/add-4f5011/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Text](./text.md) > [Add Text](./text/add.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Text](https://img.ly/docs/cesdk/archive/v1.84/node/text-8a993a/) > [Add Text](https://img.ly/docs/cesdk/archive/v1.84/node/text/add-4f5011/)
 
 ---
 
@@ -10,11 +17,11 @@ Create and configure text blocks in CE.SDK with custom fonts, rich text styling,
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-text-add-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-text-add-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-text-add-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-text-add-server-js)
 
 Text blocks are fundamental design elements for displaying titles, captions, labels, and body text. CE.SDK provides a range-based styling system that allows different formatting within a single text block, enabling rich text with multiple colors, font weights, and styles.
 
@@ -611,11 +618,11 @@ The export supports various formats including PNG, JPEG, and WebP. Server-side r
 
 ## Next Steps
 
-- [Style Text](./text/styling.md) - Apply fills, strokes, and backgrounds to text
-- [Auto-Size Text](./text/auto-size.md) - Configure text blocks to resize dynamically
-- [Adjust Text Spacing](./text/adjust-spacing.md) - Fine-tune letter and line spacing
-- [Add Emojis](./text/emojis.md) - Display emoji characters with custom fonts
-- [Add Text Effects](./text/effects.md) - Apply visual effects to text blocks
+- [Style Text](https://img.ly/docs/cesdk/archive/v1.84/node/text/styling-269c48/) - Apply fills, strokes, and backgrounds to text
+- [Auto-Size Text](https://img.ly/docs/cesdk/archive/v1.84/node/text/auto-size-5331b3/) - Configure text blocks to resize dynamically
+- [Adjust Text Spacing](https://img.ly/docs/cesdk/archive/v1.84/node/text/adjust-spacing-c1a3b6/) - Fine-tune letter and line spacing
+- [Add Emojis](https://img.ly/docs/cesdk/archive/v1.84/node/text/emojis-510651/) - Display emoji characters with custom fonts
+- [Add Text Effects](https://img.ly/docs/cesdk/archive/v1.84/node/text/effects-2dc9fc/) - Apply visual effects to text blocks
 
 
 
@@ -623,7 +630,7 @@ The export supports various formats including PNG, JPEG, and WebP. Server-side r
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

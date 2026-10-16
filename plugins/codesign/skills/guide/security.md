@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Security"
+description: "Learn how CE.SDK keeps your data private with client-side processing, secure licensing, and GDPR-compliant practices."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/security-777bfd/"
+---
 
-**Navigation:** [Compatibility & Security](./compatibility.md) > [Security](./security.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Compatibility & Security](https://img.ly/docs/cesdk/archive/v1.84/node/compatibility-fef719/) > [Security](https://img.ly/docs/cesdk/archive/v1.84/node/security-777bfd/)
 
 ---
 
@@ -178,7 +185,7 @@ While CE.SDK does not track user actions other than the exceptions listed below 
 - **When the engine loads:** App identifier, platform, engine version, user ID (provided by the client), device ID (mobile only), and session ID.
 - **When a photo or video is exported:** User ID, device ID, session ID, media type (photo/video), format, resolution (width and height), page count (photo only), FPS (video only), and duration (video only).
 
-This tracking is solely for ensuring accurate usage calculation and managing monthly active user billing. Enterprise clients can opt out of this tracking under specific agreements. For a precise definition of which operations count as an export and when export events are recorded, see [Export Counting](./export-counting.md).
+This tracking is solely for ensuring accurate usage calculation and managing monthly active user billing. Enterprise clients can opt out of this tracking under specific agreements. For a precise definition of which operations count as an export and when export events are recorded, see [Export Counting](https://img.ly/docs/cesdk/archive/v1.84/node/export-counting-613923/).
 
 ### **Personal Identifiable Information (PII)**
 
@@ -195,7 +202,7 @@ IMG.LY is committed to maintaining compliance with **GDPR** and other applicable
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

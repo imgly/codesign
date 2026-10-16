@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Shadows and Glows"
+description: "Add visual depth and emphasis to design elements using drop shadows and glow effects."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/outlines/shadows-and-glows-6610fa/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Outlines](./outlines.md) > [Shadows and Glows](./outlines/shadows-and-glows.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Outlines](https://img.ly/docs/cesdk/archive/v1.84/node/outlines-b7820c/) > [Shadows and Glows](https://img.ly/docs/cesdk/archive/v1.84/node/outlines/shadows-and-glows-6610fa/)
 
 ---
 
@@ -10,11 +17,11 @@ Add visual depth and emphasis to design elements using drop shadows and glow eff
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-outlines-shadows-and-glows-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-outlines-shadows-and-glows-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-outlines-shadows-and-glows-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-outlines-shadows-and-glows-server-js)
 
 Drop shadows create the illusion of elements floating above the canvas, while glow effects add luminous halos that make elements stand out. CE.SDK provides two approaches: **drop shadows** as native block properties and **glow effects** through the effects system. Both can be applied to graphic blocks, text, and shapes.
 
@@ -450,11 +457,11 @@ engine.dispose();
 
 ## Next Steps
 
-[Using Strokes](./outlines/strokes.md) - Add border outlines to elements
+[Using Strokes](https://img.ly/docs/cesdk/archive/v1.84/node/outlines/strokes-c2e621/) - Add border outlines to elements
 
-[Apply Filters and Effects](./filters-and-effects/apply.md) - Explore additional visual effects
+[Apply Filters and Effects](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/apply-2764e4/) - Explore additional visual effects
 
-[Blur Effects](./filters-and-effects/blur.md) - Apply blur effects to elements
+[Blur Effects](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/blur-71d642/) - Apply blur effects to elements
 
 
 
@@ -462,7 +469,7 @@ engine.dispose();
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

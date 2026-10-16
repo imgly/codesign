@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "To PNG"
+description: "Export your designs as PNG images with transparency support and configurable compression for web graphics, UI elements, and content requiring crisp edges."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/to-png-f87eaf/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Export Media Assets](./export-save-publish/export.md) > [To PNG](./export-save-publish/export/to-png.md) > [Conversion](./conversion.md) > [To PNG](./export-save-publish/export/to-png.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Export Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export-82f968/) > [To PNG](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/to-png-f87eaf/) > [Conversion](https://img.ly/docs/cesdk/archive/v1.84/node/conversion-c3fbb3/) > [To PNG](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/to-png-f87eaf/)
 
 ---
 
@@ -10,11 +17,11 @@ Export your designs as PNG images with full transparency support and configurabl
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-export-save-publish-export-to-png-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-export-save-publish-export-to-png-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-export-save-publish-export-to-png-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-export-save-publish-export-to-png-server-js)
 
 PNG (Portable Network Graphics) provides lossless compression with full alpha channel support. It's ideal for web graphics, UI elements, and content requiring crisp edges or transparency.
 
@@ -194,10 +201,10 @@ This pattern works for all export formats. Adjust the filename extension to matc
 
 ## Next Steps
 
-- [Export Overview](./export-save-publish/export/overview.md) - Compare all supported export formats
-- [Export Size Limits](./export-save-publish/export/size-limits.md) - Check device limits before exporting large designs
-- [Export with Color Mask](./export-save-publish/export/with-color-mask.md) - Remove specific colors and generate alpha masks
-- [Partial Export](./export-save-publish/export/partial-export.md) - Export specific blocks or regions
+- [Export Overview](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/overview-9ed3a8/) - Compare all supported export formats
+- [Export Size Limits](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/size-limits-6f0695/) - Check device limits before exporting large designs
+- [Export with Color Mask](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/with-color-mask-4f868f/) - Remove specific colors and generate alpha masks
+- [Partial Export](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/partial-export-89aaf6/) - Export specific blocks or regions
 
 
 
@@ -205,7 +212,7 @@ This pattern works for all export formats. Adjust the filename extension to matc
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

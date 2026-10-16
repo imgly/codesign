@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Create From Video"
+description: "Create an editable scene from a video file in headless Node.js environments."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/from-video-86beb0/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Open the Editor](./open-the-editor.md) > [Create From Video](./open-the-editor/from-video.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Open the Editor](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor-23a1db/) > [Create From Video](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/from-video-86beb0/)
 
 ---
 
@@ -11,11 +18,11 @@ environments for server-side video processing workflows.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-open-the-editor-from-video-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-open-the-editor-from-video-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-open-the-editor-from-video-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-open-the-editor-from-video-server-js)
 
 Starting from an existing video allows you to create editable scenes on the server. The `engine.scene.createFromVideo()` method fetches the video, creates a scene with matching dimensions, and sets up pixel-based design units. This is useful for server-side video processing pipelines — whether you render the result on the server or prepare scenes for later editing in browser environments.
 
@@ -260,7 +267,7 @@ engine.dispose();
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

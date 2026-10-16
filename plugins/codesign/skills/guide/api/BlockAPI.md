@@ -33,7 +33,8 @@ exportWithColorMask(handle: DesignBlockId, maskColorR: number, maskColorG: numbe
 - `maskColorR` - The red component of the special color mask color.
 - `maskColorG` - The green component of the special color mask color.
 - `maskColorB` - The blue component of the special color mask color.
-- `options` - The options for exporting the block type
+- `options` - The options for exporting the block type. `onProgress` is ignored: a color
+mask export reports no progress.
 
 **Returns:** A promise that resolves with an array of the exported image and mask or is rejected with an error.
 
@@ -143,6 +144,8 @@ loadFromURL(url: string): Promise<DesignBlockId[]>
 
 Saves the given blocks to a serialized string.
 If a page with multiple children is given, the entire hierarchy is saved.
+The resources of that whole hierarchy are checked against `allowedResourceSchemes`
+and are passed to `onDisallowedResourceScheme`.
 
 ```typescript
 saveToString(blocks: DesignBlockId[], allowedResourceSchemes?: string[], onDisallowedResourceScheme?: (url: string, dataHash: string) => Promise<string>): Promise<string>
@@ -150,11 +153,12 @@ saveToString(blocks: DesignBlockId[], allowedResourceSchemes?: string[], onDisal
 
 **Parameters:**
 - `blocks` - The blocks to save.
-- `allowedResourceSchemes` - The resource schemes to allow in the saved string. Defaults to ['buffer', 'http', 'https'].
+- `allowedResourceSchemes` - The resource schemes to allow in the saved string. Defaults to ['buffer', 'bundle', 'http', 'https'].
 - `onDisallowedResourceScheme` - An optional callback that is called for each resource URL that has a scheme absent from
 `resourceSchemesAllowed`. The `url` parameter is the resource URL and the `dataHash` parameter is the hash of the
 resource's data. The callback should return a new URL for the resource, which will be used in the serialized
-scene. The callback is expected to return the original URL if no persistence is needed.
+scene. The callback is expected to return the original URL if no persistence is needed. If the callback throws,
+rejects, or returns no string, the returned promise rejects and the blocks keep their URLs.
 
 **Returns:** A promise that resolves to a string representing the blocks or an error.
 
@@ -780,6 +784,10 @@ const audioBlock = engine.block.createAudioFromVideo(videoFillBlock, 0, { keepTr
 // Extract a specific track, keep trim settings, and mute the original video
 const dialogueTrack = engine.block.createAudioFromVideo(videoFillBlock, 1, { keepTrimSettings: true, muteOriginalVideo: true });
 ```
+Note: The audio block can still load after this call returns. When the video file is not completely in memory,
+for example an uploaded or a remote video, the audio comes from the file in the background. Until it is
+complete, `unstable_isAVResourceLoaded` returns false, `forceLoadAVResource` waits for it, and the block is
+pending once it is in the scene.
 
 ```typescript
 createAudioFromVideo(videoFillBlock: DesignBlockId, trackIndex: number, options?: AudioFromVideoOptions): DesignBlockId
@@ -804,6 +812,7 @@ const audioBlocks = engine.block.createAudiosFromVideo(videoFillBlock, { keepTri
 // Extract all tracks with trim settings and mute the original video
 const audioBlocks = engine.block.createAudiosFromVideo(videoFillBlock, { keepTrimSettings: true, muteOriginalVideo: true });
 ```
+Note: The audio blocks can still load after this call returns, as with `createAudioFromVideo`.
 
 ```typescript
 createAudiosFromVideo(videoFillBlock: DesignBlockId, options?: AudioFromVideoOptions): DesignBlockId[]
@@ -1361,6 +1370,8 @@ setAudioFadeOut(id: DesignBlockId, duration: number, easing?: AnimationEasing): 
 Sets the playback speed multiplier of a block that supports playback control.
 Note: This also adjusts the trim and duration of the block.
 Video fills running faster than 3.0x are force muted until reduced to 3.0x or below.
+An audio block that `createAudioFromVideo` extracts from a video faster than 3.0x keeps that speed and is force
+muted too. This method still rejects a speed above 3.0x for it.
 
 ```typescript
 setPlaybackSpeed(id: DesignBlockId, speed: number): void
@@ -1801,6 +1812,8 @@ findAllSelected(): DesignBlockId[]
 ### isVisible()
 
 Gets the visibility state of a block.
+Reports the visibility you set, not the current view. A page that single page mode
+takes out of view stays visible; use `scene.getCurrentPages` to read the view.
 
 ```typescript
 isVisible(id: DesignBlockId): boolean
@@ -5260,6 +5273,45 @@ setTextCase(id: DesignBlockId, textCase: TextCase, from?: number, to?: number): 
 **Parameters:**
 - `id` - The text block whose text case should be changed.
 - `textCase` - The new text case value.
+- `from` - The start index of the UTF-16 range. Defaults to the start of the current selection or text.
+- `to` - The end index of the UTF-16 range. Defaults to the end of the current selection or text.
+
+### getTextScriptStyles()
+
+Gets the unique text script styles within a range of text.
+```javascript
+const scriptStyles = engine.block.getTextScriptStyles(text);
+// e.g., ['Normal', 'Superscript']
+```
+
+```typescript
+getTextScriptStyles(id: DesignBlockId, from?: number, to?: number): ScriptStyle[]
+```
+
+**Parameters:**
+- `id` - The text block whose script styles should be returned.
+- `from` - The start index of the UTF-16 range. Defaults to the start of the current selection or text.
+- `to` - The end index of the UTF-16 range. Defaults to the end of the current selection or text.
+
+**Returns:** The ordered list of unique script styles.
+
+### setTextScriptStyle()
+
+Sets the script style for a range of text.
+Superscript and subscript text is scaled down and shifted off the regular baseline.
+The block properties 'text/superscriptFontScale', 'text/superscriptVerticalShift',
+'text/subscriptFontScale' and 'text/subscriptVerticalShift' adjust the scale and shift.
+```javascript
+engine.block.setTextScriptStyle(text, 'Superscript');
+```
+
+```typescript
+setTextScriptStyle(id: DesignBlockId, scriptStyle: ScriptStyle, from?: number, to?: number): void
+```
+
+**Parameters:**
+- `id` - The text block whose script style should be changed.
+- `scriptStyle` - The new script style.
 - `from` - The start index of the UTF-16 range. Defaults to the start of the current selection or text.
 - `to` - The end index of the UTF-16 range. Defaults to the end of the current selection or text.
 

@@ -16,7 +16,7 @@ description: |
 
 ## Version Notice
 
-> **CE.SDK version**: 1.83.0
+> **CE.SDK version**: 1.84.0
 >
 > This documentation is bundled with the server and re-vendored in lockstep
 > with the engine version above — it matches the running engine. Always
@@ -25,18 +25,264 @@ description: |
 
 ## Documentation Index
 
-<-- IMGLY-AGENTS-MD-START -->[CE.SDK Node.js Docs Index]|root: .|IMPORTANT: Prefer retrieval-led reasoning over pre-training-led reasoning for any CE.SDK tasks. Consult the local docs directory before using pre-trained knowledge.|actions.md|animation:{create,edit.md,types.md}|animation/create:{base.md,text.md}|api:{node}|api/node:{classes,enumerations,functions,interfaces,type-aliases,variables}|automation:{auto-resize.md,data-merge.md,design-generation.md,multi-image-generation.md,overview.md}|capabilities.md|colors:{adjust.md,apply.md,basics.md,conversion.md,create-color-palette.md,extract-colors.md,for-print,for-screen,overview.md,replace.md}|colors/for-print:{cmyk.md,spot.md}|colors/for-screen:{p3.md,srgb.md}|compatibility.md|concepts:{architecture.md,assets.md,blocks.md,buffers.md,design-units.md,editing-workflow.md,error-catalog.md,events.md,exclusion-areas.md,headless-mode.md,import-export.md,pages.md,plugin-architecture.md,resources.md,scenes.md,templating.md,terminology.md,undo-and-history.md}|configuration.md|conversion:{overview.md,to-base64.md,to-pdf.md,to-png.md}|create-audio:{audio}|create-audio/audio:{add-music.md,add-sound-effects.md,adjust-speed.md,adjust-volume.md,fade.md,loop.md}|create-composition:{add-background.md,blend-modes.md,collage.md,group-and-ungroup.md,layer-management.md,layout.md,lock-design.md,multi-page.md,overview.md,position-and-align.md,programmatic.md}|create-templates:{add-dynamic-content,add-to-template-library.md,edit-or-remove.md,from-scratch.md,import,lock.md,overview.md}|create-templates/add-dynamic-content:{placeholders.md,set-editing-constraints.md,text-variables.md}|create-templates/import:{from-scene-file.md}|create-video:{control.md,limitations.md}|edit-image:{add-watermark.md,overview.md,remove-bg.md,replace-colors.md,transform}|edit-image/transform:{crop.md,flip.md,move.md,resize.md,rotate.md,scale.md}|edit-video:{add-captions.md,add-watermark.md,join-and-arrange.md,redaction.md,split.md,transform,trim.md}|edit-video/transform:{crop.md,flip.md,move.md,resize.md,rotate.md,scale.md}|engine-interface.md|export-counting.md|export-save-publish:{create-thumbnail.md,export,for-printing.md,for-social-media.md,pre-export-validation.md,save.md,store-custom-metadata.md,thumbnail-previews.md}|export-save-publish/export:{audio.md,compress.md,overview.md,partial-export.md,size-limits.md,to-jpeg.md,to-pdf.md,to-png.md,to-raw-data.md,to-webp.md,with-color-mask.md}|file-format-support.md|fills:{color.md,gradient.md,image.md,overview.md,video.md}|filters-and-effects:{apply.md,blur.md,chroma-key-green-screen.md,create-custom-filters.md,create-custom-lut-filter.md,distortion.md,duotone.md,overview.md,support.md}|get-started:{agent-skills.md,build-with-ai.md,bun.md,cesdk-plugin-coding-agents.md,deno.md,mcp-server.md,overview.md,vanilla.md,vanilla-aws-lambda.md,vanilla-clone-github-project.md}|guides.md|import-media:{asset-library,concepts.md,content-json-schema.md,default-assets.md,edit-or-remove-assets.md,file-format-support.md,from-remote-source,overview.md,retrieve-mimetype.md,size-limits.md,source-sets.md}|import-media/asset-library:{refresh-assets.md}|import-media/from-remote-source:{asset-versioning.md,remote-asset.md}|insert-media:{audio.md,images.md,overview.md,shapes-or-stickers.md,videos.md}|key-capabilities.md|key-concepts.md|licensing.md|llms-txt.md|open-the-editor:{blank-canvas.md,from-image.md,from-template.md,from-video.md,import-design,load-scene.md,overview.md,uri-resolver.md}|open-the-editor/import-design:{from-archive.md,from-indesign.md,from-photoshop.md}|outlines:{overview.md,shadows-and-glows.md,strokes.md}|overview.md|performance.md|plugins:{print-ready-pdf.md}|rules:{asset-handling.md,common-pitfalls.md,content-fill-mode.md,enforce-brand-guidelines.md,lock-content.md,moderate-content.md,overview.md,silent-init-errors.md,verify-properties-before-use.md}|security.md|serve-assets.md|settings.md|shapes.md|stickers.md|stickers-and-shapes:{combine.md,create-cutout.md,create-edit,insert-qr-code.md}|stickers-and-shapes/create-edit:{create-shapes.md,create-stickers.md,edit-shapes.md}|text:{add.md,adjust-spacing.md,auto-size.md,edit.md,effects.md,emojis.md,language-support.md,overview.md,styling.md,text-designs.md}|to-v1-19.md|to-v1-82.md|upgrade.md|use-templates:{apply-template.md,generate.md,overview.md,programmatic.md,replace-content.md}|what-is-cesdk.md|<-- IMGLY-AGENTS-MD-END -->
+<-- IMGLY-AGENTS-MD-START -->
+- Get Started: get-started/overview.md
+  - What is CE.SDK?: what-is-cesdk.md
+  - Capabilities: capabilities.md
+  - Quickstart Node.js: get-started/vanilla.md
+  - Quickstart Deno: get-started/deno.md
+  - Quickstart Bun: get-started/bun.md
+  - Licensing: licensing.md
+- Build with AI: get-started/build-with-ai.md
+  - Agent Plugin: get-started/cesdk-plugin-coding-agents.md
+  - MCP Server: get-started/mcp-server.md
+  - Agent Skills: get-started/agent-skills.md
+  - LLMs.txt: llms-txt.md
+- Concepts: concepts.md
+  - Key Concepts: key-concepts.md
+  - Key Capabilities: key-capabilities.md
+  - Architecture: concepts/architecture.md
+  - Plugin Architecture: concepts/plugin-architecture.md
+  - Terminology: concepts/terminology.md
+  - Editing Workflow: concepts/editing-workflow.md
+  - Blocks: concepts/blocks.md
+  - Scenes: concepts/scenes.md
+  - Pages: concepts/pages.md
+  - Exclusion Areas: concepts/exclusion-areas.md
+  - Assets: concepts/assets.md
+  - Templating: concepts/templating.md
+  - Import and Export: concepts/import-export.md
+  - Events: concepts/events.md
+  - Buffers: concepts/buffers.md
+  - Resources: concepts/resources.md
+  - Undo and History: concepts/undo-and-history.md
+  - Design Units: concepts/design-units.md
+  - Headless Mode: concepts/headless-mode.md
+  - Export Counting: export-counting.md
+  - Error Catalog: concepts/error-catalog.md
+- Guides: guides.md
+  - Configuration: configuration.md
+  - Actions: actions.md
+  - Settings: settings.md
+  - Serve Assets: serve-assets.md
+  - Engine: engine-interface.md
+  - Automate Workflows: automation.md
+    - Overview: automation/overview.md
+    - Auto-Resize: automation/auto-resize.md
+    - Data Merge: automation/data-merge.md
+    - Design Generation: automation/design-generation.md
+    - Multiple Image Generation: automation/multi-image-generation.md
+  - Open the Editor: open-the-editor.md
+    - Overview: open-the-editor/overview.md
+    - Load a Scene: open-the-editor/load-scene.md
+    - Start With Blank Canvas: open-the-editor/blank-canvas.md
+    - Create From Image: open-the-editor/from-image.md
+    - Create From Video: open-the-editor/from-video.md
+    - Create From Template: open-the-editor/from-template.md
+    - Import a Design: open-the-editor/import-design.md
+      - From InDesign: open-the-editor/import-design/from-indesign.md
+      - From Photoshop: open-the-editor/import-design/from-photoshop.md
+      - From Archive: open-the-editor/import-design/from-archive.md
+    - URI Resolver: open-the-editor/uri-resolver.md
+  - Insert Media Assets: insert-media.md
+    - Overview: insert-media/overview.md
+    - Insert Images: insert-media/images.md
+    - Insert Videos: insert-media/videos.md
+    - Insert Audio: insert-media/audio.md
+    - Insert Shapes or Stickers: insert-media/shapes-or-stickers.md
+  - Import Media Assets: import-media.md
+    - Overview: import-media/overview.md
+    - Concepts: import-media/concepts.md
+    - Import From Remote Source: import-media/from-remote-source.md
+      - Import Remote Asset: import-media/from-remote-source/remote-asset.md
+      - Versioning of Assets: import-media/from-remote-source/asset-versioning.md
+    - Edit or Remove Assets: import-media/edit-or-remove-assets.md
+    - Source Sets: import-media/source-sets.md
+    - Using Default Assets: import-media/default-assets.md
+    - Retrieve Mimetype: import-media/retrieve-mimetype.md
+    - Import EPS Artwork: import-media/from-eps.md
+    - Asset Content JSON Schema: import-media/content-json-schema.md
+    - File Format Support: import-media/file-format-support.md
+    - Size Limits: import-media/size-limits.md
+  - Export Media Assets: export-save-publish/export.md
+    - Overview: export-save-publish/export/overview.md
+    - For Social Media: export-save-publish/for-social-media.md
+    - For Audio Processing: export-save-publish/export/audio.md
+    - To PDF: export-save-publish/export/to-pdf.md
+    - To JPEG: export-save-publish/export/to-jpeg.md
+    - To PNG: export-save-publish/export/to-png.md
+    - To WebP: export-save-publish/export/to-webp.md
+    - To PSD: export-save-publish/export/to-psd.md
+    - To Raw Data: export-save-publish/export/to-raw-data.md
+    - Compress: export-save-publish/export/compress.md
+    - With a Color Mask: export-save-publish/export/with-color-mask.md
+    - Pre-Export Validation: export-save-publish/pre-export-validation.md
+    - Partial Export: export-save-publish/export/partial-export.md
+    - Size Limits: export-save-publish/export/size-limits.md
+    - Create Thumbnail: export-save-publish/create-thumbnail.md
+    - Thumbnail Previews: export-save-publish/thumbnail-previews.md
+    - For Printing: export-save-publish/for-printing.md
+  - Save: export-save-publish/save.md
+  - Store Custom Metadata: export-save-publish/store-custom-metadata.md
+  - Create and Edit Images: edit-image.md
+    - Overview: edit-image/overview.md
+    - Replace Colors: edit-image/replace-colors.md
+    - Remove Background: edit-image/remove-bg.md
+    - Transform: edit-image/transform.md
+      - Move: edit-image/transform/move.md
+      - Crop: edit-image/transform/crop.md
+      - Rotate: edit-image/transform/rotate.md
+      - Resize: edit-image/transform/resize.md
+      - Scale: edit-image/transform/scale.md
+      - Flip: edit-image/transform/flip.md
+    - Add Watermark: edit-image/add-watermark.md
+  - Create and Edit Videos: create-video.md
+    - Control Audio and Video: create-video/control.md
+    - Trim: edit-video/trim.md
+    - Split: edit-video/split.md
+    - Join and Arrange: edit-video/join-and-arrange.md
+    - Transform: edit-video/transform.md
+      - Move: edit-video/transform/move.md
+      - Crop: edit-video/transform/crop.md
+      - Rotate: edit-video/transform/rotate.md
+      - Resize: edit-video/transform/resize.md
+      - Scale: edit-video/transform/scale.md
+      - Flip: edit-video/transform/flip.md
+    - Add Captions: edit-video/add-captions.md
+    - Add Watermark: edit-video/add-watermark.md
+    - Redaction: edit-video/redaction.md
+    - Editing Overview: overview.md
+    - Limitations: create-video/limitations.md
+  - Create and Edit Text: text.md
+    - Overview: text/overview.md
+    - Add Text: text/add.md
+    - Edit Text: text/edit.md
+    - Text Styling: text/styling.md
+    - Text Designs: text/text-designs.md
+    - Auto-Size: text/auto-size.md
+    - Text Effects: text/effects.md
+    - Emojis: text/emojis.md
+    - Adjust Spacing: text/adjust-spacing.md
+    - Language Support: text/language-support.md
+  - Create and Edit Shapes: shapes.md
+    - Create Shapes: stickers-and-shapes/create-edit/create-shapes.md
+    - Edit Shapes: stickers-and-shapes/create-edit/edit-shapes.md
+    - Combine Shapes: stickers-and-shapes/combine.md
+    - Insert QR Code: stickers-and-shapes/insert-qr-code.md
+  - Create and Edit Stickers: stickers.md
+    - Create Stickers: stickers-and-shapes/create-edit/create-stickers.md
+    - Create Cutout: stickers-and-shapes/create-cutout.md
+  - Create and Edit Compositions: create-composition.md
+    - Overview: create-composition/overview.md
+    - Multi-Page Layouts: create-composition/multi-page.md
+    - Create a Collage: create-composition/collage.md
+    - Design a Layout: create-composition/layout.md
+    - Add a Background: create-composition/add-background.md
+    - Position and Align: create-composition/position-and-align.md
+    - Group and Ungroup Objects: create-composition/group-and-ungroup.md
+    - Layers: create-composition/layer-management.md
+    - Lock Design: create-composition/lock-design.md
+    - Blend Modes: create-composition/blend-modes.md
+    - Programmatic Creation: create-composition/programmatic.md
+  - Create and Use Templates: create-templates.md
+    - Overview: create-templates/overview.md
+    - Create From Scratch: create-templates/from-scratch.md
+    - Import Templates: create-templates/import.md
+      - From Scene File: create-templates/import/from-scene-file.md
+    - Dynamic Content: create-templates/add-dynamic-content.md
+      - Text Variables: create-templates/add-dynamic-content/text-variables.md
+      - Placeholders: create-templates/add-dynamic-content/placeholders.md
+      - Set Editing Constraints: create-templates/add-dynamic-content/set-editing-constraints.md
+    - Lock the Template: create-templates/lock.md
+    - Edit or Remove Templates: create-templates/edit-or-remove.md
+    - Add to Template Library: create-templates/add-to-template-library.md
+    - Use Templates Overview: use-templates/overview.md
+    - Apply a Template: use-templates/apply-template.md
+    - Generate From Template: use-templates/generate.md
+    - Replace Content: use-templates/replace-content.md
+    - Programmatic: use-templates/programmatic.md
+  - Colors: colors.md
+    - Overview: colors/overview.md
+    - Color Basics: colors/basics.md
+    - For Print: colors/for-print.md
+      - CMYK Colors: colors/for-print/cmyk.md
+      - Spot Colors: colors/for-print/spot.md
+    - For Screen: colors/for-screen.md
+      - sRGB Colors: colors/for-screen/srgb.md
+      - P3 Colors: colors/for-screen/p3.md
+    - Apply Colors: colors/apply.md
+    - Create a Color Palette: colors/create-color-palette.md
+    - Replace Individual Colors: colors/replace.md
+    - Adjust Colors: colors/adjust.md
+    - Extract Dominant Colors: colors/extract-colors.md
+    - Color Conversion: colors/conversion.md
+  - Fills: fills.md
+    - Overview: fills/overview.md
+    - Solid Color: fills/color.md
+    - Gradient: fills/gradient.md
+    - Image: fills/image.md
+    - Video: fills/video.md
+  - Outlines: outlines.md
+    - Overview: outlines/overview.md
+    - Using Strokes: outlines/strokes.md
+    - Shadows and Glows: outlines/shadows-and-glows.md
+  - Filters and Effects: filters-and-effects.md
+    - Overview: filters-and-effects/overview.md
+    - Supported Filters and Effects: filters-and-effects/support.md
+    - Apply Filter or Effect: filters-and-effects/apply.md
+    - Create Custom Filters: filters-and-effects/create-custom-filters.md
+    - Apply Chroma Key (Green Screen): filters-and-effects/chroma-key-green-screen.md
+    - Apply Blur: filters-and-effects/blur.md
+    - Apply Custom LUT Filter: filters-and-effects/create-custom-lut-filter.md
+    - Distortion: filters-and-effects/distortion.md
+    - Duotone: filters-and-effects/duotone.md
+  - Animation: animation.md
+    - Supported Animation Types: animation/types.md
+    - Create Animations: animation/create.md
+      - Base Animations: animation/create/base.md
+      - Text Animations: animation/create/text.md
+    - Edit Animations: animation/edit.md
+  - Rules: rules.md
+    - Overview: rules/overview.md
+    - Enforce Brand Guidelines: rules/enforce-brand-guidelines.md
+    - Lock Content: rules/lock-content.md
+    - Moderate Content: rules/moderate-content.md
+  - Conversion: conversion.md
+    - Overview: conversion/overview.md
+    - To Base64: conversion/to-base64.md
+    - To PDF: conversion/to-pdf.md
+  - Improve Performance: performance.md
+- Plugins: plugins.md
+  - Print Ready PDFs: plugins/print-ready-pdf.md
+- API Reference: api-reference/overview.md
+- Compatibility & Security: compatibility-fef719.md
+  - System Compatibility: compatibility-139ef9.md
+  - File Format Support: file-format-support.md
+  - Security: security.md
+- Upgrading: upgrade.md
+  - To v1.19: to-v1-19.md
+  - To v1.82: to-v1-82.md
+    - Add Music: create-audio/audio/add-music.md
+    - Add Sound Effects: create-audio/audio/add-sound-effects.md
+    - Adjust Audio Playback Speed: create-audio/audio/adjust-speed.md
+    - Adjust Audio Volume: create-audio/audio/adjust-volume.md
+    - Fade Audio In and Out: create-audio/audio/fade.md
+    - Loop Audio: create-audio/audio/loop.md
+    - Node.js - AWS Lambda: get-started/vanilla-aws-lambda.md
+    - Node.js - Clone GitHub Project: get-started/vanilla-clone-github-project.md
+    - Refresh Assets: import-media/asset-library/refresh-assets.md
+<-- IMGLY-AGENTS-MD-END -->
 
 ## API Index
 
 <-- IMGLY-TYPES-MD-START -->
-[CE.SDK Web API Index]|root: .
+[CE.SDK Web API Index]|root: ../api
 
 CreativeEngine:{asset,block,editor,event,scene,variable,actions,shortcuts,reactor,version,addPlugin,unstable_setVideoExportInactivityTimeout,unstable_setExportInactivityTimeout,addPostUpdateCallback,addPreUpdateCallback},... (+7)
-BlockAPI:{export,getDominantColors,exportWithColorMask,exportVideo,exportAudio,loadFromString,loadFromArchiveURL,loadFromURL,saveToString,saveToArchive,create,createFill,getAudioTrackCountFromVideo,createAudioFromVideo,createAudiosFromVideo},... (+409)
+BlockAPI:{export,getDominantColors,exportWithColorMask,exportVideo,exportAudio,loadFromString,loadFromArchiveURL,loadFromURL,saveToString,saveToArchive,create,createFill,getAudioTrackCountFromVideo,createAudioFromVideo,createAudiosFromVideo},... (+411)
 AssetAPI:{registerApplyMiddleware,registerApplyToBlockMiddleware,addSource,addLocalSource,addLocalAssetSourceFromJSONString,addLocalAssetSourceFromJSONURI,removeSource,findAllSources,findAssets,fetchAsset,getGroups,getSupportedMimeTypes,getCredits,name,url},... (+14)
-SceneAPI:{setCMYKProfile,setCMYKProfileFromData,getCMYKProfileInfo,removeCMYKProfile,getColorRenderingIntent,setColorRenderingIntent,isBlackPointCompensationEnabled,setBlackPointCompensationEnabled,load,loadFromString,loadFromURL,loadFromArchiveURL,saveToString,saveToArchive,create},... (+33)
-EditorAPI:{unlockWithLicense,isCapabilitySupported,checkCapabilities,startTracking,setTrackingMetadata,getTrackingMetadata,trackEvent,getActiveLicense,getEngineVersion,onStateChanged,setEditMode,getEditMode,unstable_isInteractionHappening,hasSelectedVectorNode,addVectorNode},... (+100)
+SceneAPI:{setCMYKProfile,setCMYKProfileFromData,getCMYKProfileInfo,removeCMYKProfile,getColorRenderingIntent,setColorRenderingIntent,isBlackPointCompensationEnabled,setBlackPointCompensationEnabled,load,loadFromString,loadFromURL,loadFromArchiveURL,saveToString,saveToArchive,create},... (+35)
+EditorAPI:{unlockWithLicense,isCapabilitySupported,getCapabilityState,checkCapabilities,startTracking,setTrackingMetadata,getTrackingMetadata,trackEvent,getActiveLicense,getEngineVersion,onStateChanged,setEditMode,getEditMode,unstable_isInteractionHappening,hasSelectedVectorNode},... (+101)
 EventAPI:{subscribe}
 VariableAPI:{findAll,setString,getString,remove}
 Types:{AnimationType,AssetResult,BlendMode,Color,ExportOptions,PropertyType,Scope,TextCase,VideoExportOptions}
@@ -48,10 +294,8 @@ Look up documentation for IMG.LY CreativeEditor SDK (Node.js).
 
 ## How to Use
 
-1. **Index lookup**: Match the query to a path in the Documentation Index above.
-   The index uses compressed format: `dir:{file1.md,file2.md}` means files are
-   at `dir/file1.md` and `dir/file2.md`.
-   Read a page: `<path>.md`
+1. **Index lookup**: Match the query to a page in the Documentation Index
+   above; each line names its path. Read a page: `<path>.md`
    (e.g. for `text/add.md` → `text/add.md`)
 2. **No exact match?** Search the bundled pages for a keyword if your host can
    search skill files; otherwise pick the closest page from the Documentation

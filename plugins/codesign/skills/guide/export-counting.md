@@ -1,10 +1,17 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Export Counting"
+description: "Learn which operations count as an export in CE.SDK, when export events are recorded, and what data they contain."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/export-counting-613923/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Export Counting](./export-counting.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Export Counting](https://img.ly/docs/cesdk/archive/v1.84/node/export-counting-613923/)
 
 ---
 
-Some CE.SDK plans use usage-based pricing that meters exports. This page defines exactly which operations count as an export, when an export is recorded, and which data is collected along with it. For an overview of licensing options, see [Licensing](./licensing.md). For a broader look at data collection and privacy, see [Security](./security.md).
+Some CE.SDK plans use usage-based pricing that meters exports. This page defines exactly which operations count as an export, when an export is recorded, and which data is collected along with it. For an overview of licensing options, see [Licensing](https://img.ly/docs/cesdk/archive/v1.84/node/licensing-8aa063/). For a broader look at data collection and privacy, see [Security](https://img.ly/docs/cesdk/archive/v1.84/node/security-777bfd/).
 
 ## What Counts as an Export
 
@@ -53,19 +60,19 @@ CE.SDK doesn't distinguish between environments. A license key can be used acros
 
 The same counting rules apply on every platform. Exports performed with the Node.js SDK or other server-side integrations are counted under the same definition as client-side exports.
 
-The [CE.SDK Renderer](#broken-link-7f3e9a) uses the same export counting and additionally sends periodic heartbeats to track the number of active instances, as described in the [Security](./security.md) documentation.
+The [CE.SDK Renderer](#broken-link-7f3e9a) uses the same export counting and additionally sends periodic heartbeats to track the number of active instances, as described in the [Security](https://img.ly/docs/cesdk/archive/v1.84/node/security-777bfd/) documentation.
 
 ## What Data Is Collected
 
-An export event contains only technical metadata—never your content. Image export events include the media type, format, resolution and page count. Video export events include the media type, format, resolution, frame rate and duration. Events are associated with the user ID (if provided by your integration), device ID and session ID described in the [Security](./security.md) documentation.
+An export event contains only technical metadata—never your content. Image export events include the media type, format, resolution and page count. Video export events include the media type, format, resolution, frame rate and duration. Events are associated with the user ID (if provided by your integration), device ID and session ID described in the [Security](https://img.ly/docs/cesdk/archive/v1.84/node/security-777bfd/) documentation.
 
 The user ID is transmitted exactly as your integration provides it and is used solely to deduplicate users when counting monthly active users. It doesn't need to be a real identifier: if you want to keep your internal user IDs private, pass a hashed or otherwise opaque value instead—deduplication works just as well, as long as the value is unique and stable per user.
 
-Export events are only sent when tracking is enabled for your license. Enterprise licenses with offline validation can opt out of tracking entirely; [contact our sales team](https://img.ly/forms/contact-sales) to explore these options.
+Export events are only sent when tracking is enabled for your license. Enterprise licenses with offline validation can opt out of tracking entirely; [contact our sales team](https://img.ly/forms/contact-sales/) to explore these options.
 
 ## Export Counts and Billing
 
-Export events are the technical metering primitive. How those counts map to your bill—which tiers apply and how usage is aggregated—is defined by your plan and contract, not by the SDK. If you have questions about how exports are billed under your agreement, [contact our sales team](https://img.ly/forms/contact-sales).
+Export events are the technical metering primitive. How those counts map to your bill—which tiers apply and how usage is aggregated—is defined by your plan and contract, not by the SDK. If you have questions about how exports are billed under your agreement, [contact our sales team](https://img.ly/forms/contact-sales/).
 
 
 
@@ -73,7 +80,7 @@ Export events are the technical metering primitive. How those counts map to your
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

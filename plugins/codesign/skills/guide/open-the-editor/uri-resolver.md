@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "URI Resolver"
+description: "Take control over asset URI resolution in CE.SDK by intercepting and transforming URIs before the engine loads them."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/uri-resolver-36b624/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Open the Editor](./open-the-editor.md) > [URI Resolver](./open-the-editor/uri-resolver.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Open the Editor](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor-23a1db/) > [URI Resolver](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/uri-resolver-36b624/)
 
 ---
 
@@ -10,11 +17,11 @@ Learn how to intercept and transform asset URIs in headless Node.js environments
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-open-the-editor-uri-resolver-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-open-the-editor-uri-resolver-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-open-the-editor-uri-resolver-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-open-the-editor-uri-resolver-server-js)
 
 When CE.SDK loads an asset in Node.js, it resolves the URI to an absolute path before fetching. You can intercept this process to add authentication tokens or transform URIs for your automation workflows.
 
@@ -237,8 +244,8 @@ console.log('\n✓ Removed custom resolver - back to default behavior');
 
 ## Next Steps
 
-- [Configuration](./configuration.md) — CE.SDK initialization and baseURL settings
-- [Load Assets from Remote](./import-media/from-remote-source.md) — Load assets from remote URLs and servers
+- [Configuration](https://img.ly/docs/cesdk/archive/v1.84/node/configuration-2c1c3d/) — CE.SDK initialization and baseURL settings
+- [Load Assets from Remote](https://img.ly/docs/cesdk/archive/v1.84/node/import-media/from-remote-source-b65faf/) — Load assets from remote URLs and servers
 
 
 
@@ -246,7 +253,7 @@ console.log('\n✓ Removed custom resolver - back to default behavior');
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

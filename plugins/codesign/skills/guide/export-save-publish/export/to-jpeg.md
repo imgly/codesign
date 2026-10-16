@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "To JPEG"
+description: "Export CE.SDK designs to JPEG format with configurable quality settings for photographs, web images, and social media content."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/to-jpeg-6f88e9/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Export Media Assets](./export-save-publish/export.md) > [To JPEG](./export-save-publish/export/to-jpeg.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Export Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export-82f968/) > [To JPEG](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/to-jpeg-6f88e9/)
 
 ---
 
@@ -10,11 +17,11 @@ Export CE.SDK designs to JPEG format—ideal for photographs, social media, and 
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-export-save-publish-export-to-jpeg-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-export-save-publish-export-to-jpeg-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-export-save-publish-export-to-jpeg-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-export-save-publish-export-to-jpeg-server-js)
 
 JPEG uses lossy compression optimized for photographs and smooth color gradients. Unlike PNG, JPEG does not support transparency—transparent areas render with a solid background.
 
@@ -214,10 +221,10 @@ JPEG works well for:
 
 ## Next Steps
 
-- [Export Overview](./export-save-publish/export/overview.md) — Compare all available export formats
-- [Export to PDF](./export-save-publish/export/to-pdf.md) — Export for print and document workflows
-- [Partial Export](./export-save-publish/export/partial-export.md) — Export specific regions or elements
-- [Size Limits](./export-save-publish/export/size-limits.md) — Handle large exports and memory constraints
+- [Export Overview](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/overview-9ed3a8/) — Compare all available export formats
+- [Export to PDF](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/to-pdf-95e04b/) — Export for print and document workflows
+- [Partial Export](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/partial-export-89aaf6/) — Export specific regions or elements
+- [Size Limits](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/size-limits-6f0695/) — Handle large exports and memory constraints
 
 
 
@@ -225,7 +232,7 @@ JPEG works well for:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

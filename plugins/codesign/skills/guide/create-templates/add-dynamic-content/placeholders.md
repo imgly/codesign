@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Placeholders"
+description: "Use placeholders to mark editable image, video, or text areas within a locked template layout."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content/placeholders-d9ba8a/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Use Templates](./create-templates.md) > [Dynamic Content](./create-templates/add-dynamic-content.md) > [Placeholders](./create-templates/add-dynamic-content/placeholders.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Use Templates](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates-3aef79/) > [Dynamic Content](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content-53fad7/) > [Placeholders](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content/placeholders-d9ba8a/)
 
 ---
 
@@ -10,11 +17,11 @@ Placeholders turn design blocks into drop-zones that can be programmatically pop
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-create-templates-dynamic-content-placeholders-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-create-templates-dynamic-content-placeholders-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-create-templates-dynamic-content-placeholders-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-create-templates-dynamic-content-placeholders-server-js)
 
 Placeholders enable content replacement while preserving design constraints. They support both graphic blocks (images/videos) and text blocks, with different configuration approaches for each type.
 
@@ -547,8 +554,8 @@ Always use a try-finally block to ensure the engine is disposed even if errors o
 
 ## Next Steps
 
-- [Lock the Template](./create-templates/lock.md) - Restrict editing access to specific elements or properties to enforce design rules
-- [Text Variables](./create-templates/add-dynamic-content/text-variables.md) - Define dynamic text elements that can be populated with custom values
+- [Lock the Template](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/lock-131489/) - Restrict editing access to specific elements or properties to enforce design rules
+- [Text Variables](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content/text-variables-7ecb50/) - Define dynamic text elements that can be populated with custom values
 
 
 
@@ -556,7 +563,7 @@ Always use a try-finally block to ensure the engine is disposed even if errors o
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

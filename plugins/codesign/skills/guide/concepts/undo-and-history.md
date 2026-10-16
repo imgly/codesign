@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Undo and History"
+description: "Manage undo and redo stacks in CE.SDK using multiple histories, callbacks, and API-based controls."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/concepts/undo-and-history-99479d/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Undo and History](./concepts/undo-and-history.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Undo and History](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/undo-and-history-99479d/)
 
 ---
 
@@ -10,11 +17,11 @@ Implement undo/redo functionality and manage multiple history stacks to track ed
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-concepts-undo-and-history-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-concepts-undo-and-history-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-concepts-undo-and-history-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-concepts-undo-and-history-server-js)
 
 CE.SDK automatically tracks editing operations, enabling you to undo and redo changes programmatically. The engine creates undo steps for most operations automatically. You can also create multiple independent history stacks to isolate different editing contexts, such as separate histories for different processing pipelines.
 
@@ -355,7 +362,7 @@ We create a new history stack using `engine.editor.createHistory()`. Use `engine
   );
 ```
 
-Operations performed while a history is active only affect that history. When you switch back to the primary history, its undo/redo state remains unchanged by operations performed in the secondary history.
+Operations performed while a history is active only affect that history. When you switch back to the primary history, its undo/redo state remains unchanged by operations performed in the secondary history. A new history starts from the current scene, including edits that have no undo step yet and the current selection. When you switch back to a history, the scene returns to that history's last undo step.
 
 ### Cleaning Up History Stacks
 
@@ -381,7 +388,7 @@ Common issues when working with undo/redo functionality:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

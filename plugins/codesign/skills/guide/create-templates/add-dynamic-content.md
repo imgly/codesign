@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Dynamic Content"
+description: "Use variables and placeholders to inject dynamic data into templates at design or runtime."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content-53fad7/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Use Templates](./create-templates.md) > [Dynamic Content](./create-templates/add-dynamic-content.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Use Templates](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates-3aef79/) > [Dynamic Content](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content-53fad7/)
 
 ---
 
@@ -10,11 +17,11 @@ Dynamic content transforms static designs into flexible, data-driven templates. 
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-create-templates-add-dynamic-content-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-create-templates-add-dynamic-content-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-create-templates-add-dynamic-content-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-create-templates-add-dynamic-content-server-js)
 
 ```typescript file=@cesdk_web_examples/guides-create-templates-add-dynamic-content-server-js/server-js.ts reference-only
 import CreativeEngine from '@cesdk/node';
@@ -294,16 +301,16 @@ The `setScopeEnabled()` method controls individual properties. Setting `'editor/
 
 ## Related Pages
 
-- [Text Variables](./create-templates/add-dynamic-content/text-variables.md) - Define dynamic text elements that can be populated with custom values during design generation in Node.js environments.
-- [Placeholders](./create-templates/add-dynamic-content/placeholders.md) - Use placeholders to mark editable image, video, or text areas within a locked template layout.
-- [Set Editing Constraints](./create-templates/add-dynamic-content/set-editing-constraints.md) - Control editing capabilities in CE.SDK templates using the Scope system to lock positions, prevent transformations, and create guided editing experiences in Node.js/server environments
+- [Text Variables](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content/text-variables-7ecb50/) - Define dynamic text elements that can be populated with custom values during design generation in Node.js environments.
+- [Placeholders](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content/placeholders-d9ba8a/) - Use placeholders to mark editable image, video, or text areas within a locked template layout.
+- [Set Editing Constraints](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/add-dynamic-content/set-editing-constraints-c892c0/) - Control editing capabilities in CE.SDK templates using the Scope system to lock positions, prevent transformations, and create guided editing experiences in Node.js/server environments
 
 
 ---
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

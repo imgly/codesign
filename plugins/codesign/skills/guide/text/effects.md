@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Text Effects"
+description: "Add visual depth and interest to text blocks using drop shadows and stroke outlines."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/text/effects-2dc9fc/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Text](./text.md) > [Text Effects](./text/effects.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Text](https://img.ly/docs/cesdk/archive/v1.84/node/text-8a993a/) > [Text Effects](https://img.ly/docs/cesdk/archive/v1.84/node/text/effects-2dc9fc/)
 
 ---
 
@@ -10,11 +17,11 @@ Apply visual effects to text blocks programmatically including drop shadows and 
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-text-effects-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-text-effects-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-text-effects-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-text-effects-server-js)
 
 CE.SDK provides visual effect capabilities for text blocks through the Block API. We can apply drop shadows for depth and stroke outlines for text borders.
 
@@ -172,6 +179,8 @@ We add a colored border around text using stroke APIs. We enable stroke with `se
 
 The stroke width is specified in pixels. Text blocks support `'Center'`, `'Inner'`, and `'Outer'` stroke positioning via `setStrokePosition()`. Stroke styles include `'Solid'`, `'Dashed'`, `'Dotted'`, and other line patterns.
 
+The stroke also outlines the underline, strikethrough, and overline of the text.
+
 ## API Reference
 
 | Method | Purpose |
@@ -202,7 +211,7 @@ The stroke width is specified in pixels. Text blocks support `'Center'`, `'Inner
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

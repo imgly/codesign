@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Lock the Template"
+description: "Restrict editing access to specific elements or properties in a template to enforce design rules."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/lock-131489/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Use Templates](./create-templates.md) > [Lock the Template](./create-templates/lock.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Use Templates](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates-3aef79/) > [Lock the Template](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/lock-131489/)
 
 ---
 
@@ -24,7 +31,7 @@ If you need to **prepare templates** for the two-surface workflow, you can confi
 - Leave scopes disabled on protected elements like logos and brand assets
 - Save the configured template for use in browser-based adopter surfaces
 
-For scope configuration APIs, see [Lock Content](./rules/lock-content.md).
+For scope configuration APIs, see [Lock Content](https://img.ly/docs/cesdk/archive/v1.84/node/rules/lock-content-9fa727/).
 
 ## API Reference
 
@@ -58,7 +65,7 @@ For scope configuration APIs, see [Lock Content](./rules/lock-content.md).
 
 ## See the Browser Guide
 
-For the complete two-surface pattern implementation with interactive role switching, see the [browser guide](./create-templates/lock.md).
+For the complete two-surface pattern implementation with interactive role switching, see the [browser guide](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates/lock-131489/).
 
 
 
@@ -66,7 +73,7 @@ For the complete two-surface pattern implementation with interactive role switch
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

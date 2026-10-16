@@ -219,7 +219,7 @@ await engine.scene.zoomToBlock(pageBlock, {
 });
 ```
 
-**Note:** `zoomToBlock` is not for page switching. It only changes the viewport, not the active page. Use `cesdk.unstable_switchPage(pageId)` to switch pages in single-page mode.
+**Note:** `zoomToBlock` is not for page switching. It only changes the viewport, not the active page. Use `cesdk.switchPage(pageId)` to switch pages in single-page mode.
 
 ---
 
@@ -239,7 +239,7 @@ This prevents the page from being selected while still allowing interaction with
 
 ## Never Rewrite Starter Kit Files From Scratch
 
-**Problem:** Writing `index.html`, `vite.config.ts`, `tsconfig.json`, or `tsconfig.base.json` from scratch leads to missing styles. The starter kit's `index.html` contains critical CSS resets (zero margin/padding, overflow hidden, overscroll-behavior) required for full-bleed editors.
+**Problem:** Writing `index.html`, `vite.config.ts`, or `tsconfig.json` from scratch leads to missing styles. The starter kit's `index.html` contains critical CSS resets (zero margin/padding, overflow hidden, overscroll-behavior) required for full-bleed editors.
 
 **Solution:** Copy these files directly from the starter kit and adapt only what's necessary (e.g., changing the script `src` for React). Do not rewrite them from scratch when the kit already provides them.
 
@@ -247,20 +247,22 @@ This prevents the page from being selected while still allowing interaction with
 
 ## Starter Kits Are TypeScript: Copy First, Then Transpile for JS
 
-**Problem:** All bundled starter kits use TypeScript (`.ts` files, `tsconfig.json`, type annotations). Copying them into a JavaScript project without conversion leads to syntax errors. Manually rewriting or converting files by hand leads to missing CSS resets, broken Vite configs, or incorrect plugin initialization.
+**Problem:** All CE.SDK Web starter kits use TypeScript (`.ts`/`.tsx` files, `tsconfig.json`, type annotations). Copying them into a JavaScript project without conversion leads to syntax errors. Manually rewriting or converting files by hand leads to missing CSS resets, broken Vite configs, or incorrect plugin initialization.
 
-**Solution:** Always **copy the starter kit into the user's project first**, then run the bundled transpile script on the **user's project copy**:
+**Solution:** Always **copy or clone the starter kit into the user's project first**, then run the bundled transpile script on the **user's project copy**:
 
 ```bash
-# 1. Install typescript temporarily (needed by the transpile script)
-cd /path/to/users/project && npm install --no-save typescript
+# 1. Install TypeScript 5 temporarily in the project (the script loads it from there)
+cd /path/to/users/project && npm install --no-save typescript@5
 
 # 2. Run the transpile script on the user's project copy (NOT on the starter kit source)
-node <path-to-skill>/scripts/transpile-to-js.mjs /path/to/users/project
+node <transpile-script-path> /path/to/users/project
 ```
 
-The script strips type annotations, renames `.ts` to `.js`, removes `tsconfig.json`/`tsconfig.base.json`, updates `index.html` references, and cleans TypeScript dependencies from `package.json`.
+For a prerelease (RC or nightly) CE.SDK version, first add `legacy-peer-deps=true` to the project's `.npmrc`, as the build skill's scaffolding steps say, or the install fails with ERESOLVE.
 
-Find the script with Glob: `**/skills/build/scripts/transpile-to-js.mjs`
+The script strips type annotations, renames `.ts`/`.tsx` to `.js`/`.jsx`, removes `tsconfig.json`, updates `index.html` references, and removes TypeScript dependencies and `tsc` steps from `package.json`.
+
+Find the script with Glob: `**/skills/build/**/scripts/transpile-to-js.mjs`
 
 **Never run the transpile script on the starter kit source directory.** Never manually strip types or rewrite files by hand. Copy first, then transpile the copy.

@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Group and Ungroup Objects"
+description: "Group multiple design elements together so they move, scale, and transform as a single unit; ungroup to edit them individually."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/group-and-ungroup-62565a/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Compositions](./create-composition.md) > [Group and Ungroup Objects](./create-composition/group-and-ungroup.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Compositions](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition-db709c/) > [Group and Ungroup Objects](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/group-and-ungroup-62565a/)
 
 ---
 
@@ -10,11 +17,11 @@ Group multiple blocks to move, scale, and transform them as a single unit; ungro
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-create-composition-grouping-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-create-composition-grouping-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-create-composition-grouping-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-create-composition-grouping-server-js)
 
 Groups let you treat multiple blocks as a cohesive unit. Grouped blocks move, scale, and rotate together while maintaining their relative positions. Groups can contain other groups, enabling hierarchical compositions.
 
@@ -327,9 +334,9 @@ If a newly created group is not visible:
 
 Explore related topics:
 
-- [Layer Management](./create-composition/layer-management.md) - Control z-order and visibility of blocks
-- [Position and Align](./create-composition/position-and-align.md) - Arrange blocks precisely on the canvas
-- [Lock Design](./create-composition/lock-design.md) - Prevent modifications to specific elements
+- [Layer Management](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/layer-management-18f07a/) - Control z-order and visibility of blocks
+- [Position and Align](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/position-and-align-cc6b6a/) - Arrange blocks precisely on the canvas
+- [Lock Design](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/lock-design-0a81de/) - Prevent modifications to specific elements
 
 
 
@@ -337,7 +344,7 @@ Explore related topics:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

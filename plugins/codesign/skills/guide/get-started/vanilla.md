@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Node.js - New Project"
+description: "Getting started with CE.SDK Engine in Node.js using Vanilla JS"
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/get-started/vanilla-n1234a/"
+---
 
-**Navigation:** [Get Started](./get-started/overview.md) > [Quickstart Node.js](./get-started/vanilla.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Get Started](https://img.ly/docs/cesdk/archive/v1.84/node/get-started/overview-e18f40/) > [Quickstart Node.js](https://img.ly/docs/cesdk/archive/v1.84/node/get-started/vanilla-n1234a/)
 
 ---
 
@@ -10,7 +17,15 @@ modules)**, enabling you to process images and designs programmatically. By
 the end of this guide, you’ll have a working Node.js script that **loads a
 scene, modifies it, and exports it as an image**.
 
-<CesdkOverview />
+## What's CreativeEditor SDK?
+
+CreativeEditor SDK (CE.SDK) lets you integrate a customizable image and video editor into your web app. It includes filters, text overlays, and other media editing tools, and adapts easily to your use case.
+
+CreativeEditor SDK is a commercial product. To use it, you need a valid license key. If you don’t have one yet, contact our sales team or purchase a license.
+
+[Contact Sales](https://img.ly/forms/contact-sales/)
+
+[Purchase License](https://img.ly/pricing)
 
 ## Who Is This Guide For?
 
@@ -34,7 +49,7 @@ This guide is for developers who:
 Before getting started, ensure you have:
 
 - **Node.js v22 or later** installed. ([Download Node.js](https://nodejs.org/)).
-- A valid **CE.SDK license key** - Required for engine initialization. [Start a free trial](https://img.ly/forms/free-trial) to get your license key.
+- A valid **CE.SDK license key** - Required for engine initialization. [Contact sales](https://img.ly/forms/contact-sales/) to get your license key.
 
 ## Step 1: Set Up Your Project
 
@@ -56,7 +71,7 @@ touch index.js
 Run the following command to install the required packages:
 
 ```bash
-npm install @cesdk/node@$UBQ_VERSION$
+npm install @cesdk/node@1.84.0
 ```
 
 Your project structure should now look like this:
@@ -216,10 +231,10 @@ This code processes the scene and generates an image file named **`example-outpu
 
 Congratulations! You’ve successfully integrated **CE.SDK Engine in Node.js** using **plain JavaScript**. Next, explore:
 
-- [Serve assets from your server](./serve-assets.md)
-- [Import media](./import-media/concepts.md)
-- [Automating creative workflows](./automation/overview.md)
-- [Running on AWS Lambda](./get-started/vanilla-aws-lambda.md)
+- [Serve assets from your server](https://img.ly/docs/cesdk/archive/v1.84/node/serve-assets-b0827c/)
+- [Import media](https://img.ly/docs/cesdk/archive/v1.84/node/import-media/concepts-5e6197/)
+- [Automating creative workflows](https://img.ly/docs/cesdk/archive/v1.84/node/automation/overview-34d971/)
+- [Running on AWS Lambda](https://img.ly/docs/cesdk/archive/v1.84/node/get-started/vanilla-aws-lambda-fee18b/)
 
 
 
@@ -227,7 +242,7 @@ Congratulations! You’ve successfully integrated **CE.SDK Engine in Node.js** u
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

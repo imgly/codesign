@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Spot Colors"
+description: "Define, apply, and manage spot colors for professional print workflows with premixed inks."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/colors/for-print/spot-c3a150/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Colors](./colors.md) > [For Print](./colors/for-print.md) > [Spot Colors](./colors/for-print/spot.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors-a9b79c/) > [For Print](https://img.ly/docs/cesdk/archive/v1.84/node/colors/for-print-59bc05/) > [Spot Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors/for-print/spot-c3a150/)
 
 ---
 
@@ -10,11 +17,11 @@ Define and manage spot colors programmatically for professional print workflows 
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-colors-for-print-spot-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-colors-for-print-spot-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-colors-for-print-spot-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-colors-for-print-spot-server-js)
 
 Spot colors are named colors reproduced using premixed inks in print production, providing exact color matching that CMYK process colors cannot guarantee. CE.SDK maintains a registry of spot color definitions at the editor level, where each spot color has a name and screen approximations (RGB and/or CMYK) for display purposes. The actual premixed ink is used during printing based on the color name.
 
@@ -669,9 +676,9 @@ Ensure you're using the exact name string. Note that removing a spot color doesn
 
 ## Next Steps
 
-- [Export for Printing](./export-save-publish/for-printing.md) - Export designs with spot colors for professional print production
-- [Apply Colors](./colors/apply.md) - Apply colors to fills, strokes, and shadows
-- [CMYK Colors](./colors/for-print/cmyk.md) - Work with CMYK process colors
+- [Export for Printing](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/for-printing-bca896/) - Export designs with spot colors for professional print production
+- [Apply Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors/apply-2211e3/) - Apply colors to fills, strokes, and shadows
+- [CMYK Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors/for-print/cmyk-8a1334/) - Work with CMYK process colors
 
 ## Cleanup
 
@@ -688,7 +695,7 @@ engine.dispose();
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

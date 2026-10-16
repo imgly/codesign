@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Thumbnail Previews"
+description: "Generate timeline filmstrips, page storyboards, and audio waveforms with the CE.SDK thumbnail sequence APIs, which stream each frame and sample chunk as it becomes ready."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/thumbnail-previews-dcf031/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Export Media Assets](./export-save-publish/export.md) > [Thumbnail Previews](./export-save-publish/thumbnail-previews.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Export Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export-82f968/) > [Thumbnail Previews](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/thumbnail-previews-dcf031/)
 
 ---
 
@@ -12,11 +19,11 @@ array you can store or draw.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-export-save-publish-thumbnail-previews-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-export-save-publish-thumbnail-previews-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-export-save-publish-thumbnail-previews-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-export-save-publish-thumbnail-previews-server-js)
 
 `engine.block.generateAudioThumbnailSequence()` produces a waveform for an audio block or a video fill. Instead of returning everything at once, it delivers the samples in chunks through a callback as the engine reads the media, so a long clip does not block your program.
 
@@ -217,7 +224,7 @@ This guide covers requesting a waveform, accumulating chunks into one array, rea
 > it throws a `ReferenceError`. Use the browser version of this guide for the
 > video filmstrip and page storyboard workflows.
 
-For a static preview image produced through the export pipeline, see [Create Thumbnail](./export-save-publish/create-thumbnail.md).
+For a static preview image produced through the export pipeline, see [Create Thumbnail](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/create-thumbnail-749be1/).
 
 ## Initialize the Engine
 
@@ -383,7 +390,7 @@ Cancel before you request a second waveform for the same block. A block handles 
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Chroma Key (Green Screen)"
+description: "Apply the green screen effect to images and videos, replacing specific colors with transparency for compositing workflows."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/chroma-key-green-screen-1e3e99/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Filters and Effects](./filters-and-effects.md) > [Apply Chroma Key (Green Screen)](./filters-and-effects/chroma-key-green-screen.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Filters and Effects](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects-6f88ac/) > [Apply Chroma Key (Green Screen)](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/chroma-key-green-screen-1e3e99/)
 
 ---
 
@@ -11,11 +18,11 @@ for video compositing and virtual background applications.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-filters-and-effects-chroma-key-green-screen-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-filters-and-effects-chroma-key-green-screen-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-filters-and-effects-chroma-key-green-screen-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-filters-and-effects-chroma-key-green-screen-server-js)
 
 The green screen effect (chroma key) replaces a specified color with transparency, enabling compositing workflows where foreground subjects appear over different backgrounds. While green is the most common key color due to its contrast with skin tones, the effect works with any solid color—blue screens, white backgrounds, or custom colors.
 
@@ -330,9 +337,9 @@ When removing effects, use the index from `getEffects()` to specify which effect
 
 ## Next Steps
 
-- [Apply Filters and Effects](./filters-and-effects/apply.md) - Learn the fundamentals of the effect system
-- [Blur](./filters-and-effects/blur.md) - Add blur effects for depth of field
-- [Duotone](./filters-and-effects/duotone.md) - Create two-color artistic treatments
+- [Apply Filters and Effects](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/apply-2764e4/) - Learn the fundamentals of the effect system
+- [Blur](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/blur-71d642/) - Add blur effects for depth of field
+- [Duotone](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/duotone-831fc5/) - Create two-color artistic treatments
 
 
 
@@ -340,7 +347,7 @@ When removing effects, use the index from `getEffects()` to specify which effect
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

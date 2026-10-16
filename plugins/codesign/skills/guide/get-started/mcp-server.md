@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "MCP Server"
+description: "Connect AI assistants to CE.SDK documentation using the Model Context Protocol (MCP) server."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/get-started/mcp-server-fde71c/"
+---
 
-**Navigation:** [Build with AI](./get-started/build-with-ai.md) > [MCP Server](./get-started/mcp-server.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Build with AI](https://img.ly/docs/cesdk/archive/v1.84/node/get-started/build-with-ai-k7m9p2/) > [MCP Server](https://img.ly/docs/cesdk/archive/v1.84/node/get-started/mcp-server-fde71c/)
 
 ---
 
@@ -115,7 +122,7 @@ The AI will search our documentation and provide answers based on the latest CE.
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

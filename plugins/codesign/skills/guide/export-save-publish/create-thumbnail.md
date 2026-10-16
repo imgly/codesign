@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Create Thumbnail"
+description: "Generate thumbnail preview images from CE.SDK scenes by exporting with target dimensions for galleries, file browsers, and design management interfaces."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/create-thumbnail-749be1/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Export Media Assets](./export-save-publish/export.md) > [Create Thumbnail](./export-save-publish/create-thumbnail.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Export Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export-82f968/) > [Create Thumbnail](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/create-thumbnail-749be1/)
 
 ---
 
@@ -10,11 +17,11 @@ Generate thumbnail preview images from CE.SDK scenes by exporting with target di
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-export-save-publish-create-thumbnail-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-export-save-publish-create-thumbnail-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-export-save-publish-create-thumbnail-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-export-save-publish-create-thumbnail-server-js)
 
 Thumbnails provide visual previews of designs without loading the full editor. Use `engine.block.export()` with `targetWidth` and `targetHeight` options to scale content while maintaining aspect ratio. Supported formats include PNG, JPEG, and WebP.
 
@@ -136,7 +143,7 @@ try {
 
 This guide covers exporting thumbnails at specific dimensions, choosing formats, optimizing quality and file size, and saving thumbnails to the file system.
 
-To generate audio waveforms from a scene's audio, see [Thumbnail Previews](./export-save-publish/thumbnail-previews.md), which covers the streaming preview APIs.
+To generate audio waveforms from a scene's audio, see [Thumbnail Previews](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/thumbnail-previews-dcf031/), which covers the streaming preview APIs.
 
 ## Export a Thumbnail
 
@@ -252,7 +259,7 @@ For thumbnails, JPEG quality of 0.8 or WebP quality of 0.75-0.85 typically provi
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

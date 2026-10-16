@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Color Basics"
+description: "Learn how color works in CE.SDK, including the three supported color spaces (sRGB, CMYK, and Spot) and when to use each for screen display or print workflows."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/colors/basics-307115/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Colors](./colors.md) > [Color Basics](./colors/basics.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors-a9b79c/) > [Color Basics](https://img.ly/docs/cesdk/archive/v1.84/node/colors/basics-307115/)
 
 ---
 
@@ -10,11 +17,11 @@ Understand the three color spaces in CE.SDK and when to use each for screen or p
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-colors-basics-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-colors-basics-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-colors-basics-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-colors-basics-server-js)
 
 CE.SDK supports three color spaces: **sRGB** for screen display, **CMYK** for print workflows, and **Spot Color** for specialized printing. Each color space serves different output types and has its own object format for the `setColor()` API.
 
@@ -400,9 +407,9 @@ engine.dispose();
 
 ## Next Steps
 
-- [Apply Colors](./colors/apply.md) - Apply colors to design elements programmatically
-- [CMYK Colors](./colors/for-print/cmyk.md) - Work with CMYK for print workflows
-- [Spot Colors](./colors/for-print/spot.md) - Define and manage spot colors for specialized printing
+- [Apply Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors/apply-2211e3/) - Apply colors to design elements programmatically
+- [CMYK Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors/for-print/cmyk-8a1334/) - Work with CMYK for print workflows
+- [Spot Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors/for-print/spot-c3a150/) - Define and manage spot colors for specialized printing
 
 
 
@@ -410,7 +417,7 @@ engine.dispose();
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

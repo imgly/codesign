@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Plugin Architecture"
+description: "Understand how CE.SDK plugins fit together—what a plugin is, how it attaches to the editor or engine, and which extension surfaces it can reach."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/concepts/plugin-architecture-068fc4/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Plugin Architecture](./concepts/plugin-architecture.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Plugin Architecture](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/plugin-architecture-068fc4/)
 
 ---
 
@@ -15,7 +22,7 @@ server-side setups and how to run an engine plugin without any editor UI.
 >
 > - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/main/guides-concepts-plugin-architecture-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-concepts-plugin-architecture-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-concepts-plugin-architecture-server-js)
 
 A plugin is a self-contained unit that packages engine behavior—asset sources, settings, callbacks—and attaches to an existing engine. CE.SDK for Web distinguishes two plugin layers: engine plugins, which only need the engine, and editor plugins, which extend the editor UI. Only the first layer applies on the server, where no editor exists.
 
@@ -171,9 +178,9 @@ If a plugin mixes engine work with UI work, split the engine part into its own `
 
 ## Next Steps
 
-- [Headless Mode](./concepts/headless-mode.md) - Running the engine without UI
-- [Architecture](./concepts/architecture.md) - How the CreativeEngine is structured
-- [Print-Ready PDF](./plugins/print-ready-pdf.md) - An official plugin with server-side docs
+- [Headless Mode](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/headless-mode-24ab98/) - Running the engine without UI
+- [Architecture](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/architecture-6ea9b2/) - How the CreativeEngine is structured
+- [Print-Ready PDF](https://img.ly/docs/cesdk/archive/v1.84/node/plugins/print-ready-pdf-iroalu/) - An official plugin with server-side docs
 
 
 
@@ -181,7 +188,7 @@ If a plugin mixes engine work with UI work, split the engine part into its own `
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

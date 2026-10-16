@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Asset Concepts"
+description: "This guide explains the foundational architecture of the CE.SDK asset system, including what asset sources are, how they organize content, and how they connect to the user interface."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/import-media/concepts-5e6197/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Import Media Assets](./import-media.md) > [Concepts](./import-media/concepts.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Import Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/import-media-4e3703/) > [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/import-media/concepts-5e6197/)
 
 ---
 
@@ -149,7 +156,7 @@ Common conceptual misunderstandings:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Create Custom Filters"
+description: "Extend CE.SDK with custom LUT filter asset sources for brand-specific color grading and filter collections."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/create-custom-filters-c796ba/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Filters and Effects](./filters-and-effects.md) > [Create Custom Filters](./filters-and-effects/create-custom-filters.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Filters and Effects](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects-6f88ac/) > [Create Custom Filters](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/create-custom-filters-c796ba/)
 
 ---
 
@@ -10,11 +17,11 @@ Extend CE.SDK with your own LUT filters by creating and registering custom filte
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-filters-and-effects-add-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-filters-and-effects-add-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-filters-and-effects-add-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-filters-and-effects-add-server-js)
 
 CE.SDK provides built-in LUT filters, but many applications need brand-specific color grading or custom filter collections. Custom filter asset sources let you register your own LUT filters for automated batch processing and server-side image workflows. Once registered, custom filters can be queried and applied programmatically.
 
@@ -680,9 +687,9 @@ After applying filters, we export the scene to PNG.
 
 Now that you understand how to create and register custom filter sources, explore related topics:
 
-- [Apply Filters and Effects](./filters-and-effects/apply.md) - Learn to apply filters to design elements and manage effect stacks
-- [Create a Custom LUT Filter](./filters-and-effects/create-custom-lut-filter.md) - Understand LUT image format and create your own color grading filters
-- [Blur Effects](./filters-and-effects/blur.md) - Add blur effects to images and videos
+- [Apply Filters and Effects](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/apply-2764e4/) - Learn to apply filters to design elements and manage effect stacks
+- [Create a Custom LUT Filter](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/create-custom-lut-filter-6e3f49/) - Understand LUT image format and create your own color grading filters
+- [Blur Effects](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/blur-71d642/) - Add blur effects to images and videos
 
 
 
@@ -690,7 +697,7 @@ Now that you understand how to create and register custom filter sources, explor
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

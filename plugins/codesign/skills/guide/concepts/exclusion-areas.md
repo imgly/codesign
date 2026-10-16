@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Exclusion Areas"
+description: "Mark a region of a page that content must stay out of, and cut it out of a headless export."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/concepts/exclusion-areas-c2b87b/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Exclusion Areas](./concepts/exclusion-areas.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Exclusion Areas](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/exclusion-areas-c2b87b/)
 
 ---
 
@@ -75,8 +82,8 @@ There is no user to constrain on a server, so `exclusionArea/constrains` changes
 
 ## Next Steps
 
-- [Pages](./concepts/pages.md) — page margins and the safety inset.
-- [Headless Mode](./concepts/headless-mode.md) — running the engine without a canvas.
+- [Pages](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/pages-7b6bae/) — page margins and the safety inset.
+- [Headless Mode](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/headless-mode-24ab98/) — running the engine without a canvas.
 
 
 
@@ -84,7 +91,7 @@ There is no user to constrain on a server, so `exclusionArea/constrains` changes
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

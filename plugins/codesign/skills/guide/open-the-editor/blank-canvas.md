@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Start With Blank Canvas"
+description: "Launch the editor with an empty canvas as a starting point for new designs."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/blank-canvas-18ff05/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Open the Editor](./open-the-editor.md) > [Start With Blank Canvas](./open-the-editor/blank-canvas.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Open the Editor](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor-23a1db/) > [Start With Blank Canvas](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/blank-canvas-18ff05/)
 
 ---
 
@@ -10,16 +17,16 @@ Create a new scene from scratch to build designs with complete control over canv
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-open-the-editor-blank-canvas-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-open-the-editor-blank-canvas-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-open-the-editor-blank-canvas-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-open-the-editor-blank-canvas-server-js)
 
 Starting from a blank canvas lets you build new designs without pre-existing content. The `engine.scene.create()` method creates an empty scene with its own camera, ready for adding pages and content. This differs from loading templates or images, which start with existing content.
 
-> **Other Ways to Create Scenes:** You can also start with existing content:* [Create From Image](./open-the-editor/from-image.md) — Start with an image as the base
-> * [Load a Scene](./open-the-editor/load-scene.md) — Resume editing a previously saved design
+> **Other Ways to Create Scenes:** You can also start with existing content:* [Create From Image](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/from-image-ad9b5e/) — Start with an image as the base
+> * [Load a Scene](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/load-scene-478833/) — Resume editing a previously saved design
 
 ```typescript file=@cesdk_web_examples/guides-open-the-editor-blank-canvas-server-js/server-js.ts reference-only
 import CreativeEngine from '@cesdk/node';
@@ -147,9 +154,9 @@ engine.dispose();
 
 Now that you have created a design from a blank canvas, explore related topics:
 
-- [Save](./export-save-publish/save.md) — Persist your design to a file or backend service
-- [Blocks](./concepts/blocks.md) — Learn about scene hierarchy and block relationships
-- [Create From Image](./open-the-editor/from-image.md) — Start with an existing image instead of a blank canvas
+- [Save](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/save-c8b124/) — Persist your design to a file or backend service
+- [Blocks](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/blocks-90241e/) — Learn about scene hierarchy and block relationships
+- [Create From Image](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/from-image-ad9b5e/) — Start with an existing image instead of a blank canvas
 
 
 
@@ -157,7 +164,7 @@ Now that you have created a design from a blank canvas, explore related topics:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

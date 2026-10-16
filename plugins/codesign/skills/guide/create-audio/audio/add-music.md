@@ -1,4 +1,11 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Add Music"
+description: "Add background music and audio tracks to video projects using CE.SDK's audio block system."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/create-audio/audio/add-music-5b182c/"
+---
+
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
 
 ---
 
@@ -9,11 +16,11 @@ CE.SDK's headless engine for server-side audio processing.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-create-audio-add-music-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-create-audio-add-music-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-create-audio-add-music-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-create-audio-add-music-server-js)
 
 <NodejsVideoExportNotice {...props} />
 
@@ -336,7 +343,7 @@ Save the scene configuration for later use or rendering. In headless mode, expor
   );
 ```
 
-The exported scene contains all audio configuration including source URIs, time positions, durations, and volume levels. To produce the final video with audio on the server, export MP4 directly with the native `@cesdk/node-native` package or use the CE.SDK Renderer. Note: with `@cesdk/node-native` on Linux and Windows, export of scenes with standalone audio blocks does not finish yet — see the [video limitations guide](./create-video/limitations.md).
+The exported scene contains all audio configuration including source URIs, time positions, durations, and volume levels. To produce the final video with audio on the server, export MP4 directly with the native `@cesdk/node-native` package or use the CE.SDK Renderer. Note: with `@cesdk/node-native` on Linux and Windows, export of scenes with standalone audio blocks does not finish yet — see the [video limitations guide](https://img.ly/docs/cesdk/archive/v1.84/node/create-video/limitations-6a740d/).
 
 ## Troubleshooting
 
@@ -402,7 +409,7 @@ This section describes the properties available for the **Audio Type** (`//ly.im
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

@@ -343,9 +343,8 @@ engine.block.getTextFontSizes(text, { unit: 'Pixel' }); // read-only diagnostic
 // Rich text — STYLE RANGES inside ONE block. Every setter below takes an optional
 // (from, to) character range; omit it to style the whole string. An accent word, a
 // bold lead-in, an inline price, a struck-through old price: all are RANGES on one
-// text block, never a second block placed beside the first. Two blocks look identical
-// in a render and are caught by reading the scene graph — they also re-break on every
-// copy/font/locale change, because nothing binds them to each other. (§6.1.9)
+// text block, never a second block placed beside the first: nothing binds the two,
+// so they re-break on every copy/font/locale change. (§6.1.9)
 await engine.design.setProps(text, {
   text: {
     string: s,
@@ -354,7 +353,8 @@ await engine.design.setProps(text, {
       { from, to, style: 'italic' },
       { from, to, typeface: tf }, // a second face inline
       { from, to, size: '48px' },
-      { from, to, decoration: { lines: ['Underline'] } } // per-range decoration
+      { from, to, decoration: { lines: ['Underline'] } }, // per-range decoration
+      { from, to, scriptStyle: 'Superscript' } // ®, ™, m²; 'Subscript' for H₂O (§6.1.9)
     ]
   }
 });
@@ -364,8 +364,7 @@ await engine.design.setProps(text, {
 // Decoration is configurable, not just on/off:
 //   lines: 'Underline' | 'Strikethrough' | 'Overline' (combinable)
 //   style: 'Solid' | 'Double' | 'Dotted' | 'Dashed' | 'Wavy'
-//   underlineColor / underlineThickness / underlineOffset / skipInk (keep skipInk on
-//   so descenders stay legible).
+//   underlineColor / underlineThickness / underlineOffset / skipInk (§6.1.9).
 
 // ALL-CAPS: set the PROPERTY, don't type capitals into the string. `case` re-cases on
 // render, so the string stays real words — translatable, searchable, correct in caseless
@@ -373,7 +372,7 @@ await engine.design.setProps(text, {
 await engine.design.setProps(text, { text: { string: s, case: 'Uppercase' } }); // 'Normal'|'Uppercase'|'Lowercase'|'Titlecase'
 
 // Read styling back — one entry per styled run ({ from, to, color?, weight?,
-// style?, size?, case? }); setProps handles the wipe-and-replay for you. (§6.1.9)
+// style?, size?, case?, scriptStyle? }); setProps handles the wipe-and-replay for you. (§6.1.9)
 const {
   text: { ranges: runs }
 } = await engine.design.getProps(text, ['text.ranges']);

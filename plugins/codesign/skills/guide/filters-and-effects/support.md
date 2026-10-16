@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Supported Filters and Effects"
+description: "View the full list of visual effects and filters available in CE.SDK, including both built-in and custom options."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/support-a666dd/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Filters and Effects](./filters-and-effects.md) > [Supported Filters and Effects](./filters-and-effects/support.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Filters and Effects](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects-6f88ac/) > [Supported Filters and Effects](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/support-a666dd/)
 
 ---
 
@@ -11,11 +18,11 @@ if a block supports them.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-filters-and-effects-support-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-filters-and-effects-support-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-filters-and-effects-support-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-filters-and-effects-support-server-js)
 
 CE.SDK provides 22 built-in effect types for visual transformations including color adjustments, blur effects, artistic filters, and distortion effects. This reference guide shows how to check effect support and add effects programmatically, followed by detailed property tables for each effect type.
 
@@ -188,7 +195,7 @@ async function main() {
 main().catch(console.error);
 ```
 
-This guide covers checking effect support on blocks, adding effects programmatically, and the complete list of available effect types with their properties. For detailed tutorials on configuring and combining multiple effects, see the [Apply Filters and Effects](./filters-and-effects/apply.md) guide.
+This guide covers checking effect support on blocks, adding effects programmatically, and the complete list of available effect types with their properties. For detailed tutorials on configuring and combining multiple effects, see the [Apply Filters and Effects](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/apply-2764e4/) guide.
 
 ## Check Effect Support
 
@@ -574,7 +581,7 @@ This section describes the properties available for the **Vignette Type** (`//ly
 
 ## Next Steps
 
-- [Apply Filters and Effects](./filters-and-effects/apply.md) - Learn how to configure, combine, and manage multiple effects
+- [Apply Filters and Effects](https://img.ly/docs/cesdk/archive/v1.84/node/filters-and-effects/apply-2764e4/) - Learn how to configure, combine, and manage multiple effects
 
 
 
@@ -582,7 +589,7 @@ This section describes the properties available for the **Vignette Type** (`//ly
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Serve Assets"
+description: "Configure CE.SDK to load engine and content assets from your own servers instead of the IMG.LY CDN for production deployments."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/serve-assets-b0827c/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Serve Assets](./serve-assets.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Serve Assets](https://img.ly/docs/cesdk/archive/v1.84/node/serve-assets-b0827c/)
 
 ---
 
@@ -83,15 +90,15 @@ const engine = await CreativeEngine.init({
 
 To use the default content sources (stickers, shapes, typefaces, filters, and so on) server-side, extract the archive, point `baseURL` at it, and register each source you need directly through the engine API. This is the same asset API used in the browser; the `@cesdk/cesdk-js/plugins` asset-source plugins are editor-only and are not used with `@cesdk/node`.
 
-[Download Assets (v$UBQ\_VERSION$)](https://cdn.img.ly/packages/imgly/cesdk-node/$UBQ_VERSION$/imgly-assets.zip)
+[Download Assets (v1.84.0)](https://cdn.img.ly/packages/imgly/cesdk-node/1.84.0/imgly-assets.zip)
 
 Or download and extract it from the command line:
 
 ```bash
 # Download and extract the content assets for your SDK version
-curl -O https://cdn.img.ly/packages/imgly/cesdk-node/$UBQ_VERSION$/imgly-assets.zip
-mkdir -p cesdk-assets/$UBQ_VERSION$
-unzip imgly-assets.zip -d cesdk-assets/$UBQ_VERSION$/
+curl -O https://cdn.img.ly/packages/imgly/cesdk-node/1.84.0/imgly-assets.zip
+mkdir -p cesdk-assets/1.84.0
+unzip imgly-assets.zip -d cesdk-assets/1.84.0/
 rm imgly-assets.zip
 ```
 
@@ -123,7 +130,7 @@ for (const sourceId of [
 }
 ```
 
-Point `baseURL` at a `file://` path for local hosting or at your own CDN. For the full list of source IDs and matcher filtering, see the [Default Assets](./import-media/default-assets.md) guide.
+Point `baseURL` at a `file://` path for local hosting or at your own CDN. For the full list of source IDs and matcher filtering, see the [Default Assets](https://img.ly/docs/cesdk/archive/v1.84/node/import-media/default-assets-d2763d/) guide.
 
 ## Troubleshooting
 
@@ -156,7 +163,7 @@ When using `file://` URLs:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

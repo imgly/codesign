@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Assets"
+description: "Learn how assets provide external content to CE.SDK designs and how asset sources make them available programmatically."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/concepts/assets-a84fdd/"
+---
 
-**Navigation:** [Concepts](./concepts.md) > [Assets](./concepts/assets.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Concepts](https://img.ly/docs/cesdk/archive/v1.84/node/concepts-c9ff51/) > [Assets](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/assets-a84fdd/)
 
 ---
 
@@ -10,11 +17,11 @@ Understand the asset system—how external media and resources like images, stic
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-concepts-assets-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-concepts-assets-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-concepts-assets-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-concepts-assets-server-js)
 
 Images, videos, audio, fonts, stickers, and templates—every premade resource you can add to a design is what we call an *Asset*. The editor gets access to these Assets through *Asset Sources*. When you apply an Asset, CE.SDK creates or modifies a Block to display that content.
 
@@ -168,9 +175,9 @@ async function main(): Promise<void> {
       id: 'uploaded-1',
       label: { en: 'Heart Sticker' },
       meta: {
-        uri: 'https://cdn.img.ly/assets/v3/ly.img.sticker/images/emoticons/imgly_sticker_emoticons_love.svg',
+        uri: 'https://cdn.img.ly/assets/v3/ly.img.sticker/images/emoticons/imgly_sticker_emoticons_loving.svg',
         thumbUri:
-          'https://cdn.img.ly/assets/v3/ly.img.sticker/images/emoticons/imgly_sticker_emoticons_love.svg',
+          'https://cdn.img.ly/assets/v3/ly.img.sticker/images/emoticons/imgly_sticker_emoticons_loving.svg',
         blockType: '//ly.img.ubq/graphic',
         fillType: '//ly.img.ubq/fill/image',
         mimeType: 'image/svg+xml'
@@ -239,7 +246,7 @@ Key properties include:
 - **`groups`** — Categories for filtering
 - **`meta`** — Content-specific data including `uri`, `thumbUri`, `blockType`, `fillType`, `width`, `height`, and `mimeType`
 
-> **Note:** See the [Content JSON Schema](./import-media/content-json-schema.md) guide for the complete property reference.
+> **Note:** See the [Content JSON Schema](https://img.ly/docs/cesdk/archive/v1.84/node/import-media/content-json-schema-a7b3d2/) guide for the complete property reference.
 
 ## Asset Sources
 
@@ -398,9 +405,9 @@ Local sources store assets in memory and support dynamic add/remove operations. 
       id: 'uploaded-1',
       label: { en: 'Heart Sticker' },
       meta: {
-        uri: 'https://cdn.img.ly/assets/v3/ly.img.sticker/images/emoticons/imgly_sticker_emoticons_love.svg',
+        uri: 'https://cdn.img.ly/assets/v3/ly.img.sticker/images/emoticons/imgly_sticker_emoticons_loving.svg',
         thumbUri:
-          'https://cdn.img.ly/assets/v3/ly.img.sticker/images/emoticons/imgly_sticker_emoticons_love.svg',
+          'https://cdn.img.ly/assets/v3/ly.img.sticker/images/emoticons/imgly_sticker_emoticons_loving.svg',
         blockType: '//ly.img.ubq/graphic',
         fillType: '//ly.img.ubq/fill/image',
         mimeType: 'image/svg+xml'
@@ -432,7 +439,7 @@ Call `assetSourceContentsChanged()` after modifying a source to notify subscribe
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

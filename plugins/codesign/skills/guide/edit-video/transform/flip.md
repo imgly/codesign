@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Flip"
+description: "Mirror video clips in a Node.js backend using CE.SDK server mode."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/edit-video/transform/flip-a603b0/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Videos](./create-video.md) > [Transform](./edit-video/transform.md) > [Flip](./edit-video/transform/flip.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Videos](https://img.ly/docs/cesdk/archive/v1.84/node/create-video-c41a08/) > [Transform](https://img.ly/docs/cesdk/archive/v1.84/node/edit-video/transform-369f28/) > [Flip](https://img.ly/docs/cesdk/archive/v1.84/node/edit-video/transform/flip-a603b0/)
 
 ---
 
@@ -10,7 +17,7 @@ Run **CE.SDK** in **Node.js server mode** to mirror video blocks programmaticall
 
 ## Requirements
 
-- A CE.SDK server package: `npm install @cesdk/node@$UBQ_VERSION$` (WASM) or `npm install @cesdk/node-native@$UBQ_VERSION$` (native) — the engine API is identical
+- A CE.SDK server package: `npm install @cesdk/node@1.84.0` (WASM) or `npm install @cesdk/node-native@1.84.0` (native) — the engine API is identical
 - **Node.js 22** or newer
 - A CE.SDK license key. Set `baseURL` when serving the CE.SDK asset bundle from your own location (both Node.js packages bundle their engine assets, so `baseURL` is optional)
 
@@ -182,8 +189,8 @@ engine.block.setScopeEnabled(videoBlock, 'layer/flip', false);
 
 Now that you understand how to flip with the CE.SDK, take time to dive into other related features:
 
-- [Create a template](./create-templates.md) to enforce design rules.
-- [Get an overview](./overview.md) of the CE.SDK's video editing features.
+- [Create a template](https://img.ly/docs/cesdk/archive/v1.84/node/create-templates-3aef79/) to enforce design rules.
+- [Get an overview](https://img.ly/docs/cesdk/archive/v1.84/node/overview-7d12d5/) of the CE.SDK's video editing features.
 
 ## API Reference Summary
 
@@ -202,7 +209,7 @@ Now that you understand how to flip with the CE.SDK, take time to dive into othe
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

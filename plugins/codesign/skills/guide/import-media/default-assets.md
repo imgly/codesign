@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Using Default Assets"
+description: "Load shapes, stickers, images, and other built-in assets from IMG.LY's CDN to populate your CE.SDK editor using the Asset API."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/import-media/default-assets-d2763d/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Import Media Assets](./import-media.md) > [Using Default Assets](./import-media/default-assets.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Import Media Assets](https://img.ly/docs/cesdk/archive/v1.84/node/import-media-4e3703/) > [Using Default Assets](https://img.ly/docs/cesdk/archive/v1.84/node/import-media/default-assets-d2763d/)
 
 ---
 
@@ -156,15 +163,15 @@ Register CE.SDK's default asset sources from your self-hosted asset library to p
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-import-media-default-assets-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-import-media-default-assets-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-import-media-default-assets-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-import-media-default-assets-server-js)
 
 CE.SDK provides built-in asset sources for shapes, stickers, filters, effects, fonts, and sample media. This guide demonstrates registering all available asset sources from your self-hosted asset library and applying them to create a scene with a star shape, a sticker, and an image, then exporting to PNG.
 
-> **Offline-first:** The Node.js packages (`@cesdk/node` and `@cesdk/node-native`) are offline-first and resolve assets from the local package or a location you host — they do not fetch the content library from the IMG.LY CDN. Download the asset library once and extract it, then point `baseURL` at it. See the [Serve Assets](./serve-assets.md) guide for instructions.
+> **Offline-first:** The Node.js packages (`@cesdk/node` and `@cesdk/node-native`) are offline-first and resolve assets from the local package or a location you host — they do not fetch the content library from the IMG.LY CDN. Download the asset library once and extract it, then point `baseURL` at it. See the [Serve Assets](https://img.ly/docs/cesdk/archive/v1.84/node/serve-assets-b0827c/) guide for instructions.
 
 ## What Are Default and Demo Assets?
 
@@ -221,7 +228,7 @@ const engine = await CreativeEngine.init({
 
 ## Point at Your Self-Hosted Assets
 
-The Node.js packages resolve asset sources relative to the engine's `baseURL`. Self-host the asset library (extract `imgly-assets.zip`) and set `baseURL` on init — there is no IMG.LY CDN in the production path. See the [Serve Assets](./serve-assets.md) guide for the download and setup steps.
+The Node.js packages resolve asset sources relative to the engine's `baseURL`. Self-host the asset library (extract `imgly-assets.zip`) and set `baseURL` on init — there is no IMG.LY CDN in the production path. See the [Serve Assets](https://img.ly/docs/cesdk/archive/v1.84/node/serve-assets-b0827c/) guide for the download and setup steps.
 
 ```typescript highlight-asset-urls
 // Resolve asset sources from the engine's self-hosted baseURL.
@@ -314,8 +321,8 @@ An asset is included if it matches ANY pattern in the array. Patterns support `*
 
 ## Next Steps
 
-- [Serve Assets](./serve-assets.md) — Self-host assets for production deployments
-- [Import From Remote Source](./import-media/from-remote-source.md) — Load assets from external URLs
+- [Serve Assets](https://img.ly/docs/cesdk/archive/v1.84/node/serve-assets-b0827c/) — Self-host assets for production deployments
+- [Import From Remote Source](https://img.ly/docs/cesdk/archive/v1.84/node/import-media/from-remote-source-b65faf/) — Load assets from external URLs
 
 
 
@@ -323,7 +330,7 @@ An asset is included if it matches ANY pattern in the array. Patterns support `*
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

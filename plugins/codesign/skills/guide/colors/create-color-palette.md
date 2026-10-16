@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Create a Color Palette"
+description: "Build reusable color palettes to maintain consistency and streamline user choices."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/colors/create-color-palette-7012e0/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Colors](./colors.md) > [Create a Color Palette](./colors/create-color-palette.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Colors](https://img.ly/docs/cesdk/archive/v1.84/node/colors-a9b79c/) > [Create a Color Palette](https://img.ly/docs/cesdk/archive/v1.84/node/colors/create-color-palette-7012e0/)
 
 ---
 
@@ -11,11 +18,11 @@ support for sRGB, CMYK, and Spot colors in server-side Node.js applications.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-colors-create-color-palette-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-colors-create-color-palette-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-colors-create-color-palette-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-colors-create-color-palette-server-js)
 
 Color libraries in CE.SDK are implemented as local asset sources containing individual colors as assets. Each library has a unique source ID and can include sRGB colors for screen display, CMYK colors for print workflows, and Spot colors for specialized printing applications. You can create, populate, query, and manage these libraries programmatically using the engine's asset API.
 
@@ -419,7 +426,7 @@ If `removeAssetFromSource()` doesn't seem to work:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

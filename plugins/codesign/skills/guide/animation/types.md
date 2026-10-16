@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Supported Animation Types"
+description: "Apply different animation types to design blocks in CE.SDK and configure their properties in server-side applications."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/animation/types-4e5f41/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Animation](./animation.md) > [Supported Animation Types](./animation/types.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Animation](https://img.ly/docs/cesdk/archive/v1.84/node/animation-ce900c/) > [Supported Animation Types](https://img.ly/docs/cesdk/archive/v1.84/node/animation/types-4e5f41/)
 
 ---
 
@@ -10,11 +17,11 @@ Apply entrance, exit, and loop animations to design blocks programmatically usin
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-animation-types-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-animation-types-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-animation-types-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-animation-types-server-js)
 
 CE.SDK organizes animations into three categories: entrance (In), exit (Out), and loop. Each category determines when the animation plays during the block's lifecycle. This guide demonstrates how to apply different animation types and configure their properties in server-side applications.
 
@@ -276,6 +283,10 @@ Other entrance animation types include:
 - `spin` — Rotates the block into view
 - `grow` — Scales up from a point
 
+### Ken Burns Animation
+
+The Ken Burns animation (`ken_burns`) pans and zooms across an image or video. The pan travels through the space between the block frame and the crop edges. When you attach the animation, the engine sets the content fill mode of the block to `Cover`. When the image or video has loaded, the engine zooms the crop to a scale ratio of 1.3. The content fill mode then becomes `Crop`. When you set the content fill mode to `Cover` again, or reset the crop, the engine zooms the crop again. A scene saved before the zoom gets it when it loads. Attaching the animation replaces a crop that you set before. To use your own crop, set it after the image or video has loaded.
+
 ## Exit Animations
 
 Exit animations define how a block leaves the screen. We use `engine.block.setOutAnimation()` to attach them. CE.SDK prevents overlap between entrance and exit durations automatically.
@@ -421,7 +432,7 @@ When the scene is played back or rendered, these animations run exactly as confi
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

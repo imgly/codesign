@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Design a Layout"
+description: "Create structured compositions using scene layouts, positioning systems, and hierarchical block organization for collages, magazines, and multi-page documents."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/layout-b66311/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Compositions](./create-composition.md) > [Design a Layout](./create-composition/layout.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Compositions](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition-db709c/) > [Design a Layout](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/layout-b66311/)
 
 ---
 
@@ -10,11 +17,11 @@ Create automatic stack layouts in CE.SDK that arrange pages vertically or horizo
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-create-composition-layout-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-create-composition-layout-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-create-composition-layout-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-create-composition-layout-server-js)
 
 CE.SDK provides stack layouts that automatically arrange pages with consistent spacing. Vertical stacks arrange pages top-to-bottom, horizontal stacks arrange left-to-right. This eliminates manual positioning for compositions like photo collages, product catalogs, social media carousels, and magazine layouts.
 
@@ -592,7 +599,7 @@ After building the layout, export pages as images to verify the composition.
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

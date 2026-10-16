@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Licensing"
+description: "Understand CE.SDK’s flexible licensing, trial options, and how keys work across dev, staging, and production."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/licensing-8aa063/"
+---
 
-**Navigation:** [Get Started](./get-started/overview.md) > [Licensing](./licensing.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Get Started](https://img.ly/docs/cesdk/archive/v1.84/node/get-started/overview-e18f40/) > [Licensing](https://img.ly/docs/cesdk/archive/v1.84/node/licensing-8aa063/)
 
 ---
 
@@ -8,7 +15,7 @@ Thanks for your interest in CreativeEditor SDK (CE.SDK).
 
 We offer flexible commercial licensing options to support teams and projects of all sizes. Whether you're building a new product or scaling an existing one, our goal is to provide the best creative editing experience—backed by a licensing model that aligns with your needs.
 
-Get in touch with us through our [contact sales form](https://img.ly/forms/contact-sales).
+Get in touch with us through our [contact sales form](https://img.ly/forms/contact-sales/).
 
 ## Commercial Licensing
 
@@ -23,13 +30,13 @@ CE.SDK is offered through a subscription-based commercial model. This allows us 
 
 CE.SDK licenses are tied to a single commercial product instance, verified by the hostname for web apps and bundle/app ID for mobile apps.
 
-Licensing typically uses remote validation and includes lightweight event tracking. It’s possible to disable tracking or use offline-compatible options. To explore these options, [contact our sales team](https://img.ly/forms/contact-sales). For details on which operations count as an export, see [Export Counting](./export-counting.md).
+Licensing typically uses remote validation and includes lightweight event tracking. It’s possible to disable tracking or use offline-compatible options. To explore these options, [contact our sales team](https://img.ly/forms/contact-sales/). For details on which operations count as an export, see [Export Counting](https://img.ly/docs/cesdk/archive/v1.84/node/export-counting-613923/).
 
 ## Trial License Key
 
 Trial licenses are available for evaluation and testing and are valid for **30 days**. They provide full access to CE.SDK’s features so you can explore its capabilities in your environment.
 
-If you need more time to evaluate, [contact our sales team](https://img.ly/forms/contact-sales).
+If you need more time to evaluate, [contact our sales team](https://img.ly/forms/contact-sales/).
 
 ## Evaluation Mode
 
@@ -47,7 +54,7 @@ Paid license keys can be used across development, staging, and production enviro
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

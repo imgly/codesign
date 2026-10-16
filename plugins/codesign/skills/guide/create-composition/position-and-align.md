@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Positioning and Alignment"
+description: "Precisely position, align, and distribute objects using guides, snapping, and alignment tools."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/position-and-align-cc6b6a/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Compositions](./create-composition.md) > [Position and Align](./create-composition/position-and-align.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Compositions](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition-db709c/) > [Position and Align](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/position-and-align-cc6b6a/)
 
 ---
 
@@ -11,11 +18,11 @@ layout APIs in headless server environments.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-create-composition-position-and-align-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-create-composition-position-and-align-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-create-composition-position-and-align-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-create-composition-position-and-align-server-js)
 
 CE.SDK positions blocks relative to their parent container with the origin at the top left. You can set positions using absolute values (design units) or as percentages of the parent's dimensions. For multi-element layouts, alignment and distribution APIs arrange blocks precisely without manual calculations.
 
@@ -453,9 +460,9 @@ If `engine.block.distributeHorizontally()` or `engine.block.distributeVertically
 
 Now that you understand positioning and alignment, explore related layout features:
 
-- [Layer Management](./create-composition/layer-management.md) - Control the stacking order of elements
-- [Grouping](./create-composition/group-and-ungroup.md) - Group related elements together
-- [Multi-Page Layouts](./create-composition/multi-page.md) - Create multi-page designs with multiple pages in a single scene
+- [Layer Management](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/layer-management-18f07a/) - Control the stacking order of elements
+- [Grouping](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/group-and-ungroup-62565a/) - Group related elements together
+- [Multi-Page Layouts](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/multi-page-4d2b50/) - Create multi-page designs with multiple pages in a single scene
 
 
 
@@ -463,7 +470,7 @@ Now that you understand positioning and alignment, explore related layout featur
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

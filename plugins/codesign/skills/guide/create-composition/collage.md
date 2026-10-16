@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Create a Collage"
+description: "Create collages programmatically by applying layout templates and transferring content between scenes."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/collage-f7d28d/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Compositions](./create-composition.md) > [Create a Collage](./create-composition/collage.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Compositions](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition-db709c/) > [Create a Collage](https://img.ly/docs/cesdk/archive/v1.84/node/create-composition/collage-f7d28d/)
 
 ---
 
@@ -10,11 +17,11 @@ Create collages in a headless Node.js environment by loading layout templates an
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-create-composition-collage-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-create-composition-collage-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-create-composition-collage-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-create-composition-collage-server-js)
 
 In server-side workflows, collages are created by loading a layout scene file that defines the visual structure, then transferring content from an existing scene into those positions. This approach enables batch processing of images into various collage formats.
 
@@ -634,9 +641,9 @@ Check that the layout URL is accessible from your server environment. In product
 
 ## Related Guides
 
-- [Apply Templates](./use-templates/apply-template.md) — Loading complete templates instead of transferring content
-- [Headless Mode](./concepts/headless-mode.md) — Server-side processing fundamentals
-- [Export Overview](./export-save-publish/export/overview.md) — Export options and formats
+- [Apply Templates](https://img.ly/docs/cesdk/archive/v1.84/node/use-templates/apply-template-35c73e/) — Loading complete templates instead of transferring content
+- [Headless Mode](https://img.ly/docs/cesdk/archive/v1.84/node/concepts/headless-mode-24ab98/) — Server-side processing fundamentals
+- [Export Overview](https://img.ly/docs/cesdk/archive/v1.84/node/export-save-publish/export/overview-9ed3a8/) — Export options and formats
 
 
 
@@ -644,7 +651,7 @@ Check that the layout URL is accessible from your server environment. In product
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

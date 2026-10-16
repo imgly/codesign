@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Adjust Text Spacing"
+description: "Control letter spacing, line height, and paragraph spacing in CE.SDK text blocks for precise typographic control."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/text/adjust-spacing-c1a3b6/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Text](./text.md) > [Adjust Spacing](./text/adjust-spacing.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Text](https://img.ly/docs/cesdk/archive/v1.84/node/text-8a993a/) > [Adjust Spacing](https://img.ly/docs/cesdk/archive/v1.84/node/text/adjust-spacing-c1a3b6/)
 
 ---
 
@@ -10,11 +17,11 @@ Control letter spacing, line height, and paragraph spacing in text blocks using 
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-text-adjust-spacing-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-text-adjust-spacing-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-text-adjust-spacing-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-text-adjust-spacing-server-js)
 
 CE.SDK provides three text spacing properties: `text/letterSpacing`, `text/lineHeight`, and `text/paragraphSpacing`. All are float properties controlled via `engine.block.setFloat()` and `engine.block.getFloat()`.
 
@@ -247,7 +254,7 @@ Paragraph spacing only affects text with actual paragraph breaks. Single paragra
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

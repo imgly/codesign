@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Scale Images"
+description: "Scale images programmatically in a Node.js backend using CE.SDK server mode."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/edit-image/transform/scale-ebe367/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Create and Edit Images](./edit-image.md) > [Transform](./edit-image/transform.md) > [Scale](./edit-image/transform/scale.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Create and Edit Images](https://img.ly/docs/cesdk/archive/v1.84/node/edit-image-c64912/) > [Transform](https://img.ly/docs/cesdk/archive/v1.84/node/edit-image/transform-9d189b/) > [Scale](https://img.ly/docs/cesdk/archive/v1.84/node/edit-image/transform/scale-ebe367/)
 
 ---
 
@@ -9,7 +16,7 @@ Use the CE.SDK headless Server Mode to resize and scale design blocks without re
 ## Requirements
 
 - **Node.js 22** or newer
-- A CE.SDK server package: `npm install @cesdk/node@$UBQ_VERSION$` (WASM) or `npm install @cesdk/node-native@$UBQ_VERSION$` (native) — the engine API is identical
+- A CE.SDK server package: `npm install @cesdk/node@1.84.0` (WASM) or `npm install @cesdk/node-native@1.84.0` (native) — the engine API is identical
 
 ## What You’ll Learn
 
@@ -41,13 +48,11 @@ A value of `2.0`, for example, makes the block twice as large.
 <details>
   <summary>Test a sample file</summary>
 
-  1. Run `npm install @cesdk/node@$UBQ_VERSION$` (or `npm install @cesdk/node-native@$UBQ_VERSION$` for the native package) at the root of your project.
+  1. Run `npm install @cesdk/node@1.84.0` (or `npm install @cesdk/node-native@1.84.0` for the native package) at the root of your project.
   2. Add credentials to `.env`:
      ```bash
      LICENSE_KEY="<your_license_key>"
      ```
-
-  ````
   3. Create `scale.js` and paste the following script:
 
   ```js title="scale.js"
@@ -107,7 +112,7 @@ A value of `2.0`, for example, makes the block twice as large.
   run().catch((error) => {
     console.error('Scaling demo failed:', error);
   });
-  ````
+  ```
 
   4. Run `node scale.js`.
   5. Inspect `sample-scaled.png` to confirm that each block doubled its size.
@@ -272,7 +277,7 @@ console.log('layer/resize scope enabled?', canResize);
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

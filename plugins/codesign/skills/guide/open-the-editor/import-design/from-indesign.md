@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "From InDesign"
+description: "Import Adobe InDesign files (IDML format) into CE.SDK, converting them into editable scenes while preserving text, shapes, images, and positioning."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design/from-indesign-ba3988/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Open the Editor](./open-the-editor.md) > [Import a Design](./open-the-editor/import-design.md) > [From InDesign](./open-the-editor/import-design/from-indesign.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Open the Editor](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor-23a1db/) > [Import a Design](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design-73b9c5/) > [From InDesign](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design/from-indesign-ba3988/)
 
 ---
 
@@ -10,13 +17,13 @@ Import Adobe InDesign (IDML) files into CE.SDK using Node.js, converting them in
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-open-the-editor-import-design-from-indesign-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-open-the-editor-import-design-from-indesign-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-open-the-editor-import-design-from-indesign-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-open-the-editor-import-design-from-indesign-server-js)
 
-The `@imgly/idml-importer` package converts InDesign IDML files into CE.SDK scene format, preserving design structure for distribution or further processing. This guide focuses on batch converting IDML template files at build-time using Node.js—ideal for migrating existing template libraries or integrating with CI/CD pipelines. For enabling end-user uploads in the browser, see the [browser guide](./open-the-editor/import-design/from-indesign.md).
+The `@imgly/idml-importer` package converts InDesign IDML files into CE.SDK scene format, preserving design structure for distribution or further processing. This guide focuses on batch converting IDML template files at build-time using Node.js—ideal for migrating existing template libraries or integrating with CI/CD pipelines. For enabling end-user uploads in the browser, see the [browser guide](https://img.ly/docs/cesdk/archive/v1.84/node/open-the-editor/import-design/from-indesign-ba3988/).
 
 ```typescript file=@cesdk_web_examples/guides-open-the-editor-import-design-from-indesign-server-js/server-js.ts reference-only
 import CreativeEngine from '@cesdk/node';
@@ -331,11 +338,11 @@ This guide covers installation, setting up a conversion script, parsing IDML fil
 Install the `@imgly/idml-importer` package alongside the Node.js SDK. Server-side conversion requires `jsdom` for XML parsing:
 
 ```bash
-npm install @imgly/idml-importer @cesdk/node@$UBQ_VERSION$ jsdom
+npm install @imgly/idml-importer @cesdk/node@1.84.0 jsdom
 npm install --save-dev @types/jsdom
 ```
 
-Using the native Node.js package? Install `@cesdk/node-native@$UBQ_VERSION$` instead of `@cesdk/node` — the engine API is identical.
+Using the native Node.js package? Install `@cesdk/node-native@1.84.0` instead of `@cesdk/node` — the engine API is identical.
 
 The `jsdom` package provides the XML parsing functionality that `DOMParser` provides in browsers.
 
@@ -882,7 +889,7 @@ Before exporting from InDesign:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

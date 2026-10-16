@@ -1,4 +1,11 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Loop Audio"
+description: "Create seamless repeating audio playback for background music and sound effects using CE.SDK's audio looping system."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/create-audio/audio/loop-937be7/"
+---
+
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
 
 ---
 
@@ -9,11 +16,11 @@ for server-side audio processing and automated content workflows.
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-create-audio-audio-loop-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-create-audio-audio-loop-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-create-audio-audio-loop-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-create-audio-audio-loop-server-js)
 
 <NodejsVideoExportNotice {...props} />
 
@@ -292,7 +299,7 @@ After configuring audio looping, we save the scene for later use or rendering. T
   console.log('Exported to output/audio-looping.imgly');
 ```
 
-The exported `.scene` file contains all audio blocks with their looping configurations, ready for further editing or for server-side rendering — directly via `engine.block.exportVideo()` with the native `@cesdk/node-native` package, or with the CE.SDK Renderer. Note: with `@cesdk/node-native` on Linux and Windows, export of scenes with standalone audio blocks does not finish yet — see the [video limitations guide](./create-video/limitations.md).
+The exported `.scene` file contains all audio blocks with their looping configurations, ready for further editing or for server-side rendering — directly via `engine.block.exportVideo()` with the native `@cesdk/node-native` package, or with the CE.SDK Renderer. Note: with `@cesdk/node-native` on Linux and Windows, export of scenes with standalone audio blocks does not finish yet — see the [video limitations guide](https://img.ly/docs/cesdk/archive/v1.84/node/create-video/limitations-6a740d/).
 
 ## Troubleshooting
 
@@ -324,7 +331,7 @@ The exported `.scene` file contains all audio blocks with their looping configur
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

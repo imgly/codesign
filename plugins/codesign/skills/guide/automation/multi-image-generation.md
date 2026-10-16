@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Multiple Image Generation"
+description: "Create many image variants from structured data by interpolating content into reusable design templates."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/automation/multi-image-generation-2a0de4/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Automate Workflows](./automation.md) > [Multiple Image Generation](./automation/multi-image-generation.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Automate Workflows](https://img.ly/docs/cesdk/archive/v1.84/node/automation-715209/) > [Multiple Image Generation](https://img.ly/docs/cesdk/archive/v1.84/node/automation/multi-image-generation-2a0de4/)
 
 ---
 
@@ -10,11 +17,11 @@ Generate multiple image variants from a single data record using CE.SDK's headle
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-automation-multi-image-generation-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-automation-multi-image-generation-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-automation-multi-image-generation-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-automation-multi-image-generation-server-js)
 
 Multi-image generation produces multiple design variants from a single data source. This pattern creates format variations (square, portrait, landscape) from one input to serve multiple channels like Instagram posts, stories, and Facebook posts.
 
@@ -752,7 +759,7 @@ For high-volume processing:
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support

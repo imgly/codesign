@@ -1,6 +1,13 @@
-> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/node.md). For all docs in one file, see [llms-full.txt](./llms-full.txt.md).
+---
+title: "Create Animations"
+description: "Create entrance, exit, loop, and text animations with CE.SDK preset animation APIs."
+platform: node
+url: "https://img.ly/docs/cesdk/archive/v1.84/node/animation/create-15cf50/"
+---
 
-**Navigation:** [Guides](./guides.md) > [Animation](./animation.md) > [Create Animations](./animation/create.md)
+> This is one page of the CE.SDK Node.js documentation. For a complete overview, see the [Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md). For all docs in one file, see [llms-full.txt](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt).
+
+**Navigation:** [Guides](https://img.ly/docs/cesdk/archive/v1.84/node/guides-8d8b00/) > [Animation](https://img.ly/docs/cesdk/archive/v1.84/node/animation-ce900c/) > [Create Animations](https://img.ly/docs/cesdk/archive/v1.84/node/animation/create-15cf50/)
 
 ---
 
@@ -10,11 +17,11 @@ Add motion to design elements by creating entrance, exit, and loop animations us
 >
 > **Resources:**
 >
-> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-$UBQ_VERSION$.zip)
+> - [Download examples](https://github.com/imgly/cesdk-web-examples/archive/refs/tags/release-1.84.0.zip)
 >
-> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-$UBQ_VERSION$/guides-animation-create-server-js)
+> - [View source on GitHub](https://github.com/imgly/cesdk-web-examples/tree/release-1.84.0/guides-animation-create-server-js)
 >
-> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v$UBQ_VERSION$/guides-animation-create-server-js)
+> - [Open in StackBlitz](https://stackblitz.com/github/imgly/cesdk-web-examples/tree/v1.84.0/guides-animation-create-server-js)
 
 <NodejsVideoExportNotice {...props} />
 
@@ -510,15 +517,15 @@ If entrance and exit animations seem to overlap incorrectly, CE.SDK automaticall
 
 ## Related Pages
 
-- [Base Animations](./animation/create/base.md) - Apply entrance, exit, and loop animation presets with duration, easing, and type-specific properties.
-- [Text Animations](./animation/create/text.md) - Animate text elements with effects like fade, typewriter, and bounce for dynamic visual presentation.
+- [Base Animations](https://img.ly/docs/cesdk/archive/v1.84/node/animation/create/base-0fc5c4/) - Apply entrance, exit, and loop animation presets with duration, easing, and type-specific properties.
+- [Text Animations](https://img.ly/docs/cesdk/archive/v1.84/node/animation/create/text-d6f4aa/) - Animate text elements with effects like fade, typewriter, and bounce for dynamic visual presentation.
 
 
 ---
 
 ## More Resources
 
-- **[Node.js Documentation Index](https://img.ly/docs/cesdk/node.md)** - Browse all Node.js documentation
-- **[Complete Documentation](./llms-full.txt.md)** - Full documentation in one file (for LLMs)
-- **[Web Documentation](./node.md)** - Interactive documentation with examples
+- **[Node.js Documentation Index](https://img.ly/docs/cesdk/archive/v1.84/node.md)** - Browse all Node.js documentation
+- **[Complete Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/llms-full.txt)** - Full documentation in one file (for LLMs)
+- **[Web Documentation](https://img.ly/docs/cesdk/archive/v1.84/node/)** - Interactive documentation with examples
 - **[Support](mailto:support@img.ly)** - Contact IMG.LY support
