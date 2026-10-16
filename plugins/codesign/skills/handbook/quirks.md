@@ -12,6 +12,20 @@ The handbook's quirk reference. CE.SDK errors are short and opaque. Two tables �
 | `Couldn't find property "<name>" on block.`                        | Property doesn't exist on this block type, or you guessed the property name.                                                  | Read `../guide/api/BlockAPI.md` for the exact property name and which block types accept it.                                                        |
 | `Invalid color reference …`                                        | A color/fill value was written without a fill attached.                                                                       | Assign a spec: `setProps(block, { fill: { type: 'color', color: { value: {r,g,b,a} } } })`.                                                                |
 | `Setting the "text/fontFileUri" property directly is unsupported.` | Tried to write `text/fontFileUri` directly instead of declaring `text.font`.                                                  | Always go through `setFont(id, uri, typeface)`. There is no shortcut.                                                                                      |
+| `EngineError is not defined`                                        | There is no `EngineError` in `edit`'s scope, and the engine's errors are not instances of an exported class.                 | Branch on `e.code` (`'BLOCK.UNKNOWN'`); see **Catching an engine error** below.                                                                            |
+
+## Catching an engine error — branch on `e.code`, not `instanceof`
+
+There is no `EngineError` in `edit`'s scope, and what the engine throws is an `Error` whose class is not exported, so `e instanceof EngineError` cannot work. The contract is `e.code`: an error the engine throws, directly or through `engine.design`, carries `code` (`'BLOCK.UNKNOWN'`), `category` (`'BLOCK'`), a `hint` that says what to do, and the name `EngineError [<code>]`. An error `engine.design` raises itself has no `code`, and neither do the few engine errors it rewraps to name what is valid (an unknown fill or shape type, a failed font-metrics fetch): read their message.
+
+```js
+try {
+  await engine.design.destroy(id);
+} catch (e) {
+  if (e.code !== 'BLOCK.UNKNOWN') throw e;
+  // the block was already gone
+}
+```
 
 ## Finding a block by its copy — use `findText`, not `===`
 

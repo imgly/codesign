@@ -129,12 +129,12 @@ declaration (`BlockAPI` is the largest):
 
 | Class        | Start line |
 | ------------ | ---------- |
-| AssetAPI     | 1217       |
-| **BlockAPI** | **1522**   |
-| EditorAPI    | 1774       |
-| EventAPI     | 1911       |
-| **SceneAPI** | **2012**   |
-| VariableAPI  | 2237       |
+| AssetAPI     | 1219       |
+| **BlockAPI** | **1524**   |
+| EditorAPI    | 1776       |
+| EventAPI     | 1913       |
+| **SceneAPI** | **2014**   |
+| VariableAPI  | 2239       |
 
 (If a start line looks off, search for `class BlockAPI` instead.)
 
@@ -286,6 +286,8 @@ interface DesignApi {
     scale(id: BlockRef, factor: number, opts?: { anchorX?: number; anchorY?: number }): Promise<void>;
     resizeContentAware(ids: BlockRef[], size: { width: number; height: number }): Promise<void>;
     /** Measured layout frame (post-layout px) — the numbers you position by.
+     *  Rotated: x/y = unrotated origin = pivot corner (rotation set without
+     *  position in one call turns about the centre and moves x/y).
      *  textLines: visible line count, text blocks only. */
     measure(id: BlockRef): Promise<{ x: number; y: number; width: number; height: number; textLines?: number }>;
     /** Await pending font/image loads for these subtrees (create does this itself). */
