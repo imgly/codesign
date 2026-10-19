@@ -6,12 +6,11 @@ against this server.
 
 ## 1. Fonts — resolve every brand font to a fetchable URI
 
-`engine.block.setFont(id, uri, typeface)` takes **one `uri`** that must resolve to a **single,
-complete, static-or-variable TTF**, over a **fetchable source only** (an `https://` URL, or a `uri` from `asset_add`
-— local `file:` paths are rejected when the scene is saved, and a `data:` URI is kept only by a host
-with an asset source that takes uploaded files). The `typeface` is the
-3-arg object `{ name, fonts:[{ uri, subFamily, weight, style }] }`; omitting it throws
-`Cannot read properties of undefined (reading 'name')`.
+A font write — `setProps(id, { text: { font: { typeface, uri } } })` — takes **one `uri`** that
+must resolve to a **single, complete, static-or-variable TTF**, over a **fetchable source only** (an
+`https://` URL, or a `uri` from `asset_add` — local `file:` paths are rejected when the scene is
+saved, and a `data:` URI is kept only by a host with an asset source that takes uploaded files). The
+`typeface` is `{ name, fonts:[{ uri, subFamily, weight, style }] }`.
 
 Two sources, in order of preference:
 
@@ -30,8 +29,8 @@ this way (the IMG.LY kit's Inter does).
 //   -> { uri: '<opaque handle>', kind: 'font', ... }
 ```
 
-Then `setFont(id, uri, tf('<Brand Display Name>', uri))` — the returned `uri` goes in BOTH places:
-`setFont`'s second argument and every `typeface.fonts[].uri`. That handle is a sanctioned,
+Then `setProps(id, { text: { font: { typeface: tf('<Brand Display Name>', uri), uri } } })` — the
+returned `uri` goes in BOTH places: `font.uri` and every `typeface.fonts[].uri`. That handle is a sanctioned,
 persistable scheme, so the saved `design.imgly` stays loadable (the bytes are in the store). Never
 hand-copy files into the workspace store: `asset_add` content-addresses them for you, and a
 hand-placed file with the wrong hash is unreachable. On a hosted CoDesign server (no disk access,
@@ -45,18 +44,17 @@ the engine draws that weight. A typeface that declares one entry has only that w
 another fails with "Failed to find a font with the specified weight". The IMG.LY kit ships **no Bold GT Walsheim on purpose** (`headlineWeight` = 500
 Medium); honour that — never fake a heavier weight.
 
-### setFont gotchas (script-agnostic)
+### Font-write gotchas (script-agnostic)
 
 - **Unique `typeface.name` per distinct face.** CE.SDK treats two typefaces with the same `name` as
   identical and skips the reload — a new URI under a reused name **silently no-ops** and the old
   font stays. Give the brand faces distinct names (`"GT Walsheim Pro Medium"`, `"Inter"`).
-- **Reshape after any font/size/line-height change** — `setString(id,'text/text', <same text>)` —
-  then **re-apply the captured runs**, because reshape wipes every per-character style range
-  (colour, weight, style, case, decoration), not colour alone (§2). Capture with `getTextRuns`;
-  `getTextColors(id)[0]` is run 0 only, and re-applying it whole-block is what flattens a
-  two-colour headline.
-- **Await before you measure or capture:** `await engine.block.forceLoadResources([page])`;
-  `getFrameWidth(id) > 0` is the "loaded + shaped" signal (`getWidth` is 0 in Auto mode).
+- **A font, size or line-height write reshapes on its own, ranges preserved.** A whole-block
+  `text.color` write flattens per-character colour, so read `text.ranges` first and re-map the
+  accent runs in the same write (§2); `text.color` reads run 0 only.
+- **Await before you measure or capture:** `await engine.design.loadResources([page])`;
+  `(await engine.design.measure(id)).width > 0` is the "loaded + shaped" signal (`width` is 0 in
+  Auto mode).
 - **Always `preview`.** A missing-glyph tofu or a silent sans fallback only shows in the render.
 
 ## 2. Colour — hex → CE.SDK 0-1 RGBA
@@ -223,15 +221,15 @@ keep the fill subtle so it reads as a badge, not a button.
 ## 6. Block opacity ≠ colour alpha
 
 A "faint" or ghost element (an oversized decorative quote, a watermark) is usually **block opacity**,
-not a low colour-alpha. `getTextColors`/`getColor` on it can report a fully-opaque colour while it
-still renders faint. Capture `(await engine.design.getProps(id, ['opacity'])).opacity` alongside the colour, and re-apply it
-(`setOpacity`) after recolouring, or the ghost comes back at full strength and competes with the
-headline.
+not a low colour-alpha. Its colour can read fully opaque while it still renders faint. Capture
+`(await engine.design.getProps(id, ['opacity'])).opacity` alongside the colour, and re-apply it
+(`setProps(id, { opacity })`) after recolouring, or the ghost comes back at full strength and
+competes with the headline.
 
 ## 7. Order of operations (avoids the common failures)
 
 1. Resolve fonts (CDN URI or workspace bridge) and `asset_add` the logo/icon SVGs **before** the edit.
-2. In the edit: recolour fills → `setFont` → **reshape** → **re-apply text colour** → position →
-   `await forceLoadResources([page])`.
+2. In the edit: recolour fills → one text write per block (font + size + colour + re-mapped accent
+   ranges) → position → `await engine.design.loadResources([page])`.
 3. `preview` — verify the real face rendered (not a fallback), colour survived the reshape, contrast
    holds, the logo dot reads, and no tofu.

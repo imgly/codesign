@@ -48,7 +48,8 @@ both media; print medium sets **3 mm bleed** on that page (Print basics) and tar
   — **3 mm** unless the printer states another. A background or image that touches an edge runs to
   the bleed's outer edge (a full background: position `'-3mm'`, 6 mm wider and taller). Text stays
   inside the **~8% safe margin**, or the margin the printer states, measured from the page edge
-  (handbook §6.1.10, §6.4). Target **≥300 dpi**; fonts embedded/outlined.
+  (handbook §6.1.10, §6.4). Target **≥300 dpi**; fonts embedded/outlined. CMYK and spot
+  colours, safety inset and the PDF/X export: `../handbook/print.md`.
 - **Composition is relative to the canvas** — margins, spacing, and type bands all scale with the
   page (handbook §6.4, §6.1.2), so the design rules hold across every format here.
 - **Export at native dimensions** — the page's own size. A page with bleed carries it into every

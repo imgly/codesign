@@ -76,7 +76,7 @@ Five steps, in order:
    first (or picked "Explore a few options" for the vibe — see below).
 
 5. **Hand off.** Enter the handbook Loop: build the scene from scratch in your first
-   `edit` (`engine.scene.create('VerticalStack')`), with format/page setup from the
+   `edit` (`await engine.design.create({ type: 'scene', children: [page] })`), with format/page setup from the
    class's derivation notes. Consult `brand` if a brand kit is in play; finish through
    the `judge` gate and the save (`export({ format: 'imgly' })`) as always — an
    unsaved design is one the user never receives.

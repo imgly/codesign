@@ -118,7 +118,7 @@ Sound comes before the build, because the cuts are timed to it. Per
 
 1. Music — generate a track at the planned BPM and length, or `asset_add` the user's file.
 2. Start the video in one `edit`: the page as step 4 describes it (size, `Video` mode, duration)
-   with only the music bed on it, ending with the beat-map recipe at the planned BPM (an MP3 bed is
+   with only the music bed on it, ending with `readBeats` at the planned BPM (an MP3 bed is
    rendered to WAV first, which takes an export and a second `edit` — see Beat-tight sync). Save its
    result as `<out>/build/beats.json` — the beat grid and the accents.
 3. Snap the beat table to it: every cut, transition and loop pulse on a beat time; accents get the
@@ -129,7 +129,7 @@ Sound comes before the build, because the cuts are timed to it. Per
 ## 4 — Build
 
 One page is the whole video — the one step 3 started with the music: size it per `format`,
-`engine.scene.setMode('Video')`, and set the page's `playback.duration` to the storyboard total. Plan the tracks before the first build `edit`: list
+set the scene's `scene: { mode: 'Video' }`, and set the page's `playback.duration` to the storyboard total. Plan the tracks before the first build `edit`: list
 the layers the storyboard uses (backgrounds, media, headline, subline, chip, …), bottom first, and
 write that track plan into `plan.md`. Each layer is ONE track that holds every beat's clip for that
 layer, one after another; nothing but audio goes on the page directly (`../handbook/video.md`,
@@ -163,9 +163,9 @@ await engine.design.setProps(line, {
 
 - Types: entrances and exits `slide` `fade` `blur` `grow` `zoom` `pop` `wipe` `pan` `spin` `baseline`
   `crop_zoom`; text `typewriter_text` `block_swipe_text` `spread_text` `merge_text`; loops
-  `*_loop` (no easing); images `ken_burns`. Reference: `../guide/animation/types.md`.
+  `*_loop` (no easing); images `ken_burns`. Reference: `../handbook/animation.md`.
 - Word- or letter-wise text reveals: `writingStyle` (`Line` `Word` `Character` `Block`) plus
-  `overlap` (0–1) — see `../guide/animation/create/text.md`.
+  `overlap` (0–1) — see `../handbook/animation.md`.
 - Keep entrances 0.3–0.8 s; a beat's exit must finish before its duration ends.
 - Real visuals first: `asset_add` screenshots and the logo. Stock or generated imagery only fills
   what the project cannot show.

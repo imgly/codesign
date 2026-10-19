@@ -235,9 +235,9 @@ transform. Adapt the classification to the design; fill `SCHEME` and the font UR
 **Capture the source's roles + current style** (run on the source page):
 
 ```js
-const page = engine.scene.getPages()[0];
+const [page] = await engine.design.findByType('page');
 const out = [];
-(function walk(id) {
+const read = async (id) => {
   const p = await engine.design.getProps(id, [
     'type',
     'width',
@@ -261,9 +261,10 @@ const out = [];
     // the read carries its unit ('32px', always pixels) and writes straight back
     r.fs = (await engine.design.getProps(id, ['text.fontSize'])).text.fontSize;
   }
-  if (id !== page) out.push(r);
-  for (const c of await engine.design.getChildren(id)) walk(c);
-})(page);
+  out.push(r);
+  for (const c of await engine.design.getChildren(id)) await read(c);
+};
+for (const c of await engine.design.getChildren(page)) await read(c);
 const pg = await engine.design.getProps(page, ['width', 'height']);
 return {
   type: 'text',
@@ -296,10 +297,10 @@ const BODY = { uri: '<opaque handle>', name: 'Inter' };
 // A font swap changes the content area, so re-convert any target line-height from the NEW
 // font's metrics — not a fixed factor (handbook §6.1.3). Call after the font write; the
 // lineHeight write reshapes on its own, ranges preserved.
-const setLineHeight = (id, targetLH) =>
+const setLineHeight = async (id, targetLH) =>
   await engine.design.setProps(id, { text: { lineHeight: { visual: targetLH } } });
 
-const page = engine.scene.getPages()[0];
+const [page] = await engine.design.findByType('page');
 await engine.design.loadResources([page]);
 // classify from the capture (background = full-bleed graphic; headline = largest text;
 // lead/body = remaining text; eyebrow = small text above headline; logo/media = image fills).
@@ -307,7 +308,7 @@ await engine.design.loadResources([page]);
 // text: ONE write — font + size + role colour + the re-mapped accent ranges. The font/size
 // write auto-reshapes with ranges preserved, so there is no capture → reshape → replay dance;
 // the runs are read only because the whole-block role colour flattens per-character colour.
-const setTextRole = (id, font, hex, px, accentHex) => {
+const setTextRole = async (id, font, hex, px, accentHex) => {
   const runs = (await engine.design.getProps(id, ['text.ranges'])).text.ranges; // NOT text.color — that is run 0 only
   await engine.design.setProps(id, {
     text: {
@@ -327,15 +328,15 @@ const setTextRole = (id, font, hex, px, accentHex) => {
   });
 };
 // graphic fill (background / accent shape)
-const setFillRole = (id, hex) => {
+const setFillRole = async (id, hex) => {
   await engine.design.setProps(id, {
     fill: { type: 'color', color: { value: rgba(hex) } }
   });
 };
-// e.g.:  setFillRole(bgId, SCHEME.background);
-//        setTextRole(headlineId, DISPLAY, SCHEME.text);
-//        setTextRole(leadId,     BODY,    SCHEME.text);
-//        setTextRole(accentWordId, DISPLAY, SCHEME.accent);   // the ONE accent moment
+// e.g.:  await setFillRole(bgId, SCHEME.background);
+//        await setTextRole(headlineId, DISPLAY, SCHEME.text);
+//        await setTextRole(leadId,     BODY,    SCHEME.text);
+//        await setTextRole(accentWordId, DISPLAY, SCHEME.accent);   // the ONE accent moment
 // logo: asset_add the variant SVG for this background, set as image fill (asset-loading.md).
 
 await engine.design.loadResources([page]);

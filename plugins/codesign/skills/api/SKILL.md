@@ -1,30 +1,32 @@
 ---
 name: api
 description: |
-  Authoritative TypeScript signatures for the CE.SDK CreativeEngine. Use this
-  skill whenever you need the exact signature, parameter types, or return type
-  of an `engine.*` method — especially before calling a method you haven't
-  used yet. Generated from the `.d.ts` of the same `@cesdk/node` package the
-  engine runs, it is THE source of truth; prose docs (the `guide` skill) can
-  drift.
+  Authoritative TypeScript signatures for `engine.design`, the only API edit
+  code uses. Use this skill whenever you need the exact signature, prop path,
+  or return type — especially before calling a member you haven't used yet.
+  Generated from the `.d.ts` of the same `@cesdk/node` package the engine
+  runs, it is THE source of truth; prose docs can drift.
 
   This skill's entry document carries the WHOLE edit-code API surface inline
   — the engine.design facade, the props trees, the attachment unions and the
   capability matrix: all edit code needs, in one read.
 
-  The sub-file "signatures.d.ts" adds the upstream CE.SDK core, JSDoc-free,
-  with every vocabulary type flattened to its literal union.
+  The sub-file "signatures.d.ts" adds the upstream CE.SDK core as reference
+  only (edit code never calls it), every vocabulary type flattened to its
+  literal union.
 ---
 
 ## Start here: `engine.design` (inside `edit` code)
 
-For reading and writing block state, prefer the codesign facade over the raw
-accessors — one nested-props dialect, one call per block:
+Edit code uses `engine.design` only — the edit gate refuses every other
+engine namespace (block, scene, variable, editor, asset, event) and names the
+equivalent. One nested-props dialect, one call per block:
 
 ```js
+const [scene] = await engine.design.findByType('scene');
 const page = await engine.design.create(
   { type: 'page', props: { width: 1080, height: 1920 } },
-  { parent: stack }
+  { parent: scene } // a page goes into the scene's stack
 );
 const chip = await engine.design.create(
   {
@@ -50,28 +52,26 @@ const { width } = await engine.design.getProps(page, ['width']);
 
 - `create(spec, { parent?, index? })` (await it!) is THE constructor — one
   block or a whole subtree, the same spec shape at every level. It folds
-  create + appendChild + property writes into one call and rolls back on
-  failure (never an orphan). Returns the root block id.
+  create, appendChild and property writes into one call and rolls back on
+  failure. Returns the root block id.
 - A spec node carries exactly `type`, `name`, `props` and `children` (nested,
   same shape). Everything else IS props — including the font: naming a
   family (`text: { font: { family, weight } }`) makes `create` — and
   `setProps` — look the family up in this deployment's typeface sources and
-  pick that weight's file. Every
-  `engine.design` member returns a Promise: always `await` it (the edit gate
-  rejects un-awaited calls).
-  `text: { string, ranges }` (style ranges
-  replayed reshape-safe), inline `fill: { type, ... }` / `shape` / `blur` /
-  `effects: [...]` / `animations` specs all sit under `props`. `create`
-  awaits the subtree's font/image loads before returning, so measurements
-  after it are trustworthy.
+  pick that weight's file. Every `engine.design` member returns a Promise:
+  always `await` it (the edit gate rejects un-awaited calls).
+  `text: { string, ranges }` (style ranges replayed reshape-safe), inline
+  `fill: { type, ... }` / `shape` / `blur` / `effects: [...]` / `animations`
+  specs all sit under `props`. `create` awaits the subtree's font/image loads,
+  so measuring right after it is safe.
 - `name` on any node is written onto the block itself:
   `const [chip] = await engine.design.findByName('chip')` resolves it in this edit
   and in every later one. Name every block you may touch again.
 - No `describe`: identity IS props — `getProps(id)` for everything valued,
   `getProps(id, ['type'])` for what a block is, `getCapabilities(idOrType)`
-  for what it supports. Attachments (fill/shape/blur/effects/animations)
-  round-trip as `{ type, ...props }` specs through setProps/getProps —
-  attachment ids never circulate.
+  for what it supports. Attachments (fill/shape/blur/effects/animations/
+  transition) round-trip as `{ type, ...props }` specs through
+  setProps/getProps — attachment ids never circulate.
 - Text is all props too: `setProps(id, { text: { string, font, weight,
 case, ranges, path, decoration } })` (a range also takes
   `scriptStyle: 'Superscript' | 'Subscript'`) — leaves apply in a safe order and
@@ -80,108 +80,75 @@ case, ranges, path, decoration } })` (a range also takes
 - Length props take unit strings: `width: '210mm'`, `fontSize: '32pt'`,
   `'50%'` (sets Percent mode too) — converted against the scene's units at
   write time. Plain numbers stay engine-native, EXCEPT font sizes
-  (`text.fontSize`, a range's `size`) where the unit is required: a bare
-  number is engine-native points and would render ~4.2× too large, so it is
-  rejected.
+  (`text.fontSize`, a range's `size`): a bare number would render ~4.2× too
+  large, so a unit is required.
 - `setProps` validates **every** leaf before touching the scene: a bad leaf
   throws listing all bad paths with suggestions, and nothing is applied.
 - `getProps(id, ['opacity', 'stroke'])` reads leaves or whole subtrees; an
   unknown selector throws — it never answers a typo with `undefined`.
 - Attachment state is a discriminated union: assign `{ type, ...props }` to
-  `fill`/`shape`/`blur`/`effects`/`animations`. The type picks the arm and
-  the arm names every prop it carries. A type MATCHING what is attached
-  edits it in place; a different type replaces it; `null` detaches (except
-  `effects`, replaced wholesale — `[]` clears). Reads answer in the same
-  shape, so `getProps` output feeds straight back in. Tree/layout verbs live on `engine.design` (group, appendChild, align); only export-style I/O stays on `engine.block.*`.
+  `fill`/`shape`/`blur`/`effects`/`animations`/`transition`. The type picks
+  the arm and the arm names every prop it carries. A type MATCHING what is
+  attached edits it in place; a different type replaces it; `null` detaches
+  (except `effects`, replaced wholesale — `[]` clears). Reads answer in the
+  same shape, so `getProps` output feeds straight back in. Tree/layout verbs
+  live on `engine.design` (group, appendChild, align); saving and exporting
+  are the `export` tool.
+- Document state is on the scene block (`variables`, `spotColors`,
+  `scene.*`); a new document is `create({ type: 'scene', children })`.
 - Video, animation, audio: `playback`, `animations`, `audio` and `track`
   props; recipe and traps in `../handbook/video.md`.
 - Scalar wrappers (`setOpacity`, …), `is*`/`supports*` predicates and
-  editor-UI methods are in `signatures-extended.d.ts`; prefer the facade.
+  editor-UI methods are in `signatures-extended.d.ts`, for reference only.
 
-## Single file: `signatures.d.ts`
+## Reference: `signatures.d.ts`
 
-The whole CE.SDK call surface is in `signatures.d.ts` (~2000 lines),
-signatures only, so a hit is usually the whole answer: find the member in
-`signatures.d.ts` (search it if your host can, else read it
-once), plus ~2000 lines of context when one line is not enough.
-
-What the flattening means for you:
-
-- A vocabulary type is its values: `type DesignBlockType = 'scene' | 'page' |
-'graphic' | …` — no `Shorthand`/`(typeof …)[number]` chains to chase. Where
-  a `// each also valid as '…<name>…'` comment follows a union, the prefixed
-  longhand spelling of every member is accepted too.
-- Property-name unions (`FloatPropertyName`, `ColorPropertyName`, …) list
-  every legal string for `setFloat`/`setColor`/`getString`-style accessors.
-  If a string is not in the union, the engine does not accept it — never
-  invent property paths.
-- A `/** @deprecated … */` one-liner names the replacement; prefer it.
-  Deprecated overloads of a surviving method are omitted entirely — the
-  listed signature is the current one.
-
-Look members up by name, not by remembered line numbers: a name survives
-CE.SDK updates, a line number does not.
-
-## Browsing a whole class
-
-For "what can `engine.scene` do?", read the run that starts at the class
-declaration (`BlockAPI` is the largest):
+`signatures.d.ts`: the upstream CE.SDK surface `engine.design`
+wraps (~2000 lines) — read it to understand a prop or enum, never to call
+it. Types are flattened to their values. Class start lines:
 
 | Class        | Start line |
 | ------------ | ---------- |
-| AssetAPI     | 1219       |
-| **BlockAPI** | **1524**   |
-| EditorAPI    | 1776       |
-| EventAPI     | 1913       |
-| **SceneAPI** | **2014**   |
-| VariableAPI  | 2239       |
-
-(If a start line looks off, search for `class BlockAPI` instead.)
+| AssetAPI     | 1210       |
+| **BlockAPI** | **1515**   |
+| EditorAPI    | 1735       |
+| EventAPI     | 1872       |
+| **SceneAPI** | **1972**   |
+| VariableAPI  | 2189       |
 
 ## What is NOT in this file
 
 - **Parameter semantics** — units, value ranges, defaults for optional
   parameters. Where a signature says only `r: number`, color components are
   in the range 0–1, never 0–255. For anything else a bare `number`/`string`
-  leaves open, check the `guide` skill's topic page before guessing.
-- Conceptual prose and topic guides (text, fills, export, rules) → use the
-  `guide` skill instead.
+  leaves open, check the handbook's topic page before guessing.
+- Recipes by topic → the handbook: `../handbook/print.md` (CMYK,
+  spot colours, bleed, PDF/X), `../handbook/templates.md` (text
+  variables, placeholders, locking), `../handbook/video.md` and
+  `../handbook/animation.md` (timeline, captions, animations).
 
 
 ---
 
 # The edit-code API surface (docs/api/signatures.d.ts)
 
-Everything edit code writes through, inline below. The upstream CE.SDK core is the rest of that file — `signatures.d.ts` — when you need a member this section lacks.
+Everything edit code uses, inline below. The upstream CE.SDK core it wraps is the rest of that file — `signatures.d.ts` — reference only.
 
 ```typescript
 // ============================================================================
-// codesign extension: engine.design — write ALL mutations through this API.
-// engine.block.* is the legacy/extended surface: use it only for reads the
-// facade lacks (getTextRuns and other diagnostics). Available inside `edit` code alongside the engine.block.* API it
-// delegates to. One nested-props dialect replaces the typed accessors
-// (setFloat/getBool/…), the per-property wrappers (setOpacity,
-// setStrokeWidth, setPositionX, …) and the is*-state reads.
+// codesign extension: engine.design — the ONLY API `edit` code uses.
+// engine.block/scene/variable/editor/asset/event are refused by the edit
+// gate, which names the engine.design equivalent; the upstream classes after
+// this section are reference only. One nested-props dialect replaces the
+// typed accessors (setFloat/getBool/…), the per-property wrappers
+// (setOpacity, setStrokeWidth, setPositionX, …) and the is*-state reads.
+// Scene-wide state (variables, spotColors, scene.*) lives on the scene block.
 //
-// Contract: setProps/create validate EVERY leaf before touching the scene —
-// a bad leaf throws (listing every bad path with suggestions) and nothing is
-// applied. getProps throws on an unknown selector; it never returns
-// undefined for a typo. create rolls back on failure (never an orphan).
-// Attachment state (fill/shape/blur/effects/animations) is the typed
-// unions below — assign { type, ...props } specs via setProps; the raw
-// engine.block accessors are never needed for it.
+// Attachment state (fill/shape/blur/effects/animations/transition) is the
+// typed unions below — assign { type, ...props } specs via setProps.
 //
-// Units: length leaves (width/height/position, paddings, stroke.width,
-// dropShadow offsets/radii, page margins) and fontSize accept CSS-style
-// unit STRINGS — '210mm', '32pt', '340px', '1.2in' — converted against the
-// scene's current designUnit/fontSizeUnit/dpi at write time, so the value
-// means what you said regardless of ambient unit state. '50%' on
-// width/height/position also sets the '<leaf>Mode' to 'Percent' (an
-// absolute unit pins it to 'Absolute'). A plain number stays engine-native —
-// EXCEPT on a font size (text.fontSize, a range's size), where the unit is
-// REQUIRED and a bare number is rejected: engine-native font size is POINTS,
-// so 64 would render ~267px at 300 dpi. Write '64px' (screen) or '24pt'.
-// letterSpacing is a FACTOR, never a length. lineHeight: write { visual: n }
+// Units (lengths, paddings, stroke.width, shadows, margins): see the api
+// skill; '50%' also sets '<leaf>Mode' to 'Percent'. letterSpacing is a FACTOR, never a length. lineHeight: write { visual: n }
 // (CSS-style x fontSize — the facade converts per font); a bare number is the
 // ENGINE scale (x the font's contentArea) and renders looser than it reads.
 // Text glyph color is per-character: fill.solid.color on a text block is
@@ -211,7 +178,11 @@ interface DesignApi {
      *  attaches to the parent, and awaits the subtree's font/image loads
      *  before returning, so measure() is truthful immediately. Rolls the
      *  WHOLE subtree back on failure. Name the nodes you will touch again:
-     *  the name lands on the block and findByName resolves it later. */
+     *  the name lands on the block and findByName resolves it later.
+     *  A NEW document: create({ type: 'scene', props: { scene: { mode?:
+     *  'Video', layout?, designUnit? }, variables?, spotColors? }, children:
+     *  [pages] }) replaces the current scene; a page whose parent is the
+     *  scene goes into its stack. */
     create(spec: BuildSpec, opts?: { parent?: BlockRef; index?: number }): Promise<DesignBlockId>;
     /** Partial deep-merge write. Brand-dispatched: pass a FILL/EFFECT/BLUR/
      *  SHAPE/ANIMATION block id and the matching attachment props tree
@@ -231,12 +202,6 @@ interface DesignApi {
     /** Editor settings, same dialect. */
     setSettings(props: SettingsProps): Promise<void>;
     getSettings(select?: string[]): Promise<SettingsProps>;
-    /** Resolve a font AND its metrics in one call — by family (the same
-     *  typeface lookup create runs) or by uri (a font you already have). Also warms
-     *  the metrics cache behind text.lineHeight: { visual } — after create
-     *  with text.font, font(), or loadResources, visual line-heights need
-     *  no fetch. No other metrics call is needed. */
-    font(spec: { family?: string; uri?: string; weight?: FontWeight; style?: FontStyle }): Promise<{ typeface?: Typeface; uri: string; contentArea: number; metrics: { ascender: number; descender: number; lineGap: number; unitsPerEm: number; capHeight: number; xHeight: number } }>;
     // text.path is raw-or-spec like every attachment: a raw SVG string, or
     // { shape: 'circle', diameter, align?: 'top' | 'bottom' | 0..1 } — the
     // spec authors the circle, measures the flat glyph run, centers the
@@ -286,10 +251,9 @@ interface DesignApi {
     scale(id: BlockRef, factor: number, opts?: { anchorX?: number; anchorY?: number }): Promise<void>;
     resizeContentAware(ids: BlockRef[], size: { width: number; height: number }): Promise<void>;
     /** Measured layout frame (post-layout px) — the numbers you position by.
-     *  Rotated: x/y = unrotated origin = pivot corner (rotation set without
-     *  position in one call turns about the centre and moves x/y).
-     *  textLines: visible line count, text blocks only. */
-    measure(id: BlockRef): Promise<{ x: number; y: number; width: number; height: number; textLines?: number }>;
+     *  Rotated: x/y = pivot corner (the unrotated origin).
+     *  textLines: visible line count; ink: { from, to } adds glyph ink boxes. Text only. */
+    measure(id: BlockRef, opts?: { ink?: { from?: number; to?: number } }): Promise<{ x: number; y: number; width: number; height: number; textLines?: number; ink?: Array<{ x: number; y: number; width: number; height: number; baselineY: number }> }>;
     /** Await pending font/image loads for these subtrees (create does this itself). */
     loadResources(ids: BlockRef[]): Promise<void>;
     isGroupable(ids: BlockRef[]): Promise<boolean>;
@@ -299,6 +263,7 @@ interface DesignApi {
     insertChild(parent: BlockRef, child: BlockRef, index: number): Promise<void>;
     getParent(id: BlockRef): Promise<DesignBlockId | null>;
     getChildren(id: BlockRef): Promise<DesignBlockId[]>;
+    /** 'page' answers in document order. */
     findByType(type: DesignBlockType): Promise<DesignBlockId[]>;
     /** Blocks carrying this name. create writes a spec node's name onto the
      *  block, so this is how a LATER edit re-finds what an earlier made. */
@@ -307,6 +272,15 @@ interface DesignApi {
     ungroup(id: BlockRef): Promise<void>;
     duplicate(id: BlockRef): Promise<DesignBlockId>;
     destroy(id: BlockRef): Promise<void>;
+    // Media and CoDesign services — what CE.SDK does not answer itself:
+    /** A font and its metrics, by family (create's lookup) or uri; warms the
+     *  cache text.lineHeight: { visual } reads. */
+    font(spec: { family?: string; uri?: string; weight?: FontWeight; style?: FontStyle }): Promise<{ typeface?: Typeface; uri: string; contentArea: number; metrics: { ascender: number; descender: number; lineGap: number; unitsPerEm: number; capHeight: number; xHeight: number; underlineOffset: number; underlineSize: number } }>;
+    /** Words of an asset_generate transcript (its transcriptUri) starting in [from, to) source seconds. */
+    readTranscript(uri: string, range?: { from?: number; to?: number }): Promise<{ words: Array<{ text: string; start: number; end: number }> }>;
+    /** An audio block's beats in PAGE seconds; bpm picks half/double tempo;
+     *  bpm/fit null = no steady beat (cut on accents/onsets). */
+    readBeats(id: BlockRef, opts?: { bpm?: number }): Promise<{ start: number; duration: number; bpm: number | null; requestedBpm: number | null; fit: { onsets: number; onGrid: number; meanErrMs: number } | null; beats: number[]; accents: number[]; onsets: Array<{ t: number; strength: number }> }>;
 }
 interface BuildSpec {
     type: DesignBlockType;
@@ -469,6 +443,7 @@ interface BlockProps {
         x?: number;
         y?: number;
     };
+    metadata?: { [key: string]: string | null } /* block tags; null deletes */;
     movement?: {
         constraint?: number;
     };
@@ -557,6 +532,7 @@ interface BlockProps {
     selected?: boolean;
     selectionEnabled?: boolean;
     shape?: Shape | null;
+    spotColors?: { [ink: string]: { rgb?: { r: number; g: number; b: number }; cmyk?: { c: number; m: number; y: number; k: number }; cutout?: 'Solid' | 'Dashed' } | null } /* SCENE only: print inks */;
     stack?: {
         spacing?: number;
         spacingInScreenspace?: boolean;
@@ -577,6 +553,7 @@ interface BlockProps {
         style?: 'Dashed' | 'DashedRound' | 'Dotted' | 'LongDashed' | 'LongDashedRound' | 'Solid';
         width?: number;
     };
+    subtitles?: string /* captionTrack, WRITE-only: SRT/VTT uri replaces its captions */;
     text?: {
         automaticFontSizeEnabled?: boolean;
         backgroundCornerRadius?: number;
@@ -599,7 +576,7 @@ interface BlockProps {
         letterSpacing?: number;
         lineHeight?: number /* engine scale: multiplies the font's contentArea */ | { visual: number } /* CSS-style x fontSize — the facade converts per font */;
         lineHeightVisual?: number /* READ-ONLY, selected reads: lineHeight in CSS terms. Write via lineHeight: { visual } */;
-        listStyle?: ListStyle /* whole block; nesting via raw setTextListLevel */;
+        listStyle?: ListStyle /* whole block; nesting via paragraphs: [{ index, listLevel }] */;
         maxAutomaticFontSize?: number;
         minAutomaticFontSize?: number;
         paragraphs?: { index: number; from?: number; listStyle?: ListStyle; listLevel?: number; horizontalAlignment?: string; lineHeight?: number }[];
@@ -628,8 +605,10 @@ interface BlockProps {
         automaticallyManageBlockOffsets?: boolean;
     };
     transformLocked?: boolean;
+    transition?: { type: string /* push, slide, wipe, fade, cross-fade, … — a bad type lists all 20 */; duration?: number; easing?: string; [typeLeaves: string]: unknown } | null /* clip into next clip; leaves nest under the type */;
     type?: string;
     uuid?: string;
+    variables?: { [name: string]: string | null } /* SCENE only: text variable values; null deletes */;
     visible?: boolean;
     width?: number;
     widthMode?: 'Absolute' | 'Percent' | 'Auto';

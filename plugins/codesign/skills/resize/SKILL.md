@@ -154,7 +154,7 @@ answer.
 **Capture the source as fractions** (run on the source page):
 
 ```js
-const page = engine.scene.getPages()[0];
+const [page] = await engine.design.findByType('page');
 const pg = await engine.design.getProps(page, ['width', 'height']);
 const PW = pg.width,
   PH = pg.height;
@@ -196,7 +196,7 @@ const NW = 1080,
   NH = 1920; // target format
 const SAFE_TOP = 250,
   SAFE_BOT = 320; // ig-story/reel UI chrome (authoritative per-format values: formats skill, <id>.md); 0 for post/square/widescreen
-const page = engine.scene.getPages()[0];
+const [page] = await engine.design.findByType('page');
 await engine.design.setProps(page, { width: NW, height: NH });
 
 // full-bleed background → cover the new page (don't reposition it proportionally)
@@ -341,8 +341,8 @@ Applies when the page has a `playback.duration`, blocks carry `playback.timeOffs
   photo's side on 16:9 crosses the photo once 9:16 stacks text under it — aim it along the new
   reading axis. Patch in place with the **same type**, which keeps the animation's duration:
   `setProps(id, { animations: { in: { type: 'slide', slide: { direction: (3 * Math.PI) / 2 } } } })`
-  (a different type replaces the animation and resets its duration). The duration itself is not in
-  the spec: `engine.block.setDuration(engine.block.getInAnimation(id), s) // engine.block: animation duration`.
+  (a different type replaces the animation and resets its duration); `duration: s` in the same
+  spec sets it.
 - **Scaling entrances overdraw.** `zoom` / `grow` scale around the block's centre, so a
   full-height photo spills over its neighbours during the entrance — check the first frames after
   every re-layout.

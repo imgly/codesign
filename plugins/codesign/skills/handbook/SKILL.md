@@ -21,13 +21,13 @@ description: |
 You MUST follow these steps in order for ANY canvas change:
 
 1. **Resolve the brief before you build — from what the user asked for, not from what happens to be loaded.** For a new design, run the `create` skill's intake first to assemble the brief — and when two or more of the five design-defining parameters (topic, audience, visual direction, brand, format) are neither stated nor safely inferable, that intake **asks** before the first edit rather than defaulting them. Starting points:
-   - **New design** → `import({ title })` first, every time: after a save, the saved design stays current, so a `rename` or `export` before it acts on that one. Your first `edit` builds the scene: `engine.scene.create('VerticalStack')`. To start over on the same design, delete its pages and build again instead of creating a new scene.
+   - **New design** → `import({ title })` first, every time: after a save, the saved design stays current, so a `rename` or `export` before it acts on that one. Your first `edit` builds the scene: `await engine.design.create({ type: 'scene', children: [page] })`. To start over on the same design, delete its pages and build again instead of creating a new scene.
    - **Starting from a file** (a `.imgly`, a `.psd`, a PDF, an image) → `import({ source })` loads it as a new design; then `edit` from there.
    - **Changing a saved design** → `open({ uri })` it, then `edit` from there. When the user names it without a `uri`, find it with `designs`. `import` of that `uri` would give you a copy instead.
    - **Continuing what you already built this conversation** → just call `edit`. There is nothing to pass: `edit` always continues the current session.
    - **Register the brief's acceptance checklist** before the first `edit`: `checklist({ items })` with the files the brief orders, its verbatim copy and the checks only you can make. `export` names what is unmet; treat that like a failing test.
 
-2. **Read the API docs** for every engine method you plan to use. `../api/SKILL.md` for signatures, `../guide/SKILL.md` for prose and recipes. NEVER guess parameters. **Read ALL remaining references in ONE message**, in parallel: the `api` and `judge` skills and `design-rules.md` (+ `quirks.md`/`fonts.md` if needed, the `models` skill before any `asset_generate`).
+2. **Read the API docs** for every engine method you plan to use. `../api/SKILL.md` for signatures, this skill's `print.md` only for a print job (a printer, bleed, CMYK, spot or PDF/X in the brief; a PDF alone is not one) and `templates.md` for variables, placeholders and locks. NEVER guess parameters. **Read ALL remaining references in ONE message**, in parallel: the `api` and `judge` skills and `design-rules.md` (+ `quirks.md`/`fonts.md` if needed, the `models` skill before any `asset_generate`).
 3. **Run `edit({ code, note? })`** — execute the JS body against the live engine. The response's first text part is JSON `{ names? }`: every named block now in the scene, and exactly the strings `engine.design.findByName(name)` will resolve in your next edit. Name what you build and re-find it by name.
 4. **Visually verify.** A mutating `edit`'s result already shows the changed page — read that render. Call `preview({ blockIds? })` only for full-size judging or multi-page looks; never re-preview content you already rendered. Never tell the user something "looks good" without seeing it yourself.
 5. **Judge & remediate before reporting done.** When the design is a candidate for "done", run the `judge` loop: score the 8 axes against your actual `preview` renders, dry-run the §6.1.11 + §6.5.2 checklists (design-rules.md), remediate any applicable axis below 8 via further `edit`s, re-preview, re-judge. On pass, record `scorecard({ verdict: 'pass' })`; any later `edit`, `import` or `open` clears that verdict and re-arms this step. Never report an unjudged design as done.
@@ -118,12 +118,10 @@ A person can open the design you saved in an editor, change it and save it back 
 
 ## 4. Engine recipes
 
-**Dialect rule (enforced): mutations go through `engine.design`** —
-`create`/`setProps`/`group`/`appendChild`, plus `measure` and
-`getProps` (incl. `['text.ranges']`). `edit` REJECTS code that mutates via
-`engine.block.*` (the error lists the equivalents); for a call the facade
-genuinely lacks, keep it with a `// engine.block: <reason>` comment. Print
-scenes: `await engine.design.setProps(scene, { scene: { designUnit: 'Millimeter', dpi: 300 } })` once.
+**Dialect rule (enforced): edit code uses `engine.design` only** —
+`create`/`setProps`/`getProps`/`measure`/`group`/`appendChild` and the rest of
+the `api` skill. `edit` REJECTS any other engine namespace (the error names
+the equivalent). Print scenes: `await engine.design.setProps(scene, { scene: { designUnit: 'Millimeter', dpi: 300 } })` once.
 
 ### Build ONE complete page per `edit`
 
@@ -133,8 +131,7 @@ For a **single-page design** that means the entire scene in one `edit` — scene
 
 ```js
 // 1. Structure + every block of the page — ONE awaited create call
-const scene = engine.scene.create('VerticalStack');
-const stack = (await engine.design.findByType('stack'))[0];
+const scene = await engine.design.create({ type: 'scene' });
 const page = await engine.design.create(
   {
     type: 'page',
@@ -160,7 +157,7 @@ const page = await engine.design.create(
       // solid panels via fill: { type: 'color', color: { value } }
     ]
   },
-  { parent: stack }
+  { parent: scene } // the page lands in the scene's stack
 );
 // create() awaited the subtree's font/image loads — measurements are live.
 
@@ -198,27 +195,21 @@ Never emit a multi-page design (carousel, slide deck, brochure) in one giant `ed
 
 The objective-bug bar below applies per page: fix an overflow on page 3 with a targeted `edit` to page 3, then re-capture page 3 only.
 
-**Editing an existing multi-page design:** a mechanical change applied uniformly (swap a font everywhere, recolor a brand accent) is one `edit` looping over `engine.scene.getPages()` — that's one logical change, not a batch. Substantial per-page rework (rewriting layouts, restructuring content) goes page by page like a build, with a `preview` per reworked page.
+**Editing an existing multi-page design:** a mechanical change applied uniformly (swap a font everywhere, recolor a brand accent) is one `edit` looping over `await engine.design.findByType('page')` — that's one logical change, not a batch. Substantial per-page rework (rewriting layouts, restructuring content) goes page by page like a build, with a `preview` per reworked page.
 
-After the capture, fire a 2nd `edit` ONLY if the rendered PNG shows a specific, OBJECTIVE bug (text overflowing the page bounds, blocks visibly overlapping, missing characters, blank glyphs). Aesthetic refinement does NOT warrant another exec — sub-pixel nudges, compositional balance, vertical centering, whitespace distribution ("top-heavy", "feels off-center") are all DISALLOWED, however large the imbalance. If in doubt, STOP. A read-only `edit` (returns data, mutates nothing — `getTextFontSizes` etc.) still counts against the limit and forces a follow-up capture; fire one only if you'd otherwise be guessing at a number you can't read off the captured PNG.
+After the capture, fire a 2nd `edit` ONLY if the rendered PNG shows a specific, OBJECTIVE bug (text overflowing the page bounds, blocks visibly overlapping, missing characters, blank glyphs). Aesthetic refinement does NOT warrant another exec — sub-pixel nudges, compositional balance, vertical centering, whitespace distribution ("top-heavy", "feels off-center") are all DISALLOWED, however large the imbalance. If in doubt, STOP. A read-only `edit` (returns data, mutates nothing — `getProps`, `measure` etc.) still counts against the limit and forces a follow-up capture; fire one only if you'd otherwise be guessing at a number you can't read off the captured PNG.
 
 **Scope of these stop-rules: the build phase, before a `judge` pass.** They cap self-initiated polish between build and capture, not Loop step 5. Once the `judge` skill has scored the design, remediating a failed axis (including composition or whitespace) is required work, not aesthetic refinement: apply the scorecard's fixes via `edit`, then re-preview and re-judge.
 
 ### Font sizes are PIXELS, not points
 
-CE.SDK's font size APIs default to **points**, and its scene unit to **Inch** — but this server calls `setDesignUnit('Pixel')` inside `engine.scene.create(...)`, so every scene you create is in pixels. Re-set it only if you bare-call the engine outside `scene.create`. A unit-less font size is still read as points and converted at the scene's 300 dpi, so it lands **~4.2× too large**: `setTextFontSize(block, 32)` measures back as **133 px**, not 32.
+CE.SDK's font sizes are **points**; every scene you create here is in pixels (`create({ type: 'scene' })` sets the Pixel design unit). A unit-less font size would be read as points at the scene's 300 dpi and land **~4.2× too large** (32 → **133 px**).
 
-With `engine.design` the unit is **required** — `text: { fontSize: '32px' }` (or `'24pt'` for print, same for a range's `size`); a bare number is rejected before anything is applied, because it would silently land as points. Reads answer in **pixels** whatever you wrote (`'32px'`), so a read writes straight back. When you drop to the raw APIs instead, **ALWAYS pass `{ unit: 'Pixel' }`** when reading or writing font sizes:
+So the unit is **required** — `text: { fontSize: '32px' }` (or `'24pt'` for print, same for a range's `size`); a bare number is rejected before anything is applied. Reads answer in **pixels** whatever you wrote (`'32px'`), so a read writes straight back:
 
 ```js
 await engine.design.setProps(block, { text: { fontSize: '32px' } }); // ✓ unit travels with the value
-engine.block.getTextFontSizes(block, { unit: 'Pixel' }); // returns px ✓
-```
-
-**NEVER:**
-
-```js
-engine.block.setFloat(block, 'text/fontSize', 32); // ✗ rejected by the gate — and unit-less means points → 133 px
+await engine.design.getProps(block, ['text.fontSize', 'text.ranges']); // '32px', plus per-run sizes
 ```
 
 Line-height: write `text: { lineHeight: { visual: n } }` — the CSS multiplier you mean; the facade converts per font (a bare number is the raw engine scale and renders looser; read back: `text.lineHeightVisual`). `setProps(id, { text: { lineHeight } })` then reshapes automatically and preserves style ranges. Full rule and code: §6.1.3 in this skill's design-rules.md.
@@ -248,15 +239,15 @@ await engine.design.loadResources([page]); // resolves once every font/image/fil
 
 This barrier is for **your own measuring** inside `edit` code — positioning by measured frame width needs the fonts loaded first. Capturing is covered server-side: `preview`, `export`, and the checkpoint at the end of every `edit` all force-load the scene's resources before rendering or serializing, so you never need a separate wait-for-fonts edit.
 
-`getFrameWidth(id) > 0` after the await is your "font loaded + shaped successfully" signal. **Never** use `getWidth(id) === 0` as a font-load probe — it returns 0 by design in Auto mode regardless of font state.
+`(await engine.design.measure(id)).width > 0` after the await is your "font loaded + shaped successfully" signal. **Never** use the `width` prop `=== 0` as a font-load probe — it is 0 by design in Auto mode regardless of font state.
 
 ### Video: any design can become a video
 
 Scenes are not "static" or "video" at creation time — add time-based content
 to the scene you already have, then `export({ format: "mp4" })` renders the
-authored timeline. Do NOT rebuild a scene with `scene.createVideo()` just to
-animate it (`createVideo` and `scene.setMode('Video')` exist as conveniences;
-you rarely need either).
+authored timeline. Do NOT rebuild a scene with `create({ type: 'scene', props: { scene: {
+mode: 'Video' } } })` just to animate it (it and `setProps(scene, { scene:
+{ mode: 'Video' } })` exist as conveniences; you rarely need either).
 
 The recipe — page duration, one track per layer and offsets, video fills and trims, audio,
 `export`/`preview` for timelines — is `video.md`; read it
@@ -264,26 +255,24 @@ before any timeline work.
 
 ### Common operations cheatsheet
 
-The `engine.*` calls used in nearly every `edit`. Verify exact signatures + types in the `api` skill before using anything not listed here.
+The `engine.design` calls used in nearly every `edit`. Verify exact signatures + types in the `api` skill before using anything not listed here.
 
 ```js
-// Scene + page basics — hierarchy is scene → stack → page (NOT scene → page).
-// engine.scene.create("VerticalStack") makes the scene AND a stack container.
-// Pages attach to the stack, never directly to the scene root.
-// The "VerticalStack" argument is REQUIRED — without it, no stack is created
-// and findByType("stack") returns []. (Use "HorizontalStack" for side-by-side.)
-const scene = engine.scene.create('VerticalStack');
-const stack = (await engine.design.findByType('stack'))[0];
+// Scene + page basics — hierarchy is scene → stack → page. create({ type:
+// 'scene' }) makes the scene AND its stack (layout: 'VerticalStack' default,
+// scene: { layout: 'HorizontalStack' } for side-by-side); a page created with
+// the scene as parent lands in the stack.
+const scene = await engine.design.create({ type: 'scene' });
 const page = await engine.design.create(
   { type: 'page', props: { width: 1080, height: 1920 } },
-  { parent: stack }
-); // ← stack, not scene
+  { parent: scene }
+);
 // The stack arrives with the editor's page gap already set (48 screen-space
-// px, matching the CE.SDK editor — the raw engine default of 0 is never what
-// you want). Override only for a deliberate look, e.g. an edge-to-edge collage:
+// px, matching the CE.SDK editor). Override only for a deliberate look, e.g.
+// an edge-to-edge collage:
+// const [stack] = await engine.design.findByType('stack');
 // await engine.design.setProps(stack, { stack: { spacing: 0 } });
-const pages = engine.scene.getPages(); // DesignBlockId[]
-const current = engine.scene.getCurrentPage(); // DesignBlockId | null
+const pages = await engine.design.findByType('page'); // document order
 
 // Position & size — nested props, one call for many
 await engine.design.setProps(id, { position: { x, y }, width: w, height: h });
@@ -338,7 +327,6 @@ await engine.design.setProps(text, {
   }
 });
 await engine.design.setProps(text, { text: { fontSize: '32px' } }); // '24pt' for print
-engine.block.getTextFontSizes(text, { unit: 'Pixel' }); // read-only diagnostic
 
 // Rich text — STYLE RANGES inside ONE block. Every setter below takes an optional
 // (from, to) character range; omit it to style the whole string. An accent word, a
@@ -377,19 +365,16 @@ const {
   text: { ranges: runs }
 } = await engine.design.getProps(text, ['text.ranges']);
 
-// PARAGRAPH-level — these take a paragraphIndex (negative = all paragraphs), NOT a
-// character range. Multi-paragraph copy is ONE block with paragraph spacing, never N
+// PARAGRAPH-level — by paragraph index, NOT a character range. Multi-paragraph copy is ONE block with paragraph spacing, never N
 // blocks stacked by hand and never blank lines used as spacing. (§6.1.8)
 // ⚠ paragraphSpacing is an EM MULTIPLE of the font size, NOT pixels. 0.4–0.8 is the
 // usable band; a pixel-looking value like 12 means twelve em and silently pushes the
 // page metres long with no error (measured: 9 on 17px copy → ~150px gaps).
 await engine.design.setProps(text, { text: { paragraphSpacing: 0.6 } }); // EM between paragraphs
-// Per-paragraph overrides stay raw:
-engine.block.setTextHorizontalAlignment(text, 'Center', 0); // engine.block: per-paragraph override
-engine.block.setTextLineHeight(text, 1.2, 0); // engine.block: per-paragraph leading
-// Read alignment back with paragraphIndex -1 for the BLOCK-level value; a per-paragraph
-// read returns undefined when no paragraph override is set, which looks like "unset".
-engine.block.getTextHorizontalAlignment(text, -1);
+// Per-paragraph overrides: index + only what changes; read back via ['text.paragraphs']
+await engine.design.setProps(text, {
+  text: { paragraphs: [{ index: 0, horizontalAlignment: 'Center', lineHeight: 1.2 }] }
+});
 
 // Text alignment + spacing — plain props
 await engine.design.setProps(text, {
@@ -418,10 +403,10 @@ await engine.design.setProps(text, {
   }
 });
 // Align the chip by its padded FIELD edge, not its glyph run (§6.5.1). The padding
-// expands the field OUTWARD from the text frame, and getFrameHeight reports the UNPADDED
+// expands the field OUTWARD from the text frame, and measure() reports the UNPADDED
 // height — so to land the field edge on the margin, and to get a true capsule:
-//   setPositionX(chip, MARGIN + paddingLeft)                     // not MARGIN
-//   cornerRadius = (getFrameHeight(chip) + padTop + padBottom)/2 // not frameHeight/2
+//   position: { x: MARGIN + paddingLeft }                    // not MARGIN
+//   cornerRadius = (measure(chip).height + padTop + padBottom)/2 // not height/2
 
 // Lists — native bullets/numbers WITH a real hanging indent (wraps align to text,
 // not the marker). ONE text block holds the WHOLE list, one paragraph per item. All three hand-built fakes are wrong
@@ -430,12 +415,12 @@ await engine.design.setProps(text, {
 //   2. a lone "•" text block per item     -> marker drifts off its text on any change
 //   3. one text block per list item       -> no list at all, N loose ungrouped blocks
 // (§6.1.8)
-await engine.design.setProps(text, { text: { listStyle: 'Unordered' } }); // 'None'|'Unordered'|'Ordered', whole block
+await engine.design.setProps(text, { text: { string: 'Ink\nPaper\nPress', listStyle: 'Unordered' } }); // 'None'|'Unordered'|'Ordered', whole block
 // per paragraph (index + only what changes) — never a raw setTextListStyle loop:
 await engine.design.setProps(text, {
   text: { paragraphs: [{ index: 2, listStyle: 'Ordered', listLevel: 1 }] }
 });
-// engine.editor.setSettingFloat('listIndentPerLevel', 1.5); // indent width per level, EM
+// await engine.design.setSettings({ listIndentPerLevel: 1.5 }); // indent width per level, EM
 
 // Text on a path — circular/curved type ("EST. 2026" around a seal, a badge arc).
 // ONE text block on a path is the only correct curved type — never one
@@ -609,16 +594,16 @@ Contract (verify signatures in the `api` skill):
 - Recover with `await engine.design.ungroup(id)`.
 
 ```js
-const group = (ids) =>
-  await engine.design.isGroupable(ids) ? await engine.design.group(ids) : null;
+const group = async (ids) =>
+  (await engine.design.isGroupable(ids)) ? await engine.design.group(ids) : null;
 
 // 1) group each leaf cluster after it is built + positioned
-const gHeader = group([topRule, kickerL, kickerR]);
-const gHero = group([title1, title2, tagline]);
-const gDetail = group([divider1, divider2, ...detailCells]);
+const gHeader = await group([topRule, kickerL, kickerR]);
+const gHero = await group([title1, title2, tagline]);
+const gDetail = await group([divider1, divider2, ...detailCells]);
 
 // 2) group the groups → a nested super-cluster (group-of-groups)
-const gMasthead = group([gHeader, gHero]);
+const gMasthead = await group([gHeader, gHero]);
 ```
 
 Guardrails: never group across pages, and measure text frames (`engine.design.loadResources` → `engine.design.measure`) and position **before** grouping. Close the build by returning the group manifest in the edit `note` (e.g. `groups: masthead=… detail=… lineup=…`) so the hierarchy is legible when you re-ground.
@@ -629,7 +614,7 @@ CE.SDK errors are short and opaque, and several runtime behaviors don't show up 
 
 ### Prefer surgical fixes over wipe-and-rebuild
 
-Each rebuild costs ~10 extra tool calls (re-create scene, re-position every block, re-verify). When something looks wrong, identify the specific block and edit it in place with a targeted `setProps` — position, fontSize, the string, etc. Reach for `engine.scene.create(...)` only when the scene graph is genuinely unrecoverable, which is rare.
+Each rebuild costs ~10 extra tool calls (re-create scene, re-position every block, re-verify). When something looks wrong, identify the specific block and edit it in place with a targeted `setProps` — position, fontSize, the string, etc. Reach for a new `create({ type: 'scene' })` only when the scene graph is genuinely unrecoverable, which is rare.
 
 ## 6. Design rules
 
