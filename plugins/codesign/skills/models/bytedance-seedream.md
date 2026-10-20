@@ -20,6 +20,8 @@ fails, so the minimal prompt is the better bet, not a guarantee.
 Pass the original file through `asset_add` unchanged. Re-encoded copies (RGB JPEG and RGB PNG) of
 the test ad were rejected by the content checker 4 of 4, while the original RGBA PNG went through.
 
+The image needs at least 262144 pixels (512 × 512); a smaller one is rejected with `Image dimensions are too small`.
+
 ## Result
 
 - `assets[0]` — the residual background: source size, RGB, extracted elements inpainted away. Its
@@ -39,6 +41,7 @@ the test ad were rejected by the content checker 4 of 4, while the original RGBA
 - `The model rejected the input: image_url: The provided image could not be processed for layer decomposition. Try a different image.`
 - `The model rejected the input: image: The content could not be processed because it contained material flagged by a content checker.`
 - `Upstream service error`
+- `The model rejected the input: image_url: Image dimensions are too small. Minimum area is 262144 pixels²` — the image is under 512 × 512; this one is final for that file.
 
-All three appeared for inputs that succeeded on another call, so none of them proves the image
+The first three appeared for inputs that succeeded on another call, so none of them proves the image
 is unusable.
