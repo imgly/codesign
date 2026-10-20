@@ -48,6 +48,7 @@
     getUUID(id: DesignBlockId): string;
     findByName(name: string): DesignBlockId[];
     findByType(type: ObjectType): DesignBlockId[];
+    findAllPlaceholders(): DesignBlockId[];
     createShape(type: ShapeType): DesignBlockId;
     /** @deprecated Use supportsShape instead. */
     hasShape(id: DesignBlockId): boolean;
@@ -116,6 +117,7 @@
     getChildren(id: DesignBlockId): DesignBlockId[];
     insertChild(parent: DesignBlockId, child: DesignBlockId, index: number): void;
     appendChild(parent: DesignBlockId, child: DesignBlockId): void;
+    referencesAnyVariables(id: DesignBlockId): boolean;
     getGlobalBoundingBoxX(id: DesignBlockId): number;
     getGlobalBoundingBoxY(id: DesignBlockId): number;
     getGlobalBoundingBoxWidth(id: DesignBlockId): number;
@@ -129,6 +131,7 @@
     fillParent(id: DesignBlockId): void;
     resizeContentAware(ids: DesignBlockId[], width: number, height: number): void;
     scale(id: DesignBlockId, scale: number, anchorX?: number, anchorY?: number): void;
+    findAllProperties(id: DesignBlockId): string[];
     setBool(id: DesignBlockId, property: BoolPropertyName, value: boolean): void;
     getBool(id: DesignBlockId, property: BoolPropertyName): boolean;
     setInt(id: DesignBlockId, property: IntPropertyName, value: number): void;
@@ -149,6 +152,7 @@
     setColorSpot(id: DesignBlockId, property: string, name: string, tint?: number): void;
     setGradientColorStops(id: DesignBlockId, property: string, colors: GradientColorStop[]): void;
     getGradientColorStops(id: DesignBlockId, property: string): GradientColorStop[];
+    getSourceSet(id: DesignBlockId, property: SourceSetPropertyName): Source[];
     setSourceSet(id: DesignBlockId, property: SourceSetPropertyName, sourceSet: Source[]): void;
     addImageFileURIToSourceSet(id: DesignBlockId, property: SourceSetPropertyName, uri: string): Promise<void>;
     setEnum<T extends keyof BlockEnumType>(id: DesignBlockId, property: T, value: BlockEnumType[T]): void;
@@ -285,9 +289,13 @@
     getDropShadowClip(id: DesignBlockId): boolean;
     replaceText(id: DesignBlockId, text: string, from?: number, to?: number): void;
     setTextColor(id: DesignBlockId, color: Color, from?: number, to?: number): void;
+    getTextColors(id: DesignBlockId, from?: number, to?: number): Array<Color>;
     setTextFontWeight(id: DesignBlockId, fontWeight: FontWeight, from?: number, to?: number): void;
+    getTextFontWeights(id: DesignBlockId, from?: number, to?: number): FontWeight[];
     setTextFontSize(id: DesignBlockId, fontSize: number, options?: TextFontSizeOptions): void;
+    getTextFontSizes(id: DesignBlockId, options?: TextFontSizeOptions): number[];
     setTextFontStyle(id: DesignBlockId, fontStyle: FontStyle, from?: number, to?: number): void;
+    getTextFontStyles(id: DesignBlockId, from?: number, to?: number): FontStyle[];
     getTextCases(id: DesignBlockId, from?: number, to?: number): TextCase[];
     setTextCase(id: DesignBlockId, textCase: TextCase, from?: number, to?: number): void;
     setTextDecoration(id: DesignBlockId, config: TextDecorationConfig, from?: number, to?: number): void;
@@ -309,8 +317,12 @@
     toggleItalicFont(id: DesignBlockId, from?: number, to?: number): void;
     setFont(id: DesignBlockId, fontFileUri: string, typeface: Typeface): void;
     setTypeface(id: DesignBlockId, typeface: Typeface, from?: number, to?: number): void;
+    getTypeface(id: DesignBlockId): Typeface;
+    getTypefaces(id: DesignBlockId, from?: number, to?: number): Typeface[];
     getTextRuns(id: DesignBlockId, from?: number, to?: number): TextRunInfo[];
     getTextVisibleLineCount(id: DesignBlockId): number;
+    getTextVisibleLineContent(id: DesignBlockId, lineIndex: number): string;
+    getTextCharacterInkBoxes(id: DesignBlockId, from?: number, to?: number): CharacterInkBox[];
     setTextOnPath(id: DesignBlockId, svgPath: string | null): void;
     getTextOnPath(id: DesignBlockId): string | null;
     setTextOnPathOffset(id: DesignBlockId, offset: number): void;
@@ -338,7 +350,13 @@
     /** @deprecated Use supportsPlaceholderControls instead. */
     hasPlaceholderControls(id: DesignBlockId): boolean;
     supportsPlaceholderControls(id: DesignBlockId): boolean;
+    setPlaceholderControlsOverlayEnabled(id: DesignBlockId, enabled: boolean): void;
+    setPlaceholderControlsButtonEnabled(id: DesignBlockId, enabled: boolean): void;
+    setMetadata(id: DesignBlockId, key: string, value: string): void;
+    getMetadata(id: DesignBlockId, key: string): string;
     hasMetadata(id: DesignBlockId, key: string): boolean;
+    findAllMetadata(id: DesignBlockId): string[];
+    removeMetadata(id: DesignBlockId, key: string): void;
     setScopeEnabled(id: DesignBlockId, key: Scope, enabled: boolean): void;
     isScopeEnabled(id: DesignBlockId, key: Scope): boolean;
     isAllowedByScope(id: DesignBlockId, key: Scope): boolean;
@@ -380,6 +398,9 @@
     getVolume(id: DesignBlockId): number;
     setPlaybackSpeed(id: DesignBlockId, speed: number): void;
     getPlaybackSpeed(id: DesignBlockId): number;
+    forceLoadAVResource(id: DesignBlockId): Promise<void>;
+    getAVResourceTotalDuration(id: DesignBlockId): number;
+    generateAudioThumbnailSequence(id: DesignBlockId, samplesPerChunk: number, timeBegin: number, timeEnd: number, numberOfSamples: number, numberOfChannels: number, onChunk: (chunkIndex: number, result: Float32Array | Error) => void): () => void;
     createAnimation(type: AnimationType): DesignBlockId;
     supportsAnimation(id: DesignBlockId): boolean;
     setInAnimation(id: DesignBlockId, animation: DesignBlockId): void;
@@ -388,7 +409,11 @@
     getInAnimation(id: DesignBlockId): DesignBlockId;
     getLoopAnimation(id: DesignBlockId): DesignBlockId;
     getOutAnimation(id: DesignBlockId): DesignBlockId;
+    createTransition(type: TransitionType): DesignBlockId;
     supportsTransition(id: DesignBlockId): boolean;
+    setTransition(id: DesignBlockId, transition: DesignBlockId): void;
+    removeTransition(id: DesignBlockId): void;
+    getTransition(id: DesignBlockId): DesignBlockId;
     forceLoadResources(ids: DesignBlockId[]): Promise<void>;
 // ---- EditorAPI (editor-UI members) ----
     setEditMode(mode: EditMode, baseMode?: string): void;
@@ -528,9 +553,17 @@ interface Buffer_2 {
     handle: string;
     buffer: Uint8Array;
 }
+interface CharacterInkBox {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    baselineY: number;
+}
 type EditMode = 'Transform' | 'Crop' | 'Text' | 'Playback' | 'Trim' | 'Vector' | (string & {});
 type EffectType = 'adjustments' | 'cross_cut' | 'dot_pattern' | 'duotone_filter' | 'extrude_blur' | 'glow' | 'green_screen' | 'half_tone' | 'linocut' | 'liquid' | 'lut_filter' | 'mirror' | 'outliner' | 'pixelize' | 'posterize' | 'radial_pixel' | 'recolor' | 'sharpie' | 'shifter' | 'tilt_shift' | 'tv_glitch' | 'vignette'; // each also valid as '//ly.img.ubq/effect/<name>'
 type EffectTypeLonghand = `//ly.img.ubq/effect/${EffectTypeShorthand}`;
+type EngineActionId = keyof EngineActionsRegistry & string;
 interface EnginePlugin {
     name: string;
     version: string;
@@ -610,9 +643,7 @@ interface SaveToArchiveOptions {
 }
 interface SaveToStringOptions {
     resourceSchemesAllowed?: string[];
-    persistenceCallback?: (url: string, dataHash: string, persistedCallback?: {
-        invoke(url: string, persistedUrl: string): void;
-    }) => void;
+    persistenceCallback?: (url: string, dataHash: string, persistedCallback: PersistedCallback) => void;
     compression?: CompressionOptions;
 }
 type SettingEnumPropertyName = 'touch/pinchAction' | 'touch/rotateAction' | 'camera/clamping/overshootMode' | 'controlGizmo/moveHandleVisibility' | 'controlGizmo/resizeHandlesVisibility' | 'controlGizmo/scaleHandlesVisibility' | 'controlGizmo/rotateHandlesVisibility' | 'doubleClickSelectionMode' | 'colorPicker/colorMode' | 'timeline/trackVisibility' | (string & {});
@@ -625,6 +656,11 @@ interface Size2 {
     height: number;
 }
 type Subscription = number;
+interface TextFontSizeOptions {
+    unit?: TextFontSizeUnit;
+    from?: number;
+    to?: number;
+}
 interface TextRunInfo {
     from: number;
     to: number;
@@ -637,8 +673,11 @@ interface TextRunInfo {
     typeface: Typeface;
     resolvedFontFileUri: string;
     textDecoration: TextDecorationConfig;
+    scriptStyle: ScriptStyle;
     kerning: number;
 }
+type TransitionType = 'none' | 'cross-fade' | 'cross-blur' | 'cross-spin' | 'cross-zoom' | 'cross-warp' | 'push' | 'slide' | 'stack' | 'splice' | 'diagonal-splice' | 'fade' | 'fade-to-white' | 'fade-to-black' | 'color-wipe' | 'line-wipe' | 'wipe' | 'clock-wipe' | 'chop' | 'gradient-fade' | 'two-stripes'; // each also valid as '//ly.img.ubq/transition/<name>'
+type TransitionTypeLonghand = `//ly.img.ubq/transition/${TransitionTypeShorthand}`;
 interface UBQAudioFromVideoOptions {
     keepTrimSettings: boolean;
     muteOriginalVideo: boolean;
@@ -755,6 +794,7 @@ type EnginePluginContext = {
     engine: CreativeEngine;
 };
 type FillPixelStreamOrientation = 'Up' | 'Down' | 'Left' | 'Right' | 'UpMirrored' | 'DownMirrored' | 'LeftMirrored' | 'RightMirrored';
+type TextFontSizeUnit = DesignUnit | 'Point';
 type HeightMode = 'Absolute' | 'Percent' | 'Auto';
 type HexColorString = string;
 type HorizontalContentFillAlignment = 'Left' | 'Center' | 'Right';
@@ -762,6 +802,7 @@ type ImageMimeType = Extract<MimeType_2, 'image/png' | 'image/jpeg' | 'image/web
 type ObjectTypeLonghand = DesignBlockTypeLonghand | ShapeTypeLonghand | FillTypeLonghand | EffectTypeLonghand | BlurTypeLonghand | AnimationTypeLonghand | TransitionTypeLonghand;
 type ObjectTypeShorthand = DesignBlockTypeShorthand | `shape/${ShapeTypeShorthand}` | `fill/${FillTypeShorthand}` | `effect/${EffectTypeShorthand}` | `blur/${BlurTypeShorthand}` | `animation/${AnimationTypeShorthand}` | `transition/${TransitionTypeShorthand}`;
 type PageGuidesSource = 'Document' | 'Custom';
+type PersistedCallback = (url: string, persistedUrl: unknown, error: string | undefined) => void;
 type PlaybackFadeInEasing = 'Linear' | 'EaseIn' | 'EaseOut' | 'EaseInOut' | 'EaseInQuart' | 'EaseOutQuart' | 'EaseInOutQuart' | 'EaseInQuint' | 'EaseOutQuint' | 'EaseInOutQuint' | 'EaseInBack' | 'EaseOutBack' | 'EaseInOutBack' | 'EaseInSpring' | 'EaseOutSpring' | 'EaseInOutSpring';
 type PlaybackFadeOutEasing = 'Linear' | 'EaseIn' | 'EaseOut' | 'EaseInOut' | 'EaseInQuart' | 'EaseOutQuart' | 'EaseInOutQuart' | 'EaseInQuint' | 'EaseOutQuint' | 'EaseInOutQuint' | 'EaseInBack' | 'EaseOutBack' | 'EaseInOutBack' | 'EaseInSpring' | 'EaseOutSpring' | 'EaseInOutSpring';
 type PositionXMode = 'Absolute' | 'Percent' | 'Auto';
@@ -798,3 +839,4 @@ enum CompressionLevel {
 type EffectTypeShorthand = 'adjustments' | 'cross_cut' | 'dot_pattern' | 'duotone_filter' | 'extrude_blur' | 'glow' | 'green_screen' | 'half_tone' | 'linocut' | 'liquid' | 'lut_filter' | 'mirror' | 'outliner' | 'pixelize' | 'posterize' | 'radial_pixel' | 'recolor' | 'sharpie' | 'shifter' | 'tilt_shift' | 'tv_glitch' | 'vignette';
 type FillTypeShorthand = 'color' | 'gradient/linear' | 'gradient/radial' | 'gradient/conical' | 'image' | 'video' | 'pixelStream' | 'stripe';
 type ShapeTypeShorthand = 'rect' | 'line' | 'ellipse' | 'polygon' | 'star' | 'vector_path';
+type TransitionTypeShorthand = 'none' | 'cross-fade' | 'cross-blur' | 'cross-spin' | 'cross-zoom' | 'cross-warp' | 'push' | 'slide' | 'stack' | 'splice' | 'diagonal-splice' | 'fade' | 'fade-to-white' | 'fade-to-black' | 'color-wipe' | 'line-wipe' | 'wipe' | 'clock-wipe' | 'chop' | 'gradient-fade' | 'two-stripes';

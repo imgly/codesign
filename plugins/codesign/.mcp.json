@@ -4,9 +4,13 @@
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.4.2",
+        "@imgly/codesign-mcp@0.5.0",
         "stdio"
-      ]
+      ],
+      "env": {
+        "IMGLY_PLUGIN_ERROR_REPORTING": "${user_config.error_reports}",
+        "IMGLY_PLUGIN_TELEMETRY": "${user_config.usage_telemetry}"
+      }
     }
   }
 }

@@ -5,6 +5,7 @@ description: >-
   creative (PNG / JPEG / WebP) — as an editable, layered CoDesign design or `.imgly` file; when
   asked to layerize, decompose, de-flatten or "make editable" an image; or when splitting an
   image into separate layers with live, editable text.
+requires: asset_generate, asset_search
 argument-hint: "<image> [output.imgly]"
 ---
 
@@ -14,10 +15,12 @@ Rebuild a source image as an editable CoDesign design: pixel layers from Seedrea
 
 ## Inputs
 
+
 - **Source image** — the file the user points at.
 - **Output path** — where the `.imgly` deliverable goes. If the user named none, use the source's path with the extension replaced by `.imgly`.
 
 Keep intermediate files (layer metadata, comparison renders, cut-outs) out of the output location.
+
 
 ## Stage 1 — Layers (Seedream)
 
@@ -25,15 +28,70 @@ Call `asset_generate` — **one successful call per image**:
 
 - `model`: `bytedance/seedream-5-pro-layerize`
 - `image_uris`: `[uri]` — the source image, added to the workspace with `asset_add({ source: { path } })`
+- An image under 512 × 512 pixels is refused: upscale it first (`../models/upscalers.md`), one more paid generation, and pass the upscaled result's `id`.
 - `prompt`: exactly what the `models` skill prescribes for this model. Read `../models/bytedance-seedream.md` before the call — it also explains the result (which asset is the background, why cut-outs come back rescaled, how bounding boxes are written).
 
-**Never retry a call that may have generated.** If it times out, find its output with `asset_search({ sourceId: 'ly.img.workspace.images' })` (newest first): the images created together with the source's dimensions or smaller, the full-size one being the background. If it returns an error instead, check the same way first; only when none of its output is in the workspace did it not run — fix the cause the error names and call it again. After the third failure, stop: build nothing, report the errors with their `gw_…` request ids, and ask the user how to proceed. Seedream is not optional: no other model and no local cut-outs replace it.
+
+**Never retry a call that may have generated.** If it times out, find its output with `asset_search({ sourceId: 'ly.img.workspace.images' })` (newest first): the images created together with the source's dimensions or smaller, the full-size one being the background. If it returns an error instead, check the same way first; only when none of its output is in the workspace did it not run — fix the cause the error names and call it again.
+
+
+After the third failure, stop: build nothing, report the errors with their `gw_…` request ids, and ask the user how to proceed.
+
+
+Seedream is not optional: no other model and no local cut-outs replace it.
+
 
 Save the returned `metadata` (layer names, z order, bounding boxes) as soon as you have it.
 
-Handle Seedream's layers as follows (its output is not trustworthy as-is):
 
-- Place every layer by its bounding box. Cut-outs may come back rescaled. If the bounding boxes are missing, find each layer's scale and position by matching it against the original.
+Place the layers with this `edit` code first — the page at the background's size, the background, then every cut-out at its bounding box. Paste the whole `asset_generate` result as `RESULT`:
+
+```js
+const result = RESULT;
+const layers = result.metadata.find((m) => m.type === 'layers').data.layers;
+const [bg, ...cutouts] = result.assets;
+const width = Number(bg.meta.width);
+const height = Number(bg.meta.height);
+const [existing] = await engine.design.findByType('page');
+const [scene] = await engine.design.findByType('scene');
+const page =
+  existing ??
+  (await engine.design.create(
+    { type: 'page', props: { width, height } },
+    { parent: scene }
+  ));
+await engine.design.setProps(page, { width, height });
+const image = (name, uri, [x0, y0, x1, y1]) =>
+  engine.design.create(
+    {
+      type: 'graphic',
+      name,
+      props: {
+        position: { x: x0, y: y0 },
+        width: x1 - x0,
+        height: y1 - y0,
+        shape: { type: 'rect' },
+        fill: { type: 'image', uri },
+        contentFill: { mode: 'Contain' }
+      }
+    },
+    { parent: page }
+  );
+await image('background', bg.id, [0, 0, width, height]);
+for (const [i, asset] of cutouts.entries()) {
+  const layer = layers[i + 1];
+  const box = layer?.bounding_box?.absolute;
+  if (box) await image(layer.name || `layer-${i + 1}`, asset.id, box);
+}
+return {
+  type: 'text',
+  text: JSON.stringify({ page, layers: layers.map((l) => l.name) })
+};
+```
+
+Then handle Seedream's layers as follows (its output is not trustworthy as-is):
+
+- Every layer sits at its bounding box; cut-outs come back rescaled, and `contentFill: Contain` fits each one into its box. If the bounding boxes are missing, find each layer's scale and position by matching it against the original.
 - Drop Seedream's text layers; text is rebuilt in stage 2. Check that the background no longer shows the text. If it still does, inpaint it.
 - Inventory: every visible element must be in exactly one layer.
 - Drop duplicate layers.
@@ -79,13 +137,18 @@ Set each block as real, editable text:
 
 ## Acceptance
 
+Compare against the original: place the source image once more as the top layer, at the page's size, with `blend: { mode: 'Difference' }`, and `preview` it. Where the rebuild matches, the preview is black; every bright shape is a difference — a missing or doubled element, text off its baseline, a wrong color. Then destroy that layer.
+
+
 Check with a PNG export (`export({ format: 'png' })`) compared against the original. Fix and re-export until every point holds:
+
 
 - text baselines within ±2 px, line widths within ±2 %
 - text shadow visually matches the original
 - average absolute pixel difference below 10/255
 - no element missing, no element appearing twice
 - named layers, grouped per scene
+
 
 Then run the judge loop against the source (`../judge/SKILL.md`), export with `export({ format: 'imgly', outPath: '<output path>' })`, and report:
 

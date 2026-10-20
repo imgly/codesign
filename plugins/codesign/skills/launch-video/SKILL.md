@@ -5,6 +5,7 @@ description: >-
   promo video (15–25 s, mp4): "make a launch video", "brag about this", "make a promo for what we
   built", "turn this into a video". Reads the project itself for the story, then builds, animates,
   scores and exports the video with CoDesign.
+requires: video, export, asset_add
 argument-hint: "[tone] [landscape|vertical|square] [music file]"
 ---
 
@@ -17,7 +18,8 @@ verify it frame by frame, and export an `mp4` plus a poster and share copy.
 Builds on, without restating: the handbook loop, the video recipe
 (`../handbook/video.md` — timing, tracks, transitions, video fills, audio), the intake
 contract (`../handbook/intake.md`), the `brand` skill (a project's colours, fonts and logo),
-the `models` skill (generating music, sound and voice), the `formats` skill and the `judge` gate.
+the `formats` skill and the `judge` gate.
+Generating music, sound and voice: the `models` skill.
 Inspired by the MIT-licensed `/brag` skill (github.com/latent-spaces/brag); this one builds on
 CoDesign instead of HTML.
 
@@ -40,8 +42,8 @@ plain language:
 | `out`       | output folder                                                     | `./launch-video/`                      |
 
 Generating sound needs a signed-in account (`login`); without one, use the user's file or ship
-silent — a silent video is a complete deliverable. If `out` already holds a previous run, use
-`out-YYYYMMDD-HHMMSS/` instead of overwriting.
+silent — a silent video is a complete deliverable.
+If `out` already holds a previous run, use `out-YYYYMMDD-HHMMSS/` instead of overwriting.
 
 ## 1 — Inspect the project
 
@@ -115,7 +117,10 @@ Sound comes before the build, because the cuts are timed to it. Per
 `reference/sound.md`:
 
 1. Music — generate a track at the planned BPM and length, or `asset_add` the user's file.
-2. Analyse it, with the planned BPM, into `<out>/build/beats.json` — the beat grid and the accents.
+2. Start the video in one `edit`: the page as step 4 describes it (size, `Video` mode, duration)
+   with only the music bed on it, ending with `readBeats` at the planned BPM (an MP3 bed is
+   rendered to WAV first, which takes an export and a second `edit` — see Beat-tight sync). Save its
+   result as `<out>/build/beats.json` — the beat grid and the accents.
 3. Snap the beat table to it: every cut, transition and loop pulse on a beat time; accents get the
    big moves. Update `plan.md` with the snapped times.
 4. A short whoosh or hit per transition; a voiceover and word-timed captions only when
@@ -123,8 +128,8 @@ Sound comes before the build, because the cuts are timed to it. Per
 
 ## 4 — Build
 
-One page is the whole video: size it per `format`, `engine.scene.setMode('Video')`, and set the
-page's `playback.duration` to the storyboard total. Plan the tracks before the first `edit`: list
+One page is the whole video — the one step 3 started with the music: size it per `format`,
+set the scene's `scene: { mode: 'Video' }`, and set the page's `playback.duration` to the storyboard total. Plan the tracks before the first build `edit`: list
 the layers the storyboard uses (backgrounds, media, headline, subline, chip, …), bottom first, and
 write that track plan into `plan.md`. Each layer is ONE track that holds every beat's clip for that
 layer, one after another; nothing but audio goes on the page directly (`../handbook/video.md`,
@@ -158,9 +163,9 @@ await engine.design.setProps(line, {
 
 - Types: entrances and exits `slide` `fade` `blur` `grow` `zoom` `pop` `wipe` `pan` `spin` `baseline`
   `crop_zoom`; text `typewriter_text` `block_swipe_text` `spread_text` `merge_text`; loops
-  `*_loop` (no easing); images `ken_burns`. Reference: `../guide/animation/types.md`.
+  `*_loop` (no easing); images `ken_burns`. Reference: `../handbook/animation.md`.
 - Word- or letter-wise text reveals: `writingStyle` (`Line` `Word` `Character` `Block`) plus
-  `overlap` (0–1) — see `../guide/animation/create/text.md`.
+  `overlap` (0–1) — see `../handbook/animation.md`.
 - Keep entrances 0.3–0.8 s; a beat's exit must finish before its duration ends.
 - Real visuals first: `asset_add` screenshots and the logo. Stock or generated imagery only fills
   what the project cannot show.
@@ -177,15 +182,15 @@ Save the code of every `edit` you run to `<out>/build/NN-<step>.js`, in order �
   a glance. Fix in place and re-check.
 - `preview` the middle of every transition too: the still shows it as the mp4 will. One clip whole
   there means the transition is missing or off its cut — fix it before exporting.
-- `export({ format: "mp4", revision, blockId: page })` → `<out>/launch.mp4`.
+- `export({ format: "mp4", blockId: page })` → `<out>/launch.mp4`.
 - Poster: pick the strongest frame from the previews, export it as `png` → `<out>/poster.png`.
-- `export({ format: "imgly", revision })` → `<out>/design.imgly`, the editable source.
+- `export({ format: "imgly" })` → `<out>/design.imgly`, the editable source.
 - Write `<out>/share-copy.txt`: a one-line post, a two-sentence post, and alt text.
 - Report: the `mp4` path, its length, and one sentence per beat.
 
 ## 6 — Editions
 
-The exported revision is the master. Derive every other edition from it rather than rebuilding:
+The exported design is the master. Derive every other edition from it rather than rebuilding:
 the `resize` skill for `vertical` and `square` cuts (re-check that each beat's line still fills the
 new frame and clears the edges), the `localize` skill for other languages (captions and the
 voiceover re-generated in that language, the cut times kept). Export each to

@@ -5,6 +5,7 @@ description: >-
   (YouTube and other 16:9 video platforms) — from a channel link whose latest thumbnails set the
   style, from one or more example thumbnails or designs, or from scratch; or when making new
   thumbnails from such a template, one at a time or in a batch.
+requires: asset_generate, asset_add, export, import, scorecard
 ---
 
 # video-thumbnail-template
@@ -26,25 +27,37 @@ One of three, resolved with the intake contract (`../handbook/intake.md`):
 
 The format defaults to `youtube-thumbnail` (1280 × 720). Everything goes into one output folder
 (default `./<channel-or-topic>-thumbnails/`): `reference/`, `brand-kit/`, the template and the
-thumbnails. A thumbnail style is the channel's brand: never invent it when references exist.
+thumbnails. References live in the CoDesign workspace, not on disk: `reference/refs.md` lists them. A thumbnail style is the channel's brand: never invent it when references exist.
 
 ## 1 — Collect references
 
-**Channel link.** Fetch the channel's `/videos` page (e.g. `https://www.youtube.com/@handle/videos`)
-with your own web or shell tools. That tab lists regular uploads only, newest first; the ids are in
-the page source as `"videoId":"<11 chars>"`. Take the first 10 distinct ids and download each
-thumbnail from `https://i.ytimg.com/vi/<id>/maxresdefault.jpg` (fall back to `hqdefault.jpg`) into
-`reference/` — public URLs, no API key or login. If the page cannot be read, ask the user for a
-few video links or thumbnail images instead.
+Every reference comes in through `import` as a one-page design; nothing is downloaded or copied to
+disk. Take them one at a time, because the next `import` moves on to a new design: `import` it,
+`preview()` it and record its layout (step 2), then read the image's `uri` in a read-only `edit`
+(`render: false`) — the imported image is the page's fill,
+`(await engine.design.getProps(page, ['fill'])).fill.image.imageFileURI`. `reference/refs.md` lists,
+per reference, the video id or file name, the page size and that uri, which stays valid after you
+move on. A reference is never saved: if the next `import` refuses over unsaved edits, repeat it
+with `discard: true`.
 
-**Example thumbnails.** Copy the files the user named into `reference/`. A design file also goes
-through `import` — its layers show the structure directly.
+**Channel link.** CoDesign cannot read web pages, so the video ids come from your host's built-in
+web-fetch tool — used only to read the channel's `/videos` page (e.g.
+`https://www.youtube.com/@handle/videos`); no shell, no downloads. That tab lists regular uploads
+only, newest first; the ids are in the page source as `"videoId":"<11 chars>"`. Take the first 10
+distinct ids. Without a web-fetch tool, or when the page cannot be read, ask the user for links to
+their latest videos and take the id from each (`watch?v=<id>`, `youtu.be/<id>`, `/shorts/<id>`).
+Then `import({ source: { url: 'https://i.ytimg.com/vi/<id>/maxresdefault.jpg' } })` for each id —
+public URLs, no API key or login. A 404 means the video has no full-size thumbnail: import
+`hqdefault.jpg` instead, a 480 × 360 frame whose 16:9 picture sits between black bars.
+
+**Example thumbnails.** `import({ source: { path } })` each file the user named. A design file goes
+through `import` the same way — its layers show the structure directly.
 
 **Nothing.** No references; go to step 3 with the direction the user chose.
 
 ## 2 — Analyse the layouts
 
-Look at every reference yourself. For **each** one, record its layout — positions and sizes as
+Look at every reference yourself — its `preview` from step 1. For **each** one, record its layout — positions and sizes as
 fractions of the canvas, so they compare across images:
 
 - zones: where the host, the headline and the subject sit, and how much of the canvas each takes
@@ -84,7 +97,8 @@ show the user its key choices (palette, fonts, layout) and confirm them before b
 ## 4 — Layers and assets
 
 When a reference supplies a host, subject or background worth reusing, split it with the `layerize`
-skill's Stage 1 (Seedream) and follow its rules. Keep the person, subject and residual background
+skill's Stage 1 (Seedream) and follow its rules, with the reference's `uri` from
+`refs.md` as the source image — it is already in the workspace. Keep the person, subject and residual background
 layers; drop the text layers — the headline is rebuilt as live text.
 
 A user's host photo that is not cut out goes through background removal (`models` skill,
@@ -118,9 +132,12 @@ the slots and any `$meta.gaps`.
 
 ## 6 — New thumbnails
 
-For each thumbnail, `edit` with `parent` = the **template revision** — never chain one
-thumbnail onto the previous — fill the slots, hide the empty ones, fit the headline, and export
-JPEG (`export({ format: 'jpeg', blockId: <page>, outPath })`; YouTube rejects uploads over 2 MB).
+For each thumbnail, start from the **saved template** — `import({ source: { uri } })` with the
+`uri` its save returned — never chain one thumbnail onto the previous. Fill the slots, hide the
+empty ones, fit the headline, and export JPEG (`export({ format: 'jpeg', blockId: <page>, outPath })`;
+YouTube rejects uploads over 2 MB).
+Each `import` is a copy, so the template stays as it was; `export({ format: 'imgly' })` a filled
+thumbnail only when the user wants it editable too.
 Look at every export and check it against the kit's `avoid` list.
 
 For a batch, agree on a simple table with the user (e.g. a CSV with one row per video: headline

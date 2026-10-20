@@ -6,6 +6,7 @@ description: >-
   or multi-page design into one animated page and an mp4 without redesigning it, steered by one
   intake round and plain-language follow-ups ("slower", "logo last", "no bounce"). Not for videos
   from a repo or website (launch-video) or for new designs (create).
+requires: video, export
 ---
 
 # animate
@@ -18,8 +19,11 @@ report the reason.
 
 ## 1 — Read the design
 
-Work from the design's latest revision (`changes` first if the user may have edited it in the
-browser). Run `reference/schedule.md`'s `inventory.js` block as one read-only
+Work from the design as it stands, and keep the still: save it (`export({ format: 'imgly' })`)
+and export a `png` of each page as the reference frames §5 compares against.
+Then animate a copy: `import({ source: { uri } })` with the saved `uri` starts a new design from
+it, and the still stays as it was.
+Run `reference/schedule.md`'s `inventory.js` block as one read-only
 `edit` with `render: false`: per page its id, every group, and every leaf with id, type, name,
 global bounding box, fill kind, enclosing group, and words and font size for text blocks. Never
 write your own inventory: reading text properties on an image throws. `preview` the pages.
@@ -55,25 +59,24 @@ Ask only what the prompt leaves open, in your host's question UI, each with `Dec
 
 A loop is seamless only on a single page: a multi-page loop ends on the last page's background and
 cuts back to the first page, so say that when offering it there. Pages left out of a pick are
-dropped from the animated revision; the still keeps them.
+dropped from the animated design; the saved still keeps them.
 
 Echo the resolved inputs in one to three lines, marking what was inferred or defaulted, then build.
 
 ## 3 — Schedule
 
-Make a fresh directory with `mktemp -d` — never a fixed path such as `/tmp/anim`, which a parallel
-session may share — and keep this run's files there. Write
-`reference/schedule.md`'s `schedule.mjs` block into it, write the inventory as
-`input.json` in the shape documented there (with this session's block ids under `ids`), and run
-`node schedule.mjs input.json > plan.json`. Never set timings by hand — the script owns ordering,
+Run `reference/schedule.md`'s `schedule.js` block as a read-only `edit`
+(`render: false`), its first line `const INPUT = <input>, CHANGE = null;` — the inventory in the
+shape documented there, with this session's block ids under `ids`. It returns the plan. Never set
+timings by hand — the block owns ordering,
 the settle rule (every entrance done by 60 % of its scene), reading time, endings, multi-page scene
 windows and which options each animation type accepts. If the plan says `stretched: true`, tell the
 user the video is longer than asked and why.
 
 ## 4 — Build — ONE edit
 
-Parent: the still's latest revision for the first apply (it stays as the parent — the still is never lost). Code:
-`const PLAN = <plan.json>;` followed by the `apply.js` block. Do not fix anything else in that
+Code: `const PLAN = <the plan>;` followed by the `apply.js` block, run on the design you animate
+(§1), never on the saved still. Do not fix anything else in that
 edit. The server may list pre-existing lint findings on the source design (line height, tracking):
 they are the still's, not yours — never change text or layout properties while animating; mention
 them at delivery.
@@ -88,11 +91,12 @@ them at delivery.
 - `preview` the page with `time` at each settle point: each must look exactly like the still (page
   by page for multi-page).
 - Run the judge loop on those frames and record the scorecard.
-- `export({ format: 'mp4', revision, blockId: page })`, then pull frames with ffmpeg: the middle of
-  every transition, and the last frame. With ending `hold`, compare the last frame with a still
-  `png` export of the source revision — they must match up to compression. With `loop` or `outro`
-  the last frame is only the background (everything has exited): compare the settle-point frame
-  instead.
+- `preview` the page with `time` at the middle of every transition and at the last frame
+  (`duration` − 0.1). With ending `hold`, compare the last frame with the reference `png` from
+  §1 — they must match. With `loop` or `outro` the last frame is only the background (everything
+  has exited): compare the settle-point frame instead.
+- `export({ format: 'mp4', blockId: page })` once those frames pass, and `preview` the last frame
+  again right after it: black means the export went black (the judge skill's export check).
 
 ## 6 — Deliver
 
@@ -102,9 +106,8 @@ The mp4, a poster (`png` of the settled frame — park the playhead with
 
 ## Iterate
 
-Read the page's `codesign/motion` metadata (`{ v, input }`) in a read-only edit, write it to
-`plan-in.json` in this run's `mktemp -d` directory (a new one, with `schedule.mjs` written again,
-in a new session), and run `node schedule.mjs plan-in.json '<change>'`:
+Read the page's `codesign/motion` metadata (`{ v, input }`) in a read-only edit, then run the
+`schedule.js` block again as a read-only edit with `const INPUT = <that metadata>, CHANGE = <change>;`:
 
 | user says                      | change                                                   |
 | ------------------------------ | -------------------------------------------------------- |
@@ -115,12 +118,12 @@ in a new session), and run `node schedule.mjs plan-in.json '<change>'`:
 | don't animate X                | `{"kind":"static","key":"…"}`                            |
 | loop it / hold the end / outro | `{"kind":"ending","to":"loop"}` …                        |
 
-Apply the result with the same `apply.js` edit, with the latest animated revision as `parent` (the
-still has no motion-beat tags yet) — it finds blocks by their `codesign/motion-beat`
+Apply the result with the same `apply.js` edit on the animated design (the still has no
+motion-beat tags) — it finds blocks by their `codesign/motion-beat`
 tag, so no ids are needed, and re-applying replaces animations and transitions instead of stacking
 them. Block ids are session-scoped: a saved plan never carries them, so never paste ids stored in
 an earlier session. Then verify again. A request outside the table: edit that beat's entry in the
-plan JSON, re-run `schedule.mjs` on it, apply.
+plan JSON, re-run `schedule.js` on it, apply.
 
 References: `reference/styles.md` (what each style does and why),
 `reference/multipage.md` (how pages become scenes).

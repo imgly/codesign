@@ -78,13 +78,13 @@ Every parameter table classifies each parameter:
 | **D** | Defaultable. Never worth a question on its own; state it in the echo.               |
 
 `derived` marks a parameter that is never asked because it always comes from
-context — "the latest revision of the current design" is the usual one.
+context — "the design currently in the session" is the usual one.
 
 ## Chips may be data-driven
 
 `create`'s chip sets are fixed, so its tables list them literally. Others are
-discovered at runtime: the brand kits available come from the workspace, and a
-kit's colour schemes come from its own `tokens.json`. Such a table names the
+discovered at runtime: the brand kits available are the ones you can find or the
+user points you at, and a kit's colour schemes come from its own `tokens.json`. Such a table names the
 **source** of its chips rather than the chips themselves.
 
 Nothing may hardcode a brand's schemes, fonts or colours. If the chips have to be

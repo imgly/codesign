@@ -21,7 +21,7 @@ the identical procedure.
 <kit>/
 ├── tokens.json     ← machine-readable law (parse FIRST)
 ├── BRAND.md        ← prose usage rules + do/don't (human companion)
-├── fonts/          ← the brand TTFs (+ a README on variable→static instancing)
+├── fonts/          ← the brand TTFs (+ a README on the weights each file serves)
 ├── icons/ …        ← monochrome icon set (+ recoloured variants) and logos/
 ├── images/         ← logo lockups, visuals, the signature device asset
 ├── videos/         ← reference footage (optional)

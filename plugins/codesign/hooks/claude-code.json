@@ -1,0 +1,27 @@
+{
+  "description": "Records the session's model for CoDesign's error reports and usage telemetry; turn off the plugin's two IMG.LY settings, or set DO_NOT_TRACK=1 or IMGLY_TELEMETRY=off, to send neither.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/record-model.mjs\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostModelSwitch": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/record-model.mjs\"",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

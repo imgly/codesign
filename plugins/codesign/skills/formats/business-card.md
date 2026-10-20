@@ -1,7 +1,7 @@
 # business-card
 
-- **Print sizes:** EU 85 × 55 mm (default) · US 3.5 × 2 in (88.9 × 50.8 mm) — each +
-  **3 mm bleed**
+- **Print sizes:** EU 85 × 55 mm (default) · US 3.5 × 2 in (88.9 × 50.8 mm) — the page is this
+  trim size; **3 mm bleed** is the page's bleed setting, outside it (`SKILL.md`, Print basics)
 - **Medium:** print
 - **Structure:** usually two-sided; side 2 defaults to a brand/logo face
 

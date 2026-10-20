@@ -29,7 +29,8 @@ getFrameWidth(id)` can push it off-page. Give a mirrored Arabic block an **Absol
   mirror, ever: **icons, logos, brand/wordmarks, glyph-built marks, numerals and number strings,
   charts/graphs, photographs**, and any pictogram whose handedness carries meaning (a check, a
   play triangle). Mirroring these is the "icons broke / elements moved to the right / off-center in
-  their frames" defect.
+  their frames" defect. A photo the mirrored column would now cover is **panned, not flipped**: shift
+  its crop (`crop: { translationX }`) so the subject moves to the side the text left.
 - **Mirror on the GROUP, not its parts.** A composed icon (mail = envelope body + flap + lines),
   a lockup (mark + wordmark), or a badge (field + label + icon) must move **as one unit** — mirror
   the group's position, and leave the group's _internal_ layout intact (or exempt the group
@@ -66,7 +67,7 @@ Use a script face with full Arabic coverage **matched to the Latin face's charac
 - **Handwritten / script** accent → **Aref Ruqaa** (Ruqʿah calligraphy) or **Lalezar** (rounded
   playful display), never a flat sans.
 
-Loading mechanics + jsDelivr paths + the variable-bold trap are in `font-loading.md`. A Latin face
+Loading mechanics + jsDelivr paths + declaring weights are in `font-loading.md`. A Latin face
 silently falling back to a system sans is the classic failure — `preview` every Arabic edition.
 
 ## Cross-references

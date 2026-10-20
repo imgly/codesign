@@ -8,5 +8,5 @@ Not yet run through this server — read the model's `schema: true` for its `dur
 `resolution` and aspect fields before the first call, and expect a generation to take minutes and
 cost far more than an image. Check the `cost` of the first result before generating several.
 
-The result is an MP4 (`kind: 'video'`, with `duration` from its header). Placing it needs an
-engine with video support — `diagnostics` says whether this server has one.
+The result is an MP4 (`meta.kind: 'video'`, with `meta.duration` from its header).
+Place it as a video fill: `../handbook/video.md`.

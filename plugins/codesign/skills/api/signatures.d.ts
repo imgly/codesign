@@ -1,30 +1,17 @@
 // ============================================================================
-// codesign extension: engine.design — write ALL mutations through this API.
-// engine.block.* is the legacy/extended surface: use it only for reads the
-// facade lacks (getTextRuns and other diagnostics). Available inside `edit` code alongside the engine.block.* API it
-// delegates to. One nested-props dialect replaces the typed accessors
-// (setFloat/getBool/…), the per-property wrappers (setOpacity,
-// setStrokeWidth, setPositionX, …) and the is*-state reads.
+// codesign extension: engine.design — the ONLY API `edit` code uses.
+// engine.block/scene/variable/editor/asset/event are refused by the edit
+// gate, which names the engine.design equivalent; the upstream classes after
+// this section are reference only. One nested-props dialect replaces the
+// typed accessors (setFloat/getBool/…), the per-property wrappers
+// (setOpacity, setStrokeWidth, setPositionX, …) and the is*-state reads.
+// Scene-wide state (variables, spotColors, scene.*) lives on the scene block.
 //
-// Contract: setProps/create validate EVERY leaf before touching the scene —
-// a bad leaf throws (listing every bad path with suggestions) and nothing is
-// applied. getProps throws on an unknown selector; it never returns
-// undefined for a typo. create rolls back on failure (never an orphan).
-// Attachment state (fill/shape/blur/effects/animations) is the typed
-// unions below — assign { type, ...props } specs via setProps; the raw
-// engine.block accessors are never needed for it.
+// Attachment state (fill/shape/blur/effects/animations/transition) is the
+// typed unions below — assign { type, ...props } specs via setProps.
 //
-// Units: length leaves (width/height/position, paddings, stroke.width,
-// dropShadow offsets/radii, page margins) and fontSize accept CSS-style
-// unit STRINGS — '210mm', '32pt', '340px', '1.2in' — converted against the
-// scene's current designUnit/fontSizeUnit/dpi at write time, so the value
-// means what you said regardless of ambient unit state. '50%' on
-// width/height/position also sets the '<leaf>Mode' to 'Percent' (an
-// absolute unit pins it to 'Absolute'). A plain number stays engine-native —
-// EXCEPT on a font size (text.fontSize, a range's size), where the unit is
-// REQUIRED and a bare number is rejected: engine-native font size is POINTS,
-// so 64 would render ~267px at 300 dpi. Write '64px' (screen) or '24pt'.
-// letterSpacing is a FACTOR, never a length. lineHeight: write { visual: n }
+// Units (lengths, paddings, stroke.width, shadows, margins): see the api
+// skill; '50%' also sets '<leaf>Mode' to 'Percent'. letterSpacing is a FACTOR, never a length. lineHeight: write { visual: n }
 // (CSS-style x fontSize — the facade converts per font); a bare number is the
 // ENGINE scale (x the font's contentArea) and renders looser than it reads.
 // Text glyph color is per-character: fill.solid.color on a text block is
@@ -54,7 +41,11 @@ interface DesignApi {
      *  attaches to the parent, and awaits the subtree's font/image loads
      *  before returning, so measure() is truthful immediately. Rolls the
      *  WHOLE subtree back on failure. Name the nodes you will touch again:
-     *  the name lands on the block and findByName resolves it later. */
+     *  the name lands on the block and findByName resolves it later.
+     *  A NEW document: create({ type: 'scene', props: { scene: { mode?:
+     *  'Video', layout?, designUnit? }, variables?, spotColors? }, children:
+     *  [pages] }) replaces the current scene; a page whose parent is the
+     *  scene goes into its stack. */
     create(spec: BuildSpec, opts?: { parent?: BlockRef; index?: number }): Promise<DesignBlockId>;
     /** Partial deep-merge write. Brand-dispatched: pass a FILL/EFFECT/BLUR/
      *  SHAPE/ANIMATION block id and the matching attachment props tree
@@ -74,12 +65,6 @@ interface DesignApi {
     /** Editor settings, same dialect. */
     setSettings(props: SettingsProps): Promise<void>;
     getSettings(select?: string[]): Promise<SettingsProps>;
-    /** Resolve a font AND its metrics in one call — by family (the same
-     *  Google-Fonts lookup create runs) or by uri (brand fonts). Also warms
-     *  the metrics cache behind text.lineHeight: { visual } — after create
-     *  with text.font, font(), or loadResources, visual line-heights need
-     *  no fetch. No other metrics call is needed. */
-    font(spec: { family?: string; uri?: string; weight?: FontWeight; style?: FontStyle }): Promise<{ typeface?: Typeface; uri: string; contentArea: number; metrics: { ascender: number; descender: number; lineGap: number; unitsPerEm: number; capHeight: number; xHeight: number } }>;
     // text.path is raw-or-spec like every attachment: a raw SVG string, or
     // { shape: 'circle', diameter, align?: 'top' | 'bottom' | 0..1 } — the
     // spec authors the circle, measures the flat glyph run, centers the
@@ -107,13 +92,14 @@ interface DesignApi {
     // styles → ranges) whatever the key order:
     //   await setProps(id, { text: { string, font: { typeface }, weight, case,
     //     listStyle, path, pathOffset, pathFlipped,
-    //     ranges: [{ from, to, color?, weight?, style?, size?, case?,
+    //     ranges: [{ from, to, color?, weight?, style?, size?, case?, scriptStyle?,
     //       decoration?, kerning? }] } })
     // A string write WITHOUT other text styling auto-preserves existing
     // ranges; with styling, ranges reset (pass ranges to keep or ranges: []
     // to wipe); font/size/lineHeight writes auto-reshape. Read the per-run
     // truth via getProps(id, ['text.ranges']); paragraphs (read-only) carry
     // listStyle + listLevel.
+    // CAPTIONS: page→captionTrack→caption, caption.* as text.*; style+layout TRACK-WIDE
     adjustCropToFillFrame(id: BlockRef, minScaleRatio: number): Promise<number>;
     // Multi-block layout verbs:
     /** Axis-keyed ('Center' is never ambiguous); one call may do both axes. */
@@ -128,8 +114,9 @@ interface DesignApi {
     scale(id: BlockRef, factor: number, opts?: { anchorX?: number; anchorY?: number }): Promise<void>;
     resizeContentAware(ids: BlockRef[], size: { width: number; height: number }): Promise<void>;
     /** Measured layout frame (post-layout px) — the numbers you position by.
-     *  textLines: visible line count, text blocks only. */
-    measure(id: BlockRef): Promise<{ x: number; y: number; width: number; height: number; textLines?: number }>;
+     *  Rotated: x/y = pivot corner (the unrotated origin).
+     *  textLines: visible line count; ink: { from, to } adds glyph ink boxes. Text only. */
+    measure(id: BlockRef, opts?: { ink?: { from?: number; to?: number } }): Promise<{ x: number; y: number; width: number; height: number; textLines?: number; ink?: Array<{ x: number; y: number; width: number; height: number; baselineY: number }> }>;
     /** Await pending font/image loads for these subtrees (create does this itself). */
     loadResources(ids: BlockRef[]): Promise<void>;
     isGroupable(ids: BlockRef[]): Promise<boolean>;
@@ -139,6 +126,7 @@ interface DesignApi {
     insertChild(parent: BlockRef, child: BlockRef, index: number): Promise<void>;
     getParent(id: BlockRef): Promise<DesignBlockId | null>;
     getChildren(id: BlockRef): Promise<DesignBlockId[]>;
+    /** 'page' answers in document order. */
     findByType(type: DesignBlockType): Promise<DesignBlockId[]>;
     /** Blocks carrying this name. create writes a spec node's name onto the
      *  block, so this is how a LATER edit re-finds what an earlier made. */
@@ -147,6 +135,15 @@ interface DesignApi {
     ungroup(id: BlockRef): Promise<void>;
     duplicate(id: BlockRef): Promise<DesignBlockId>;
     destroy(id: BlockRef): Promise<void>;
+    // Media and CoDesign services — what CE.SDK does not answer itself:
+    /** A font and its metrics, by family (create's lookup) or uri; warms the
+     *  cache text.lineHeight: { visual } reads. */
+    font(spec: { family?: string; uri?: string; weight?: FontWeight; style?: FontStyle }): Promise<{ typeface?: Typeface; uri: string; contentArea: number; metrics: { ascender: number; descender: number; lineGap: number; unitsPerEm: number; capHeight: number; xHeight: number; underlineOffset: number; underlineSize: number } }>;
+    /** Words of an asset_generate transcript (its transcriptUri) starting in [from, to) source seconds. */
+    readTranscript(uri: string, range?: { from?: number; to?: number }): Promise<{ words: Array<{ text: string; start: number; end: number }> }>;
+    /** An audio block's beats in PAGE seconds; bpm picks half/double tempo;
+     *  bpm/fit null = no steady beat (cut on accents/onsets). */
+    readBeats(id: BlockRef, opts?: { bpm?: number }): Promise<{ start: number; duration: number; bpm: number | null; requestedBpm: number | null; fit: { onsets: number; onGrid: number; meanErrMs: number } | null; beats: number[]; accents: number[]; onsets: Array<{ t: number; strength: number }> }>;
 }
 interface BuildSpec {
     type: DesignBlockType;
@@ -219,35 +216,31 @@ interface BlockProps {
     };
     caption?: {
         automaticFontSizeEnabled?: boolean;
-        backgroundCornerRadius?: number;
-        backgroundPadding?: {
-            bottom?: number;
-            left?: number;
-            right?: number;
-            top?: number;
-        };
         clipLinesOutsideOfFrame?: boolean;
-        externalReference?: string;
-        fontFileUri?: string;
-        fontSize?: number;
-        hasClippedLines?: boolean;
+        color?: Color;
+        font?: { family: string; weight?: FontWeight } | { typeface: Typeface; uri?: string };
+        fontSize?: string /* '48px' */;
         horizontalAlignment?: 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto';
         letterSpacing?: number;
-        lineHeight?: number;
+        lineHeight?: number | { visual: number };
         maxAutomaticFontSize?: number;
         minAutomaticFontSize?: number;
         paragraphSpacing?: number;
-        pathExternalRef?: string;
         pathFlipped?: boolean;
         pathOffset?: number;
+        style?: string;
+        subscriptFontScale?: number;
+        subscriptVerticalShift?: number;
+        superscriptFontScale?: number;
+        superscriptVerticalShift?: number;
         text?: string;
-        typeface?: string;
         useContextualAlternates?: boolean;
         useContextualLigatures?: boolean;
         useDiscretionaryLigatures?: boolean;
         useKerning?: boolean;
         useLigatures?: boolean;
         verticalAlignment?: 'Top' | 'Bottom' | 'Center';
+        weight?: string;
     };
     captionTrack?: {
         automaticallyManageBlockOffsets?: boolean;
@@ -313,6 +306,7 @@ interface BlockProps {
         x?: number;
         y?: number;
     };
+    metadata?: { [key: string]: string | null } /* block tags; null deletes */;
     movement?: {
         constraint?: number;
     };
@@ -401,6 +395,7 @@ interface BlockProps {
     selected?: boolean;
     selectionEnabled?: boolean;
     shape?: Shape | null;
+    spotColors?: { [ink: string]: { rgb?: { r: number; g: number; b: number }; cmyk?: { c: number; m: number; y: number; k: number }; cutout?: 'Solid' | 'Dashed' } | null } /* SCENE only: print inks */;
     stack?: {
         spacing?: number;
         spacingInScreenspace?: boolean;
@@ -421,6 +416,7 @@ interface BlockProps {
         style?: 'Dashed' | 'DashedRound' | 'Dotted' | 'LongDashed' | 'LongDashedRound' | 'Solid';
         width?: number;
     };
+    subtitles?: string /* captionTrack, WRITE-only: SRT/VTT uri replaces its captions */;
     text?: {
         automaticFontSizeEnabled?: boolean;
         backgroundCornerRadius?: number;
@@ -443,7 +439,7 @@ interface BlockProps {
         letterSpacing?: number;
         lineHeight?: number /* engine scale: multiplies the font's contentArea */ | { visual: number } /* CSS-style x fontSize — the facade converts per font */;
         lineHeightVisual?: number /* READ-ONLY, selected reads: lineHeight in CSS terms. Write via lineHeight: { visual } */;
-        listStyle?: ListStyle /* whole block; nesting via raw setTextListLevel */;
+        listStyle?: ListStyle /* whole block; nesting via paragraphs: [{ index, listLevel }] */;
         maxAutomaticFontSize?: number;
         minAutomaticFontSize?: number;
         paragraphs?: { index: number; from?: number; listStyle?: ListStyle; listLevel?: number; horizontalAlignment?: string; lineHeight?: number }[];
@@ -452,8 +448,12 @@ interface BlockProps {
         pathExternalRef?: string;
         pathFlipped?: boolean /* true = underside, reversed direction */;
         pathOffset?: number /* proportional start offset along the path */;
-        ranges?: { from: number; to: number; color?: Color; weight?: FontWeight; style?: string; size?: string /* px string */; case?: TextCase; typeface?: Typeface; decoration?: TextDecorationConfig; kerning?: number }[];
+        ranges?: { from: number; to: number; color?: Color; weight?: FontWeight; style?: string; size?: string /* px string */; case?: TextCase; scriptStyle?: ScriptStyle; typeface?: Typeface; decoration?: TextDecorationConfig; kerning?: number }[];
         style?: string;
+        subscriptFontScale?: number;
+        subscriptVerticalShift?: number;
+        superscriptFontScale?: number;
+        superscriptVerticalShift?: number;
         string?: string;
         typeface?: string;
         useContextualAlternates?: boolean;
@@ -468,8 +468,10 @@ interface BlockProps {
         automaticallyManageBlockOffsets?: boolean;
     };
     transformLocked?: boolean;
+    transition?: { type: string /* push, slide, wipe, fade, cross-fade, … — a bad type lists all 20 */; duration?: number; easing?: string; [typeLeaves: string]: unknown } | null /* clip into next clip; leaves nest under the type */;
     type?: string;
     uuid?: string;
+    variables?: { [name: string]: string | null } /* SCENE only: text variable values; null deletes */;
     visible?: boolean;
     width?: number;
     widthMode?: 'Absolute' | 'Percent' | 'Auto';
@@ -1057,6 +1059,7 @@ interface SettingsProps {
     rotationSnappingThreshold?: number;
     showBuildVersion?: boolean;
     snappingGuideColor?: Color;
+    tabStopInterval?: number;
     textVariableHighlightColor?: Color;
     timeline?: {
         trackVisibility?: string;
@@ -1128,15 +1131,14 @@ type FontStyle = 'normal' | 'italic';
 type FontWeight = 'thin' | 'extraLight' | 'light' | 'normal' | 'medium' | 'semiBold' | 'bold' | 'extraBold' | 'heavy';
 type ListStyle = 'None' | 'Unordered' | 'Ordered';
 type Scope = 'text/edit' | 'text/character' | 'fill/change' | 'fill/changeType' | 'stroke/change' | 'shape/change' | 'layer/move' | 'layer/resize' | 'layer/rotate' | 'layer/flip' | 'layer/crop' | 'layer/opacity' | 'layer/blendMode' | 'layer/visibility' | 'layer/clipping' | 'appearance/adjustments' | 'appearance/filter' | 'appearance/effect' | 'appearance/blur' | 'appearance/shadow' | 'appearance/animation' | 'lifecycle/destroy' | 'lifecycle/duplicate' | 'editor/add' | 'editor/select';
+type ScriptStyle = 'Normal' | 'Superscript' | 'Subscript';
 type TextCase = 'Normal' | 'Uppercase' | 'Lowercase' | 'Titlecase';
 type TextDecorationLine = 'None' | 'Underline' | 'Strikethrough' | 'Overline';
 type TextDecorationStyle = 'Solid' | 'Double' | 'Dotted' | 'Dashed' | 'Wavy';
 
 // ============================================================================
-// Upstream CE.SDK surface (flattened) follows. For scalar block/settings
-// state, prefer engine.design above; use engine.block.* for structure
-// (create/appendChild via engine.design.create, group, text ranges,
-// fills/effects attachment, export) and everything BlockProps lacks.
+// Upstream CE.SDK surface (flattened) follows — REFERENCE ONLY: edit code
+// never calls it; engine.design above covers it. Exports are the export tool.
 // ============================================================================
 // Scalar get/set wrappers (setOpacity, setStrokeWidth, setPositionX, …),
 // is*/supports*/has* predicates, and editor-UI machinery are in
@@ -1148,8 +1150,8 @@ type TextDecorationStyle = 'Solid' | 'Double' | 'Dotted' | 'Dashed' | 'Wavy';
 // scripts/lib/api-signatures.ts from the @cesdk/node index.d.ts; do not
 // edit. JSDoc is stripped, deprecated overloads with a surviving
 // namesake are dropped, and type aliases are flattened to their literal
-// unions so every string vocabulary is one lookup. Conceptual docs live
-// in the `guide` skill; this file is the exact call surface.
+// unions so every string vocabulary is one lookup. Recipes live in
+// the handbook's topic pages; this file is the exact call surface.
 type AddImageOptions = {
     sizeMode?: SizeMode;
     positionMode?: PositionMode;
@@ -1259,6 +1261,14 @@ interface AssetContentAspectRatio {
 interface AssetDefinition extends Asset {
     label?: Record<Locale, string>;
     tags?: Record<Locale, string[]>;
+}
+interface AssetDropPayload {
+    sourceId: string;
+    assetId: string;
+    target: DesignBlockId | null;
+    page: DesignBlockId | null;
+    pageX: number;
+    pageY: number;
 }
 interface AssetEnumProperty {
     property: string;
@@ -1513,14 +1523,11 @@ class BlockAPI {
     combine(ids: DesignBlockId[], op: BooleanOperation): DesignBlockId;
     findByKind(kind: string): DesignBlockId[];
     findAll(): DesignBlockId[];
-    findAllPlaceholders(): DesignBlockId[];
     findAllUnused(): DesignBlockId[];
     findAllInExclusionAreas(): DesignBlockId[];
     isLineOrigin(id: DesignBlockId): boolean;
     isValid(id: DesignBlockId): boolean;
-    referencesAnyVariables(id: DesignBlockId): boolean;
     getScreenSpaceBoundingBoxXYWH(ids: DesignBlockId[]): XYWH;
-    findAllProperties(id: DesignBlockId): string[];
     isPropertyReadable(property: string): boolean;
     isPropertyWritable(property: string): boolean;
     getPropertyType(property: string): PropertyType;
@@ -1529,7 +1536,6 @@ class BlockAPI {
     getColorSpotName(id: DesignBlockId, property: string): string;
     /** @deprecated Use getColor() instead. */
     getColorSpotTint(id: DesignBlockId, property: string): number;
-    getSourceSet(id: DesignBlockId, property: SourceSetPropertyName): Source[];
     addVideoFileURIToSourceSet(id: DesignBlockId, property: SourceSetPropertyName, uri: string): Promise<void>;
     isCropAspectRatioLocked(id: DesignBlockId): boolean;
     canRevertToOriginalRatio(id: DesignBlockId): boolean;
@@ -1538,31 +1544,19 @@ class BlockAPI {
     createCutoutFromPath(path: string): DesignBlockId;
     createCutoutFromOperation(ids: DesignBlockId[], op: CutoutOperation): DesignBlockId;
     removeText(id: DesignBlockId, from?: number, to?: number): void;
-    getTextColors(id: DesignBlockId, from?: number, to?: number): Array<Color>;
     setTextBackgroundColor(id: DesignBlockId, color: Color, from?: number, to?: number): void;
     getTextBackgroundColors(id: DesignBlockId, from?: number, to?: number): Array<Color>;
-    getTextFontWeights(id: DesignBlockId, from?: number, to?: number): FontWeight[];
-    getTextFontSizes(id: DesignBlockId, options?: TextFontSizeOptions): number[];
-    getTextFontStyles(id: DesignBlockId, from?: number, to?: number): FontStyle[];
+    getTextScriptStyles(id: DesignBlockId, from?: number, to?: number): ScriptStyle[];
+    setTextScriptStyle(id: DesignBlockId, scriptStyle: ScriptStyle, from?: number, to?: number): void;
     getTextDecorations(id: DesignBlockId, from?: number, to?: number): TextDecorationConfig[];
     canToggleBoldFont(id: DesignBlockId, from?: number, to?: number): boolean;
     canToggleItalicFont(id: DesignBlockId, from?: number, to?: number): boolean;
-    getTypeface(id: DesignBlockId): Typeface;
-    getTypefaces(id: DesignBlockId, from?: number, to?: number): Typeface[];
     getTextCursorRange(): Range_2;
     setTextCursorRange(range: Range_2): void;
     getTextVisibleLineGlobalBoundingBoxXYWH(id: DesignBlockId, lineIndex: number): XYWH;
-    getTextVisibleLineContent(id: DesignBlockId, lineIndex: number): string;
-    getTextCharacterInkBoxes(id: DesignBlockId, from?: number, to?: number): CharacterInkBox[];
     getTextEffectiveHorizontalAlignment(id: DesignBlockId): 'Left' | 'Right' | 'Center' | 'Justify';
-    setPlaceholderControlsOverlayEnabled(id: DesignBlockId, enabled: boolean): void;
     isPlaceholderControlsOverlayEnabled(id: DesignBlockId): boolean;
-    setPlaceholderControlsButtonEnabled(id: DesignBlockId, enabled: boolean): void;
     isPlaceholderControlsButtonEnabled(id: DesignBlockId): boolean;
-    setMetadata(id: DesignBlockId, key: string, value: string): void;
-    getMetadata(id: DesignBlockId, key: string): string;
-    findAllMetadata(id: DesignBlockId): string[];
-    removeMetadata(id: DesignBlockId, key: string): void;
     setPageDurationSource(page: DesignBlockId, id: DesignBlockId): void;
     isPageDurationSource(id: DesignBlockId): boolean;
     removePageDurationSource(id: DesignBlockId): void;
@@ -1573,25 +1567,18 @@ class BlockAPI {
     isForceMuted(id: DesignBlockId): boolean;
     setAudioFadeIn(id: DesignBlockId, duration: number, easing?: AnimationEasing): void;
     setAudioFadeOut(id: DesignBlockId, duration: number, easing?: AnimationEasing): void;
-    forceLoadAVResource(id: DesignBlockId): Promise<void>;
     unstable_isAVResourceLoaded(id: DesignBlockId): boolean;
     unstable_setImportedImageDefinition(id: DesignBlockId, definition: ImportedImageDefinitionInput): void;
     unstable_getImportedImageDefinition(id: DesignBlockId): ImportedImageDefinitionInfo;
-    getAVResourceTotalDuration(id: DesignBlockId): number;
     getVideoWidth(id: DesignBlockId): number;
     getVideoHeight(id: DesignBlockId): number;
     generateVideoThumbnailSequence(id: DesignBlockId, thumbnailHeight: number, timeBegin: number, timeEnd: number, numberOfFrames: number, onFrame: (frameIndex: number, result: ImageData | Error) => void): () => void;
-    generateAudioThumbnailSequence(id: DesignBlockId, samplesPerChunk: number, timeBegin: number, timeEnd: number, numberOfSamples: number, numberOfChannels: number, onChunk: (chunkIndex: number, result: Float32Array | Error) => void): () => void;
     /** @deprecated Use `generateVideoThumbnailSequence` instead. */
     getVideoFillThumbnail(id: DesignBlockId, thumbnailHeight: number): Promise<Blob>;
     /** @deprecated Use `generateVideoThumbnailSequence` instead. */
     getVideoFillThumbnailAtlas(id: DesignBlockId, numberOfColumns: number, numberOfRows: number, thumbnailHeight: number): Promise<Blob>;
     /** @deprecated Use `generateVideoThumbnailSequence` instead. */
     getPageThumbnailAtlas(id: DesignBlockId, numberOfColumns: number, numberOfRows: number, thumbnailHeight: number): Promise<Blob>;
-    createTransition(type: TransitionType): DesignBlockId;
-    setTransition(id: DesignBlockId, transition: DesignBlockId): void;
-    removeTransition(id: DesignBlockId): void;
-    getTransition(id: DesignBlockId): DesignBlockId;
     setNativePixelBuffer(id: number, buffer: HTMLCanvasElement | HTMLVideoElement): void;
     getState(id: DesignBlockId): BlockState;
     setState(id: DesignBlockId, state: BlockState): void;
@@ -1623,13 +1610,6 @@ interface BlockStateReady {
 type BooleanOperation = 'Difference' | 'Intersection' | 'Union' | 'XOR';
 type BoolPropertyName = 'alwaysOnBottom' | 'alwaysOnTop' | 'clipped' | 'flip/horizontal' | 'flip/vertical' | 'highlightEnabled' | 'includedInExport' | 'placeholder/enabled' | 'playback/playing' | 'playback/soloPlaybackEnabled' | 'scene/aspectRatioLock' | 'scene/extendedPanningArea' | 'selected' | 'selectionEnabled' | 'transformLocked' | 'visible' | 'blur/enabled' | 'dropShadow/clip' | 'dropShadow/enabled' | 'fill/enabled' | 'fill/overprint' | 'page/guides/gridEnabled' | 'page/guides/gridSnapEnabled' | 'page/marginEnabled' | 'page/safetyEnabled' | 'placeholderControls/showButton' | 'placeholderControls/showOverlay' | 'playback/looping' | 'playback/muted' | 'stroke/enabled' | 'stroke/overprint' | 'backgroundColor/enabled' | 'placeholderBehavior/enabled' | 'text/automaticFontSizeEnabled' | 'text/clipLinesOutsideOfFrame' | 'text/hasClippedLines' | 'text/pathFlipped' | 'text/useContextualAlternates' | 'text/useContextualLigatures' | 'text/useDiscretionaryLigatures' | 'text/useKerning' | 'text/useLigatures' | 'exclusionArea/constrains' | 'exclusionArea/punchOut' | 'track/automaticallyManageBlockOffsets' | 'caption/automaticFontSizeEnabled' | 'caption/clipLinesOutsideOfFrame' | 'caption/hasClippedLines' | 'caption/pathFlipped' | 'caption/useContextualAlternates' | 'caption/useContextualLigatures' | 'caption/useDiscretionaryLigatures' | 'caption/useKerning' | 'caption/useLigatures' | 'captionTrack/automaticallyManageBlockOffsets' | 'animation/slide/fade' | 'animation/pan/fade' | 'animation/blur/fade' | 'animation/zoom/fade' | 'animation/crop_zoom/fade' | 'animation/spin/fade' | 'animation/block_swipe_text/useTextColor' | 'animation/spread_text/fade' | 'animation/ken_burns/fade' | 'effect/enabled' | (string & {});
 type CameraClampingOvershootMode = 'Center' | 'Reverse';
-interface CharacterInkBox {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    baselineY: number;
-}
 type CMYK = [
     c: number,
     m: number,
@@ -1754,7 +1734,9 @@ type DropShadowOptions = {
 };
 class EditorAPI {
     #private;
+    /** @deprecated Use {@link EditorAPI.getCapabilityState}, which says whether the capability has * been measured yet. To ask whether this browser can play or export video, run the * `video.decode.checkSupport` or `video.encode.checkSupport` action, which measures first. * * */
     isCapabilitySupported(capability: EngineCapability): boolean;
+    getCapabilityState(capability: EngineCapability): EngineCapabilityState;
     checkCapabilities(): Promise<void>;
     onStateChanged: (callback: () => void) => (() => void);
     unstable_isInteractionHappening(): boolean;
@@ -1859,19 +1841,18 @@ class EditorAPI {
     setMovementConstraint(rules: MovementConstraintRule | MovementConstraintRule[]): void;
     removeMovementConstraint(scopes?: MovementConstraintScope | MovementConstraintScope[]): void;
 }
-type EngineActionId = keyof EngineActionsRegistry & string;
 interface EngineActionInfo {
     id: string;
     enabled: boolean;
     argSchema: string | null;
 }
-class EngineActions {
+class EngineActions<Registry extends object = EngineActionsRegistry> {
     #private;
-    register<K extends EngineActionId>(id: K, fn: EngineActionsRegistry[K] extends (...args: any[]) => any ? EngineActionsRegistry[K] : EngineCustomActionFunction): void;
+    register<K extends keyof Registry & string>(id: K, fn: Registry[K] extends (...args: any[]) => any ? Registry[K] : EngineCustomActionFunction): void;
     register(id: string, fn: EngineCustomActionFunction): void;
-    get<K extends EngineActionId>(id: K): EngineActionsRegistry[K] | undefined;
+    get<K extends keyof Registry & string>(id: K): Registry[K] | undefined;
     get(id: string): EngineCustomActionFunction | undefined;
-    run<K extends EngineActionId>(id: K, ...args: EngineActionsRegistry[K] extends (...args: infer A) => any ? A : unknown[]): Promise<EngineActionsRegistry[K] extends (...args: any[]) => infer R ? Awaited<R> : unknown>;
+    run<K extends keyof Registry & string>(id: K, ...args: Registry[K] extends (...args: infer A) => any ? A : unknown[]): Promise<Registry[K] extends (...args: any[]) => infer R ? Awaited<R> : unknown>;
     run<R = unknown>(id: string, ...args: unknown[]): Promise<R>;
     has(id: string): boolean;
     unregister(id: string): boolean;
@@ -1880,15 +1861,19 @@ class EngineActions {
     }): EngineActionInfo[];
 }
 interface EngineActionsRegistry {
+    'asset.drop': (payload: AssetDropPayload) => void | Promise<void>;
+    'video.decode.checkSupport': () => Promise<boolean>;
+    'video.encode.checkSupport': () => Promise<boolean>;
 }
 type EngineCapability = 'aacEncode' | 'opusEncode' | 'h264Encode' | 'hevcEncode' | 'vp9Encode' | 'av1Encode' | 'h264Decode' | 'hevcDecode' | 'vp9Decode' | 'av1Decode' | 'tempFileStorage' | 'concurrentFileRead';
+type EngineCapabilityState = 'unchecked' | 'pending' | 'supported' | 'unsupported';
 type EngineCustomActionFunction = (...args: any[]) => unknown;
 type EnumPropertyName = 'blend/mode' | 'contentFill/horizontalAlignment' | 'contentFill/mode' | 'contentFill/verticalAlignment' | 'height/mode' | 'position/x/mode' | 'position/y/mode' | 'scene/colorConversionMode' | 'scene/designUnit' | 'scene/fontSizeUnit' | 'scene/layout' | 'scene/mode' | 'width/mode' | 'page/guides/source' | 'stroke/cap' | 'stroke/cornerGeometry' | 'stroke/dashEndCap' | 'stroke/dashStartCap' | 'stroke/endCap' | 'stroke/position' | 'stroke/startCap' | 'stroke/style' | 'playback/fadeIn/easing' | 'playback/fadeOut/easing' | 'text/horizontalAlignment' | 'text/verticalAlignment' | 'cutout/type' | 'caption/horizontalAlignment' | 'caption/verticalAlignment' | 'animationEasing' | 'textAnimationWritingStyle' | 'animation/grow/direction' | 'animation/wipe/direction' | 'animation/baseline/direction' | 'animation/spin/direction' | 'animation/spin_loop/direction' | 'animation/jump_loop/direction' | 'animation/typewriter_text/writingStyle' | 'animation/block_swipe_text/direction' | 'animation/merge_text/direction' | 'animation/ken_burns/direction' | 'fill/pixelStream/orientation' | 'shape/vector_path/fillRule' | (string & {});
 class EventAPI {
     #private;
     subscribe: (blocks: DesignBlockId[], callback: (events: BlockEvent[]) => void) => (() => void);
 }
-type FloatPropertyName = 'globalBoundingBox/height' | 'globalBoundingBox/width' | 'globalBoundingBox/x' | 'globalBoundingBox/y' | 'height' | 'lastFrame/height' | 'lastFrame/width' | 'lastFrame/x' | 'lastFrame/y' | 'movement/constraint' | 'position/x' | 'position/y' | 'rotation' | 'scene/dpi' | 'scene/pageDimensions/height' | 'scene/pageDimensions/width' | 'scene/pixelScaleFactor' | 'width' | 'camera/pixelRatio' | 'camera/resolution/height' | 'camera/resolution/width' | 'camera/zoomLevel' | 'dropShadow/blurRadius/x' | 'dropShadow/blurRadius/y' | 'dropShadow/offset/x' | 'dropShadow/offset/y' | 'page/guides/gridSpacingX' | 'page/guides/gridSpacingY' | 'page/margin/bottom' | 'page/margin/left' | 'page/margin/right' | 'page/margin/top' | 'page/marginScale' | 'page/safetyInset/bottom' | 'page/safetyInset/left' | 'page/safetyInset/right' | 'page/safetyInset/top' | 'playback/speed' | 'playback/volume' | 'stroke/dashOffset' | 'stroke/width' | 'opacity' | 'backgroundColor/cornerRadius' | 'backgroundColor/paddingBottom' | 'backgroundColor/paddingLeft' | 'backgroundColor/paddingRight' | 'backgroundColor/paddingTop' | 'text/backgroundCornerRadius' | 'text/backgroundPadding/bottom' | 'text/backgroundPadding/left' | 'text/backgroundPadding/right' | 'text/backgroundPadding/top' | 'text/fontSize' | 'text/letterSpacing' | 'text/lineHeight' | 'text/maxAutomaticFontSize' | 'text/minAutomaticFontSize' | 'text/paragraphSpacing' | 'text/pathOffset' | 'cutout/offset' | 'cutout/smoothing' | 'caption/backgroundCornerRadius' | 'caption/backgroundPadding/bottom' | 'caption/backgroundPadding/left' | 'caption/backgroundPadding/right' | 'caption/backgroundPadding/top' | 'caption/fontSize' | 'caption/letterSpacing' | 'caption/lineHeight' | 'caption/maxAutomaticFontSize' | 'caption/minAutomaticFontSize' | 'caption/paragraphSpacing' | 'caption/pathOffset' | 'animation/slide/direction' | 'textAnimationOverlap' | 'animation/pan/direction' | 'animation/pan/distance' | 'animation/blur/intensity' | 'animation/grow/scaleFactor' | 'animation/crop_zoom/scale' | 'animation/spin/intensity' | 'animation/blur_loop/intensity' | 'animation/pulsating_loop/intensity' | 'animation/breathing_loop/intensity' | 'animation/jump_loop/intensity' | 'animation/sway_loop/intensity' | 'animation/spread_text/intensity' | 'animation/merge_text/intensity' | 'animation/ken_burns/travelDistanceRatio' | 'animation/ken_burns/zoomIntensity' | 'blur/uniform/intensity' | 'blur/linear/blurRadius' | 'blur/linear/x1' | 'blur/linear/x2' | 'blur/linear/y1' | 'blur/linear/y2' | 'blur/mirrored/blurRadius' | 'blur/mirrored/gradientSize' | 'blur/mirrored/size' | 'blur/mirrored/x1' | 'blur/mirrored/x2' | 'blur/mirrored/y1' | 'blur/mirrored/y2' | 'blur/radial/blurRadius' | 'blur/radial/gradientRadius' | 'blur/radial/radius' | 'blur/radial/x' | 'blur/radial/y' | 'effect/adjustments/blacks' | 'effect/adjustments/brightness' | 'effect/adjustments/clarity' | 'effect/adjustments/contrast' | 'effect/adjustments/exposure' | 'effect/adjustments/gamma' | 'effect/adjustments/highlights' | 'effect/adjustments/saturation' | 'effect/adjustments/shadows' | 'effect/adjustments/sharpness' | 'effect/adjustments/temperature' | 'effect/adjustments/whites' | 'effect/cross_cut/offset' | 'effect/cross_cut/slices' | 'effect/cross_cut/speedV' | 'effect/cross_cut/time' | 'effect/dot_pattern/blur' | 'effect/dot_pattern/dots' | 'effect/dot_pattern/size' | 'effect/duotone_filter/intensity' | 'effect/extrude_blur/amount' | 'effect/glow/amount' | 'effect/glow/darkness' | 'effect/glow/size' | 'effect/green_screen/colorMatch' | 'effect/green_screen/smoothness' | 'effect/green_screen/spill' | 'effect/half_tone/angle' | 'effect/half_tone/scale' | 'effect/linocut/scale' | 'effect/liquid/amount' | 'effect/liquid/scale' | 'effect/liquid/time' | 'effect/lut_filter/intensity' | 'effect/outliner/amount' | 'effect/outliner/passthrough' | 'effect/posterize/levels' | 'effect/radial_pixel/radius' | 'effect/radial_pixel/segments' | 'effect/recolor/brightnessMatch' | 'effect/recolor/colorMatch' | 'effect/recolor/smoothness' | 'effect/shifter/amount' | 'effect/shifter/angle' | 'effect/tilt_shift/amount' | 'effect/tilt_shift/position' | 'effect/tv_glitch/distortion' | 'effect/tv_glitch/distortion2' | 'effect/tv_glitch/rollSpeed' | 'effect/tv_glitch/speed' | 'effect/vignette/darkness' | 'effect/vignette/offset' | 'fill/gradient/linear/endPointX' | 'fill/gradient/linear/endPointY' | 'fill/gradient/linear/startPointX' | 'fill/gradient/linear/startPointY' | 'fill/gradient/radial/centerPointX' | 'fill/gradient/radial/centerPointY' | 'fill/gradient/radial/radius' | 'fill/gradient/conical/centerPointX' | 'fill/gradient/conical/centerPointY' | 'fill/stripe/angle' | 'fill/stripe/gap' | 'fill/stripe/width' | 'shape/rect/cornerRadiusBL' | 'shape/rect/cornerRadiusBR' | 'shape/rect/cornerRadiusTL' | 'shape/rect/cornerRadiusTR' | 'shape/polygon/cornerRadius' | 'shape/star/cornerRadius' | 'shape/star/innerDiameter' | 'shape/vector_path/cornerRadius' | 'shape/vector_path/height' | 'shape/vector_path/width' | (string & {});
+type FloatPropertyName = 'globalBoundingBox/height' | 'globalBoundingBox/width' | 'globalBoundingBox/x' | 'globalBoundingBox/y' | 'height' | 'lastFrame/height' | 'lastFrame/width' | 'lastFrame/x' | 'lastFrame/y' | 'movement/constraint' | 'position/x' | 'position/y' | 'rotation' | 'scene/dpi' | 'scene/pageDimensions/height' | 'scene/pageDimensions/width' | 'scene/pixelScaleFactor' | 'width' | 'camera/pixelRatio' | 'camera/resolution/height' | 'camera/resolution/width' | 'camera/zoomLevel' | 'dropShadow/blurRadius/x' | 'dropShadow/blurRadius/y' | 'dropShadow/offset/x' | 'dropShadow/offset/y' | 'page/guides/gridSpacingX' | 'page/guides/gridSpacingY' | 'page/margin/bottom' | 'page/margin/left' | 'page/margin/right' | 'page/margin/top' | 'page/marginScale' | 'page/safetyInset/bottom' | 'page/safetyInset/left' | 'page/safetyInset/right' | 'page/safetyInset/top' | 'playback/speed' | 'playback/volume' | 'stroke/dashOffset' | 'stroke/width' | 'opacity' | 'backgroundColor/cornerRadius' | 'backgroundColor/paddingBottom' | 'backgroundColor/paddingLeft' | 'backgroundColor/paddingRight' | 'backgroundColor/paddingTop' | 'text/backgroundCornerRadius' | 'text/backgroundPadding/bottom' | 'text/backgroundPadding/left' | 'text/backgroundPadding/right' | 'text/backgroundPadding/top' | 'text/fontSize' | 'text/letterSpacing' | 'text/lineHeight' | 'text/maxAutomaticFontSize' | 'text/minAutomaticFontSize' | 'text/paragraphSpacing' | 'text/pathOffset' | 'text/subscriptFontScale' | 'text/subscriptVerticalShift' | 'text/superscriptFontScale' | 'text/superscriptVerticalShift' | 'cutout/offset' | 'cutout/smoothing' | 'caption/backgroundCornerRadius' | 'caption/backgroundPadding/bottom' | 'caption/backgroundPadding/left' | 'caption/backgroundPadding/right' | 'caption/backgroundPadding/top' | 'caption/fontSize' | 'caption/letterSpacing' | 'caption/lineHeight' | 'caption/maxAutomaticFontSize' | 'caption/minAutomaticFontSize' | 'caption/paragraphSpacing' | 'caption/pathOffset' | 'caption/subscriptFontScale' | 'caption/subscriptVerticalShift' | 'caption/superscriptFontScale' | 'caption/superscriptVerticalShift' | 'animation/slide/direction' | 'textAnimationOverlap' | 'animation/pan/direction' | 'animation/pan/distance' | 'animation/blur/intensity' | 'animation/grow/scaleFactor' | 'animation/crop_zoom/scale' | 'animation/spin/intensity' | 'animation/blur_loop/intensity' | 'animation/pulsating_loop/intensity' | 'animation/breathing_loop/intensity' | 'animation/jump_loop/intensity' | 'animation/sway_loop/intensity' | 'animation/spread_text/intensity' | 'animation/merge_text/intensity' | 'animation/ken_burns/travelDistanceRatio' | 'animation/ken_burns/zoomIntensity' | 'blur/uniform/intensity' | 'blur/linear/blurRadius' | 'blur/linear/x1' | 'blur/linear/x2' | 'blur/linear/y1' | 'blur/linear/y2' | 'blur/mirrored/blurRadius' | 'blur/mirrored/gradientSize' | 'blur/mirrored/size' | 'blur/mirrored/x1' | 'blur/mirrored/x2' | 'blur/mirrored/y1' | 'blur/mirrored/y2' | 'blur/radial/blurRadius' | 'blur/radial/gradientRadius' | 'blur/radial/radius' | 'blur/radial/x' | 'blur/radial/y' | 'effect/adjustments/blacks' | 'effect/adjustments/brightness' | 'effect/adjustments/clarity' | 'effect/adjustments/contrast' | 'effect/adjustments/exposure' | 'effect/adjustments/gamma' | 'effect/adjustments/highlights' | 'effect/adjustments/saturation' | 'effect/adjustments/shadows' | 'effect/adjustments/sharpness' | 'effect/adjustments/temperature' | 'effect/adjustments/whites' | 'effect/cross_cut/offset' | 'effect/cross_cut/slices' | 'effect/cross_cut/speedV' | 'effect/cross_cut/time' | 'effect/dot_pattern/blur' | 'effect/dot_pattern/dots' | 'effect/dot_pattern/size' | 'effect/duotone_filter/intensity' | 'effect/extrude_blur/amount' | 'effect/glow/amount' | 'effect/glow/darkness' | 'effect/glow/size' | 'effect/green_screen/colorMatch' | 'effect/green_screen/smoothness' | 'effect/green_screen/spill' | 'effect/half_tone/angle' | 'effect/half_tone/scale' | 'effect/linocut/scale' | 'effect/liquid/amount' | 'effect/liquid/scale' | 'effect/liquid/time' | 'effect/lut_filter/intensity' | 'effect/outliner/amount' | 'effect/outliner/passthrough' | 'effect/posterize/levels' | 'effect/radial_pixel/radius' | 'effect/radial_pixel/segments' | 'effect/recolor/brightnessMatch' | 'effect/recolor/colorMatch' | 'effect/recolor/smoothness' | 'effect/shifter/amount' | 'effect/shifter/angle' | 'effect/tilt_shift/amount' | 'effect/tilt_shift/position' | 'effect/tv_glitch/distortion' | 'effect/tv_glitch/distortion2' | 'effect/tv_glitch/rollSpeed' | 'effect/tv_glitch/speed' | 'effect/vignette/darkness' | 'effect/vignette/offset' | 'fill/gradient/linear/endPointX' | 'fill/gradient/linear/endPointY' | 'fill/gradient/linear/startPointX' | 'fill/gradient/linear/startPointY' | 'fill/gradient/radial/centerPointX' | 'fill/gradient/radial/centerPointY' | 'fill/gradient/radial/radius' | 'fill/gradient/conical/centerPointX' | 'fill/gradient/conical/centerPointY' | 'fill/stripe/angle' | 'fill/stripe/gap' | 'fill/stripe/width' | 'shape/rect/cornerRadiusBL' | 'shape/rect/cornerRadiusBR' | 'shape/rect/cornerRadiusTL' | 'shape/rect/cornerRadiusTR' | 'shape/polygon/cornerRadius' | 'shape/star/cornerRadius' | 'shape/star/innerDiameter' | 'shape/vector_path/cornerRadius' | 'shape/vector_path/height' | 'shape/vector_path/width' | (string & {});
 interface FontMetrics {
     ascender: number;
     descender: number;
@@ -1901,7 +1886,6 @@ interface FontMetrics {
     strikeoutOffset: number;
     strikeoutSize: number;
 }
-type TextFontSizeUnit = DesignUnit | 'Point';
 type HistoryUpdate = 'Updated' | 'Activated';
 type ImportedImageColorSpace = 'DeviceGray' | 'DeviceRGB' | 'DeviceCMYK' | 'ICCBased';
 interface ImportedImageDefinitionInfo {
@@ -2015,6 +1999,8 @@ class SceneAPI {
     setLayout(layout: SceneLayout): void;
     getPages(): DesignBlockId[];
     getCurrentPage(): DesignBlockId | null;
+    setCurrentPages(pages: DesignBlockId[]): void;
+    getCurrentPages(): DesignBlockId[];
     findNearestToViewPortCenterByType(type: DesignBlockType): DesignBlockId[];
     findNearestToViewPortCenterByKind(kind: string): DesignBlockId[];
     unstable_enableCameraPositionClamping(ids: DesignBlockId[], paddingLeft?: number, paddingTop?: number, paddingRight?: number, paddingBottom?: number, scaledPaddingLeft?: number, scaledPaddingTop?: number, scaledPaddingRight?: number, scaledPaddingBottom?: number): void;
@@ -2041,7 +2027,7 @@ type SettingEnumType = {
     'colorPicker/colorMode': ColorPickerColorMode;
     'timeline/trackVisibility': TimelineTrackVisibility;
 };
-type SettingFloatPropertyName = 'positionSnappingThreshold' | 'rotationSnappingThreshold' | 'grid/spacingX' | 'grid/spacingY' | 'dragToSwapFills/longPressDurationMs' | 'controlGizmo/blockScaleDownLimit' | 'listIndentPerLevel' | (string & {});
+type SettingFloatPropertyName = 'positionSnappingThreshold' | 'rotationSnappingThreshold' | 'grid/spacingX' | 'grid/spacingY' | 'dragToSwapFills/longPressDurationMs' | 'controlGizmo/blockScaleDownLimit' | 'listIndentPerLevel' | 'tabStopInterval' | (string & {});
 type SettingIntPropertyName = 'maxImageSize' | 'maxPreviewResolution' | (string & {});
 type SettingKey = keyof Settings;
 interface Settings {
@@ -2112,6 +2098,7 @@ interface Settings {
     'web/fetchCredentials': 'omit' | 'same-origin' | 'include';
     'controlGizmo/blockScaleDownLimit': number;
     listIndentPerLevel: number;
+    tabStopInterval: number;
     positionSnappingThreshold: number;
     rotationSnappingThreshold: number;
     'grid/spacingX': number;
@@ -2155,6 +2142,7 @@ interface Settings {
     'colorPicker/colorMode': 'RGB' | 'CMYK' | 'Any';
     'timeline/trackVisibility': 'all' | 'active';
     'timeline/transitionControlVisibility': 'hover' | 'always';
+    'features/textEditModeTransformHandlesEnabled': boolean;
     'features/automaticSourceSetsEnabled': boolean;
 }
 type SettingsBool = SettingBoolPropertyName;
@@ -2177,11 +2165,6 @@ type SplitOptions = {
 };
 type StringPropertyName = 'name' | 'scene/pageFormatId' | 'type' | 'uuid' | 'page/titleTemplate' | 'audio/fileURI' | 'text/externalReference' | 'text/fontFileUri' | 'text/pathExternalRef' | 'text/text' | 'text/typeface' | 'cutout/path' | 'caption/externalReference' | 'caption/fontFileUri' | 'caption/pathExternalRef' | 'caption/text' | 'caption/typeface' | 'effect/lut_filter/filterId' | 'effect/lut_filter/lutFileURI' | 'fill/image/externalReference' | 'fill/image/imageFileURI' | 'fill/image/previewFileURI' | 'fill/video/fileURI' | 'shape/vector_path/path' | (string & {});
 type SyncURIResolver = (URI: string, defaultURIResolver: (URI: string) => string) => string;
-interface TextFontSizeOptions {
-    unit?: TextFontSizeUnit;
-    from?: number;
-    to?: number;
-}
 type TimelineTrackVisibility = 'all' | 'active';
 type TouchPinchAction = 'None' | 'Zoom' | 'Scale' | 'Auto' | 'Dynamic';
 type TouchRotateAction = 'None' | 'Rotate';
@@ -2189,9 +2172,6 @@ interface TransientResource {
     URL: string;
     size: number;
 }
-type TransitionType = 'none' | 'cross-fade' | 'cross-blur' | 'cross-spin' | 'cross-zoom' | 'cross-warp' | 'push' | 'slide' | 'stack' | 'splice' | 'diagonal-splice' | 'fade' | 'fade-to-white' | 'fade-to-black' | 'color-wipe' | 'line-wipe' | 'wipe' | 'clock-wipe' | 'chop' | 'gradient-fade' | 'two-stripes'; // each also valid as '//ly.img.ubq/transition/<name>'
-type TransitionTypeLonghand = `//ly.img.ubq/transition/${TransitionTypeShorthand}`;
-type TransitionTypeShorthand = 'none' | 'cross-fade' | 'cross-blur' | 'cross-spin' | 'cross-zoom' | 'cross-warp' | 'push' | 'slide' | 'stack' | 'splice' | 'diagonal-splice' | 'fade' | 'fade-to-white' | 'fade-to-black' | 'color-wipe' | 'line-wipe' | 'wipe' | 'clock-wipe' | 'chop' | 'gradient-fade' | 'two-stripes';
 /** @deprecated This type definition is not used anymore and will be removed. Defines the structure of a typeface definition, including metadata, family name, and font details. - 'meta': Optional metadata for the typeface, including default status, library, and categories. - 'family': The name of the typeface family. - 'fonts': An array of font definitions, each containing a font URL, weight, and style. */
 type TypefaceDefinition = {
     meta?: {

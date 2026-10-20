@@ -1,7 +1,7 @@
 # flyer
 
-- **Print sizes:** A5 148 × 210 mm (default) · A4 210 × 297 mm · DL 99 × 210 mm — each +
-  **3 mm bleed**
+- **Print sizes:** A5 148 × 210 mm (default) · A4 210 × 297 mm · DL 99 × 210 mm — the page is
+  this trim size; **3 mm bleed** is the page's bleed setting, outside it (`SKILL.md`, Print basics)
 - **Medium:** print
 - **Structure:** two-sided → one page per side
 

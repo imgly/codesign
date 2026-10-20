@@ -6,11 +6,11 @@ against this server.
 
 ## 1. Fonts — resolve every brand font to a fetchable URI
 
-`engine.block.setFont(id, uri, typeface)` takes **one `uri`** that must resolve to a **single,
-complete, static-or-variable TTF**, over a **fetchable scheme only** (`https://` or `workspace://`
-— `data:` and local `file:` paths are rejected when the scene is saved). The `typeface` is the
-3-arg object `{ name, fonts:[{ uri, subFamily, weight, style }] }`; omitting it throws
-`Cannot read properties of undefined (reading 'name')`.
+A font write — `setProps(id, { text: { font: { typeface, uri } } })` — takes **one `uri`** that
+must resolve to a **single, complete, static-or-variable TTF**, over a **fetchable source only** (an
+`https://` URL, or a `uri` from `asset_add` — local `file:` paths are rejected when the scene is
+saved, and a `data:` URI is kept only by a host with an asset source that takes uploaded files). The
+`typeface` is `{ name, fonts:[{ uri, subFamily, weight, style }] }`.
 
 Two sources, in order of preference:
 
@@ -22,40 +22,39 @@ this way (the IMG.LY kit's Inter does).
 
 **B. Proprietary / not-on-a-CDN (e.g. GT Walsheim):** pass the bundled font file straight to
 `asset_add` — it accepts `.ttf`, `.otf`, `.woff` and `.woff2` alongside images, and returns the
-`workspace://` URI to use:
+`uri` to use:
 
 ```js
 // asset_add({ source: { path: '<kit>/fonts/<Font>.ttf' } })
-//   -> { uri: 'workspace://assets/<sha>.ttf', kind: 'font', ... }
+//   -> { uri: '<opaque handle>', kind: 'font', ... }
 ```
 
-Then `setFont(id, uri, tf('<Brand Display Name>', uri))` — the returned `uri` goes in BOTH places:
-`setFont`'s second argument and every `typeface.fonts[].uri`. `workspace://` is a sanctioned,
+Then `setProps(id, { text: { font: { typeface: tf('<Brand Display Name>', uri), uri } } })` — the
+returned `uri` goes in BOTH places: `font.uri` and every `typeface.fonts[].uri`. That handle is a sanctioned,
 persistable scheme, so the saved `design.imgly` stays loadable (the bytes are in the store). Never
 hand-copy files into the workspace store: `asset_add` content-addresses them for you, and a
 hand-placed file with the wrong hash is unreachable. On a hosted CoDesign server (no disk access,
 so no `{ path }` arm), host the proprietary font at an `https://` URL instead and use that.
 
-### The variable-bold trap
+### Weights from a variable file
 
-A variable TTF renders **only its default instance** (usually Regular). You cannot get Bold from a
-variable file. If a brand's `typography` role needs a specific weight the variable file can't give,
-supply a **static** per-weight TTF (instance it with `fonttools varLib.instancer` — see the kit's
-`fonts/README.md`). The IMG.LY kit ships **no Bold GT Walsheim on purpose** (`headlineWeight` = 500
+A variable TTF gives **every weight you declare**: list each one as its own `typeface.fonts` entry,
+all pointing at the same file (`{ uri, subFamily: 'Bold', weight: 'bold', style: 'normal' }`), and
+the engine draws that weight. A typeface that declares one entry has only that weight — asking for
+another fails with "Failed to find a font with the specified weight". The IMG.LY kit ships **no Bold GT Walsheim on purpose** (`headlineWeight` = 500
 Medium); honour that — never fake a heavier weight.
 
-### setFont gotchas (script-agnostic)
+### Font-write gotchas (script-agnostic)
 
 - **Unique `typeface.name` per distinct face.** CE.SDK treats two typefaces with the same `name` as
   identical and skips the reload — a new URI under a reused name **silently no-ops** and the old
   font stays. Give the brand faces distinct names (`"GT Walsheim Pro Medium"`, `"Inter"`).
-- **Reshape after any font/size/line-height change** — `setString(id,'text/text', <same text>)` —
-  then **re-apply the captured runs**, because reshape wipes every per-character style range
-  (colour, weight, style, case, decoration), not colour alone (§2). Capture with `getTextRuns`;
-  `getTextColors(id)[0]` is run 0 only, and re-applying it whole-block is what flattens a
-  two-colour headline.
-- **Await before you measure or capture:** `await engine.block.forceLoadResources([page])`;
-  `getFrameWidth(id) > 0` is the "loaded + shaped" signal (`getWidth` is 0 in Auto mode).
+- **A font, size or line-height write reshapes on its own, ranges preserved.** A whole-block
+  `text.color` write flattens per-character colour, so read `text.ranges` first and re-map the
+  accent runs in the same write (§2); `text.color` reads run 0 only.
+- **Await before you measure or capture:** `await engine.design.loadResources([page])`;
+  `(await engine.design.measure(id)).width > 0` is the "loaded + shaped" signal (`width` is 0 in
+  Auto mode).
 - **Always `preview`.** A missing-glyph tofu or a silent sans fallback only shows in the render.
 
 ## 2. Colour — hex → CE.SDK 0-1 RGBA
@@ -96,7 +95,7 @@ to the fraction (`rgba('#2E2E2F', 0.16)`).
 an image fill on a graphic block sized to the logo's aspect (IMG.LY wordmark = 142×30 ≈ 4.7:1):
 
 ```js
-// asset_add returns { uri:'workspace://assets/<sha>.svg', ... } — embed uri, never httpUrl
+// asset_add returns { uri:'<opaque handle>', ... } — embed uri, never httpUrl
 const logo = await engine.design.create(
   {
     type: 'graphic',
@@ -120,16 +119,70 @@ different background pick a different file.
 
 ## 4. Icons — recolour the monochrome set
 
-Brand icons usually ship as monochrome SVG with a single fixed ink hex (the IMG.LY set is
-`#2E2E2F`). To put one on brand, one find-and-replace of the ink hex → the target colour recolours
-the whole glyph, then `asset_add` the recoloured SVG and place it (§3):
+Brand icons usually ship as monochrome SVG with a single fixed ink hex (the IMG.LY set uses
+`#282F35` and `#2E2E2F`). Rebuild the icon from its paths in the design instead of placing the
+file: read the SVG's text (it is small) and run this block inside an `edit`. Each `<path>` becomes a
+`vector_path` graphic in one group named `NAME` (its id is `icon`), with the ink — fill or stroke —
+set to `INK` and any white kept white, so it stays vector and sharp at every size. It refuses
+anything that is not a monochrome path icon (masks, clip paths, gradients, several inks,
+transforms):
+place that file unchanged with `asset_add` and an image fill (§3).
+For several icons in one edit, wrap each run of the block, first line included, in its own `{ … }`.
 
-```bash
-sed 's/#2E2E2F/#471AFF/g' <kit>/icons/<Icon>.svg > /tmp/<Icon>-brand.svg
+<!-- prettier-ignore -->
+```js
+// icon.js — part of an edit; first line: const SVG = `<the icon file's text>`, INK = '#471AFF', NAME = 'icon/search', PARENT = <page or group id>, BOX = { x: 96, y: 96, size: 48 };
+const src = SVG.replace(/<!--[\s\S]*?-->/g, '');
+const attrs = (tag) => Object.fromEntries([...tag.matchAll(/([\w:-]+)="([^"]*)"/g)].map((m) => [m[1], m[2]]));
+const refuse = (why) => {
+  throw new Error(`icon.js: ${why} — not a monochrome icon; place the file unchanged as an image fill (§3), never recolour it`);
+};
+const root = attrs(/<svg\b[^>]*>/.exec(src)?.[0] ?? refuse('no <svg> element'));
+const [vx, vy, vw, vh] = (root.viewBox ?? `0 0 ${parseFloat(root.width)} ${parseFloat(root.height)}`).split(/[\s,]+/).map(Number);
+if (vx || vy || !(vw > 0) || !(vh > 0)) refuse(`viewBox "${root.viewBox}"`);
+const extra = /<(mask|clipPath|linearGradient|radialGradient|pattern|filter|image|text|use|rect|circle|ellipse|line|polyline|polygon)\b/.exec(src);
+if (extra) refuse(`<${extra[1]}>`);
+for (const g of src.match(/<g\b[^>]*>/g) ?? []) if (Object.keys(attrs(g)).some((k) => k !== 'id')) refuse(`styled group ${g}`);
+const paths = (src.match(/<path\b[^>]*>/g) ?? []).map(attrs);
+if (!paths.length) refuse('no <path>');
+const styled = paths.flatMap(Object.keys).find((k) => /^(transform|opacity|fill-opacity|stroke-opacity|style|stroke-dasharray)$/.test(k));
+if (styled) refuse(`path attribute ${styled}`);
+const isWhite = (c) => /^(white|#fff|#ffffff)$/i.test(c);
+const fillOf = (p) => p.fill ?? root.fill ?? 'black';
+const strokeOf = (p) => p.stroke ?? root.stroke ?? 'none';
+const inks = new Set(paths.flatMap((p) => [fillOf(p), strokeOf(p)]).filter((c) => c !== 'none' && !isWhite(c)).map((c) => c.toLowerCase()));
+if (inks.size > 1) refuse(`${inks.size} ink colours (${[...inks].join(', ')})`);
+const rgba = (hex) => {
+  const h = hex.length === 4 ? hex.slice(1).replace(/./g, '$&$&') : hex.slice(1);
+  return { r: parseInt(h.slice(0, 2), 16) / 255, g: parseInt(h.slice(2, 4), 16) / 255, b: parseInt(h.slice(4, 6), 16) / 255, a: 1 };
+};
+const paint = (c) => rgba(isWhite(c) ? '#FFFFFF' : INK);
+const k = BOX.size / Math.max(vw, vh);
+const JOIN = { miter: 'Miter', round: 'Round', bevel: 'Bevel' };
+const icon = await engine.design.create(
+  {
+    type: 'group',
+    name: NAME,
+    children: paths.map((p) => ({
+      type: 'graphic',
+      props: {
+        shape: { type: 'vector_path', vector_path: { path: p.d, width: vw, height: vh, fillRule: p['fill-rule'] === 'evenodd' ? 'EvenOdd' : 'NonZero' } },
+        width: vw * k,
+        height: vh * k,
+        position: { x: BOX.x, y: BOX.y },
+        fill: fillOf(p) === 'none' ? null : { type: 'color', color: { value: paint(fillOf(p)) } },
+        ...(strokeOf(p) === 'none'
+          ? {}
+          : { stroke: { enabled: true, color: paint(strokeOf(p)), width: parseFloat(p['stroke-width'] ?? '1') * k, position: 'Center', cornerGeometry: JOIN[p['stroke-linejoin'] ?? 'miter'] } })
+      }
+    }))
+  },
+  { parent: PARENT }
+);
 ```
 
-Watch the kit's exceptions: two-tone marks keep an intentional white knockout (recolour the ink,
-leave the white); full-colour logo icons must **not** be flattened. Keep icons monochrome, one ink
+Watch the kit's exceptions: two-tone marks keep an intentional white knockout (the block recolours
+the ink and leaves the white); full-colour logo icons must **not** be flattened (the block refuses them). Keep icons monochrome, one ink
 per context, on the 24px grid — never gradients/shadows, and don't mix in a third-party icon set.
 
 ## 5. Kicker pill (eyebrow → pill badge)
@@ -168,15 +221,15 @@ keep the fill subtle so it reads as a badge, not a button.
 ## 6. Block opacity ≠ colour alpha
 
 A "faint" or ghost element (an oversized decorative quote, a watermark) is usually **block opacity**,
-not a low colour-alpha. `getTextColors`/`getColor` on it can report a fully-opaque colour while it
-still renders faint. Capture `(await engine.design.getProps(id, ['opacity'])).opacity` alongside the colour, and re-apply it
-(`setOpacity`) after recolouring, or the ghost comes back at full strength and competes with the
-headline.
+not a low colour-alpha. Its colour can read fully opaque while it still renders faint. Capture
+`(await engine.design.getProps(id, ['opacity'])).opacity` alongside the colour, and re-apply it
+(`setProps(id, { opacity })`) after recolouring, or the ghost comes back at full strength and
+competes with the headline.
 
 ## 7. Order of operations (avoids the common failures)
 
 1. Resolve fonts (CDN URI or workspace bridge) and `asset_add` the logo/icon SVGs **before** the edit.
-2. In the edit: recolour fills → `setFont` → **reshape** → **re-apply text colour** → position →
-   `await forceLoadResources([page])`.
+2. In the edit: recolour fills → one text write per block (font + size + colour + re-mapped accent
+   ranges) → position → `await engine.design.loadResources([page])`.
 3. `preview` — verify the real face rendered (not a fallback), colour survived the reshape, contrast
    holds, the logo dot reads, and no tofu.

@@ -56,7 +56,7 @@ script family** beside this one. Read the file(s) for your target locale(s):
 | `arabic.md`          | Arabic (RTL)                            | mirroring; never letter-space; bidi                    |
 | `cjk.md`             | Japanese, Chinese, Korean               | tofu; full-width punctuation; no caps/italics/tracking |
 | `vietnamese.md`      | Vietnamese, stacked-diacritic Latin     | hard no-tofu gate; stacked-mark leading                |
-| `cyrillic.md`        | Russian, Ukrainian, Serbian, Bulgarian… | font coverage (static bold); modest expansion          |
+| `cyrillic.md`        | Russian, Ukrainian, Serbian, Bulgarian… | font coverage (real bold); modest expansion            |
 
 ## 4. Layout integrity after translation
 
@@ -155,7 +155,7 @@ Any "no" on an applicable line drops that axis below 8.
 
 - [ ] No overflow, no overlap, no unbalanced void at the new string lengths
 - [ ] Every block sits on the **reference grid** (position + size), not re-centered/resized per locale; text blocks snapped **baseline-relative** where the face changed (no ar/ja "moved-down" drift)
-- [ ] **Font weight** carried onto the swapped face (not the family's lightest cut; variable-bold trap checked) — matches the reference block's weight in the render
-- [ ] **Appearance parity** — fills/gradients/effects/corner-radius/overlay match the source (inherited by forking, or re-captured and re-applied — never re-created by eye)
+- [ ] **Font weight** carried onto the swapped face (not the family's lightest cut; weight declared in the typeface) — matches the reference block's weight in the render
+- [ ] **Appearance parity** — fills/gradients/effects/corner-radius/overlay match the source (inherited by importing the saved reference, or re-captured and re-applied — never re-created by eye)
 - [ ] Ghost count matches the reference; re-fit stayed within the existing grid/scale/palette
 - [ ] Native export dimensions (page pixel size)
