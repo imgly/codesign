@@ -212,33 +212,48 @@ const trackOK = true; // false for CJK/Arabic → force letterSpacing 0 on eyebr
 const ghostAnchor = 'left'; // 'left' (post/square) mirrors to the right for RTL; 'center' (story) stays centered
 const belowQuoteY = EN.rule.y; // element the quote must stay above
 
-const page = engine.scene.getPages()[0];
-const all = [];
-(function walk(id) {
-  all.push(id);
-  for (const c of engine.block.getChildren(id)) walk(c);
-})(page);
-const blocks = all.filter((id) => id !== page);
-const texts = blocks.filter((id) => engine.block.getType(id).includes('text'));
-const graphic = blocks.find((id) =>
-  engine.block.getType(id).includes('graphic')
-);
+const [page] = await engine.design.findByType('page');
+const blocks = [];
+const walk = async (id) => {
+  for (const c of await engine.design.getChildren(id)) {
+    blocks.push(c);
+    await walk(c);
+  }
+};
+await walk(page);
+const typeOf = async (id) => (await engine.design.getProps(id, ['type'])).type;
+const texts = [];
+let graphic;
+for (const id of blocks) {
+  const type = await typeOf(id);
+  if (type === 'text') texts.push(id);
+  else if (type === 'graphic') graphic ??= id;
+}
 await engine.design.loadResources([page]);
 
-const meta = (id) => ({
-  id,
-  s: engine.block.getString(id, 'text/text'),
-  fs: engine.block.getTextFontSizes(id, { unit: 'Pixel' })[0],
-  y: engine.block.getPositionY(id)
-});
-const tm = texts.map(meta);
+const meta = async (id) => {
+  const p = await engine.design.getProps(id, [
+    'text.string',
+    'text.fontSize',
+    'position'
+  ]);
+  return {
+    id,
+    s: p.text.string,
+    fs: parseFloat(p.text.fontSize),
+    y: p.position.y
+  };
+};
+const tm = [];
+for (const id of texts) tm.push(await meta(id));
 
 // classify
 const ghosts = tm.filter((t) => t.fs >= 150 && t.s.trim().length <= 2);
 let ghost =
   ghosts.find((t) => t.s.includes('“')) ||
   ghosts.slice().sort((a, b) => a.y - b.y)[0];
-for (const g of ghosts.filter((t) => t !== ghost)) await engine.design.destroy(g.id); // drop extra bookend glyphs
+for (const g of ghosts.filter((t) => t !== ghost))
+  await engine.design.destroy(g.id); // drop extra bookend glyphs
 const footer = tm.find((t) => t.s.includes('@'));
 const rest = tm.filter((t) => !ghosts.includes(t) && t !== footer);
 const quote = rest.reduce((a, b) => (b.fs > a.fs ? b : a));
@@ -248,22 +263,22 @@ const attribution = others.find((t) => t !== eyebrow);
 
 // capture rich text — each range carries its run's `text` substring, which is
 // what semantic re-location needs (offsets are source-string indices).
-const runsOf = (id) => {
+const runsOf = async (id) => {
   try {
     return (await engine.design.getProps(id, ['text.ranges'])).text.ranges;
   } catch (e) {
     return [];
   }
 };
-const runs = Object.fromEntries(
-  [ghost, eyebrow, quote, attribution, footer].map((t) => [t.id, runsOf(t.id)])
-);
+const runs = {};
+for (const t of [ghost, eyebrow, quote, attribution, footer])
+  runs[t.id] = await runsOf(t.id);
 // Re-apply captured styling as ONE ranges assignment. Run 0 is the base style
 // and covers the whole block; any further run is an accent whose SOURCE offsets
 // are meaningless once the string is translated, so it is re-located by its
 // target-language substring (SPANS below).
 // Returns false when the accent could not be placed — flag it, never silently flatten.
-const restyle = (id, rs, spans = []) => {
+const restyle = async (id, rs, spans = []) => {
   if (!rs.length) return true;
   const s = (await engine.design.getProps(id, ['text'])).text.text;
   const ranges = [{ ...rs[0], from: 0, to: s.length }]; // base over the whole string
@@ -291,7 +306,7 @@ const SPANS = {};
 // from the target locale's script band in the family file — latin/arabic/cjk — NOT the
 // reference's raw engine value), converted through THIS block's now-current font via
 // design.font({ uri }) → contentArea (handbook §6.1.3).
-const setLeading = (id, visual) =>
+const setLeading = async (id, visual) =>
   // facade converts per font (metrics cached at font resolve / loadResources)
   await engine.design.setProps(id, { text: { lineHeight: { visual } } }); // auto-reshapes, ranges preserved
 const applyText = async (t, g, ls) => {
@@ -308,7 +323,9 @@ const applyText = async (t, g, ls) => {
   await setLeading(t.id, g.lh); // visual target → target-face content area (§6.1.3)
 };
 
-await engine.design.setProps(ghost.id, { text: { fontSize: EN.ghost.fs + 'px' } });
+await engine.design.setProps(ghost.id, {
+  text: { fontSize: EN.ghost.fs + 'px' }
+});
 await setLeading(ghost.id, EN.ghost.lh);
 await applyText(eyebrow, EN.eyebrow, trackOK ? EN.eyebrow.ls : 0);
 await applyText(attribution, EN.attribution, trackOK ? EN.attribution.ls : 0);
@@ -316,11 +333,11 @@ await applyText(footer, EN.footer, trackOK ? EN.footer.ls : 0);
 await applyText(quote, EN.quote, 0);
 await engine.design.setProps(graphic, { width: EN.rule.w });
 for (const t of [ghost, eyebrow, quote, attribution, footer])
-  restyle(t.id, runs[t.id], SPANS[t.id]);
+  await restyle(t.id, runs[t.id], SPANS[t.id]);
 await engine.design.loadResources([page]);
 
 // position (ghost measured for mirroring; others straight from EN)
-const gw = engine.block.getFrameWidth(ghost.id);
+const { width: gw } = await engine.design.measure(ghost.id);
 await engine.design.setProps(ghost.id, {
   position: {
     x:
@@ -348,7 +365,7 @@ await engine.design.setProps(graphic, {
 await engine.design.loadResources([page]);
 let qfs = EN.quote.fs;
 const avail = belowQuoteY - EN.quote.y - 16;
-while (engine.block.getFrameHeight(quote.id) > avail && qfs > 44) {
+while ((await engine.design.measure(quote.id)).height > avail && qfs > 44) {
   qfs -= 2;
   // the fontSize write auto-reshapes AND auto-preserves the style ranges.
   await engine.design.setProps(quote.id, { text: { fontSize: qfs + 'px' } });
@@ -360,35 +377,49 @@ return { type: 'text', text: JSON.stringify({ page, qfs }, null, 1) };
 Reference-capture read (run on the source variant to fill `EN`):
 
 ```js
-const page = engine.scene.getPages()[0];
-const out = [];
-(function walk(id) {
-  const t = engine.block.getType(id),
-    isText = t.includes('text');
-  const r = {
-    t: t.split('/').pop(),
-    x: Math.round(engine.block.getPositionX(id)),
-    y: Math.round(engine.block.getPositionY(id)),
-    w: Math.round(engine.block.getWidth(id)),
-    wm: engine.block.getWidthMode(id)
-  };
-  if (isText) {
-    r.s = engine.block.getString(id, 'text/text').slice(0, 14);
-    r.fs = Math.round(engine.block.getTextFontSizes(id, { unit: 'Pixel' })[0]);
-    r.lh = +engine.block.getFloat(id, 'text/lineHeight').toFixed(2);
-    r.ls = +engine.block.getFloat(id, 'text/letterSpacing').toFixed(2);
+const [page] = await engine.design.findByType('page');
+const ids = [];
+const walk = async (id) => {
+  for (const c of await engine.design.getChildren(id)) {
+    ids.push(c);
+    await walk(c);
   }
-  if (id !== page) out.push(r);
-  for (const c of engine.block.getChildren(id)) walk(c);
-})(page);
-return {
-  type: 'text',
-  text: JSON.stringify({
-    pw: engine.block.getWidth(page),
-    ph: engine.block.getHeight(page),
-    b: out
-  })
 };
+await walk(page);
+const TEXT = [
+  'text.string',
+  'text.fontSize',
+  'text.lineHeight',
+  'text.letterSpacing'
+];
+const out = [];
+for (const id of ids) {
+  const { type } = await engine.design.getProps(id, ['type']);
+  const p = await engine.design.getProps(id, [
+    'position',
+    'width',
+    'widthMode',
+    ...(type === 'text' ? TEXT : [])
+  ]);
+  out.push({
+    t: type,
+    x: Math.round(p.position.x),
+    y: Math.round(p.position.y),
+    w: Math.round(p.width),
+    wm: p.widthMode,
+    ...(p.text && {
+      s: p.text.string.slice(0, 14),
+      fs: Math.round(parseFloat(p.text.fontSize)),
+      lh: +p.text.lineHeight.toFixed(2),
+      ls: +p.text.letterSpacing.toFixed(2)
+    })
+  });
+}
+const { width: pw, height: ph } = await engine.design.getProps(page, [
+  'width',
+  'height'
+]);
+return { type: 'text', text: JSON.stringify({ pw, ph, b: out }) };
 ```
 
 ## Video and animated designs
@@ -404,8 +435,8 @@ new language's speech and reading time.
 - **Word-by-word reveals scale with the target.** A `typewriter_text` (or any text animation whose
   `textAnimationWritingStyle` is `Word` / `Character`) reveals per word or per character: scale its
   duration by target ÷ source word (or character) count, and check that the reveal ends with the
-  0.3 s-per-word hold still ahead of it. The duration is not in the animation spec:
-  `engine.block.setDuration(engine.block.getInAnimation(id), s) // engine.block: animation duration`.
+  0.3 s-per-word hold still ahead of it. Patch it with the same type:
+  `setProps(id, { animations: { in: { type, duration: s } } })`.
 - **Re-voice, don't re-use.** Generate the voice-over again from the translated script with a
   `text2speech` model — `asset_generate({ capability: 'text2speech' })` lists them (e.g.
   `elevenlabs/eleven-v3-tts`); keep the master's voice across locales via `params`

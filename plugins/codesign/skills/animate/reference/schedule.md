@@ -18,7 +18,7 @@ const d = engine.design;
 const box = (g) => ({ x: Math.round(g.x), y: Math.round(g.y), w: Math.round(g.width), h: Math.round(g.height) });
 const fillOf = async (id) => ((await d.getCapabilities(id)).includes('fill') ? ((await d.getProps(id, ['fill'])).fill?.type ?? null) : null);
 const pages = [];
-for (const page of engine.scene.getPages()) {
+for (const page of await d.findByType('page')) {
   const { width, height } = await d.getProps(page, ['width', 'height']);
   const out = { id: page, width, height, fill: await fillOf(page), groups: [], layers: [] };
   const walk = async (id, group) => {
@@ -453,42 +453,56 @@ Prepend `const PLAN = <the plan schedule.js returned>;`. Run it as one `edit` on
 <!-- prettier-ignore -->
 ```js
 // apply.js — the body of ONE edit; first line of that edit: const PLAN = <schedule.js output>;
-const b = engine.block, d = engine.design;
+const d = engine.design;
 const TAG = 'codesign/motion-beat';
-engine.scene.setMode('Video');
-const tagged = new Map();
-for (const id of b.findAll()) if (b.hasMetadata(id, TAG)) tagged.set(b.getMetadata(id, TAG), id);
-const found = (key) => { const id = tagged.get(key) ?? PLAN.ids?.[key]; return id !== undefined && b.isValid(id) ? id : undefined; };
+const [scene] = await d.findByType('scene');
+await d.setProps(scene, { scene: { mode: 'Video' } });
+const tagged = new Map(), meta = new Map(), live = new Set();
+const walk = async (id, first) => {
+  live.add(id);
+  if (first) {
+    const { metadata } = await d.getProps(id, ['metadata']);
+    meta.set(id, metadata);
+    if (metadata[TAG] !== undefined) tagged.set(metadata[TAG], id);
+  }
+  for (const c of await d.getChildren(id)) await walk(c, first);
+};
+await walk(scene, true);
+const refresh = async () => { live.clear(); await walk(scene, false); }; // after destroys
+const found = (key) => { const id = tagged.get(key) ?? PLAN.ids?.[key]; return live.has(id) ? id : undefined; };
 const idOf = (key) => { const id = found(key); if (id === undefined) throw new Error(`no block for '${key}': tag it or pass its id in PLAN.ids`); return id; };
-const tag = (key, id) => { b.setMetadata(id, TAG, key); tagged.set(key, id); }; // engine.block: metadata has no facade path
-const motion = engine.scene.getPages().find((p) => b.hasMetadata(p, 'codesign/motion'));
+const tag = async (key, id) => { await d.setProps(id, { metadata: { [TAG]: key } }); tagged.set(key, id); };
+const pages = await d.findByType('page');
+const motion = pages.find((p) => meta.get(p)?.['codesign/motion'] !== undefined);
 const planned = motion !== undefined ? [motion] : PLAN.input.pages.map((p) => idOf(p.id));
 const [page, ...rest] = planned;
-for (const p of engine.scene.getPages()) if (!planned.includes(p)) await d.destroy(p);
+for (const p of pages) if (!planned.includes(p)) await d.destroy(p);
+await refresh();
 
 await d.setProps(page, { playback: { duration: PLAN.length } });
 for (const a of PLAN.apply) if (a.destroy && found(a.key) !== undefined) await d.destroy(idOf(a.key));
+await refresh();
 
 const tracks = {};
 const trackFor = async (name) => {
   if (tracks[name] !== undefined) return tracks[name];
   let t = (await d.findByName(`${name}-track`))[0];
   if (t === undefined) {
-    t = await d.create({ type: 'track', name: `${name}-track` }, { parent: page });
-    b.insertChild(page, t, name === 'bg' ? 0 : 1); // engine.block: z-order insert has no facade verb
-    b.setBool(t, 'track/automaticallyManageBlockOffsets', false); // engine.block: no track/* props path
+    t = await d.create({ type: 'track', name: `${name}-track`, props: { track: { automaticallyManageBlockOffsets: false } } }, { parent: page, index: name === 'bg' ? 0 : 1 });
   }
   return (tracks[name] = t);
 };
 for (const a of PLAN.apply.filter((x) => x.track)) {
   if (a.create === 'page-fill' && found(a.key) === undefined) {
-    const id = await d.create({ type: 'graphic', name: a.key, props: { shape: { type: 'rect' }, width: b.getWidth(page), height: b.getHeight(page) } }, { parent: page });
-    b.setFill(id, b.duplicate(b.getFill(idOf(a.source)))); // engine.block: copying a page fill has no facade verb
-    tag(a.key, id);
+    const { width, height } = await d.getProps(page, ['width', 'height']);
+    const { fill } = await d.getProps(idOf(a.source), ['fill']); // a page's fill, copied as its spec
+    const id = await d.create({ type: 'graphic', name: a.key, props: { shape: { type: 'rect' }, width, height, fill } }, { parent: page });
+    live.add(id);
+    await tag(a.key, id);
   }
   const id = idOf(a.key);
   const t = await trackFor(a.track);
-  if (b.getParent(id) !== t) b.appendChild(t, id); // engine.block: reparent into the track
+  if ((await d.getParent(id)) !== t) await d.appendChild(t, id);
 }
 
 const groups = {};
@@ -496,7 +510,7 @@ for (const a of PLAN.apply.filter((x) => x.group)) {
   let g = (await d.findByName(a.group))[0];
   if (g === undefined) {
     const ids = a.members.map(idOf);
-    for (const id of ids) if (b.getParent(id) !== page) b.appendChild(page, id); // engine.block: move onto the video page
+    for (const id of ids) if ((await d.getParent(id)) !== page) await d.appendChild(page, id); // onto the video page
     g = await d.group(ids);
     await d.setProps(g, { name: a.group });
   }
@@ -506,32 +520,23 @@ for (const a of PLAN.apply.filter((x) => x.group)) {
 for (const a of PLAN.apply) {
   if (a.destroy || a.page) continue;
   const id = a.group ? groups[a.group] : idOf(a.key);
-  if (a.key) tag(a.key, id);
+  if (a.key) await tag(a.key, id);
   await d.setProps(id, { playback: { timeOffset: a.timeOffset, duration: a.duration } });
   if ('in' in a || 'out' in a || 'loop' in a) await d.setProps(id, { animations: { in: a.in ?? null, loop: a.loop ?? null, out: a.out ?? null } });
 }
 
 for (const a of PLAN.apply.filter((x) => x.track)) {
-  const id = idOf(a.key);
-  const old = b.getTransition(id);
-  if (b.isValid(old)) {
-    b.removeTransition(id); // engine.block: no facade path
-    if (b.isValid(old)) await d.destroy(old);
-  }
-  if (!a.transition) continue;
-  const t = b.createTransition(a.transition.type); // engine.block: transitions have no facade verb
-  await d.setProps(t, { playback: { duration: a.transition.duration } });
-  if (a.transition.direction) b.setEnum(t, `transition/${a.transition.type}/direction`, a.transition.direction); // engine.block: transition options have no facade path
-  b.setEnum(t, 'animationEasing', a.transition.easing); // engine.block: no facade path
-  b.setTransition(id, t); // engine.block: no facade path
+  const tr = a.transition;
+  const spec = tr && { type: tr.type, duration: tr.duration, ...(tr.easing ? { easing: tr.easing } : {}), ...(tr.direction ? { [tr.type]: { direction: tr.direction } } : {}) };
+  await d.setProps(idOf(a.key), { transition: spec || null }); // replaces any earlier one
 }
 
-for (const a of PLAN.apply) if (a.front) b.appendChild(page, idOf(a.key)); // engine.block: z-order to front
+for (const a of PLAN.apply) if (a.front) await d.appendChild(page, idOf(a.key)); // z-order to front
 let left = 0;
 for (const p of rest) {
-  if (b.getChildren(p).length === 0) await d.destroy(p);
+  if ((await d.getChildren(p)).length === 0) await d.destroy(p);
   else left++;
 }
-b.setMetadata(page, 'codesign/motion', JSON.stringify({ v: PLAN.v, input: PLAN.input })); // engine.block: metadata has no facade path
+await d.setProps(page, { metadata: { 'codesign/motion': JSON.stringify({ v: PLAN.v, input: PLAN.input }) } });
 return { type: 'text', text: `animated ${PLAN.length}s · ${PLAN.apply.length} entries · ${left} source page(s) still hold unplanned blocks` };
 ```

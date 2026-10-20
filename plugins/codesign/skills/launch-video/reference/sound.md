@@ -32,172 +32,12 @@ Placing audio in the design is the video recipe (`../handbook/video.md`).
 The engine analyses the track itself — no program to install. Put the music on the video page as
 its own audio block first (`playback.timeOffset` where it starts), then run this as the tail of
 that `edit`, or alone in a read-only `edit` (`render: false`), with the block id and the BPM you
-asked for in its first line. Save the returned JSON as `<out>/build/beats.json`.
+asked for. Save the returned JSON as `<out>/build/beats.json`.
 
 ```js
-// beats.js — the tail of the edit that placed the music, or ONE read-only edit; first line: const MUSIC = <audio block id>, BPM = <requested BPM or null>;
-const SR = 22050,
-  HOP = 512,
-  FPS = SR / HOP;
-await engine.block.forceLoadAVResource(MUSIC);
-const { playback: pb } = await engine.design.getProps(MUSIC, ['playback']);
-const speed = pb.speed || 1,
-  from = pb.trimOffset,
-  to = Math.min(
-    from + pb.duration * speed,
-    engine.block.getAVResourceTotalDuration(MUSIC)
-  );
-const n = Math.max(0, Math.floor((to - from) * FPS)),
-  duration = n / FPS;
-// The engine's decode at SR, one value per sample: |x| on a 50 dB scale (0 = −50 dBFS, 1 = full scale).
-const power = new Float64Array(n);
-await new Promise((resolve, reject) => {
-  let left = Math.ceil(n / 64);
-  if (!left) return resolve();
-  engine.block.generateAudioThumbnailSequence(
-    MUSIC,
-    64 * HOP,
-    from,
-    from + duration,
-    n * HOP,
-    1,
-    (c, r) => {
-      if (r instanceof Error) return reject(r);
-      for (let k = 0; k < r.length; k++)
-        if (r[k] > 0)
-          power[c * 64 + Math.floor(k / HOP)] += 10 ** (5 * (r[k] - 1));
-      if (!--left) resolve();
-    }
-  );
-});
-const energy = power.map((p) => Math.log1p((1000 * p) / HOP));
-const flux = energy.map((e, i) => (i ? Math.max(0, e - energy[i - 1]) : 0));
-const W = Math.round(FPS / 2); // adaptive threshold: local mean over ±0.5 s
-const onsets = [];
-for (let i = 1; i < n - 1; i++) {
-  let m = 0;
-  for (let k = Math.max(0, i - W); k < Math.min(n, i + W); k++) m += flux[k];
-  m /= Math.min(n, i + W) - Math.max(0, i - W);
-  if (
-    flux[i] > 1.5 * m &&
-    flux[i] > 0.05 &&
-    flux[i] >= flux[i - 1] &&
-    flux[i] > flux[i + 1]
-  )
-    onsets.push({
-      t: i / FPS,
-      attack: flux[i],
-      strength: Math.max(...energy.slice(i, i + 4))
-    });
-}
-const sum = (a, f) => a.reduce((s, v) => s + f(v), 0);
-const attack = sum(onsets, (o) => o.attack),
-  nEff = attack ** 2 / sum(onsets, (o) => o.attack ** 2);
-// The onsets within `tol` of the grid `phase + k·period`, each with its beat index k and its error.
-const near = (period, phase, tol = Math.min(0.05, period / 8)) =>
-  onsets
-    .map((o) => ({ o, k: Math.round((o.t - phase) / period) }))
-    .map((p) => ({ ...p, err: p.o.t - phase - p.k * period }))
-    .filter((p) => Math.abs(p.err) < tol);
-// How well a grid explains the attacks: share of attack energy on it, above what chance would put there.
-const measure = (period, phase) => {
-  const tol = Math.min(0.05, period / 8),
-    chance = (2 * tol) / period,
-    pts = near(period, phase);
-  return {
-    period,
-    phase: phase - period * Math.floor(phase / period),
-    score: sum(pts, (p) => p.o.attack) / attack - chance,
-    noise: Math.sqrt((chance * (1 - chance)) / nEff),
-    onGrid: pts.length,
-    meanErrMs: +(
-      (1000 * sum(pts, (p) => Math.abs(p.err))) / pts.length || 0
-    ).toFixed(1)
-  };
-};
-// Refine a tempo guess: seed the phase from the attacks, then weighted least squares on the onsets near the grid.
-const fit = (period) => {
-  let sx = 0,
-    sy = 0;
-  for (const o of onsets) {
-    sx += o.attack * Math.cos((2 * Math.PI * o.t) / period);
-    sy += o.attack * Math.sin((2 * Math.PI * o.t) / period);
-  }
-  let phase = (Math.atan2(sy, sx) / (2 * Math.PI)) * period;
-  for (let it = 0; it < 10; it++) {
-    const tol = Math.min(0.05, period / 8),
-      pts = near(period, phase, tol);
-    for (const p of pts)
-      p.w = p.o.attack * Math.exp(-(((2 * p.err) / tol) ** 2));
-    const w = sum(pts, (p) => p.w),
-      mk = sum(pts, (p) => p.w * p.k) / w,
-      mt = sum(pts, (p) => p.w * p.o.t) / w,
-      vk = sum(pts, (p) => p.w * (p.k - mk) ** 2);
-    if (pts.length < 4 || !vk) return null;
-    period = sum(pts, (p) => p.w * (p.k - mk) * (p.o.t - mt)) / vk;
-    phase = mt - period * mk;
-  }
-  return measure(period, phase);
-};
-const ac = (l) => {
-  let s = 0;
-  for (let i = l; i < n; i++) s += flux[i] * flux[i - l];
-  return s;
-};
-let lag = 0; // tempo guess: autocorrelation peak of the flux over 70–180 BPM
-for (
-  let l = Math.round((FPS * 60) / 180);
-  l <= Math.round((FPS * 60) / 70);
-  l++
-)
-  if (!lag || ac(l) > ac(lag)) lag = l;
-// The peak can lock onto a related tempo (2/3, 3/4 …) — keep the alias whose grid carries the most
-// attack. Halving or doubling the grid fits by construction, so the requested BPM decides that.
-let best = null;
-for (const r of [1, 2, 1 / 2, 3 / 2, 2 / 3, 4 / 3, 3 / 4]) {
-  const f =
-    onsets.length >= 8 &&
-    lag / FPS / r >= 0.25 &&
-    lag / FPS / r <= 1.5 &&
-    fit(lag / FPS / r);
-  if (f && (!best || f.score > best.score)) best = f;
-}
-let grid = best && best.score > 3 * best.noise ? best : null;
-if (grid && BPM) {
-  const { period: p, phase: ph } = grid,
-    half = [measure(2 * p, ph), measure(2 * p, ph + p)].sort(
-      (a, b) => b.score - a.score
-    )[0];
-  const off = (g) => Math.abs(Math.log((60 * speed) / g.period / BPM));
-  grid = [grid, half, measure(p / 2, ph)].sort((a, b) => off(a) - off(b))[0];
-}
-// Analysis time is source seconds from the trim point; report page time.
-const page = (t) => +(pb.timeOffset + t / speed).toFixed(3);
-const beats = [];
-for (let t = grid?.phase; grid && t < duration; t += grid.period)
-  beats.push(page(t));
-const max = Math.max(...onsets.map((o) => o.strength));
-const hits = onsets.map((o) => ({
-  t: page(o.t),
-  strength: +(o.strength / max).toFixed(2)
-}));
-return {
-  type: 'text',
-  text: JSON.stringify({
-    start: page(0),
-    duration: +(duration / speed).toFixed(3),
-    bpm: grid && +((60 * speed) / grid.period).toFixed(2),
-    requestedBpm: BPM,
-    fit: grid && {
-      onsets: onsets.length,
-      onGrid: grid.onGrid,
-      meanErrMs: grid.meanErrMs
-    },
-    beats,
-    accents: hits.filter((o) => o.strength >= 0.8).map((o) => o.t),
-    onsets: hits
-  })
-};
+// beats.js — the tail of the edit that placed the music, or ONE read-only edit
+const beats = await engine.design.readBeats(music, { bpm: 120 }); // the BPM you asked for
+return { type: 'text', text: JSON.stringify(beats) };
 ```
 
 `beats.json` holds `bpm`, `beats` (the grid), `fit`, `accents` (the loudest hits) and `onsets`
@@ -209,9 +49,9 @@ frame) and a syncopated groove whose loud hits repeat every 1.5 beats (the beat,
   and an mp4 export plays it later still. Render the track to WAV first: while the MP3 is the only
   audio on the page, run `export({ format: 'wav', blockId: page })`, then set the music block's
   `audio.fileURI` to the returned `uri` (with `timeOffset` and `trimOffset` 0 — the WAV is the
-  page's mix from 0 s) and run the beat map at the end of that `edit`. The analysis then reads exactly what the mp4 plays.
-- **Pass the tempo you asked for** as `BPM`. The recipe settles related tempos itself — a grid at
-  2/3 or 3/4 of the beat carries less of the attack and loses — and uses `BPM` only to choose
+  page's mix from 0 s) and run `readBeats` at the end of that `edit`. The analysis then reads exactly what the mp4 plays.
+- **Pass the tempo you asked for** as `bpm`. `readBeats` settles related tempos itself — a grid at
+  2/3 or 3/4 of the beat carries less of the attack and loses — and uses `bpm` only to choose
   between halving and doubling, which fit equally well. `bpm` may still differ from the request by a
   few tenths — that is the track's real tempo; use it.
 - **Check `fit`**: `meanErrMs` is how far the hits on the grid sit from it, `onGrid` of `onsets` how
