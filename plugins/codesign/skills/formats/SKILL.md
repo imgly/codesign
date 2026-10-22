@@ -54,8 +54,8 @@ both media; print medium sets **3 mm bleed** on that page (Print basics) and tar
   page (handbook §6.4, §6.1.2), so the design rules hold across every format here.
 - **Export at native dimensions** — the page's own size. A page with bleed carries it into every
   file: a `pdf` or `pdfx` page is trim plus bleed with the trim marked (TrimBox), and an image or a
-  `preview` shows the bleed around the page. With `marginEnabled: false` the same files are the
-  trim size.
+  whole-page `preview` shows the bleed around the page. A zoomed `preview` (one block, or a
+  `region`) shows the trim area only. With `marginEnabled: false` the same files are the trim size.
 
 ## Boundaries
 

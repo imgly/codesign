@@ -8,10 +8,11 @@ CMYK, spot inks or PDF/X. A PDF for reading, sharing or a template sample is
 not one: keep the page at the asked size with `marginEnabled: false` and export
 plain `pdf`, so the file is exactly that size.
 
-**Image previews of a bled page are trim size.** A page with bleed carries it
-into every export, a PNG included. For a PNG/JPEG preview next to the print
-PDF, set `page: { marginEnabled: false }`, export the image, then turn the
-bleed back on before saving. Sizes and the
+**An image of a bled page includes the bleed.** A page with bleed carries it
+into every export, a PNG included, and into a whole-page `preview`; a zoomed
+`preview` (one block, or a `region`) shows the trim area. For a trim-size
+PNG/JPEG next to the print PDF, set `page: { marginEnabled: false }`, export
+the image, then turn the bleed back on before saving. Sizes and the
 safe margin per format are in the `formats` skill; the type rules for print
 are in `design-rules.md` §6.1.10.
 
