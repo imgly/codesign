@@ -4,9 +4,9 @@ description: |
   The CoDesign design loop, tool contract, session model, typeface schema,
   common operations cheatsheet, and the full design-quality rubric.
   **Read this skill before any edit call** — it contains the 6-step Loop
-  (resolve brief → read API → edit → verify → judge → SAVE), the tool roster
-  and cross-tool rules, the session model (one design context, checkpointed
-  after every edit, saved only by `export({ format: 'imgly' })`), the typeface
+  (resolve brief → read API → edit → verify → judge → reply), the tool roster
+  and cross-tool rules, the session model (one design context, saved to its
+  design file after every change), the typeface
   shape text.font declarations need, and §6: the design-rules index. The full
   enforceable rubric (typography, hierarchy, composition, craft) ships as this
   skill's design-rules.md, the runtime-quirk reference as its quirks.md, and
@@ -21,7 +21,7 @@ description: |
 You MUST follow these steps in order for ANY canvas change:
 
 1. **Resolve the brief before you build — from what the user asked for, not from what happens to be loaded.** For a new design, run the `create` skill's intake first to assemble the brief — and when two or more of the five design-defining parameters (topic, audience, visual direction, brand, format) are neither stated nor safely inferable, that intake **asks** before the first edit rather than defaulting them. Starting points:
-   - **New design** → `import({ title })` first, every time: after a save, the saved design stays current, so a `rename` or `export` before it acts on that one. Your first `edit` builds the scene: `await engine.design.create({ type: 'scene', children: [page] })`. To start over on the same design, delete its pages and build again instead of creating a new scene.
+   - **New design** → `import({ title })` first, every time: until then the design you were on stays current, so a `rename` or `export` before it acts on that one. Your first `edit` builds the scene: `await engine.design.create({ type: 'scene', children: [page] })`. To start over on the same design, delete its pages and build again: a new scene on a design that already has a change saved starts another design.
    - **Starting from a file** (a `.imgly`, a `.psd`, a PDF, an image) → `import({ source })` loads it as a new design; then `edit` from there.
    - **Changing a saved design** → `open({ uri })` it, then `edit` from there. When the user names it without a `uri`, find it with `designs`. `import` of that `uri` would give you a copy instead.
    - **Continuing what you already built this conversation** → just call `edit`. There is nothing to pass: `edit` always continues the current session.
@@ -31,7 +31,7 @@ You MUST follow these steps in order for ANY canvas change:
 3. **Run `edit({ code, note? })`** — execute the JS body against the live engine. The response's first text part is JSON `{ names? }`: every named block now in the scene, and exactly the strings `engine.design.findByName(name)` will resolve in your next edit. Name what you build and re-find it by name.
 4. **Visually verify.** A mutating `edit`'s result already shows the changed page — read that render. Call `preview({ blockIds? })` only for full-size judging or multi-page looks; never re-preview content you already rendered. Never tell the user something "looks good" without seeing it yourself.
 5. **Judge & remediate before reporting done.** When the design is a candidate for "done", run the `judge` loop: score the 8 axes against your actual `preview` renders, dry-run the §6.1.11 + §6.5.2 checklists (design-rules.md), remediate any applicable axis below 8 via further `edit`s, re-preview, re-judge. On pass, record `scorecard({ verdict: 'pass' })`; any later `edit`, `import` or `open` clears that verdict and re-arms this step. Never report an unjudged design as done.
-6. **SAVE — `export({ format: 'imgly' })`.** Nothing in steps 3–5 produced a file. An edit advances the session; only this writes the design out as a real, portable `.imgly` archive the user can open, move, back up or send. **If you never call it, the user gets nothing.** Do it after the judge passes, before you report done, and hand back the `uri` it returns.
+6. **Reply, and hand the design over.** Every change is saved to the design as you make it — there is nothing to save. Report its `uri` (the one `import` returned) with the judge scores, and `export` a pdf, an image or `imgly` (the editable design file) when the brief asks for a file.
 
 Steps 1, 2, 4, 5 and 6 are NOT optional. Step 3's `note` is encouraged: a one-liner describing what the edit accomplished.
 
@@ -55,10 +55,10 @@ Steps 1, 2, 4, 5 and 6 are NOT optional. Step 3's `note` is encouraged: a one-li
 
 There are no revision ids and no `parent` argument anywhere on this server. **You work in a session, and a session has exactly one current state.** `edit` advances it; `preview` renders it; `scorecard` judges it; `export` writes it out. Nothing takes an id that says _which_ state you mean, because there is only one.
 
-- **There is no rewind.** You cannot go back to an earlier state, branch off one, or compare two. Fix what is wrong with a further `edit` — surgically, in place (§5). If you need a state you can return to, **save it** (`export({ format: 'imgly' })`) and come back to its `uri` later (§3).
-- **Checkpoints are the server's business, not yours.** After every successful `edit` and `import` the server checkpoints the session automatically. That is what lets it survive the engine being released, a hibernating server, or an edit that throws — the next call picks up exactly where you were. It is invisible, it has no id, and **it is not a save**: the user never sees a checkpoint and cannot open one.
-- **Unsaved work survives a server restart, but a new server starts on an empty canvas.** `designs` lists what an earlier session left unsaved, marked `"unsaved": true`; `open` its `uri` to continue it, then save.
-- **Saving is `export({ format: 'imgly' })` (step 6), and it is the only thing the user gets** — a self-contained `.imgly` archive, scene plus every asset byte. A checkpoint keeps _you_ working; only a save produces a file. Save at the end of every unit of work; an unsaved session is work the user cannot see. §3 has the rest of the persistence model.
+- **There is no rewind.** You cannot go back to an earlier state, branch off one, or compare two. Fix what is wrong with a further `edit` — surgically, in place (§5). If you need a state you can return to, `import` a copy of the design and work on the copy (§3).
+- **Every change is saved.** After every successful `edit` and `import` the server writes the design's file, which is what the user opens. That also lets the session survive the engine being released, a hibernating server, or an edit that throws — the next call picks up exactly where you were.
+- **A new server starts on an empty canvas.** `designs` lists the designs, newest first.
+- **There is nothing to save.** `export` makes copies for the person: `imgly` the editable design file with its images, `pdf`/`png` a deliverable. §3 has the rest of the persistence model.
 
 ## 2. Tools
 
@@ -66,56 +66,51 @@ Each tool's full contract lives on the tool itself — its description in tools/
 
 - `edit({ code, note? })` — THE mutating tool: runs async JS (`engine` in scope, plus `engine.design` — the preferred facade: awaited `create` for a block or subtree, `setProps`/`getProps`, `measure`, `align`/`distribute`; full contract in the api skill) against the live engine and checkpoints the session when it returns. The response's first text part is JSON `{ names? }` — the named blocks now in the scene.
 - `preview({ blockIds? })` — render blocks of the current session to inline PNGs; omit `blockIds` for every page (max 10). Takes no other argument.
-- `export({ format, blockId?, outPath? })` — **`format: 'imgly'` SAVES the design** (whole-design only; no `blockId`); every other format writes a deliverable (`pdf`/`png`/`jpeg`/`webp`/`svg`/`pdfx`/`html`); no `blockId`: all pages (not `html`/`psd`). Returns `{ uri, httpUrl, bytes, format }` (+ `path` with `outPath`). `uri` is the durable handle; `httpUrl` is process-scoped — never persist it. Pass `outPath` (absolute) when your environment cannot fetch localhost URLs.
+- `export({ format, blockId?, outPath? })` — writes a deliverable: `format: 'imgly'` the editable design file with its images (whole-design only; no `blockId`), or `pdf`/`png`/`jpeg`/`webp`/`svg`/`pdfx`/`html`; no `blockId`: all pages (not `html`/`psd`). Returns `{ uri, httpUrl, bytes, format }` (+ `path` with `outPath`). `uri` is the durable handle; `httpUrl` is process-scoped — never persist it. Pass `outPath` (absolute) when your environment cannot fetch localhost URLs.
 - `export` also accepts `format: "mp4"` — renders the block's authored timeline (recipe: `video.md`); needs the native engine (the default).
 - `import({ source, title? })` — load a design FILE: native `.imgly` (also legacy `.scene` / `.zip`), foreign Photoshop `.psd` / InDesign `.idml` / PowerPoint `.pptx` / PDF (translated in; `warnings` are your touch-up list — preview, then repair with `edit`), or a plain image/SVG (one page sized to it).
 Every `import` starts a **new** design and puts it in front of you: `import({ source: { uri: '<saved uri>' } })` gives you a copy of a saved design to change, while the saved one — and the design you were on — stay as they were. Then continue with `edit`.
-Edits you have not saved with `export({ format: 'imgly' })` are dropped when it loads — save first.
-- `open({ uri })` — continue a saved design itself: your later edits go to it. Pass a `uri` an `export` gave you, verbatim — an imported design has one only once you have saved it. Edits you have not saved are dropped when it loads — save first.
+- `open({ uri })` — continue a saved design itself: your later edits go to it. Pass a `uri` an `import` or `designs` gave you, verbatim.
 - `designs()` — the saved designs, newest first, each with its `uri` and title; pass that `uri` to `open` or `import` verbatim. Use it when the user refers to an earlier design without handing you its `uri`.
 - `scorecard({ verdict })` — record that you completed a judge loop against the session's current state. See §1 step 5 and the `judge` skill.
 - `asset_add({ source: { path } })` — bring a local file (image or font) into the workspace for use in a design; embed the returned `uri` in `edit` code — never `httpUrl`, and never the original local path or a `file://` URI (renders server-side but breaks portability).
 - `asset_search({ query?, source?, mimeType?, page? })` — search the engine's asset sources; apply results inside `edit` (the exact patterns are in the tool's description). The `ly.img.workspace.images` source also lists images the human uploaded — searchable by their original filename, newest first.
-- `view(…)` — the URL a human opens to see and edit **saved** designs in the browser. Print it once; the viewer keeps it live. A design appears there only after `export({ format: 'imgly' })`.
+- `view(…)` — the URL a human opens to see and edit the design in the browser. Print it once; the viewer keeps it live, and shows every change you make.
 
 Cross-tool rules:
 
 - **The only identifier you hold is a saved design's `uri`** — no revision ids, no `parent`, no design ids; every tool addresses the current session. Block ids are per-edit: re-discover blocks by `name` in the current engine, never persist or replay literal block ids across edits.
-- **The single mutating tool is `edit`.** `preview`, `export` and every other tool leave the scene as it is; placement and application always happen inside `edit` code. (`import` and `open` are the exceptions: each puts a whole design in front of you, and edits you have not saved with `export({ format: 'imgly' })` are dropped — save first.)
-- **Only `export({ format: 'imgly' })` produces something the user can see.** `edit` is invisible, `preview` is for your eyes, `scorecard` records a judgement. Finish the job.
+- **The single mutating tool is `edit`.** `preview`, `export` and every other tool leave the scene as it is; placement and application always happen inside `edit` code. (`import` and `open` are the exceptions: each puts a whole design in front of you; the one you were on stays saved as it was.)
+- **What the user sees is the design after your last successful `edit`** — every change is saved to it; `preview` is for your eyes, `scorecard` records a judgement. Finish the job.
 
 ## 3. What persists, and what the user sees
 
 Three different things, and conflating them is the mistake this section exists to prevent:
 
 ```
-edit / import      → checkpoint   automatic, invisible, last one wins, no id.
-                                  Keeps you working. The user can never open it.
-export imgly       → a SAVED DESIGN: a portable .imgly archive at a durable
-                                  uri. The only thing the user can open.
+edit / import      → the DESIGN: saved to its file after every change, at a
+                                  durable uri. What the user opens.
+export imgly       → a COPY in exports/: a portable .imgly archive, scene plus
+                                  every asset byte, to move, back up or send.
 export pdf/png/…   → a DELIVERABLE in exports/: a file to send or print.
                                   Not a design; not editable; not resumable.
 ```
 
-The save `uri` is your handle on a design. Hand it to the user, keep it to continue the design later (`open({ uri })`) or to start a copy of it (`import({ source: { uri } })`), and give it to another skill that needs to start from this design.
-`designs` lists the saved designs.
-On a local server the viewer (`view`) is where a human browses what has been saved.
-**One verb, two jobs: export as `imgly` to save the design, export as `pdf`/`png` to deliver it.**
+There is nothing to save. `import` returns the design's `uri`: hand it to the user, keep it to continue the design later (`open({ uri })`) or to start a copy of it (`import({ source: { uri } })`), and give it to another skill that needs to start from this design.
+`designs` lists the designs and marks the one you are on.
+On a local server the viewer (`view`) is where a human sees the design, live.
 
-**Saving can fail in a way `edit` cannot.** The archive inlines every referenced asset, so the server force-loads the scene's resources first and **refuses rather than ship a truncated archive**. A failure means a font or image URI never finished loading: check the URIs your edit code set, then retry. Never report done on a failed save.
+**The `imgly` export can fail in a way `edit` cannot.** The archive inlines every referenced asset, so the server force-loads the scene's resources first and **refuses rather than ship a truncated archive**. A failure means a font or image URI never finished loading: check the URIs your edit code set, then retry. The design itself is unaffected.
 
-**Re-saving updates the same file — last save wins.** Saving twice does not accumulate copies; it revises the design you are on, which is what you want when you fix something and save again. For a separate edition (a locale, a format, a restyle), **`import` a copy of the saved design first**: every `import` starts a new design, so the edition's save is its own file and the one you started from stays as it was. For an unrelated new design, `import({ title })`.
+**Every change revises the design you are on.** For a separate edition (a locale, a format, a restyle), **`import` a copy of the source first**: every `import` starts a new design, so the edition is its own file and the one you started from stays as it was. For an unrelated new design, `import({ title })`.
 
 ### When someone else saved your design
 
-A person can open the design you saved in an editor, change it and save it back while you wait for their next message. The server notices on your next call, and says so in its result — **"changed outside this session"**:
+A person can open the design in an editor, change it and save it back while you wait for their next message. Their save becomes the design. On your next call the server says so:
 
-- **`edit` or `export` refused, "the session now holds that version"** — you had nothing unsaved, so the server loaded their version and your call did **not** run. `preview` it, then redo your change on what they made. Find blocks by name: what your code referred to may have moved, changed or gone.
-- **Refused, "this session holds edits that were never saved"** — both versions exist and nothing was touched. **Ask the user which to keep**, then make the call the message names: `export({ format: 'imgly', overwrite: true })` keeps yours; `open({ uri, discard: true })` with that design's uri keeps theirs.
+- **`edit` or `export` refused, "the person saved their own edits" or "changed outside this session"** — your call did **not** run, and the session now holds their version. `preview` it, then redo your change on what they made. Find blocks by name: what your code referred to may have moved, changed or gone.
 - **`preview` leading with that note** — it already shows their version.
-
-**Save at the end of every unit of work.** A session with nothing unsaved picks up their changes by itself; one with unsaved edits has to stop and ask.
-
+- **A result saying someone else saved it while you worked** — both versions are kept: theirs stays as it was, and your change became a new design, named in the message. Tell the user which is which.
 ## 4. Engine recipes
 
 **Dialect rule (enforced): edit code uses `engine.design` only** —

@@ -78,8 +78,7 @@ Five steps, in order:
 5. **Hand off.** Enter the handbook Loop: build the scene from scratch in your first
    `edit` (`await engine.design.create({ type: 'scene', children: [page] })`), with format/page setup from the
    class's derivation notes. Consult `brand` if a brand kit is in play; finish through
-   the `judge` gate and the save (`export({ format: 'imgly' })`) as always — an
-   unsaved design is one the user never receives.
+   the `judge` gate as always. Every change is saved to the design as you make it.
 
 ## Exemplar: the `deck` intake
 

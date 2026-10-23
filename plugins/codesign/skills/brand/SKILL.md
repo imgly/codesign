@@ -14,7 +14,7 @@ description: >-
 
 Point this skill at the current design and a brand kit, and it re-skins the design to that brand
 under the brand's **strict rules**. It operates on the **design in the current session**, and the
-restyle is **saved as its own `.imgly` file**. Single home for the brand workflow: the
+restyle is **exported as its own `.imgly` file**. Single home for the brand workflow: the
 **role → token map**, the **restyle routine**, the **graded conformance pass**, and the brand
 **no-goes**.
 
@@ -96,12 +96,12 @@ underived; **D** = defaultable.
 | colour scheme | A       | the chosen kit's `colorSchemes.approved` · `Decide automatically` · Other | the neutral / `paper` scheme      |
 | source design | derived | —                                                                         | the design in the current session |
 
-**1. The source** — the design in the current session. **Save it first** (`export({ format: 'imgly' })`)
-and keep the `uri`: a restyle preserves that design's geometry and copy — only the style layer
-changes — and the saved file is both the un-branded original and your reference for the parity
+**1. The source** — the design in the current session. **Export it as `.imgly` first** (`export({ format: 'imgly' })`)
+and keep its `uri`: a restyle preserves that design's geometry and copy — only the style layer
+changes — and that file is both the un-branded original and your reference for the parity
 diff.
 If the user means a design saved earlier, its `uri` IS `SOURCE_URI`: `open` it to `preview` and
-capture it, skip the first save, then `import` a copy to restyle.
+capture it, skip the first export, then `import` a copy to restyle.
 
 **2. The brand kit** — a folder the user points you at (`<kit>/`), holding `tokens.json` (+
 `BRAND.md`, fonts, logos, icons, imagery, `do-dont/`). Parse `tokens.json` **first**; it is the
@@ -193,7 +193,7 @@ rows with no matching block; don't invent a subline to satisfy `typography.pairi
 
 1. **Load & validate the brand kit.** Parse `tokens.json`; read `avoid` + skim `do-dont/`. Resolve
    every needed font to a fetchable URI and `asset_add` the logo SVG(s) — **`reference/asset-loading.md`**.
-2. **Read the source, and save it.** The design resolved in Inputs is the reference — its geometry
+2. **Read the source, and export it.** The design resolved in Inputs is the reference — its geometry
    and copy are what the restyle preserves. `preview` it now and `export({ format: 'imgly' })` it:
    that render is the only source render the parity diff in step 7 will have, and that file is the
    un-branded original.
@@ -217,10 +217,10 @@ rows with no matching block; don't invent a subline to satisfy `typography.pairi
    return.) Then run the `judge` skill with the brand `avoid`/`do-dont`
    added to the criteria; contrast ≥ 4.5:1 after every recolour. Fix anything < 8 or any hard
    violation.
-8. **`loadResources` → `preview` → SAVE.** Preview the restyle — wrong face, lost colour, low
+8. **`loadResources` → `preview` → `export`.** Preview the restyle — wrong face, lost colour, low
    contrast, and a banned tell only show in the render. Then `export({ format: 'imgly' })`: that
-   file is the branded edition, and until it exists the restyle is not something the user has.
-   Report both `uri`s — original and restyle.
+   file is the branded edition to hand over (the copy itself is saved as you edit it). Report
+   both `uri`s — original and restyle.
 
 Dry-run the conformance checklist (below) against each render before reporting done.
 

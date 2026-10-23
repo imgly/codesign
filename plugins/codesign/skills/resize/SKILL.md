@@ -11,12 +11,12 @@ description: >-
 
 # resize
 
-Point this skill at the current design and one or more target formats, and it produces or repairs the size/format editions by **re-composing** each for its new aspect. It operates on the **design in the current session**, and each produced format is **saved as its own `.imgly` file**. Single home for the resize workflow, the re-composition technique, and the reformat **no-goes**.
+Point this skill at the current design and one or more target formats, and it produces or repairs the size/format editions by **re-composing** each for its new aspect. It operates on the **design in the current session**, and each produced format is **exported as its own `.imgly` file**. Single home for the resize workflow, the re-composition technique, and the reformat **no-goes**.
 
-**The one mechanic to understand before anything else.** A session holds one design, so N formats are produced in sequence, not in parallel, and the **saved source file is what you return to between them** (handbook §1):
+**The one mechanic to understand before anything else.** A session holds one design, so N formats are produced in sequence, not in parallel, and the **exported source file is what you return to between them** (handbook §1):
 
 ```
-export({ format: 'imgly' })                     → SOURCE_URI   (save the source FIRST)
+export({ format: 'imgly' })                     → SOURCE_URI   (export the source FIRST)
 per format:
   import({ source: { uri: SOURCE_URI } })       → a copy of the source is the session
   edit(…)  re-compose for the new canvas
@@ -24,7 +24,7 @@ per format:
   export({ format: 'imgly' })                   → this format's own file
 ```
 
-Save the source before you touch it. Re-importing is what makes every format a re-composition **of the source** rather than of the previous format — and it is why "never resize a resize" is a mechanical rule here, not just advice.
+Export the source before you touch it. Re-importing is what makes every format a re-composition **of the source** rather than of the previous format — and it is why "never resize a resize" is a mechanical rule here, not just advice.
 
 Builds on two things it does _not_ restate: handbook §6.3 Hierarchy + §6.4 Composition & grid (margins as % of the shortest dimension, the spacing ladder, balanced whitespace / no dead void, nothing off-canvas) and §6.1.2 type-scale bands; and the handbook's engine mechanics (the `text.font` declaration, auto-reshape, `loadResources`). For the _same-aspect, translate-the-strings_ case, use the `localize` skill instead.
 
@@ -66,9 +66,9 @@ ask if underived; **D** = defaultable.
 | target formats | **R**   | `Instagram post` · `Instagram story` · `LinkedIn` · `Widescreen` · `A4 print` · `Custom W×H` · Other | none                              |
 | source design  | derived | —                                                                                                    | the design in the current session |
 
-**1. The source** — the design in the current session. **Save it first** (`export({ format: 'imgly' })`) and hold onto the `uri`: every target format is re-composed _from_ that file — **never resize a resize** (don't chain; re-import the source between formats).
-If the user asks to resize a design saved earlier, its `uri` IS the source `uri`: `open` it to `preview` and capture it, skip the first save, then `import` a copy of it per format.
-If the request is a brief (no design exists yet), **build the native base first** at the brief's canvas per handbook §6, preview and sanity-check it, then save it and treat that file as the source.
+**1. The source** — the design in the current session. **Export it as `.imgly` first** (`export({ format: 'imgly' })`) and hold onto its `uri`: every target format is re-composed _from_ that file — **never resize a resize** (don't chain; re-import the source between formats).
+If the user asks to resize a design saved earlier, its `uri` IS the source `uri`: `open` it to `preview` and capture it, skip the first export, then `import` a copy of it per format.
+If the request is a brief (no design exists yet), **build the native base first** at the brief's canvas per handbook §6, preview and sanity-check it, then export it as `.imgly` and treat that file as the source.
 
 **2. The formats** — named formats (`ig-post`, `ig-square`, `ig-story`, `widescreen`, and the
 rest of the `formats` skill's index) or a custom `W×H`. Resolve each named format's exact size,
@@ -107,7 +107,7 @@ by re-flow, not by scaling the canvas contents). Never leave a **lopsided void**
 
 ## Workflow
 
-0. **Save the source and keep its `uri`** — `export({ format: 'imgly' })`. Everything below
+0. **Export the source as `.imgly` and keep its `uri`** — `export({ format: 'imgly' })`. Everything below
    re-imports it, once per format.
 1. **Read the source's design system** (palette, accent, type bands, margin %, spacing rhythm,
    hierarchy) and **capture its layout as fractions** of the source canvas (positions/sizes as % of
@@ -137,10 +137,10 @@ by re-flow, not by scaling the canvas contents). Never leave a **lopsided void**
    styling in a resize; if you must, pass the runs from `getProps(id, ['text.ranges'])` back as
    `text: { ranges: [...] }` in the same `setProps` — **every** run, not just the accent.
 8. **`loadResources` → `preview` this format** (dead void / crop / tofu only show in the
-   render), then **save it**: `export({ format: 'imgly' })`. That file is the format's edition —
-   until you save, it exists nowhere the user can reach, and the next `import` will replace it.
-   Collect the returned `uri`s and report them all at the end. Give each build's `edit` a `note`
-   naming the format (e.g. "ig-story 1080×1920"). Then go back to step 2 for the next format.
+   render), then `export({ format: 'imgly' })`: that file is the format's edition to hand over (the
+   copy itself is saved as you edit it). Collect the returned `uri`s and report them all at the
+   end. Give each build's `edit` a `note` naming the format (e.g. "ig-story 1080×1920"). Then go
+   back to step 2 for the next format.
    For a video design, preview each format at several `time`s — see **Video and animated
    designs** below.
 
@@ -383,7 +383,7 @@ Applies when the page has a `playback.duration`, blocks carry `playback.timeOffs
   against the new canvas; omit only deliberately, never by oversight.
 - **Appearance drift** — a block's fill/gradient/effect/corner-radius/overlay differs from the
   source, or an overlay was added/removed the source didn't have (a cover that "became darker").
-  Appearance is inherited by re-importing the saved source; don't re-create or restyle it by eye.
+  Appearance is inherited by re-importing the exported source; don't re-create or restyle it by eye.
 - **Crop broken** — a fill leaves a gap inside its frame, or was stretched non-uniformly. See the
   three crop invariants (coverage, uniform scale, subject-in-window).
 - **Flattened hierarchy** — the resize dropped the source's group blocks and shipped a flat list of
