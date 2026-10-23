@@ -37,8 +37,7 @@ disk. Take them one at a time, because the next `import` moves on to a new desig
 (`render: false`) — the imported image is the page's fill,
 `(await engine.design.getProps(page, ['fill'])).fill.image.imageFileURI`. `reference/refs.md` lists,
 per reference, the video id or file name, the page size and that uri, which stays valid after you
-move on. A reference is never saved: if the next `import` refuses over unsaved edits, repeat it
-with `discard: true`.
+move on. Each reference stays in the workspace as a design of its own.
 
 **Channel link.** CoDesign cannot read web pages, so the video ids come from your host's built-in
 web-fetch tool — used only to read the channel's `/videos` page (e.g.

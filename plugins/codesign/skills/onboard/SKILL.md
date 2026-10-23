@@ -137,9 +137,8 @@ already has not answered any of those.
   over it. That contrast is the point — a variation appears in seconds and nothing was
   regenerated from scratch.
 
-Whichever path ran, **save the design first** — `export({ format: 'imgly' })`. That is
-what turns the work into a file, and nothing appears in the editor until it exists.
-Then give them the `view` link, plus a further `export` (`pdf`, `png`, …) when a
+Whichever path ran, the work is already saved: every change goes to the design, and the
+editor shows it. Give them the `view` link, plus an `export` (`pdf`, `png`, …) when a
 deliverable makes sense for that job. Say explicitly that the link is live and
 editable, and that whatever they change there comes back to you.
 

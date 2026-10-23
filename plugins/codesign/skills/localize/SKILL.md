@@ -12,7 +12,7 @@ description: >-
 
 # localize
 
-Point this skill at the current design and the target locales, and it produces or repairs the localized editions. It operates on the **design in the current session**, and each locale is **saved as its own `.imgly` file**. Single home for localizing CoDesign designs: the **operational workflow**, the **font-loading mechanics**, and the **per-language quality rules**. It builds on two things it does _not_ restate: handbook §6.1 (general typographic thresholds — leading, tracking, all-caps, the content-area line-height conversion (`design.font`), smart punctuation, reshape-recolor) and handbook §6.7 (general Latin font mechanics — single-URI `text.font` declarations, static-vs-variable, blank-glyph diagnosis). This skill is the non-Latin / localization extension of both.
+Point this skill at the current design and the target locales, and it produces or repairs the localized editions. It operates on the **design in the current session**, and each locale is **exported as its own `.imgly` file**. Single home for localizing CoDesign designs: the **operational workflow**, the **font-loading mechanics**, and the **per-language quality rules**. It builds on two things it does _not_ restate: handbook §6.1 (general typographic thresholds — leading, tracking, all-caps, the content-area line-height conversion (`design.font`), smart punctuation, reshape-recolor) and handbook §6.7 (general Latin font mechanics — single-URI `text.font` declarations, static-vs-variable, blank-glyph diagnosis). This skill is the non-Latin / localization extension of both.
 
 **Scoring:** localizing is judged with the `judge` skill — every applicable axis ≥ 8, no averaging, N/A = 10. A single tofu glyph, an overflow after expansion, un-mirrored RTL, or a block that drifted off the source grid fails the edition (the `localization` axis).
 
@@ -49,13 +49,13 @@ underived; **D** = defaultable.
 | source locale  | A       | detected from the design's copy · Other                                     | detected, stated in the echo      |
 | source design  | derived | —                                                                           | the design in the current session |
 
-**1. The source (reference)** — the design in the current session, in its source language (usually `en`). **Save it first** (`export({ format: 'imgly' })`) and keep the `uri`: its geometry is the grid every target locale snaps to, and every locale starts by re-importing that file. Never localize _from_ a non-reference locale.
-If the user means a design saved earlier, its `uri` IS the reference `uri`: `open` it to `preview` and capture it, skip the first save, then `import` a copy of it per locale.
+**1. The source (reference)** — the design in the current session, in its source language (usually `en`). **Export it as `.imgly` first** (`export({ format: 'imgly' })`) and keep its `uri`: its geometry is the grid every target locale snaps to, and every locale starts by re-importing that file. Never localize _from_ a non-reference locale.
+If the user means a design saved earlier, its `uri` IS the reference `uri`: `open` it to `preview` and capture it, skip the first export, then `import` a copy of it per locale.
 
-A session holds one design, so the locales are built in sequence and the saved reference is what you return to between them (handbook §1):
+A session holds one design, so the locales are built in sequence and the exported reference is what you return to between them (handbook §1):
 
 ```
-export({ format: 'imgly' })                   → REFERENCE_URI   (save the source FIRST)
+export({ format: 'imgly' })                   → REFERENCE_URI   (export the source FIRST)
 per locale:
   import({ source: { uri: REFERENCE_URI } })  → a copy of the reference is the session
   edit(…)  translate + swap the script font + snap to the reference geometry
@@ -72,7 +72,7 @@ building.
 or a term is a name/product you cannot safely render in the target script, ask rather than guess —
 see the keep-byte-identical list in `reference/language-rules.md` §1.
 
-**Per locale, then:** run the Workflow below (re-import the reference, or load an existing localized file and snap it). Give each locale's `edit` a `note` naming the locale, `preview` it, and **save it** — an unsaved locale is one the user never receives. Report every locale's `uri` at the end.
+**Per locale, then:** run the Workflow below (re-import the reference, or load an existing localized file and snap it). Give each locale's `edit` a `note` naming the locale, `preview` it, and `export({ format: 'imgly' })` it — the locale's file to hand over (the copy itself is saved as you edit it). Report every locale's `uri` at the end.
 
 ## Core principle — localize, then snap back to the reference
 
@@ -117,7 +117,6 @@ the **size/format** — re-compose a design for a new aspect rather than transla
   script fonts, and RTL are already solved — but still **snap it to the reference geometry**.
   Earlier builds commonly drift; reuse the assets, fix the positions. Your fix goes to that design
   itself.
-  Save it when you are done.
 - **No existing build:** `import` a copy of the reference file and swap text + font.
 
 Either way the last step is the same: every block lands on the reference grid.
@@ -514,7 +513,7 @@ rich text **semantically**, not numerically.
   face (verify it actually renders — declare the weight, `font-loading.md`); parity is checked
   by the `judge` source-parity render diff.
 - **Appearance not carried (fill/gradient/effect/corner-radius/overlay differs from the source)** →
-  import the saved reference file so surface styling is inherited; if you rebuilt instead, or a
+  import the exported reference file so surface styling is inherited; if you rebuilt instead, or a
   reshape/recolor dropped it, re-capture and re-apply. Don't re-create a fill or effect "by eye" —
   read its values off the source.
 - **Reshape wiped the accent color / bold / underline** → capture with `getProps(id, ['text.ranges'])` before the
