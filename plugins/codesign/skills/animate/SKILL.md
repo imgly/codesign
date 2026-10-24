@@ -81,6 +81,12 @@ edit. The server may list pre-existing lint findings on the source design (line 
 they are the still's, not yours — never change text or layout properties while animating; mention
 them at delivery.
 
+Kinetic type the presets cannot express — a wave through the letters, a colour sweep, a
+karaoke word highlight — is `text.animators` on that text block, in a follow-up edit after
+`apply.js` (`../handbook/animation.md`, "Per-glyph motion"). The schedule knows nothing
+about animators, and their keyframe times count from the text block's own start, not the
+page's.
+
 ## 5 — Verify
 
 - Compute each scene's settle point from `plan.apply`: the latest `timeOffset + in.duration` over

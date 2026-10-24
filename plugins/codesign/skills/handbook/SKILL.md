@@ -290,9 +290,11 @@ const { width: pageW, height: pageH } = await engine.design.getProps(page, [
 // native text background, never a rect behind floating text (see the chip recipe
 // below, §6.5.1). Reach for a rect only for real graphics, or a chip whose content
 // is NOT just text (icon + text, an image, multiple elements).
-// "rect" | "line" | "ellipse" | "polygon" | "star" | "vector_path".
+// "rect" | "line" | "ellipse" | "polygon" | "star" | "vector_path" | "compound".
 // Anything with a diagonal, a curve or a hole is a vector_path — see the
 // custom-shapes recipe below. Do NOT approximate one out of stacked rects.
+// Cutouts from primitives (compound), repeats, rounding, zigzags, draw-on
+// trims (modifiers) and gradient strokes (stroke.fill): shapes.md.
 const panel = await engine.design.create(
   {
     type: 'graphic',

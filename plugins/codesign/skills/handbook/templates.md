@@ -1,4 +1,4 @@
-# Handbook — templates: text variables, placeholders, locking
+# Handbook — templates: variables, bindings, placeholders, locking
 
 A template is a design someone else fills in: the copy that changes is a
 **text variable**, the photo that changes is a **placeholder**, and
@@ -49,6 +49,61 @@ await engine.design.setProps(scene, {
 - Keys are plain identifiers (`title`, `eventDate`); the token is exactly
   `{{key}}`, no spaces. Styling (font, size, colour, ranges) applies to the
   rendered value as to any text.
+
+## Typed variables and bindings: themes in one write
+
+A colour, number, image or font can be a variable too. A block leaf
+**bound** to it follows it: one write to the variable changes every bound
+leaf in the design — a brand swap, a hero image per campaign, a heading
+face per script.
+
+```js
+const [scene] = await engine.design.findByType('scene');
+await engine.design.setProps(scene, {
+  variables: {
+    brand: { color: { r: 0.9, g: 0.1, b: 0.2, a: 1 } },
+    heading: { font: { family: 'Inter' } }, // the family; each text keeps its weight
+    hero: { image: uri },
+    headSize: { number: 72 }, // engine units, see below
+    city: 'Berlin' // a string stays a text variable: {{city}} in text
+  }
+});
+await engine.design.setProps(cta, { bindings: { 'fill.color': 'brand', 'stroke.color': 'brand' } });
+await engine.design.setProps(title, {
+  bindings: { 'text.color': 'brand', 'text.font': 'heading', 'text.fontSize': 'headSize' }
+});
+await engine.design.setProps(photo, { bindings: { 'fill.image': 'hero' } });
+
+// Re-theme: one write, every bound leaf follows.
+await engine.design.setProps(scene, { variables: { brand: { color: OTHER } } });
+```
+
+- **Pairs.** colour → colour leaves (`fill.color` on a colour fill,
+  `text.color`, `stroke.color`, `dropShadow.color`, …); number → number
+  leaves (`width`, `opacity`, `text.fontSize`, …); image → `fill.image`,
+  `fill.video`; font → `text.font`, `caption.font`. A text variable is not
+  bound: it is a `{{key}}` token. A wrong pair is refused with
+  `DESIGN.VARIABLE_TYPE`, which lists the leaves that variable type binds
+  to on that block.
+- **A number is engine-native.** Bound to a length it is in the scene's
+  design unit; bound to `text.fontSize` it is in `scene.fontSizeUnit`
+  (points unless the scene says `'Pixel'`: 72 pt is 300 px at 300 dpi).
+  A value a bound leaf refuses (an opacity of 5) is refused, and the
+  variable keeps its old value.
+- **A bound leaf refuses direct writes** (`DESIGN.PROPERTY_BOUND`, nothing
+  applied) — on a text, a bound `text.color` or `text.fontSize` also locks
+  the ranges' `color`/`size`. Change the variable, or unbind first:
+  `bindings: { 'text.color': null }` (the leaf keeps its value). Writing the
+  value it already has is a no-op, so `getProps` output still writes back.
+- `getProps(id, ['bindings'])` lists a block's bound leaves; a block without
+  any reads no `bindings` key. `getProps(scene, ['variables'])` reads every
+  variable in its own shape (a font as `{ font: { typeface } }`).
+- `{ name: { rename: 'newName' } }` renames a variable: its `{{tokens}}` and
+  bindings follow. `{ name: null }` deletes it and unbinds its leaves (they
+  keep their last value). A variable keeps its type: to change it, delete
+  it first, then write the new value in a second `setProps`.
+- A fill spec of another `type` replaces the fill, and the fill's bindings
+  go with it; rebind after.
 
 ## Placeholders
 
