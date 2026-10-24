@@ -58,8 +58,8 @@ const { width } = await engine.design.getProps(page, ['width']);
   same shape). Everything else IS props — including the font: naming a
   family (`text: { font: { family, weight } }`) makes `create` — and
   `setProps` — look the family up in this deployment's typeface sources and
-  pick that weight's file. Every `engine.design` member returns a Promise:
-  always `await` it (the edit gate rejects un-awaited calls).
+  pick that weight's file. Every member returns a Promise: `await` it
+  (the edit gate rejects un-awaited calls).
   `text: { string, ranges }` (style ranges replayed reshape-safe), inline
   `fill: { type, ... }` / `shape` / `blur` / `effects: [...]` / `animations`
   specs all sit under `props`. `create` awaits the subtree's font/image loads,
@@ -69,9 +69,7 @@ const { width } = await engine.design.getProps(page, ['width']);
   and in every later one. Name every block you may touch again.
 - No `describe`: identity IS props — `getProps(id)` for everything valued,
   `getProps(id, ['type'])` for what a block is, `getCapabilities(idOrType)`
-  for what it supports. Attachments (fill/shape/blur/effects/animations/
-  transition) round-trip as `{ type, ...props }` specs through
-  setProps/getProps — attachment ids never circulate.
+  for what it supports.
 - Text is all props too: `setProps(id, { text: { string, font, weight,
 case, ranges, path, decoration } })` (a range also takes
   `scriptStyle: 'Superscript' | 'Subscript'`) — leaves apply in a safe order and
@@ -91,11 +89,21 @@ case, ranges, path, decoration } })` (a range also takes
   the arm and the arm names every prop it carries. A type MATCHING what is
   attached edits it in place; a different type replaces it; `null` detaches
   (except `effects`, replaced wholesale — `[]` clears). Reads answer in the
-  same shape, so `getProps` output feeds straight back in. Tree/layout verbs
+  same shape, so `getProps` output feeds straight back in; attachment ids
+  never circulate. Tree/layout verbs
   live on `engine.design` (group, appendChild, align); saving and exporting
   are the `export` tool.
+- Where each prop is taught (types below, recipes and units there):
+  `keyframes` (on a block and in every spec: `at` in seconds of the block),
+  `transform`, `transformParent` and `text.animators` (kinetic type) →
+  `../handbook/animation.md`; `baselineShift` → design-rules §6.1.9;
+  `shape.modifiers`, compound `subshapes` and `stroke.fill` (angles in
+  **degrees**) → `../handbook/shapes.md`; `masks` and `matte`
+  (`source` is a name or uuid) → `../handbook/print.md`; `variables`
+  and `bindings` → `../handbook/templates.md`; scene `markers` →
+  `../handbook/video.md`.
 - Document state is on the scene block (`variables`, `spotColors`,
-  `scene.*`); a new document is `create({ type: 'scene', children })`.
+  `markers`, `scene.*`); a new document is `create({ type: 'scene', children })`.
 - Video, animation, audio: `playback`, `animations`, `audio` and `track`
   props; recipe and traps in `../handbook/video.md`.
 - Scalar wrappers (`setOpacity`, …), `is*`/`supports*` predicates and
@@ -109,12 +117,12 @@ it. Types are flattened to their values. Class start lines:
 
 | Class        | Start line |
 | ------------ | ---------- |
-| AssetAPI     | 1210       |
-| **BlockAPI** | **1515**   |
-| EditorAPI    | 1735       |
-| EventAPI     | 1872       |
-| **SceneAPI** | **1972**   |
-| VariableAPI  | 2189       |
+| AssetAPI     | 817        |
+| **BlockAPI** | **1128**   |
+| EditorAPI    | 1353       |
+| EventAPI     | 1499       |
+| **SceneAPI** | **1627**   |
+| VariableAPI  | 1856       |
 
 ## What is NOT in this file
 
@@ -123,8 +131,8 @@ it. Types are flattened to their values. Class start lines:
   in the range 0–1, never 0–255. For anything else a bare `number`/`string`
   leaves open, check the handbook's topic page before guessing.
 - Recipes by topic → the handbook: `../handbook/print.md` (CMYK,
-  spot colours, bleed, PDF/X), `../handbook/templates.md` (text
-  variables, placeholders, locking), `../handbook/video.md` and
+  spot colours, bleed, PDF/X), `../handbook/templates.md` (variables,
+  bindings, placeholders, locking), `../handbook/video.md` and
   `../handbook/animation.md` (timeline, captions, animations).
 
 
@@ -165,6 +173,8 @@ type BlockRef = DesignBlockId | string /* uuid */;
 // One node of the document read as a tree; feed a (subset of a) node tree
 // back to setProps to patch every node by uuid.
 interface PropsNode { uuid: string; name?: string; type: string; props: BlockProps; children: PropsNode[] }
+// Tracks by leaf; at = seconds of the (host) block or '25%'; null removes: handbook#animation.md.
+type Keyframes = { [leaf: string]: { at: number | string; value: unknown; easing?: string | object }[] | null };
 type FillId = DesignBlockId & { readonly __kind?: 'fill' };
 type EffectId = DesignBlockId & { readonly __kind?: 'effect' };
 type BlurId = DesignBlockId & { readonly __kind?: 'blur' };
@@ -199,7 +209,7 @@ interface DesignApi {
      *  block kind lacks is skipped for that block). The snapshot never
      *  enters your reply unless you print it. */
     getProps(id: BlockRef, select?: string[] | { children: true; props?: string[] }): Promise<BlockProps>;
-    /** Editor settings, same dialect. */
+    /** Editor settings, same dialect; SettingsProps is in signatures.d.ts. */
     setSettings(props: SettingsProps): Promise<void>;
     getSettings(select?: string[]): Promise<SettingsProps>;
     // text.path is raw-or-spec like every attachment: a raw SVG string, or
@@ -214,16 +224,13 @@ interface DesignApi {
     getScopes(id: BlockRef): Promise<Record<Scope, boolean>>;
     setScopes(id: BlockRef, scopes: Partial<Record<Scope, boolean>>): Promise<void>;
     getCapabilities(idOrType: BlockRef | DesignBlockType): Promise<readonly string[]>;
-    // Attachment values are the discriminated unions below — the type picks
-    // the arm, the arm names every prop that type carries. A type MATCHING
-    // what is attached edits it in place; a different type replaces it
-    // (replaced attachment blocks are destroyed, no leaks); null detaches:
+    // Attachment values are the unions below (replaced blocks are destroyed):
     //   await setProps(id, { fill: { type: 'color', color: { value } } })
     //   await setProps(id, { fill: { enabled: false } })          // no type ⇒ host leaves
     //   Gradient fills round-trip stops; image fills round-trip sourceSet —
     //   getProps(id, ['fill']) → tweak → setProps is lossless.
     //   await setProps(id, { shape: { type: 'rect' } }) · { blur: { type: 'uniform' } }
-    //   await setProps(id, { effects: [{ type: 'duotone_filter', duotone_filter: {…} }] })
+    //   await setProps(id, { effects: [{ type: 'displacement_map', source: 'map' /* BlockRef */ }] })
     //   await setProps(id, { animations: { in: { type: 'slide', … } } })  // null detaches
     // TEXT is all props too, applied in canonical order (font → string →
     // styles → ranges) whatever the key order:
@@ -287,49 +294,41 @@ interface BuildSpec {
     /** Written onto the block; findByName(name) resolves it, in this edit
      *  and in every later one. */
     name?: string;
-    /** Everything the block IS — attachments included: fill/shape/blur as a
-     *  { type, ... } spec or the type string, effects as a spec list,
-     *  animations per slot, the whole text subtree. A font may be named by
-     *  FAMILY here (text.font: { family, weight }): create — and setProps —
-     *  resolve the lookup and apply it before any text styling. */
+    /** Everything the block IS, attachments and the text subtree included;
+     *  text.font: { family, weight } is looked up (create and setProps). */
     props?: BlockProps;
     children?: BuildSpec[];
 }
 // Capability matrix (measured against the engine; type-determined —
 // no need to call supports* for blocks you created):
-// capability        audio        caption      captionTrack cutout       graphic      group        page         text         track        
-// animation         ✓            ✓            ✓            ✓            ✓            ✓            ✓            ✓            ✓            
-// backgroundColor   ·            ✓            ·            ·            ·            ·            ·            ✓            ·            
-// blendMode         ·            ✓            ·            ·            ✓            ✓            ✓            ✓            ·            
-// blur              ·            ·            ·            ·            ✓            ·            ✓            ·            ·            
-// contentFillMode   ✓            ✓            ✓            ✓            ✓            ✓            ✓            ✓            ✓            
-// crop              ·            ·            ·            ·            ✓            ·            ·            ·            ·            
-// dropShadow        ·            ✓            ·            ·            ✓            ·            ✓            ✓            ·            
-// duration          ✓            ✓            ✓            ·            ✓            ✓            ✓            ✓            ✓            
-// effects           ·            ·            ·            ·            ✓            ·            ✓            ·            ·            
-// fill              ·            ✓            ·            ·            ✓            ·            ✓            ✓            ·            
-// opacity           ·            ✓            ·            ·            ✓            ✓            ·            ✓            ·            
-// placeholderBehavior·            ✓            ·            ·            ·            ·            ·            ✓            ·            
-// placeholderControls·            ·            ·            ✓            ✓            ·            ✓            ·            ·            
-// playbackControl   ✓            ·            ·            ·            ·            ·            ✓            ·            ·            
-// playbackTime      ✓            ·            ·            ·            ·            ·            ✓            ·            ·            
-// shape             ·            ·            ·            ·            ✓            ·            ·            ·            ·            
-// stroke            ·            ✓            ·            ·            ✓            ·            ✓            ✓            ·            
-// timeOffset        ✓            ✓            ✓            ·            ✓            ✓            ·            ✓            ✓            
-// trim              ✓            ·            ·            ·            ·            ·            ·            ·            ·            
+// capability        audio        caption      captionTrack cutout       graphic      group        page         text         track
+// animation         ✓            ✓            ✓            ✓            ✓            ✓            ✓            ✓            ✓
+// backgroundColor   ·            ✓            ·            ·            ·            ·            ·            ✓            ·
+// blendMode         ·            ✓            ·            ·            ✓            ✓            ✓            ✓            ·
+// blur              ·            ·            ·            ·            ✓            ✓            ✓            ·            ·
+// contentFillMode   ✓            ✓            ✓            ✓            ✓            ✓            ✓            ✓            ✓
+// crop              ·            ·            ·            ·            ✓            ·            ·            ·            ·
+// dropShadow        ·            ✓            ·            ·            ✓            ·            ✓            ✓            ·
+// duration          ✓            ✓            ✓            ·            ✓            ✓            ✓            ✓            ✓
+// effects           ·            ·            ·            ·            ✓            ·            ✓            ·            ·
+// fill              ·            ✓            ·            ·            ✓            ·            ✓            ✓            ·
+// masks             ·            ✓            ·            ·            ✓            ✓            ·            ✓            ·
+// opacity           ·            ✓            ·            ·            ✓            ✓            ·            ✓            ·
+// placeholderBehavior·            ✓            ·            ·            ·            ·            ·            ✓            ·
+// placeholderControls·            ·            ·            ✓            ✓            ·            ✓            ·            ·
+// playbackControl   ✓            ·            ·            ·            ·            ·            ✓            ·            ·
+// playbackTime      ✓            ·            ·            ·            ·            ·            ✓            ·            ·
+// shape             ·            ·            ·            ·            ✓            ·            ·            ·            ·
+// stroke            ·            ✓            ·            ·            ✓            ·            ✓            ✓            ·
+// textAnimators     ·            ✓            ·            ·            ·            ·            ·            ✓            ·
+// timeOffset        ✓            ✓            ✓            ·            ✓            ✓            ·            ✓            ✓
+// trim              ✓            ·            ·            ·            ·            ·            ·            ·            ·
 
 interface BlockProps {
     alwaysOnBottom?: boolean;
     alwaysOnTop?: boolean;
-    animations?: {
-        in?: Animation | null;
-        loop?: Animation | null;
-        out?: Animation | null;
-    };
-    audio?: {
-        fileURI?: string;
-        totalDuration?: number;
-    };
+    animations?: { in?: Animation | null; loop?: Animation | null; out?: Animation | null };
+    audio?: { fileURI?: string; totalDuration?: number };
     backgroundColor?: {
         color?: Color;
         cornerRadius?: number;
@@ -339,19 +338,18 @@ interface BlockProps {
         paddingRight?: number;
         paddingTop?: number;
     };
+    bindings?: { [leaf: string]: string | null };
     blend?: {
         mode?: 'PassThrough' | 'Normal' | 'Darken' | 'Multiply' | 'ColorBurn' | 'LinearBurn' | 'DarkenColor' | 'Lighten' | 'Screen' | 'ColorDodge' | 'LinearDodge' | 'LightenColor' | 'Overlay' | 'SoftLight' | 'HardLight' | 'VividLight' | 'LinearLight' | 'PinLight' | 'HardMix' | 'Difference' | 'Exclusion' | 'Subtract' | 'Divide' | 'Hue' | 'Saturation' | 'Color' | 'Luminosity';
     };
     blur?: Blur | null;
     camera?: {
         pixelRatio?: number;
-        resolution?: {
-            height?: number;
-            width?: number;
-        };
+        resolution?: { height?: number; width?: number };
         zoomLevel?: number;
     };
     caption?: {
+        animators?: TextAnimator[] /* in signatures.d.ts; [] clears */;
         automaticFontSizeEnabled?: boolean;
         clipLinesOutsideOfFrame?: boolean;
         color?: Color;
@@ -379,9 +377,7 @@ interface BlockProps {
         verticalAlignment?: 'Top' | 'Bottom' | 'Center';
         weight?: string;
     };
-    captionTrack?: {
-        automaticallyManageBlockOffsets?: boolean;
-    };
+    captionTrack?: { automaticallyManageBlockOffsets?: boolean };
     clipped?: boolean;
     contentFill?: {
         horizontalAlignment?: 'Left' | 'Center' | 'Right';
@@ -397,56 +393,32 @@ interface BlockProps {
         translationX?: number;
         translationY?: number;
     };
-    cutout?: {
-        offset?: number;
-        path?: string;
-        smoothing?: number;
-        type?: 'Solid' | 'Dashed';
-    };
+    cutout?: { offset?: number; path?: string; smoothing?: number; type?: 'Solid' | 'Dashed' };
     dropShadow?: {
-        blurRadius?: {
-            x?: number;
-            y?: number;
-        };
+        blurRadius?: { x?: number; y?: number };
         clip?: boolean;
         color?: Color;
         enabled?: boolean;
-        offset?: {
-            x?: number;
-            y?: number;
-        };
+        offset?: { x?: number; y?: number };
     };
     effects?: Effect[];
-    exclusionArea?: {
-        constrains?: boolean;
-        punchOut?: boolean;
-    };
+    exclusionArea?: { constrains?: boolean; punchOut?: boolean };
     fill?: Fill | null;
-    flip?: {
-        horizontal?: boolean;
-        vertical?: boolean;
-    };
-    globalBoundingBox?: {
-        height?: number;
-        width?: number;
-        x?: number;
-        y?: number;
-    };
+    flip?: { horizontal?: boolean; vertical?: boolean };
+    globalBoundingBox?: { height?: number; width?: number; x?: number; y?: number };
     height?: number;
     heightMode?: 'Absolute' | 'Percent' | 'Auto';
     highlightEnabled?: boolean;
     includedInExport?: boolean;
+    keyframes?: Keyframes | null;
     kind?: string;
-    lastFrame?: {
-        height?: number;
-        width?: number;
-        x?: number;
-        y?: number;
-    };
+    lastFrame?: { height?: number; width?: number; x?: number; y?: number };
+    markers?: { name: string; time: number; duration?: number }[];
+    masks?: Mask[];
+    matte?: { source: BlockRef; mode?: 'Alpha' | 'AlphaInverted' | 'Luma' | 'LumaInverted' } | null;
     metadata?: { [key: string]: string | null } /* block tags; null deletes */;
-    movement?: {
-        constraint?: number;
-    };
+    motionBlur?: { enabled?: boolean; samples?: number; shutterAngle?: number; shutterPhase?: number };
+    movement?: { constraint?: number };
     name?: string;
     opacity?: number;
     page?: {
@@ -458,33 +430,16 @@ interface BlockProps {
             gridSpacingY?: number;
             source?: 'Document' | 'Custom';
         };
-        margin?: {
-            bottom?: number;
-            left?: number;
-            right?: number;
-            top?: number;
-        };
+        margin?: { bottom?: number; left?: number; right?: number; top?: number };
         marginEnabled?: boolean;
         marginScale?: number;
         safetyEnabled?: boolean;
-        safetyInset?: {
-            bottom?: number;
-            left?: number;
-            right?: number;
-            top?: number;
-        };
+        safetyInset?: { bottom?: number; left?: number; right?: number; top?: number };
         titleTemplate?: string;
     };
-    placeholder?: {
-        enabled?: boolean;
-    };
-    placeholderBehavior?: {
-        enabled?: boolean;
-    };
-    placeholderControls?: {
-        showButton?: boolean;
-        showOverlay?: boolean;
-    };
+    placeholder?: { enabled?: boolean };
+    placeholderBehavior?: { enabled?: boolean };
+    placeholderControls?: { showButton?: boolean; showOverlay?: boolean };
     playback?: {
         duration?: number;
         fadeIn?: {
@@ -520,12 +475,10 @@ interface BlockProps {
         dpi?: number;
         extendedPanningArea?: boolean;
         fontSizeUnit?: 'Pixel' | 'Point';
+        frameRate?: number;
         layout?: 'Free' | 'VerticalStack' | 'HorizontalStack' | 'DepthStack';
         mode?: 'Design' | 'Video';
-        pageDimensions?: {
-            height?: number;
-            width?: number;
-        };
+        pageDimensions?: { height?: number; width?: number };
         pageFormatId?: string;
         pixelScaleFactor?: number;
     };
@@ -533,10 +486,7 @@ interface BlockProps {
     selectionEnabled?: boolean;
     shape?: Shape | null;
     spotColors?: { [ink: string]: { rgb?: { r: number; g: number; b: number }; cmyk?: { c: number; m: number; y: number; k: number }; cutout?: 'Solid' | 'Dashed' } | null } /* SCENE only: print inks */;
-    stack?: {
-        spacing?: number;
-        spacingInScreenspace?: boolean;
-    };
+    stack?: { spacing?: number; spacingInScreenspace?: boolean };
     stroke?: {
         cap?: 'Butt' | 'Round' | 'Square';
         color?: Color;
@@ -547,6 +497,8 @@ interface BlockProps {
         dashStartCap?: 'Butt' | 'Round' | 'Square';
         enabled?: boolean;
         endCap?: 'Butt' | 'Round' | 'Square';
+        fill?: Fill | null /* paints the stroke instead of stroke.color: 'color', 'gradient/linear|radial|conical' or 'stripe'; graphic and page blocks; null = stroke.color again */;
+        miterLimit?: number;
         overprint?: boolean;
         position?: 'Center' | 'Inner' | 'Outer';
         startCap?: 'Butt' | 'Round' | 'Square';
@@ -555,14 +507,11 @@ interface BlockProps {
     };
     subtitles?: string /* captionTrack, WRITE-only: SRT/VTT uri replaces its captions */;
     text?: {
+        animators?: TextAnimator[] /* in signatures.d.ts; [] clears */;
         automaticFontSizeEnabled?: boolean;
         backgroundCornerRadius?: number;
-        backgroundPadding?: {
-            bottom?: number;
-            left?: number;
-            right?: number;
-            top?: number;
-        };
+        backgroundPadding?: { bottom?: number; left?: number; right?: number; top?: number };
+        baselineShift?: number | string /* + up; per range: ranges[i] */;
         case?: string;
         clipLinesOutsideOfFrame?: boolean;
         color?: Color;
@@ -585,7 +534,7 @@ interface BlockProps {
         pathExternalRef?: string;
         pathFlipped?: boolean /* true = underside, reversed direction */;
         pathOffset?: number /* proportional start offset along the path */;
-        ranges?: { from: number; to: number; color?: Color; weight?: FontWeight; style?: string; size?: string /* px string */; case?: TextCase; scriptStyle?: ScriptStyle; typeface?: Typeface; decoration?: TextDecorationConfig; kerning?: number }[];
+        ranges?: { from: number; to: number; color?: Color; weight?: FontWeight; style?: string; size?: string /* px string */; case?: TextCase; scriptStyle?: ScriptStyle; baselineShift?: number | string; typeface?: Typeface; decoration?: TextDecorationConfig; kerning?: number }[];
         style?: string;
         subscriptFontScale?: number;
         subscriptVerticalShift?: number;
@@ -601,14 +550,21 @@ interface BlockProps {
         verticalAlignment?: 'Top' | 'Bottom' | 'Center';
         weight?: string;
     };
-    track?: {
-        automaticallyManageBlockOffsets?: boolean;
+    track?: { automaticallyManageBlockOffsets?: boolean };
+    transform?: {
+        anchor?: { x?: number; y?: number };
+        autoOrient?: boolean;
+        hasAnchor?: boolean /* read-only */;
+        scale?: { x?: number; y?: number };
+        skew?: number;
+        skewAxis?: number;
     };
     transformLocked?: boolean;
+    transformParent?: BlockRef | null;
     transition?: { type: string /* push, slide, wipe, fade, cross-fade, … — a bad type lists all 20 */; duration?: number; easing?: string; [typeLeaves: string]: unknown } | null /* clip into next clip; leaves nest under the type */;
     type?: string;
     uuid?: string;
-    variables?: { [name: string]: string | null } /* SCENE only: text variable values; null deletes */;
+    variables?: { [name: string]: string | { color: Color } | { number: number } | { image: string } | { font: { family: string } } | { rename: string } | null };
     visible?: boolean;
     width?: number;
     widthMode?: 'Absolute' | 'Percent' | 'Auto';
@@ -617,604 +573,146 @@ interface BlockProps {
 // that type carries — nothing else applies. Assigning one whose type MATCHES
 // what is already attached edits it in place; a different type replaces it.
 // Each shorthand is also valid as '//ly.img.ubq/<slot>/<name>'.
-type Fill = { enabled?: boolean; overprint?: boolean } & (
-  | {
-      type: 'color';
-      color?: {
-          value?: Color;
-      };
-    }
+type Fill = { enabled?: boolean; overprint?: boolean; keyframes?: Keyframes } & (
+  | { type: 'color'; color?: { value?: Color } }
   | {
       type: 'gradient/linear';
       stops?: GradientColorStop[];
       gradient?: {
-          linear?: {
-              endPointX?: number;
-              endPointY?: number;
-              startPointX?: number;
-              startPointY?: number;
-          };
+          linear?: { endPointX?: number; endPointY?: number; startPointX?: number; startPointY?: number };
       };
     }
   | {
       type: 'gradient/radial';
       stops?: GradientColorStop[];
       gradient?: {
-          radial?: {
-              centerPointX?: number;
-              centerPointY?: number;
-              radius?: number;
-          };
+          radial?: { centerPointX?: number; centerPointY?: number; focalX?: number; focalY?: number; radius?: number };
       };
     }
   | {
       type: 'gradient/conical';
       stops?: GradientColorStop[];
       gradient?: {
-          conical?: {
-              centerPointX?: number;
-              centerPointY?: number;
-          };
+          conical?: { centerPointX?: number; centerPointY?: number };
       };
     }
   | {
       type: 'image';
       uri?: string /* shorthand for image.imageFileURI */;
       sourceSet?: Source[];
-      image?: {
-          externalReference?: string;
-          imageFileURI?: string;
-          previewFileURI?: string;
-      };
+      image?: { externalReference?: string; imageFileURI?: string; previewFileURI?: string };
     }
   | {
       type: 'video';
       uri?: string /* shorthand for video.fileURI */;
       playback?: { trimOffset?: number; trimLength?: number; volume?: number };
-      video?: {
-          fileURI?: string;
-          totalDuration?: number;
-      };
+      video?: { fileURI?: string; totalDuration?: number };
     }
-  | {
-      type: 'pixelStream';
-      pixelStream?: {
-          orientation?: 'Up' | 'Down' | 'Left' | 'Right' | 'UpMirrored' | 'DownMirrored' | 'LeftMirrored' | 'RightMirrored';
-      };
-    }
-  | {
-      type: 'stripe';
-      stripe?: {
-          angle?: number;
-          color?: Color;
-          gap?: number;
-          width?: number;
-      };
-    }
+  | { type: 'pixelStream'; pixelStream?: { orientation?: 'Up' | 'Down' | 'Left' | 'Right' | 'UpMirrored' | 'DownMirrored' | 'LeftMirrored' | 'RightMirrored' } }
+  | { type: 'stripe'; stripe?: { angle?: number; color?: Color; gap?: number; width?: number } }
 );
-type Shape =
-  | {
-      type: 'rect';
-      rect?: {
-          cornerRadiusBL?: number;
-          cornerRadiusBR?: number;
-          cornerRadiusTL?: number;
-          cornerRadiusTR?: number;
-      };
-    }
+type Shape = { modifiers?: Modifier[] /* applied in order; [] clears */; keyframes?: Keyframes } & (
+  | { type: 'rect'; rect?: { cornerRadiusBL?: number; cornerRadiusBR?: number; cornerRadiusTL?: number; cornerRadiusTR?: number } }
   | { type: 'line' }
   | { type: 'ellipse' }
+  | { type: 'polygon'; polygon?: { cornerRadius?: number; sides?: number } }
+  | { type: 'star'; star?: { cornerRadius?: number; innerDiameter?: number; innerRadius?: number; innerRoundness?: number; outerRadius?: number; outerRoundness?: number; points?: number; rotation?: number } }
+  | { type: 'vector_path'; vector_path?: { cornerRadius?: number; fillRule?: 'EvenOdd' | 'NonZero'; height?: number; path?: string; width?: number } }
   | {
-      type: 'polygon';
-      polygon?: {
-          cornerRadius?: number;
-          sides?: number;
-      };
-    }
-  | {
-      type: 'star';
-      star?: {
-          cornerRadius?: number;
-          innerDiameter?: number;
-          points?: number;
-      };
-    }
-  | {
-      type: 'vector_path';
-      vector_path?: {
-          cornerRadius?: number;
+      type: 'compound';
+      subshapes?: Subshape[] /* combined in order by compound.mode; [] clears */;
+      compound?: {
           fillRule?: 'EvenOdd' | 'NonZero';
           height?: number;
-          path?: string;
+          mode?: 'Merge' | 'Add' | 'Subtract' | 'Intersect' | 'Exclude';
           width?: number;
       };
-    };
-type Blur = { enabled?: boolean } & (
-  | {
-      type: 'uniform';
-      uniform?: {
-          intensity?: number;
-      };
-    }
-  | {
-      type: 'linear';
-      linear?: {
-          blurRadius?: number;
-          x1?: number;
-          x2?: number;
-          y1?: number;
-          y2?: number;
-      };
-    }
-  | {
-      type: 'mirrored';
-      mirrored?: {
-          blurRadius?: number;
-          gradientSize?: number;
-          size?: number;
-          x1?: number;
-          x2?: number;
-          y1?: number;
-          y2?: number;
-      };
-    }
-  | {
-      type: 'radial';
-      radial?: {
-          blurRadius?: number;
-          gradientRadius?: number;
-          radius?: number;
-          x?: number;
-          y?: number;
-      };
     }
 );
-type Effect = { enabled?: boolean } & (
-  | {
-      type: 'adjustments';
-      adjustments?: {
-          blacks?: number;
-          brightness?: number;
-          clarity?: number;
-          contrast?: number;
-          exposure?: number;
-          gamma?: number;
-          highlights?: number;
-          saturation?: number;
-          shadows?: number;
-          sharpness?: number;
-          temperature?: number;
-          whites?: number;
-      };
-    }
-  | {
-      type: 'cross_cut';
-      cross_cut?: {
-          offset?: number;
-          slices?: number;
-          speedV?: number;
-          time?: number;
-      };
-    }
-  | {
-      type: 'dot_pattern';
-      dot_pattern?: {
-          blur?: number;
-          dots?: number;
-          size?: number;
-      };
-    }
-  | {
-      type: 'duotone_filter';
-      duotone_filter?: {
-          darkColor?: Color;
-          intensity?: number;
-          lightColor?: Color;
-      };
-    }
-  | {
-      type: 'extrude_blur';
-      extrude_blur?: {
-          amount?: number;
-      };
-    }
-  | {
-      type: 'glow';
-      glow?: {
-          amount?: number;
-          darkness?: number;
-          size?: number;
-      };
-    }
-  | {
-      type: 'green_screen';
-      green_screen?: {
-          colorMatch?: number;
-          fromColor?: Color;
-          smoothness?: number;
-          spill?: number;
-      };
-    }
-  | {
-      type: 'half_tone';
-      half_tone?: {
-          angle?: number;
-          scale?: number;
-      };
-    }
-  | {
-      type: 'linocut';
-      linocut?: {
-          scale?: number;
-      };
-    }
-  | {
-      type: 'liquid';
-      liquid?: {
-          amount?: number;
-          scale?: number;
-          time?: number;
-      };
-    }
-  | {
-      type: 'lut_filter';
-      lut_filter?: {
-          filterId?: string;
-          horizontalTileCount?: number;
-          intensity?: number;
-          lutFileURI?: string;
-          verticalTileCount?: number;
-      };
-    }
-  | {
-      type: 'mirror';
-      mirror?: {
-          side?: number;
-      };
-    }
-  | {
-      type: 'outliner';
-      outliner?: {
-          amount?: number;
-          passthrough?: number;
-      };
-    }
-  | {
-      type: 'pixelize';
-      pixelize?: {
-          horizontalPixelSize?: number;
-          verticalPixelSize?: number;
-      };
-    }
-  | {
-      type: 'posterize';
-      posterize?: {
-          levels?: number;
-      };
-    }
-  | {
-      type: 'radial_pixel';
-      radial_pixel?: {
-          radius?: number;
-          segments?: number;
-      };
-    }
-  | {
-      type: 'recolor';
-      recolor?: {
-          brightnessMatch?: number;
-          colorMatch?: number;
-          fromColor?: Color;
-          smoothness?: number;
-          toColor?: Color;
-      };
-    }
+// Subshape and modifier angles are DEGREES; units: handbook#shapes.md.
+type Subshape = Shape & { height?: number; rotation?: number; skew?: number; skewAxis?: number; width?: number; anchor?: { x?: number; y?: number }; position?: { x?: number; y?: number }; scale?: { x?: number; y?: number } };
+type Modifier = { keyframes?: Keyframes } & (
+  | { type: 'trim'; trim?: { end?: number; mode?: 'Simultaneous' | 'Individual'; offset?: number; start?: number } }
+  | { type: 'repeater'; repeater?: { anchorX?: number; anchorY?: number; composite?: 'Below' | 'Above'; copies?: number; endOpacity?: number; offset?: number; positionX?: number; positionY?: number; rotation?: number; scaleX?: number; scaleY?: number; startOpacity?: number } }
+  | { type: 'round_corners'; round_corners?: { radius?: number } }
+  | { type: 'offset'; offset?: { amount?: number; join?: 'Bevel' | 'Miter' | 'Round'; miterLimit?: number } }
+  | { type: 'zigzag'; zigzag?: { pointType?: 'Corner' | 'Smooth'; ridges?: number; size?: number } }
+  | { type: 'pucker_bloat'; pucker_bloat?: { amount?: number } }
+  | { type: 'twist'; twist?: { angle?: number; centerX?: number; centerY?: number } }
+);
+type Blur = { enabled?: boolean; keyframes?: Keyframes } & (
+  | { type: 'uniform'; uniform?: { intensity?: number; mode?: 'Fill' | 'Block' } }
+  | { type: 'linear'; linear?: { blurRadius?: number; x1?: number; x2?: number; y1?: number; y2?: number } }
+  | { type: 'mirrored'; mirrored?: { blurRadius?: number; gradientSize?: number; size?: number; x1?: number; x2?: number; y1?: number; y2?: number } }
+  | { type: 'radial'; radial?: { blurRadius?: number; gradientRadius?: number; radius?: number; x?: number; y?: number } }
+);
+type Effect = { enabled?: boolean; keyframes?: Keyframes } & (
+  | { type: 'adjustments'; adjustments?: { blacks?: number; brightness?: number; clarity?: number; contrast?: number; exposure?: number; gamma?: number; highlights?: number; saturation?: number; shadows?: number; sharpness?: number; temperature?: number; whites?: number } }
+  | { type: 'bulge'; bulge?: { centerX?: number; centerY?: number; height?: number; horizontalRadius?: number; verticalRadius?: number } }
+  | { type: 'corner_pin'; corner_pin?: { lowerLeftX?: number; lowerLeftY?: number; lowerRightX?: number; lowerRightY?: number; upperLeftX?: number; upperLeftY?: number; upperRightX?: number; upperRightY?: number } }
+  | { type: 'cross_cut'; cross_cut?: { offset?: number; slices?: number; speedV?: number; time?: number } }
+  | { type: 'displacement_map'; displacement_map?: { horizontalChannel?: 'Red' | 'Green' | 'Blue' | 'Alpha' | 'Luminance' | 'Hue' | 'Lightness' | 'Saturation' | 'Full' | 'Half' | 'Off'; mapBehavior?: 'Center' | 'Stretch' | 'Tile'; maxHorizontal?: number; maxVertical?: number; verticalChannel?: 'Red' | 'Green' | 'Blue' | 'Alpha' | 'Luminance' | 'Hue' | 'Lightness' | 'Saturation' | 'Full' | 'Half' | 'Off'; wrapPixels?: boolean } }
+  | { type: 'dot_pattern'; dot_pattern?: { blur?: number; dots?: number; size?: number } }
+  | { type: 'duotone_filter'; duotone_filter?: { darkColor?: Color; intensity?: number; lightColor?: Color } }
+  | { type: 'extrude_blur'; extrude_blur?: { amount?: number } }
+  | { type: 'fill'; fill?: { color?: Color; opacity?: number } }
+  | { type: 'glow'; glow?: { amount?: number; darkness?: number; size?: number } }
+  | { type: 'green_screen'; green_screen?: { colorMatch?: number; fromColor?: Color; smoothness?: number; spill?: number } }
+  | { type: 'half_tone'; half_tone?: { angle?: number; scale?: number } }
+  | { type: 'invert'; invert?: { channel?: 'RGB' | 'Red' | 'Green' | 'Blue' | 'HLS' | 'Hue' | 'Lightness' | 'Saturation' | 'YIQ' | 'Luma' | 'InPhaseChroma' | 'QuadratureChroma' | 'Alpha' } }
+  | { type: 'levels'; levels?: { alphaGamma?: number; alphaInBlack?: number; alphaInWhite?: number; alphaOutBlack?: number; alphaOutWhite?: number; blueGamma?: number; blueInBlack?: number; blueInWhite?: number; blueOutBlack?: number; blueOutWhite?: number; clipToOutBlack?: boolean; clipToOutWhite?: boolean; greenGamma?: number; greenInBlack?: number; greenInWhite?: number; greenOutBlack?: number; greenOutWhite?: number; redGamma?: number; redInBlack?: number; redInWhite?: number; redOutBlack?: number; redOutWhite?: number; rgbGamma?: number; rgbInBlack?: number; rgbInWhite?: number; rgbOutBlack?: number; rgbOutWhite?: number } }
+  | { type: 'linear_wipe'; linear_wipe?: { angle?: number; completion?: number; feather?: number } }
+  | { type: 'linocut'; linocut?: { scale?: number } }
+  | { type: 'liquid'; liquid?: { amount?: number; scale?: number; time?: number } }
+  | { type: 'lut_filter'; lut_filter?: { filterId?: string; horizontalTileCount?: number; intensity?: number; lutFileURI?: string; verticalTileCount?: number } }
+  | { type: 'mirror'; mirror?: { side?: number } }
+  | { type: 'outliner'; outliner?: { amount?: number; passthrough?: number } }
+  | { type: 'pixelize'; pixelize?: { horizontalPixelSize?: number; verticalPixelSize?: number } }
+  | { type: 'posterize'; posterize?: { levels?: number } }
+  | { type: 'radial_pixel'; radial_pixel?: { radius?: number; segments?: number } }
+  | { type: 'radial_wipe'; radial_wipe?: { centerX?: number; centerY?: number; completion?: number; direction?: 'Clockwise' | 'Counterclockwise' | 'Both'; feather?: number; startAngle?: number } }
+  | { type: 'recolor'; recolor?: { brightnessMatch?: number; colorMatch?: number; fromColor?: Color; smoothness?: number; toColor?: Color } }
   | { type: 'sharpie' }
-  | {
-      type: 'shifter';
-      shifter?: {
-          amount?: number;
-          angle?: number;
-      };
-    }
-  | {
-      type: 'tilt_shift';
-      tilt_shift?: {
-          amount?: number;
-          position?: number;
-      };
-    }
-  | {
-      type: 'tv_glitch';
-      tv_glitch?: {
-          distortion?: number;
-          distortion2?: number;
-          rollSpeed?: number;
-          speed?: number;
-      };
-    }
-  | {
-      type: 'vignette';
-      vignette?: {
-          darkness?: number;
-          offset?: number;
-      };
-    }
+  | { type: 'shift_channels'; shift_channels?: { takeAlphaFrom?: 'Alpha' | 'Red' | 'Green' | 'Blue' | 'Luminance' | 'Hue' | 'Lightness' | 'Saturation' | 'FullOn' | 'FullOff'; takeBlueFrom?: 'Alpha' | 'Red' | 'Green' | 'Blue' | 'Luminance' | 'Hue' | 'Lightness' | 'Saturation' | 'FullOn' | 'FullOff'; takeGreenFrom?: 'Alpha' | 'Red' | 'Green' | 'Blue' | 'Luminance' | 'Hue' | 'Lightness' | 'Saturation' | 'FullOn' | 'FullOff'; takeRedFrom?: 'Alpha' | 'Red' | 'Green' | 'Blue' | 'Luminance' | 'Hue' | 'Lightness' | 'Saturation' | 'FullOn' | 'FullOff' } }
+  | { type: 'shifter'; shifter?: { amount?: number; angle?: number } }
+  | { type: 'stroke'; stroke?: { allMasks?: boolean; brushSize?: number; color?: Color; end?: number; hardness?: number; maskIndex?: number; opacity?: number; paintStyle?: 'OnOriginalImage' | 'OnTransparent'; spacing?: number; start?: number } }
+  | { type: 'threshold'; threshold?: { level?: number } }
+  | { type: 'tilt_shift'; tilt_shift?: { amount?: number; position?: number } }
+  | { type: 'tint'; tint?: { amount?: number; mapBlackTo?: Color; mapWhiteTo?: Color } }
+  | { type: 'tritone'; tritone?: { amount?: number; highlights?: Color; midtones?: Color; shadows?: Color } }
+  | { type: 'tv_glitch'; tv_glitch?: { distortion?: number; distortion2?: number; rollSpeed?: number; speed?: number } }
+  | { type: 'venetian_blinds'; venetian_blinds?: { completion?: number; direction?: number; feather?: number; width?: number } }
+  | { type: 'vignette'; vignette?: { darkness?: number; offset?: number } }
+  | { type: 'wave_warp'; wave_warp?: { direction?: number; height?: number; phase?: number; waveType?: 'Sine' | 'Square' | 'Triangle' | 'Sawtooth'; width?: number } }
 );
+type Mask = { shape: Shape | Shape['type']; expansion?: number; feather?: number; inverted?: boolean; mode?: 'Add' | 'Subtract' | 'Intersect' | 'Lighten' | 'Darken' | 'Difference' | 'None'; opacity?: number; keyframes?: Keyframes };
 type Animation = { duration?: number; easing?: string; writingStyle?: string; overlap?: number } & (
-  | {
-      type: 'slide';
-      slide?: {
-          direction?: number;
-          fade?: boolean;
-      };
-    }
-  | {
-      type: 'pan';
-      pan?: {
-          direction?: number;
-          distance?: number;
-          fade?: boolean;
-      };
-    }
+  | { type: 'slide'; slide?: { direction?: number; fade?: boolean } }
+  | { type: 'pan'; pan?: { direction?: number; distance?: number; fade?: boolean } }
   | { type: 'fade' }
-  | {
-      type: 'blur';
-      blur?: {
-          fade?: boolean;
-          intensity?: number;
-      };
-    }
-  | {
-      type: 'grow';
-      grow?: {
-          direction?: 'Horizontal' | 'Vertical' | 'All' | 'TopLeft' | 'TopRight' | 'BottomLeft' | 'BottomRight';
-          scaleFactor?: number;
-      };
-    }
-  | {
-      type: 'zoom';
-      zoom?: {
-          fade?: boolean;
-      };
-    }
+  | { type: 'blur'; blur?: { fade?: boolean; intensity?: number } }
+  | { type: 'grow'; grow?: { direction?: 'Horizontal' | 'Vertical' | 'All' | 'TopLeft' | 'TopRight' | 'BottomLeft' | 'BottomRight'; scaleFactor?: number } }
+  | { type: 'zoom'; zoom?: { fade?: boolean } }
   | { type: 'pop' }
-  | {
-      type: 'wipe';
-      wipe?: {
-          direction?: 'Up' | 'Right' | 'Down' | 'Left';
-      };
-    }
-  | {
-      type: 'baseline';
-      baseline?: {
-          direction?: 'Up' | 'Right' | 'Down' | 'Left';
-      };
-    }
-  | {
-      type: 'crop_zoom';
-      crop_zoom?: {
-          fade?: boolean;
-          scale?: number;
-      };
-    }
-  | {
-      type: 'spin';
-      spin?: {
-          direction?: 'Clockwise' | 'CounterClockwise';
-          fade?: boolean;
-          intensity?: number;
-      };
-    }
-  | {
-      type: 'spin_loop';
-      spin_loop?: {
-          direction?: 'Clockwise' | 'CounterClockwise';
-      };
-    }
+  | { type: 'wipe'; wipe?: { direction?: 'Up' | 'Right' | 'Down' | 'Left' } }
+  | { type: 'baseline'; baseline?: { direction?: 'Up' | 'Right' | 'Down' | 'Left' } }
+  | { type: 'crop_zoom'; crop_zoom?: { fade?: boolean; scale?: number } }
+  | { type: 'spin'; spin?: { direction?: 'Clockwise' | 'CounterClockwise'; fade?: boolean; intensity?: number } }
+  | { type: 'spin_loop'; spin_loop?: { direction?: 'Clockwise' | 'CounterClockwise' } }
   | { type: 'fade_loop' }
-  | {
-      type: 'blur_loop';
-      blur_loop?: {
-          intensity?: number;
-      };
-    }
-  | {
-      type: 'pulsating_loop';
-      pulsating_loop?: {
-          intensity?: number;
-      };
-    }
-  | {
-      type: 'breathing_loop';
-      breathing_loop?: {
-          intensity?: number;
-      };
-    }
-  | {
-      type: 'jump_loop';
-      jump_loop?: {
-          direction?: 'Up' | 'Right' | 'Down' | 'Left';
-          intensity?: number;
-      };
-    }
+  | { type: 'blur_loop'; blur_loop?: { intensity?: number } }
+  | { type: 'pulsating_loop'; pulsating_loop?: { intensity?: number } }
+  | { type: 'breathing_loop'; breathing_loop?: { intensity?: number } }
+  | { type: 'jump_loop'; jump_loop?: { direction?: 'Up' | 'Right' | 'Down' | 'Left'; intensity?: number } }
   | { type: 'squeeze_loop' }
-  | {
-      type: 'sway_loop';
-      sway_loop?: {
-          intensity?: number;
-      };
-    }
+  | { type: 'sway_loop'; sway_loop?: { intensity?: number } }
   | { type: 'scale_loop' }
-  | {
-      type: 'typewriter_text';
-      typewriter_text?: {
-          writingStyle?: 'Character' | 'Word';
-      };
-    }
-  | {
-      type: 'block_swipe_text';
-      block_swipe_text?: {
-          blockColor?: Color;
-          direction?: 'Up' | 'Right' | 'Down' | 'Left';
-          useTextColor?: boolean;
-      };
-    }
-  | {
-      type: 'spread_text';
-      spread_text?: {
-          fade?: boolean;
-          intensity?: number;
-      };
-    }
-  | {
-      type: 'merge_text';
-      merge_text?: {
-          direction?: 'Right' | 'Left';
-          intensity?: number;
-      };
-    }
-  | {
-      type: 'ken_burns';
-      ken_burns?: {
-          direction?: 'Up' | 'Right' | 'Down' | 'Left';
-          fade?: boolean;
-          travelDistanceRatio?: number;
-          zoomIntensity?: number;
-      };
-    }
+  | { type: 'typewriter_text'; typewriter_text?: { writingStyle?: 'Character' | 'Word' } }
+  | { type: 'block_swipe_text'; block_swipe_text?: { blockColor?: Color; direction?: 'Up' | 'Right' | 'Down' | 'Left'; useTextColor?: boolean } }
+  | { type: 'spread_text'; spread_text?: { fade?: boolean; intensity?: number } }
+  | { type: 'merge_text'; merge_text?: { direction?: 'Right' | 'Left'; intensity?: number } }
+  | { type: 'ken_burns'; ken_burns?: { direction?: 'Up' | 'Right' | 'Down' | 'Left'; fade?: boolean; travelDistanceRatio?: number; zoomIntensity?: number } }
 );
-interface SettingsProps {
-    archival?: {
-        bundleOnlyUsedFontVariants?: boolean;
-    };
-    basePath?: string;
-    blockAnimations?: {
-        enabled?: boolean;
-    };
-    borderOutlineColor?: Color;
-    camera?: {
-        clamping?: {
-            overshootMode?: 'Center' | 'Reverse';
-        };
-    };
-    clampThumbnailTextureSizes?: boolean;
-    clearColor?: Color;
-    colorMaskingSettings?: {
-        maskColor?: Color;
-    };
-    colorPicker?: {
-        colorMode?: string;
-    };
-    controlGizmo?: {
-        blockScaleDownLimit?: number;
-        moveHandleVisibility?: 'auto' | 'always' | 'never';
-        resizeHandlesVisibility?: 'auto' | 'always' | 'never';
-        rotateHandlesVisibility?: 'auto' | 'always' | 'never';
-        scaleHandlesVisibility?: 'auto' | 'always' | 'never';
-        showCropHandles?: boolean;
-        showCropScaleHandles?: boolean;
-    };
-    cropOverlayColor?: Color;
-    defaultEmojiFontFileUri?: string;
-    defaultFontFileUri?: string;
-    doubleClickSelectionMode?: 'Direct' | 'Hierarchical';
-    doubleClickToCropEnabled?: boolean;
-    dragToSwapFills?: {
-        enabled?: boolean;
-        longPressDurationMs?: number;
-    };
-    errorStateColor?: Color;
-    fallbackCMYKProfileUri?: string;
-    fallbackFontUri?: string;
-    forceSystemEmojis?: boolean;
-    grid?: {
-        color?: Color;
-        enabled?: boolean;
-        snapEnabled?: boolean;
-        spacingX?: number;
-        spacingY?: number;
-    };
-    handleFillColor?: Color;
-    highlightColor?: Color;
-    license?: string;
-    listIndentPerLevel?: number;
-    maxImageSize?: number;
-    maxPreviewResolution?: number;
-    mouse?: {
-        enableScroll?: boolean;
-        enableZoom?: boolean;
-    };
-    page?: {
-        allowCropInteraction?: boolean;
-        allowMoveInteraction?: boolean;
-        allowResizeInteraction?: boolean;
-        allowRotateInteraction?: boolean;
-        allowShapeChange?: boolean;
-        dimOutOfPageAreas?: boolean;
-        exclusionAreaFillColor?: Color;
-        exclusionAreaFrameColor?: Color;
-        flipDimensionsOn90DegreeCropRotation?: boolean;
-        highlightDropTarget?: boolean;
-        highlightWhenCropping?: boolean;
-        innerBorderColor?: Color;
-        marginFillColor?: Color;
-        marginFrameColor?: Color;
-        marqueeSelectOnBodyDrag?: boolean;
-        moveChildrenWhenCroppingFill?: boolean;
-        outerBorderColor?: Color;
-        reparentBlocksToSceneWhenOutOfPage?: boolean;
-        restrictPageSelectionToBorderAndTitle?: boolean;
-        restrictResizeInteractionToFixedAspectRatio?: boolean;
-        safetyFillColor?: Color;
-        safetyFrameColor?: Color;
-        safetyRevealDuringTransform?: boolean;
-        selectWhenNoBlocksSelected?: boolean;
-        title?: {
-            appendPageName?: boolean;
-            canEdit?: boolean;
-            color?: Color;
-            fontFileUri?: string;
-            separator?: string;
-            show?: boolean;
-            showOnSinglePage?: boolean;
-            showPageTitleTemplate?: boolean;
-        };
-    };
-    pageHighlightColor?: Color;
-    placeholderControls?: {
-        showButton?: boolean;
-        showOverlay?: boolean;
-    };
-    placeholderHighlightColor?: Color;
-    playback?: {
-        showAllBlocks?: boolean;
-    };
-    positionSnappingThreshold?: number;
-    progressColor?: Color;
-    rotationSnappingGuideColor?: Color;
-    rotationSnappingThreshold?: number;
-    showBuildVersion?: boolean;
-    snappingGuideColor?: Color;
-    tabStopInterval?: number;
-    textVariableHighlightColor?: Color;
-    timeline?: {
-        trackVisibility?: string;
-    };
-    touch?: {
-        dragStartCanSelect?: boolean;
-        pinchAction?: 'None' | 'Zoom' | 'Scale' | 'Auto' | 'Dynamic';
-        rotateAction?: 'None' | 'Rotate';
-        singlePointPanning?: boolean;
-    };
-    upload?: {
-        supportedMimeTypes?: string;
-    };
-    useSystemFontFallback?: boolean;
-    web?: {
-        fetchCredentials?: string;
-    };
-}
 // ---- vocabulary referenced above (hoisted from the upstream core) ----
 interface CMYKColor {
     c: number;

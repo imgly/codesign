@@ -55,10 +55,21 @@
     supportsShape(id: DesignBlockId): boolean;
     getShape(id: DesignBlockId): DesignBlockId;
     setShape(id: DesignBlockId, shape: DesignBlockId): void;
+    getSubshapes(id: DesignBlockId): DesignBlockId[];
+    insertSubshape(id: DesignBlockId, subshapeId: DesignBlockId, index: number): void;
+    appendSubshape(id: DesignBlockId, subshapeId: DesignBlockId): void;
     isVisible(id: DesignBlockId): boolean;
     setVisible(id: DesignBlockId, visible: boolean): void;
     isClipped(id: DesignBlockId): boolean;
     setClipped(id: DesignBlockId, clipped: boolean): void;
+    setKeyframes(id: DesignBlockId, property: string, keyframes: Keyframe_2[], mode?: TrackMode): void;
+    getKeyframes(id: DesignBlockId, property: string): Keyframe_2[];
+    getKeyframeMode(id: DesignBlockId, property: string): TrackMode;
+    removeKeyframes(id: DesignBlockId, property: string): void;
+    getAnimatedProperties(id: DesignBlockId): string[];
+    isPropertyAnimatable(id: DesignBlockId, property: string): boolean;
+    getMatte(id: DesignBlockId): BlockMatte | null;
+    setMatte(id: DesignBlockId, source: DesignBlockId | null, mode?: MatteMode): void;
     isTransformLocked(id: DesignBlockId): boolean;
     setTransformLocked(id: DesignBlockId, locked: boolean): void;
     getPositionX(id: DesignBlockId): number;
@@ -114,10 +125,17 @@
     duplicate(id: DesignBlockId, attachToParent?: boolean): DesignBlockId;
     destroy(id: DesignBlockId): void;
     getParent(id: DesignBlockId): DesignBlockId | null;
+    setTransformParent(id: DesignBlockId, parent: DesignBlockId | null): void;
+    getTransformParent(id: DesignBlockId): DesignBlockId | null;
+    hasTransformAnchor(id: DesignBlockId): boolean;
     getChildren(id: DesignBlockId): DesignBlockId[];
     insertChild(parent: DesignBlockId, child: DesignBlockId, index: number): void;
     appendChild(parent: DesignBlockId, child: DesignBlockId): void;
     referencesAnyVariables(id: DesignBlockId): boolean;
+    setVariableBinding(id: DesignBlockId, property: string, key: string): void;
+    getVariableBinding(id: DesignBlockId, property: string): string | null;
+    removeVariableBinding(id: DesignBlockId, property: string): void;
+    findAllVariableBindings(id: DesignBlockId): string[];
     getGlobalBoundingBoxX(id: DesignBlockId): number;
     getGlobalBoundingBoxY(id: DesignBlockId): number;
     getGlobalBoundingBoxWidth(id: DesignBlockId): number;
@@ -140,6 +158,8 @@
     getFloat(id: DesignBlockId, property: FloatPropertyName): number;
     setDouble(id: DesignBlockId, property: DoublePropertyName, value: number): void;
     getDouble(id: DesignBlockId, property: DoublePropertyName): number;
+    setVec2(id: DesignBlockId, property: Vec2PropertyName, value: Vec2): void;
+    getVec2(id: DesignBlockId, property: Vec2PropertyName): Vec2;
     setString(id: DesignBlockId, property: StringPropertyName, value: string): void;
     getString(id: DesignBlockId, property: StringPropertyName): string;
     setColor(id: DesignBlockId, property: ColorPropertyName, value: Color): void;
@@ -209,9 +229,28 @@
     insertEffect(id: DesignBlockId, effectId: DesignBlockId, index: number): void;
     appendEffect(id: DesignBlockId, effectId: DesignBlockId): void;
     removeEffect(id: DesignBlockId, index: number): void;
+    createTextAnimator(): DesignBlockId;
+    supportsTextAnimators(id: DesignBlockId): boolean;
+    getTextAnimators(id: DesignBlockId): DesignBlockId[];
+    insertTextAnimator(id: DesignBlockId, animatorId: DesignBlockId, index: number): void;
+    appendTextAnimator(id: DesignBlockId, animatorId: DesignBlockId): void;
+    removeTextAnimator(id: DesignBlockId, index: number): void;
+    createModifier(type: ModifierType): DesignBlockId;
+    supportsModifiers(id: DesignBlockId): boolean;
+    getModifiers(id: DesignBlockId): DesignBlockId[];
+    insertModifier(id: DesignBlockId, modifierId: DesignBlockId, index: number): void;
+    appendModifier(id: DesignBlockId, modifierId: DesignBlockId): void;
     /** @deprecated Calls to this function can be removed. All effects can be enabled and disabled. */
     hasEffectEnabled(effectId: DesignBlockId): boolean;
     setEffectEnabled(effectId: DesignBlockId, enabled: boolean): void;
+    createMask(): DesignBlockId;
+    supportsMasks(id: DesignBlockId): boolean;
+    getMasks(id: DesignBlockId): DesignBlockId[];
+    insertMask(id: DesignBlockId, maskId: DesignBlockId, index: number): void;
+    appendMask(id: DesignBlockId, maskId: DesignBlockId): void;
+    removeMask(id: DesignBlockId, index: number): void;
+    setEffectSource(effectId: DesignBlockId, source: DesignBlockId | null): void;
+    getEffectSource(effectId: DesignBlockId): DesignBlockId | null;
     createBlur(type: BlurType): DesignBlockId;
     /** @deprecated Use supportsBlur instead. */
     hasBlur(id: DesignBlockId): boolean;
@@ -301,6 +340,8 @@
     setTextDecoration(id: DesignBlockId, config: TextDecorationConfig, from?: number, to?: number): void;
     setTextKerning(id: DesignBlockId, kerning: number, from?: number, to?: number): void;
     getTextKernings(id: DesignBlockId, from?: number, to?: number): number[];
+    setTextBaselineShift(id: DesignBlockId, baselineShift: number, from?: number, to?: number): void;
+    getTextBaselineShifts(id: DesignBlockId, from?: number, to?: number): number[];
     toggleTextDecorationUnderline(id: DesignBlockId, from?: number, to?: number): void;
     toggleTextDecorationStrikethrough(id: DesignBlockId, from?: number, to?: number): void;
     toggleTextDecorationOverline(id: DesignBlockId, from?: number, to?: number): void;
@@ -338,6 +379,8 @@
     setFillOverprint(id: DesignBlockId, overprint: boolean): void;
     getFill(id: DesignBlockId): DesignBlockId;
     setFill(id: DesignBlockId, fill: DesignBlockId): void;
+    getStrokeFill(id: DesignBlockId): DesignBlockId | null;
+    setStrokeFill(id: DesignBlockId, fill: DesignBlockId | null): void;
     setFillSolidColor(id: DesignBlockId, r: number, g: number, b: number, a?: number): void;
     getFillSolidColor(id: DesignBlockId): RGBA;
     setPlaceholderEnabled(id: DesignBlockId, enabled: boolean): void;
@@ -442,6 +485,7 @@
 // ---- SceneAPI (editor-UI members) ----
     loadFromString(sceneContent: string, overrideEditorConfig?: boolean, waitForResources?: boolean): Promise<DesignBlockId>;
     loadFromURL(url: string, overrideEditorConfig?: boolean, waitForResources?: boolean): Promise<DesignBlockId>;
+    loadFromArchiveURL(url: string, options?: LoadSceneOptions): Promise<DesignBlockId>;
     loadFromArchiveURL(url: string, overrideEditorConfig?: boolean, waitForResources?: boolean): Promise<DesignBlockId>;
     saveToString(options?: {
         allowedResourceSchemes?: string[];
@@ -467,6 +511,11 @@
 // ---- VariableAPI (editor-UI members) ----
     setString(key: string, value: string): void;
     getString(key: string): string;
+    setColor(key: string, value: Color): void;
+    getColor(key: string): Color;
+    setTypeface(key: string, typeface: Typeface): void;
+    getTypeface(key: string): Typeface;
+    getType(key: string): VariableType;
 
 // ---- types referenced only by extended members ----
 interface AssetResultCredits {
@@ -485,6 +534,7 @@ type AudioExportOptions = {
     sampleRate?: number;
     numberOfChannels?: number;
     skipEncoding?: boolean;
+    audioCodec?: AudioCodec;
     abortSignal?: AbortSignal;
 };
 type AudioFromVideoOptions = {
@@ -544,9 +594,44 @@ type BlockEnumType = {
     'animation/block_swipe_text/direction': AnimationBlockSwipeTextDirection;
     'animation/merge_text/direction': AnimationMergeTextDirection;
     'animation/ken_burns/direction': AnimationKenBurnsDirection;
+    'blur/uniform/mode': BlurUniformMode;
+    'modifier/trim/mode': ModifierTrimMode;
+    'modifier/repeater/composite': ModifierRepeaterComposite;
+    'modifier/offset/join': ModifierOffsetJoin;
+    'modifier/zigzag/pointType': ModifierZigzagPointType;
+    'effect/displacement_map/horizontalChannel': EffectDisplacementMapHorizontalChannel;
+    'effect/displacement_map/mapBehavior': EffectDisplacementMapMapBehavior;
+    'effect/displacement_map/verticalChannel': EffectDisplacementMapVerticalChannel;
+    'effect/invert/channel': EffectInvertChannel;
+    'effect/radial_wipe/direction': EffectRadialWipeDirection;
+    'effect/shift_channels/takeAlphaFrom': EffectShiftChannelsTakeAlphaFrom;
+    'effect/shift_channels/takeBlueFrom': EffectShiftChannelsTakeBlueFrom;
+    'effect/shift_channels/takeGreenFrom': EffectShiftChannelsTakeGreenFrom;
+    'effect/shift_channels/takeRedFrom': EffectShiftChannelsTakeRedFrom;
+    'effect/stroke/paintStyle': EffectStrokePaintStyle;
+    'effect/wave_warp/waveType': EffectWaveWarpWaveType;
     'fill/pixelStream/orientation': FillPixelStreamOrientation;
     'shape/vector_path/fillRule': ShapeVectorPathFillRule;
+    'shape/compound/fillRule': ShapeCompoundFillRule;
+    'shape/compound/mode': ShapeCompoundMode;
+    'mask/mode': MaskMode;
+    'text_animator/selectorBasedOn': TextAnimatorSelectorBasedOn;
+    'text_animator/selectorShape': TextAnimatorSelectorShape;
+    'text_animator/selectorUnits': TextAnimatorSelectorUnits;
 };
+interface BlockMatte {
+    source: DesignBlockId;
+    mode: MatteMode;
+}
+interface BlockStateEngineError {
+    code: string;
+    message: string;
+    category: string;
+    hint: string;
+    args: Record<string, boolean | number | string>;
+    docsUrl: string | null;
+    silent: boolean;
+}
 type BlurType = 'uniform' | 'linear' | 'mirrored' | 'radial'; // each also valid as '//ly.img.ubq/blur/<name>'
 type BlurTypeLonghand = `//ly.img.ubq/blur/${BlurTypeShorthand}`;
 interface Buffer_2 {
@@ -561,7 +646,7 @@ interface CharacterInkBox {
     baselineY: number;
 }
 type EditMode = 'Transform' | 'Crop' | 'Text' | 'Playback' | 'Trim' | 'Vector' | (string & {});
-type EffectType = 'adjustments' | 'cross_cut' | 'dot_pattern' | 'duotone_filter' | 'extrude_blur' | 'glow' | 'green_screen' | 'half_tone' | 'linocut' | 'liquid' | 'lut_filter' | 'mirror' | 'outliner' | 'pixelize' | 'posterize' | 'radial_pixel' | 'recolor' | 'sharpie' | 'shifter' | 'tilt_shift' | 'tv_glitch' | 'vignette'; // each also valid as '//ly.img.ubq/effect/<name>'
+type EffectType = 'adjustments' | 'bulge' | 'corner_pin' | 'cross_cut' | 'displacement_map' | 'dot_pattern' | 'duotone_filter' | 'extrude_blur' | 'fill' | 'glow' | 'green_screen' | 'half_tone' | 'invert' | 'levels' | 'linear_wipe' | 'linocut' | 'liquid' | 'lut_filter' | 'mirror' | 'outliner' | 'pixelize' | 'posterize' | 'radial_pixel' | 'radial_wipe' | 'recolor' | 'sharpie' | 'shift_channels' | 'shifter' | 'stroke' | 'threshold' | 'tilt_shift' | 'tint' | 'tritone' | 'tv_glitch' | 'venetian_blinds' | 'vignette' | 'wave_warp'; // each also valid as '//ly.img.ubq/effect/<name>'
 type EffectTypeLonghand = `//ly.img.ubq/effect/${EffectTypeShorthand}`;
 type EngineActionId = keyof EngineActionsRegistry & string;
 interface EnginePlugin {
@@ -569,7 +654,7 @@ interface EnginePlugin {
     version: string;
     initialize: (context: EnginePluginContext) => void | Promise<void>;
 }
-type EnumValues = BlendMode | HorizontalContentFillAlignment | ContentFillMode | VerticalContentFillAlignment | HeightMode | PositionXMode | PositionYMode | SceneColorConversionMode | DesignUnit | FontSizeUnit | SceneLayout | SceneMode | WidthMode | PageGuidesSource | StrokeCap | StrokeCornerGeometry | StrokeDashEndCap | StrokeDashStartCap | StrokeEndCap | StrokePosition | StrokeStartCap | StrokeStyle | PlaybackFadeInEasing | PlaybackFadeOutEasing | TextHorizontalAlignment | TextVerticalAlignment | CutoutType | CaptionHorizontalAlignment | CaptionVerticalAlignment | AnimationEasing | TextAnimationWritingStyle | AnimationGrowDirection | AnimationWipeDirection | AnimationBaselineDirection | AnimationSpinDirection | AnimationSpinLoopDirection | AnimationJumpLoopDirection | AnimationTypewriterTextWritingStyle | AnimationBlockSwipeTextDirection | AnimationMergeTextDirection | AnimationKenBurnsDirection | FillPixelStreamOrientation | ShapeVectorPathFillRule | (string & {});
+type EnumValues = BlendMode | HorizontalContentFillAlignment | ContentFillMode | VerticalContentFillAlignment | HeightMode | PositionXMode | PositionYMode | SceneColorConversionMode | DesignUnit | FontSizeUnit | SceneLayout | SceneMode | WidthMode | PageGuidesSource | StrokeCap | StrokeCornerGeometry | StrokeDashEndCap | StrokeDashStartCap | StrokeEndCap | StrokePosition | StrokeStartCap | StrokeStyle | PlaybackFadeInEasing | PlaybackFadeOutEasing | TextHorizontalAlignment | TextVerticalAlignment | CutoutType | CaptionHorizontalAlignment | CaptionVerticalAlignment | AnimationEasing | TextAnimationWritingStyle | AnimationGrowDirection | AnimationWipeDirection | AnimationBaselineDirection | AnimationSpinDirection | AnimationSpinLoopDirection | AnimationJumpLoopDirection | AnimationTypewriterTextWritingStyle | AnimationBlockSwipeTextDirection | AnimationMergeTextDirection | AnimationKenBurnsDirection | BlurUniformMode | ModifierTrimMode | ModifierRepeaterComposite | ModifierOffsetJoin | ModifierZigzagPointType | EffectDisplacementMapHorizontalChannel | EffectDisplacementMapMapBehavior | EffectDisplacementMapVerticalChannel | EffectInvertChannel | EffectRadialWipeDirection | EffectShiftChannelsTakeAlphaFrom | EffectShiftChannelsTakeBlueFrom | EffectShiftChannelsTakeGreenFrom | EffectShiftChannelsTakeRedFrom | EffectStrokePaintStyle | EffectWaveWarpWaveType | FillPixelStreamOrientation | ShapeVectorPathFillRule | ShapeCompoundFillRule | ShapeCompoundMode | MaskMode | TextAnimatorSelectorBasedOn | TextAnimatorSelectorShape | TextAnimatorSelectorUnits | (string & {});
 type ExportOptions = {
     mimeType?: ImageMimeType | Exclude<ApplicationMimeType, 'application/zip'>;
     pngCompressionLevel?: number;
@@ -627,6 +712,15 @@ type HorizontalBlockAlignment = 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto'
 function isCMYKColor(color: Color): color is CMYKColor;
 function isRGBAColor(color: Color): color is RGBAColor;
 function isSpotColor(color: Color): color is SpotColor;
+interface Keyframe_2 {
+    time: number;
+    value: KeyframeValue;
+    easing?: KeyframeEasing;
+    spatialOut?: Vec2;
+    spatialIn?: Vec2;
+}
+type ModifierType = 'trim' | 'repeater' | 'round_corners' | 'offset' | 'zigzag' | 'pucker_bloat' | 'twist'; // each also valid as '//ly.img.ubq/modifier/<name>'
+type ModifierTypeLonghand = `//ly.img.ubq/modifier/${ModifierTypeShorthand}`;
 type ObjectType = ObjectTypeShorthand | ObjectTypeLonghand;
 interface PageDuration {
     pageId: DesignBlockId;
@@ -649,7 +743,7 @@ interface SaveToStringOptions {
 type SettingEnumPropertyName = 'touch/pinchAction' | 'touch/rotateAction' | 'camera/clamping/overshootMode' | 'controlGizmo/moveHandleVisibility' | 'controlGizmo/resizeHandlesVisibility' | 'controlGizmo/scaleHandlesVisibility' | 'controlGizmo/rotateHandlesVisibility' | 'doubleClickSelectionMode' | 'colorPicker/colorMode' | 'timeline/trackVisibility' | (string & {});
 type SettingEnumValues = TouchPinchAction | TouchRotateAction | CameraClampingOvershootMode | ControlGizmoMoveHandleVisibility | ControlGizmoResizeHandlesVisibility | ControlGizmoScaleHandlesVisibility | ControlGizmoRotateHandlesVisibility | DoubleClickSelectionMode | ColorPickerColorMode | TimelineTrackVisibility | (string & {});
 type SettingsEnum = SettingEnumType;
-type ShapeType = 'rect' | 'line' | 'ellipse' | 'polygon' | 'star' | 'vector_path'; // each also valid as '//ly.img.ubq/shape/<name>'
+type ShapeType = 'rect' | 'line' | 'ellipse' | 'polygon' | 'star' | 'vector_path' | 'compound'; // each also valid as '//ly.img.ubq/shape/<name>'
 type ShapeTypeLonghand = `//ly.img.ubq/shape/${ShapeTypeShorthand}`;
 interface Size2 {
     width: number;
@@ -676,6 +770,7 @@ interface TextRunInfo {
     scriptStyle: ScriptStyle;
     kerning: number;
 }
+type TrackMode = 'Absolute' | 'Relative';
 type TransitionType = 'none' | 'cross-fade' | 'cross-blur' | 'cross-spin' | 'cross-zoom' | 'cross-warp' | 'push' | 'slide' | 'stack' | 'splice' | 'diagonal-splice' | 'fade' | 'fade-to-white' | 'fade-to-black' | 'color-wipe' | 'line-wipe' | 'wipe' | 'clock-wipe' | 'chop' | 'gradient-fade' | 'two-stripes'; // each also valid as '//ly.img.ubq/transition/<name>'
 type TransitionTypeLonghand = `//ly.img.ubq/transition/${TransitionTypeShorthand}`;
 interface UBQAudioFromVideoOptions {
@@ -686,6 +781,7 @@ interface UBQExportAudioOptions {
     sampleRate: number;
     numberOfChannels: number;
     skipEncoding?: boolean;
+    audioCodec: number;
 }
 interface UBQExportOptions {
     jpegQuality: number;
@@ -711,25 +807,24 @@ interface UBQExportOptions {
     pdfChunkSize: number;
 }
 interface UBQExportVideoOptions {
+    coverTimeOffset: number | undefined;
     h264Profile: number;
     h264Level: number;
-    framerate: number;
+    framerate?: number;
     videoBitrate: number;
     audioBitrate: number;
     useTargetSize: boolean;
     targetWidth: number;
     targetHeight: number;
     allowTextOverhang: boolean;
+    audioCodec: number;
 }
 interface UBQSplitOptions {
     attachToParent: boolean;
     createParentTrackIfNeeded: boolean;
     selectNewBlock: boolean;
 }
-interface Vec2 {
-    x: number;
-    y: number;
-}
+type Vec2PropertyName = 'position' | 'shape/position' | (string & {});
 interface Vec3 {
     x: number;
     y: number;
@@ -737,12 +832,14 @@ interface Vec3 {
 }
 type VerticalBlockAlignment = 'Top' | 'Bottom' | 'Center';
 type VideoExportOptions = {
+    coverTimeOffset?: number | null;
     mimeType?: VideoMimeType;
     onProgress?: (numberOfRenderedFrames: number, numberOfEncodedFrames: number, totalNumberOfFrames: number) => void;
     h264Profile?: number;
     h264Level?: number;
     videoBitrate?: number | VideoBitrateMode;
     audioBitrate?: number;
+    audioCodec?: AudioCodec;
     timeOffset?: number;
     duration?: number;
     framerate?: number;
@@ -783,6 +880,7 @@ type AnimationWipeDirection = 'Up' | 'Right' | 'Down' | 'Left';
 type ApplicationMimeType = Extract<MimeType_2, 'application/octet-stream' | 'application/pdf' | 'application/zip'>;
 type AudioMimeType = Extract<MimeType_2, 'audio/wav' | 'audio/mp4'>;
 type BlendMode = 'PassThrough' | 'Normal' | 'Darken' | 'Multiply' | 'ColorBurn' | 'LinearBurn' | 'DarkenColor' | 'Lighten' | 'Screen' | 'ColorDodge' | 'LinearDodge' | 'LightenColor' | 'Overlay' | 'SoftLight' | 'HardLight' | 'VividLight' | 'LinearLight' | 'PinLight' | 'HardMix' | 'Difference' | 'Exclusion' | 'Subtract' | 'Divide' | 'Hue' | 'Saturation' | 'Color' | 'Luminosity';
+type BlurUniformMode = 'Fill' | 'Block';
 type CaptionHorizontalAlignment = 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto';
 type CaptionVerticalAlignment = 'Top' | 'Bottom' | 'Center';
 interface CompressionOptions {
@@ -790,6 +888,17 @@ interface CompressionOptions {
     level?: CompressionLevel;
 }
 type ContentFillMode = 'Crop' | 'Cover' | 'Contain';
+type EffectDisplacementMapHorizontalChannel = 'Red' | 'Green' | 'Blue' | 'Alpha' | 'Luminance' | 'Hue' | 'Lightness' | 'Saturation' | 'Full' | 'Half' | 'Off';
+type EffectDisplacementMapMapBehavior = 'Center' | 'Stretch' | 'Tile';
+type EffectDisplacementMapVerticalChannel = 'Red' | 'Green' | 'Blue' | 'Alpha' | 'Luminance' | 'Hue' | 'Lightness' | 'Saturation' | 'Full' | 'Half' | 'Off';
+type EffectInvertChannel = 'RGB' | 'Red' | 'Green' | 'Blue' | 'HLS' | 'Hue' | 'Lightness' | 'Saturation' | 'YIQ' | 'Luma' | 'InPhaseChroma' | 'QuadratureChroma' | 'Alpha';
+type EffectRadialWipeDirection = 'Clockwise' | 'Counterclockwise' | 'Both';
+type EffectShiftChannelsTakeAlphaFrom = 'Alpha' | 'Red' | 'Green' | 'Blue' | 'Luminance' | 'Hue' | 'Lightness' | 'Saturation' | 'FullOn' | 'FullOff';
+type EffectShiftChannelsTakeBlueFrom = 'Alpha' | 'Red' | 'Green' | 'Blue' | 'Luminance' | 'Hue' | 'Lightness' | 'Saturation' | 'FullOn' | 'FullOff';
+type EffectShiftChannelsTakeGreenFrom = 'Alpha' | 'Red' | 'Green' | 'Blue' | 'Luminance' | 'Hue' | 'Lightness' | 'Saturation' | 'FullOn' | 'FullOff';
+type EffectShiftChannelsTakeRedFrom = 'Alpha' | 'Red' | 'Green' | 'Blue' | 'Luminance' | 'Hue' | 'Lightness' | 'Saturation' | 'FullOn' | 'FullOff';
+type EffectStrokePaintStyle = 'OnOriginalImage' | 'OnTransparent';
+type EffectWaveWarpWaveType = 'Sine' | 'Square' | 'Triangle' | 'Sawtooth';
 type EnginePluginContext = {
     engine: CreativeEngine;
 };
@@ -799,8 +908,46 @@ type HeightMode = 'Absolute' | 'Percent' | 'Auto';
 type HexColorString = string;
 type HorizontalContentFillAlignment = 'Left' | 'Center' | 'Right';
 type ImageMimeType = Extract<MimeType_2, 'image/png' | 'image/jpeg' | 'image/webp' | 'image/x-tga' | 'image/svg+xml'>;
-type ObjectTypeLonghand = DesignBlockTypeLonghand | ShapeTypeLonghand | FillTypeLonghand | EffectTypeLonghand | BlurTypeLonghand | AnimationTypeLonghand | TransitionTypeLonghand;
-type ObjectTypeShorthand = DesignBlockTypeShorthand | `shape/${ShapeTypeShorthand}` | `fill/${FillTypeShorthand}` | `effect/${EffectTypeShorthand}` | `blur/${BlurTypeShorthand}` | `animation/${AnimationTypeShorthand}` | `transition/${TransitionTypeShorthand}`;
+type KeyframeEasing = {
+    type: 'Preset';
+    preset: AnimationEasing;
+} | {
+    type: 'Bezier';
+    out: Vec2;
+    in: Vec2;
+} | {
+    type: 'Hold';
+};
+type KeyframeValue = {
+    type: 'Float';
+    value: number;
+} | {
+    type: 'Vec2';
+    value: Vec2;
+} | {
+    type: 'Color';
+    value: Color;
+} | {
+    type: 'Path';
+    value: {
+        vertices: KeyframePathVertex[];
+        closed: boolean;
+    };
+} | {
+    type: 'List';
+    value: number[];
+} | {
+    type: 'Discrete';
+    value: boolean | number | string;
+};
+type MaskMode = 'Add' | 'Subtract' | 'Intersect' | 'Lighten' | 'Darken' | 'Difference' | 'None';
+type MatteMode = 'Alpha' | 'AlphaInverted' | 'Luma' | 'LumaInverted';
+type ModifierOffsetJoin = 'Bevel' | 'Miter' | 'Round';
+type ModifierRepeaterComposite = 'Below' | 'Above';
+type ModifierTrimMode = 'Simultaneous' | 'Individual';
+type ModifierZigzagPointType = 'Corner' | 'Smooth';
+type ObjectTypeLonghand = DesignBlockTypeLonghand | ShapeTypeLonghand | FillTypeLonghand | EffectTypeLonghand | ModifierTypeLonghand | BlurTypeLonghand | AnimationTypeLonghand | TransitionTypeLonghand | '//ly.img.ubq/text_animator' | '//ly.img.ubq/mask';
+type ObjectTypeShorthand = DesignBlockTypeShorthand | `shape/${ShapeTypeShorthand}` | `fill/${FillTypeShorthand}` | `effect/${EffectTypeShorthand}` | `modifier/${ModifierTypeShorthand}` | `blur/${BlurTypeShorthand}` | `animation/${AnimationTypeShorthand}` | `transition/${TransitionTypeShorthand}` | 'text_animator' | 'mask';
 type PageGuidesSource = 'Document' | 'Custom';
 type PersistedCallback = (url: string, persistedUrl: unknown, error: string | undefined) => void;
 type PlaybackFadeInEasing = 'Linear' | 'EaseIn' | 'EaseOut' | 'EaseInOut' | 'EaseInQuart' | 'EaseOutQuart' | 'EaseInOutQuart' | 'EaseInQuint' | 'EaseOutQuint' | 'EaseInOutQuint' | 'EaseInBack' | 'EaseOutBack' | 'EaseInOutBack' | 'EaseInSpring' | 'EaseOutSpring' | 'EaseInOutSpring';
@@ -808,6 +955,8 @@ type PlaybackFadeOutEasing = 'Linear' | 'EaseIn' | 'EaseOut' | 'EaseInOut' | 'Ea
 type PositionXMode = 'Absolute' | 'Percent' | 'Auto';
 type PositionYMode = 'Absolute' | 'Percent' | 'Auto';
 type SceneColorConversionMode = 'Managed' | 'Legacy';
+type ShapeCompoundFillRule = 'EvenOdd' | 'NonZero';
+type ShapeCompoundMode = 'Merge' | 'Add' | 'Subtract' | 'Intersect' | 'Exclude';
 type ShapeVectorPathFillRule = 'EvenOdd' | 'NonZero';
 type StrokeCap = 'Butt' | 'Round' | 'Square';
 type StrokeCornerGeometry = 'Bevel' | 'Miter' | 'Round';
@@ -818,6 +967,9 @@ type StrokePosition = 'Center' | 'Inner' | 'Outer';
 type StrokeStartCap = 'Butt' | 'Round' | 'Square';
 type StrokeStyle = 'Dashed' | 'DashedRound' | 'Dotted' | 'LongDashed' | 'LongDashedRound' | 'Solid';
 type TextAnimationWritingStyle = 'Block' | 'Line' | 'Character' | 'Word';
+type TextAnimatorSelectorBasedOn = 'Characters' | 'CharactersExcludingSpaces' | 'Words' | 'Lines';
+type TextAnimatorSelectorShape = 'Square' | 'RampUp' | 'RampDown' | 'Triangle' | 'Round' | 'Smooth';
+type TextAnimatorSelectorUnits = 'Percentage' | 'Index';
 type TextHorizontalAlignment = 'Left' | 'Right' | 'Center' | 'Justify' | 'Auto';
 type TextVerticalAlignment = 'Top' | 'Bottom' | 'Center';
 type VerticalContentFillAlignment = 'Top' | 'Center' | 'Bottom';
@@ -836,7 +988,13 @@ enum CompressionLevel {
     Default = 1,
     Best = 2
 }
-type EffectTypeShorthand = 'adjustments' | 'cross_cut' | 'dot_pattern' | 'duotone_filter' | 'extrude_blur' | 'glow' | 'green_screen' | 'half_tone' | 'linocut' | 'liquid' | 'lut_filter' | 'mirror' | 'outliner' | 'pixelize' | 'posterize' | 'radial_pixel' | 'recolor' | 'sharpie' | 'shifter' | 'tilt_shift' | 'tv_glitch' | 'vignette';
+type EffectTypeShorthand = 'adjustments' | 'bulge' | 'corner_pin' | 'cross_cut' | 'displacement_map' | 'dot_pattern' | 'duotone_filter' | 'extrude_blur' | 'fill' | 'glow' | 'green_screen' | 'half_tone' | 'invert' | 'levels' | 'linear_wipe' | 'linocut' | 'liquid' | 'lut_filter' | 'mirror' | 'outliner' | 'pixelize' | 'posterize' | 'radial_pixel' | 'radial_wipe' | 'recolor' | 'sharpie' | 'shift_channels' | 'shifter' | 'stroke' | 'threshold' | 'tilt_shift' | 'tint' | 'tritone' | 'tv_glitch' | 'venetian_blinds' | 'vignette' | 'wave_warp';
 type FillTypeShorthand = 'color' | 'gradient/linear' | 'gradient/radial' | 'gradient/conical' | 'image' | 'video' | 'pixelStream' | 'stripe';
-type ShapeTypeShorthand = 'rect' | 'line' | 'ellipse' | 'polygon' | 'star' | 'vector_path';
+interface KeyframePathVertex {
+    point: Vec2;
+    inTangent: Vec2;
+    outTangent: Vec2;
+}
+type ModifierTypeShorthand = 'trim' | 'repeater' | 'round_corners' | 'offset' | 'zigzag' | 'pucker_bloat' | 'twist';
+type ShapeTypeShorthand = 'rect' | 'line' | 'ellipse' | 'polygon' | 'star' | 'vector_path' | 'compound';
 type TransitionTypeShorthand = 'none' | 'cross-fade' | 'cross-blur' | 'cross-spin' | 'cross-zoom' | 'cross-warp' | 'push' | 'slide' | 'stack' | 'splice' | 'diagonal-splice' | 'fade' | 'fade-to-white' | 'fade-to-black' | 'color-wipe' | 'line-wipe' | 'wipe' | 'clock-wipe' | 'chop' | 'gradient-fade' | 'two-stripes';

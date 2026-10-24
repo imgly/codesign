@@ -155,6 +155,14 @@ A brand kit is not a palette swap — it is a **role system**. Restyling is two 
 The brand's `avoid` list is the floor: **no restyle ships with a hard `avoid` violation**, even if
 every axis scores ≥ 8.
 
+**Bound designs re-theme in one write.** Read `getProps(id, ['bindings'])` on the blocks first: a
+leaf bound to a scene variable (`'fill.color': 'accent'`, `'text.font': 'display'`) refuses a
+direct write (`DESIGN.PROPERTY_BOUND`) — set the variable instead, and every block bound to it
+follows: `setProps(scene, { variables: { accent: { color: TOKEN }, display: { font: { family } } } })`.
+When the brief asks for a design that switches between brands or schemes, build it that way: one
+colour or font variable per role token, each role's blocks bound to it
+(`../handbook/templates.md`); the switch is then one `variables` write per scheme.
+
 ## Role → token map
 
 Classify by measurable role (as in the localize skill's block classification), then map:

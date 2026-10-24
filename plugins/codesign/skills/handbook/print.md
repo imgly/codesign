@@ -128,6 +128,37 @@ await engine.design.setProps(underline, {
 - A spot colour works in every `Color` slot, gradients included, and keeps
   its separation through both `pdf` and `pdfx` exports.
 
+## Masks and mattes in PDF and SVG
+
+`masks: [{ shape, mode?, feather?, expansion?, inverted?, opacity?, keyframes? }]`
+cuts a block (graphic, text, group) to shapes, combined in order; each mask's
+shape fills the block, so a `vector_path` sized to the block places one
+inside it. `feather` and `expansion` take lengths (`'12px'`). `[]` removes
+them. `matte: { source, mode? }` shows the block only where its `source` (a
+name or uuid on the same page) draws, and the source stops drawing on its
+own; `null` unlinks.
+
+Measured on CE.SDK 1.85: what stays vector when the design leaves as a file.
+
+| on the block                          | PDF                                      | SVG                                  |
+| ------------------------------------- | ---------------------------------------- | ------------------------------------ |
+| `masks` with hard edges (any `mode`, `inverted`) | vector clip                    | vector clip path                     |
+| a mask with `feather`                 | rasterised soft mask                     | feather dropped: hard edge           |
+| a mask with `opacity` below 1         | vector soft mask                         | opacity dropped: full strength       |
+| `matte`, mode `Alpha`                 | vector soft mask                         | ignored: the block exports whole     |
+| `matte`, mode `Luma`                  | rasterised soft mask                     | ignored: the block exports whole     |
+
+So for a print or vector deliverable, cut with hard-edged `masks`; keep
+feathers and luma mattes for screen, video and PNG. An SVG must not rely on
+a matte at all.
+
+## Cutouts and gradient strokes
+
+A die-cut look (notches, punched holes, a ticket stub) is one `compound`
+shape, and a gradient outline is `stroke: { fill }`
+(`shapes.md`). Both export as vector paths in PDF and SVG,
+with no raster mask, so the cut stays sharp at any print size.
+
 ## Export for print
 
 - **`export({ format: 'pdf' })`** writes DeviceCMYK: CMYK values stay CMYK,
@@ -162,4 +193,5 @@ await engine.design.setProps(underline, {
 - [ ] Every colour CMYK or a defined spot colour; body text 100 % K
 - [ ] Spot names spelt as the swatch book; no magenta in the preview
 - [ ] Type ≥ print minimums (design-rules §6.1.2); `scene.dpi` 300
+- [ ] Masks hard-edged (no `feather`, no luma `matte`) where the PDF must stay vector
 - [ ] `pdfx` export with the printer's standard/profile; no warnings left

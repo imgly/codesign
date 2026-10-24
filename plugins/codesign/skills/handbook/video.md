@@ -316,8 +316,10 @@ await engine.design.setProps(ids[0], {
 - **Animating an existing still design?** The `animate` skill does it end to end:
   `../animate/SKILL.md`.
 - Export: `export({ format: "mp4", blockId: page })`.
-  Duration and resolution come from the page; `fps` (default 30) is the one
-  export knob. The page's audio blocks are mixed into the mp4.
+  Duration and resolution come from the page; the frame rate is `fps`, else
+  the scene's `scene.frameRate` (30 unless set; above 0, at most 240). The page's audio blocks are
+  mixed into the mp4 (AAC). The mp4's embedded cover image is the frame at
+  the page's playhead (`playback.time`, see Poster below).
 - Audio only: `export({ format: "wav" | "m4a", blockId: page })`
   renders the page's audio mix (`wav` = 48 kHz stereo float). Page only; for one
   clip alone, export while it is the only audio on the page. Every clip sounds
@@ -325,7 +327,17 @@ await engine.design.setProps(ids[0], {
 - Needs the native engine (the default). If the server fell back to WASM,
   video/audio tools refuse with the reason; `diagnostics` shows
   `status.config.videoAvailable`.
-- Motion beyond timing — entrance/exit/loop animations, animated text: every type and its options are in `animation.md`.
+- Motion beyond timing — entrance/exit/loop animations, animated text, and
+  custom moves with `keyframes` (seconds of the block's own duration): every
+  type, option and trap is in `animation.md`.
+- **Motion blur** smears fast moves like a camera shutter:
+  `setProps(block, { motionBlur: { enabled: true } })`, and on the scene
+  `motionBlur: { samples, shutterAngle, shutterPhase }` (1–64, 0–720°,
+  −360–360°). More samples cost export time.
+- **`transformParent: '<uuid or name>'`** makes a graphic or text follow
+  another graphic's or text's position, rotation and scale (not its opacity
+  or stacking); it does not keep its place on screen when linked. `null`
+  unlinks.
 - `preview` renders a STILL frame, not motion — pass `time` (seconds) to seek
   any page with a timeline, whatever the scene mode: verify a few salient
   moments (start, mid-beat, the middle of each transition, the end). Each
@@ -333,6 +345,11 @@ await engine.design.setProps(ids[0], {
   Export for the real thing.
 - Poster: a still `export` (png/jpeg/webp) renders the frame at the page's
   playhead — park it with `setProps(page, { playback: { time } })` in an edit.
+  The same playhead picks the cover image an mp4 export embeds.
+- Markers: `setProps(scene, { markers: [{ name: 'drop', time: 8.2, duration? }] })`
+  keeps named moments (seconds) in the design for later edits and the
+  editor's timeline — e.g. the beats you cut to. The list is replaced
+  wholesale; `getProps(scene, ['markers'])` reads it.
 - Resource loading during export is handled server-side — you do NOT need a
   `loadResources` barrier before `export` (unlike the handbook's font barrier).
   Trim writes (`playback.trimOffset`/`trimLength`) and an audio block's

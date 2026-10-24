@@ -96,6 +96,15 @@ edition is positionally identical to the source.
   name rendered in the Arabic/CJK serif is the classic tell. So a localized edition differs from
   its reference in **only the translated blocks' text + face**; every untranslated block is
   byte-identical (position mirrored for RTL).
+- **Bound faces and sizes: write the variable, not the block.** If the design binds `text.font`
+  or `text.fontSize` to a scene variable (`getProps(id, ['bindings'])`), a direct write to that
+  leaf is refused (`DESIGN.PROPERTY_BOUND`). Swap the script face for every block bound to it in
+  one write — `setProps(scene, { variables: { body: { font: { family: 'Noto Sans JP' } } } })` —
+  and shrink a long language's sizes through their `{ number }` variable. A block in the source
+  script that shares that variable (a name, a URL) must keep its face: unbind it first
+  (`bindings: { 'text.font': null }`) so the swap skips it. Building a multi-script template,
+  bind each translatable block's `text.font` to one font variable per script role
+  (`../handbook/templates.md`).
 
 ## When to use
 
