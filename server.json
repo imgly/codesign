@@ -6,13 +6,13 @@
     "url": "https://github.com/imgly/codesign",
     "source": "github"
   },
-  "version": "0.5.2-next.20261025163045.g47f5776",
+  "version": "0.5.2-next.20261025174715.gd6cf616",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@imgly/codesign-mcp",
-      "version": "0.5.2-next.20261025163045.g47f5776",
+      "version": "0.5.2-next.20261025174715.gd6cf616",
       "transport": {
         "type": "stdio"
       },
