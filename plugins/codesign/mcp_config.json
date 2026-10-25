@@ -4,7 +4,7 @@
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.5.2-next.20261025075209.ge9d592867",
+        "@imgly/codesign-mcp@0.5.2-next.20261025095123.gcc0dd8485",
         "stdio"
       ]
     }

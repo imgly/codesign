@@ -1,15 +1,15 @@
 {
   "mcpServers": {
     "codesign": {
-      "command": "npx",
+      "command": "sh",
       "args": [
-        "-y",
-        "@imgly/codesign-mcp@0.5.2-next.20261025075209.ge9d592867",
-        "stdio"
+        "${CLAUDE_PLUGIN_ROOT}/runtime/codesign.sh",
+        "mcp"
       ],
       "env": {
         "IMGLY_PLUGIN_ERROR_REPORTING": "${user_config.error_reports}",
-        "IMGLY_PLUGIN_TELEMETRY": "${user_config.usage_telemetry}"
+        "IMGLY_PLUGIN_TELEMETRY": "${user_config.usage_telemetry}",
+        "IMGLY_CODESIGN_CHANNEL": "next"
       }
     }
   }
