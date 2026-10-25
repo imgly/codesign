@@ -10,6 +10,15 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "IMGLY_CODESIGN_CHANNEL=canary sh \"${CLAUDE_PLUGIN_ROOT}/runtime/codesign.sh\" bootstrap ensure --detach",
+            "timeout": 10
+          }
+        ]
       }
     ],
     "PostModelSwitch": [

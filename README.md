@@ -5,7 +5,7 @@
 
 **The design layer for the agent era.**
 
-> **Prerelease channel.** This `canary` branch installs `@imgly/codesign-mcp@0.5.2-canary.20261025075209.ge9d592867` —
+> **Prerelease channel.** This `canary` branch installs `@imgly/codesign-mcp@0.5.2-canary.20261025095123.gcc0dd8485` —
 > unreleased builds, published on every merge to IMG.LY's development branch, on the newest CE.SDK engine nightly.
 > For the stable release, use the [`main` branch](https://github.com/imgly/codesign/tree/main).
 
@@ -53,19 +53,20 @@ Ask your agent, in plain language:
 
 Three layers, one product:
 
-- **The plugin** — skills, slash commands, and an embedded design handbook your
-  agent draws on to design _well_ (brand, localize, resize, and quality-check
-  its own output). This is the piece you install.
+- **The plugin** — installs the MCP server and connects it to your agent. This
+  is the piece you install.
 - **The MCP server** (`@imgly/codesign-mcp`) — exposes the design tools (`edit`,
   `preview`, `export`, `list`, `history`, …) over MCP, driven by tool calls
-  from any agent host.
+  from any agent host, and serves the skills and design handbook your agent
+  draws on to design _well_ (brand, localize, resize, and quality-check its
+  own output), always matching the server's version.
 - **The CE.SDK CreativeEngine** — IMG.LY's real, headless design engine that
   does the actual layout, rendering, and export.
 
 ## Licensing
 
-This repository — the Claude Code and Codex plugins, marketplace manifests,
-skills and documentation — is released under the [MIT License](./LICENSE).
+This repository — the Claude Code and Codex plugins, marketplace manifests
+and documentation — is released under the [MIT License](./LICENSE).
 The CoDesign engine itself, distributed as the npm package `@imgly/codesign-mcp`, is
 proprietary software from IMG.LY and free to use locally. The full terms ship
 inside the package as `LICENSE.md`.
@@ -93,10 +94,9 @@ print, video, and social:
   system Node. With no Node (or Node < 22.15) on `PATH`, the host reports the
   server as failed with no useful reason — typically `local: 0` and
   `MCP error -32000`. Install Node 22.15+ first: <https://nodejs.org>.
-- **Pin `@0.5.2-canary.20261025075209.ge9d592867` — every recipe names that exact version on purpose.** The
-  plugin ships the skills that version was built with, and a bare or dist-tagged
-  `npx` would pair them with a different server. Each release republishes this
-  repo with a new pin — update the plugin (or your recipe) to move forward.
+- **Pin `@0.5.2-canary.20261025095123.gcc0dd8485` — every recipe names that exact version.** Each release
+  republishes this repo with a new pin — update the plugin (or your recipe) to
+  move forward.
 - **Windows is not supported under bare `npx`.** Hosts that spawn `npx`
   directly hit `spawn npx ENOENT`
   ([anthropics/claude-code#58510](https://github.com/anthropics/claude-code/issues/58510)).
@@ -116,7 +116,7 @@ claude plugin install codesign@imgly-codesign-canary
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-canary.20261025075209.ge9d592867 stdio
+claude mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-canary.20261025095123.gcc0dd8485 stdio
 ```
 
 ### Codex
@@ -131,7 +131,7 @@ codex plugin add codesign@imgly-codesign-canary
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-canary.20261025075209.ge9d592867 stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-canary.20261025095123.gcc0dd8485 stdio
 ```
 
 ### Antigravity CLI
@@ -146,7 +146,7 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-canary.20261025075209.ge9d592867 stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-canary.20261025095123.gcc0dd8485 stdio
 ```
 
 ### Gemini CLI
@@ -169,7 +169,7 @@ Or add the server manually to `~/.gemini/settings.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.5.2-canary.20261025075209.ge9d592867",
+        "@imgly/codesign-mcp@0.5.2-canary.20261025095123.gcc0dd8485",
         "stdio"
       ]
     }
@@ -189,7 +189,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.5.2-canary.20261025075209.ge9d592867",
+        "@imgly/codesign-mcp@0.5.2-canary.20261025095123.gcc0dd8485",
         "stdio"
       ]
     }
@@ -213,7 +213,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.5.2-canary.20261025075209.ge9d592867",
+        "@imgly/codesign-mcp@0.5.2-canary.20261025095123.gcc0dd8485",
         "stdio"
       ]
     }
@@ -231,7 +231,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.5.2-canary.20261025075209.ge9d592867",
+          "@imgly/codesign-mcp@0.5.2-canary.20261025095123.gcc0dd8485",
           "stdio"
         ]
       }
