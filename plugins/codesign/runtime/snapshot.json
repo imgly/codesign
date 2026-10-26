@@ -1,16 +1,16 @@
 {
-  "runtime": "0.5.2-canary.20261026160952.ga19fda9",
-  "instructions": "This is the **IMG.LY CoDesign** MCP server: a CE.SDK CreativeEngine plus a persistent design session for vector design, print-quality PDF and mp4 video with audio.\n\nTool names here are bare (`edit`, `preview`, …); your host may prefix them (e.g. `mcp__codesign__edit`) — use your tool list's names.\n\n**Required first step** — before any `edit`, load the installed `handbook` skill; if it isn't installed, read the MCP resource `skill://codesign/handbook/SKILL.md`. It teaches the session model, dirty-on-throw safety, the typeface schema setFont requires, and the runtime quirks that bite first attempts. Skipping it produces broken output.\n\n**Read the API before your first `edit`** — right after the handbook, load the `api` and `judge` skills and `skill://codesign/handbook/design-rules.md` (+ `quirks.md`/`fonts.md` if needed) the same way, in parallel in ONE message. Never guess engine methods or property names.\n\n**Ask before you invent** — when a design-defining choice is open (topic, audience, visual direction, brand, format), ask ONE round of concrete options + `Decide automatically` before the first `edit` (your host's question UI if any, else prose). Contract: `skill://codesign/handbook/intake.md`.\n\n**Speak the user's language** — reply in the language the user writes in, from the first message: every question, option label and status line. Text INSIDE a design is a separate axis: it follows the brief, else the conversation's language. Never translate ids, tool names, URLs or typed values (`ig-story`, `A4`). Full rule: handbook §1.\n\n**Quality gate** — before reporting any design done, run the `judge` skill's loop: preview the design (a video: several `time`s), score the 8 design axes against the render, and remediate any axis below 8. Never ship an unjudged design. When the loop passes record it with `scorecard({ verdict: 'pass' })`; any later `edit`, `import` or `open` clears that verdict, and an unjudged notice on `export` is the loop asking to run again.\n\nOther skills, loaded the same way:\n- `api` — the full edit-code API (engine.design, props trees, capability matrix). `skill://codesign/api/signatures.d.ts` adds the upstream CE.SDK core.\n- Task skills (as the brief needs): `create` `animate` `brand` `resize` `localize` `layerize` `formats` `onboard` `video-thumbnail-template` `launch-video`. Handbook: `skill://codesign/handbook/video.md` (mp4), `print.md`, `templates.md`.\n\nDesign tools (after reading the handbook):\n- `edit({ code, note? })` — mutate the canvas. There is no `parent` and no revision id: it always continues the current session.\n- `preview({ blockIds?, time? })` — render blocks as images (no `blockIds` = every page); `time` (s) seeks a video.\n- `export({ format, blockId? })` — writes a deliverable: `imgly` the editable design file (whole-design only), or pdf/png/jpeg/webp/svg/pdfx/html/mp4/wav/m4a. Omit `blockId` for the whole document.\n- `import({ source })` — start a NEW design from a file (`.imgly`, `.psd`, `.idml`, `.pptx`, PDF, image) or from a copy of a saved design (`{ uri }`); the saved one stays as it was.\n- `open({ uri })` — continue a saved design itself; `designs()` lists them.\n- `scorecard({ verdict })` — record a completed judge loop for the session's current state.\n- `asset_search({ query?, source? })` — search the asset sources; apply results in `edit`.\n- `view(…)` — URL the human can open to view and edit your designs in the browser.\n\n**Your designs are saved as you go** — every change is saved to the design, which `view` shows; there is nothing to save.\n\n**Human edits from the browser editor** — the user can change a design on the `view` page and save it. The server notices on your next call and says so: `preview` their version before you continue.\n\nAsset generation:\n- `asset_generate({ model?, prompt?, params?, capability?, source?, schema? })` — images, video, speech, music, sound effects and transcripts via the IMG.LY AI gateway; call it with no arguments to list models, and load the `models` skill before calling one. Needs a free IMG.LY sign-in (`login`); design tools don't.",
+  "runtime": "0.5.2-canary.20261026233043.gf2736c5",
+  "instructions": "**IMG.LY CoDesign** MCP server: design with a CE.SDK engine. Tool names here are bare (`edit`): call the prefixed name in your tool list (e.g. `mcp__codesign__edit`); `Edit` is your host's file editor. Skills: the installed skill of that name, else its `skill://codesign/<name>/SKILL.md` resource.\n\n**Before your first `edit`**, read in ONE message, in parallel: `skill://codesign/api/SKILL.md`, `skill://codesign/judge/SKILL.md` and `skill://codesign/judge/design-rules.md`; for a new design also `skill://codesign/create/SKILL.md`. Never guess an engine method or prop.\n\n**The loop, for every canvas change:**\n1. **Brief.** Derive what the request answers. If two or more of topic, audience, visual direction, brand and format are open, ask ONE round of options plus `Decide automatically` before the first `edit`. Never invent the user's values (brand colours, fonts, a locale's wording): `skill://codesign/create/intake.md`.\n   Register the brief's acceptance items with `checklist({ items })` first.\n2. **Build one complete page per `edit`**, page 1 first; name blocks and find them with `findByName`. A new design is scene first: `create({ type: 'scene', children: [page] })`; a later scene replaces the design and every block built before it.\n3. **Look** at the render each changing `edit` returns (`preview` for more). Edit again only for an objective bug (overflow, overlap, missing glyphs); polish waits for the judge.\n4. **Judge** with the `judge` loop; fix each axis below 8 in place, never by rebuilding. Never report an unjudged design as done; record the pass with `scorecard({ verdict: 'pass' })` (a later `edit`, `import` or `open` clears it).\n5. **Reply.** Every change is saved to the design as you make it; there is nothing to save. Report its `uri` and `export` a file when the brief asks.\n   A new design starts with `import({ title })`; every change revises the design you are on, so `import` a copy for another edition (a locale, a format).\n\nAny design can become a video: add timed content to the scene you have, never rebuild it; read `skill://codesign/api/video.md` first.\n\n**Design must-haves:**\n- Use the brief's copy verbatim; where it gives none, write copy that is generic but true. Never invent a name, price, date or claim.\n- Fill the format: margins 8–12 % of the shortest side, no dead bands.\n- Legible sizes. Screen: body ≥ 16 px and ≥ 1.5 % of the page height, captions ≥ 12 px, nothing below 11 px. Print: body 9–12 pt, captions ≥ 7 pt, nothing below 5 pt.\n- No widows or orphans in headings and short blocks.\n- Text padded inside its container; nothing crowds, overlaps or leaves the page.\n- One alignment grid; repeated items built identically.\n- Text contrast ≥ 4.5:1 on its actual background.\n- Template slots stay editable (`editor/select` plus `text/edit` or `fill/change`).\n\n**Speak the user's language** in everything they read. The design's own text follows the brief, else that language (say so); changing it is the `localize` skill, on request. Never translate ids, tool names, typed values or URLs, and translate a chip's label, never its value.\n\nSkills: `api` and `judge` first (above); as the brief needs, `create` `animate` `brand` `resize` `localize` `layerize` `formats` `templates` `onboard` `video-thumbnail-template` `launch-video`. Read `models` before any `asset_generate` call.",
   "tools": [
     {
       "name": "edit",
-      "description": "Edit the CE.SDK canvas by running JavaScript against the live CreativeEngine. The result becomes the session’s current state.\n\n⚠ BEFORE your first `edit`, load the installed `handbook` skill; if it isn't installed, read the MCP resource `skill://codesign/handbook/SKILL.md`. It documents the design loop, the typeface schema, and the engine recipes; on cryptic errors, read `skill://codesign/handbook/quirks.md`.\n\nThere is no `parent` and no revision id: `edit` always continues the design in front of you.\n\nEvery successful edit is kept — the product stores the design after each one, so there is nothing to save.\n\nReturns: the first content part is JSON `{ names? }` — every named block in the scene, which are exactly the strings `engine.design.findByName(name)` resolves in your NEXT edit. Name what you build and re-find it instead of matching copy. When the edit changed the scene, the result also ends with a downscaled render of the first page it changed — verify your work from it instead of spending a `preview` call. `preview` remains required for full-size judging (the judge loop) and multi-page review; set `render: false` to skip the image on read-only/diagnostic edits.\n\n`code` return contract (STRICT): return `undefined` (no message back), `{ type: \"text\", text }`, `{ type: \"image\", data: \"<base64>\", mimeType }`, or an array of those. Anything else (raw strings, Blobs, plain objects) is rejected.\n\nDIALECT (enforced): edit code uses `engine.design` only — scene, pages, props, text, variables, spot colours, transitions. Code that reaches engine.block/scene/variable/editor/asset/event is rejected before execution with the equivalent calls.\n\n`code` scope: `engine.design`, plus `findText(copy)` / `findAllText(copy)` for reaching a block by its text. Use them instead of comparing text strings with `===` — the copy on the page routinely carries a trailing space or an NBSP (before a `€`/`%`), which is what makes hand-rolled lookups throw. Matching folds those space variants and trims; a miss lists the copy actually on the page.\n\nDirty-on-throw: if your `code` throws, nothing is checkpointed and the next `edit` reloads the session from its last good state. Do not catch-and-swallow errors that should propagate — let them throw so this safety contract kicks in.",
+      "description": "Edit the CE.SDK canvas by running JavaScript against the live CreativeEngine. The result becomes the session’s current state.\n\n⚠ BEFORE your first `edit`, read `skill://codesign/api/SKILL.md`, `skill://codesign/judge/SKILL.md` and `skill://codesign/judge/design-rules.md` in one message: the edit-code API and the rules a design is built to. Worked examples, and the lookup for a cryptic error (\"Known engine defects\"), are `skill://codesign/api/recipes.md`.\n\nThere is no `parent` and no revision id: `edit` always continues the design in front of you.\n\nEvery successful edit is kept — the product stores the design after each one, so there is nothing to save.\n\nReturns: the first content part is JSON `{ names? }` — every named block in the scene, which are exactly the strings `engine.design.findByName(name)` resolves in your NEXT edit. Name what you build and re-find it instead of matching copy. When the edit changed the scene, the result also ends with a downscaled render of the first page it changed — verify your work from it instead of spending a `preview` call. `preview` remains required for full-size judging (the judge loop) and multi-page review; set `render: false` to skip the image on read-only/diagnostic edits.\n\n`code` return contract (STRICT): return `undefined` (no message back), `{ type: \"text\", text }`, `{ type: \"image\", data: \"<base64>\", mimeType }`, or an array of those. Anything else (raw strings, Blobs, plain objects) is rejected.\n\nDIALECT (enforced): edit code uses `engine.design` only — scene, pages, props, text, variables, spot colours, transitions. Code that reaches engine.block/scene/variable/editor/asset/event is rejected before execution with the equivalent calls.\n\n`code` scope: `engine.design`, plus `await findText(copy)` / `await findAllText(copy)` (async like every `engine.design` member) for reaching a block by its text. Use them instead of comparing text strings with `===` — the copy on the page routinely carries a trailing space or an NBSP (before a `€`/`%`), which is what makes hand-rolled lookups throw. Matching folds those space variants and trims; a miss lists the copy actually on the page.\n\nDirty-on-throw: if your `code` throws, nothing is checkpointed and the next `edit` reloads the session from its last good state. Do not catch-and-swallow errors that should propagate — let them throw so this safety contract kicks in.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "code": {
             "type": "string",
-            "description": "Async JS body using `engine.design` — the whole edit API; EVERY member returns a Promise (await it): create({ type, name?, props?, children? }, { parent? }), setProps(id, props), getProps(id, select?) — see the api skill. Strict return contract per the handbook."
+            "description": "Async JS body using `engine.design` — the whole edit API; EVERY member returns a Promise (await it): create({ type, name?, props?, children? }, { parent? }), setProps(id, props), getProps(id, select?) — see the api skill; its recipes.md shows the return contract."
           },
           "note": {
             "type": "string",
@@ -22,7 +22,7 @@
           },
           "skills": {
             "type": "string",
-            "description": "Optional: comma-separated names of the CoDesign skills you are following for this edit (e.g. \"handbook,api,judge\"). The names are sent with usage telemetry; the edit itself ignores them."
+            "description": "Optional: comma-separated names of the CoDesign skills you are following for this edit (e.g. \"create,api,judge\"). The names are sent with usage telemetry; the edit itself ignores them."
           }
         },
         "required": [
@@ -33,20 +33,20 @@
     },
     {
       "name": "preview",
-      "description": "Render blocks (almost always pages) to inline images so you can see the result.\n\n`blockIds` is a LIST, rendered in the order you give it: `[pageId]` for one page, `[a, b]` for a subset, or OMIT it entirely to preview every page of the design in document order.\n\nThere is nothing to address: this always renders the design you are working on. Its last state is loaded before rendering, so the ids always resolve against the right scene — never against a different design another agent may have loaded on a shared server.\n\nPreview several blocks at once when REVIEWING or capturing a finished design — a whole deck in one call, or just the pages a fix touched. While BUILDING a multi-page design, keep previewing each page right after you build it: batching there does not avoid the bugs, it only delays finding them.\n\nAnimated or video designs (any scene mode): pass `time` (seconds along the timeline of what is rendered — the page, since a block is previewed in place on it; 0 = first frame) to render any frame as a still — use `export format=mp4` for motion. `time` applies to every block in the call, and each timed preview (and every preview of a Video-mode scene) returns `{blockId, time, duration}` JSON alongside its image; `duration` is the scrubbable range.\n\nOutput is always PNG (lossless — thin lines render exactly). EACH block gets the full 0.25 megapixel budget, adjusted to its own aspect ratio — a square page renders 512×512, a 1:4 page 256×1024. There are no size or format knobs, and at most 10 blocks render per call.\n\nTo SEE SMALL TYPE as it is actually set — legal copy, a caption, a label — the simplest zoom is to pass THAT BLOCK'S id: `blockIds: [<textId>]` renders it on its page, framed, with context around it. No coordinates needed.\n\nFor a tighter or arbitrary crop, pass `region`: a rectangle `{x, y, width, height}` with ONE id in `blockIds`. Its numbers are the design's own coordinates — what `engine.design.getProps(id, ['globalBoundingBox'])` returns inside `edit` — NOT pixels of a preview image you already have. Either way the crop is rendered into the same budget, so a smaller rectangle means bigger pixels, and it is never enlarged past the design's own resolution.\n\nPreviewing a block that is NOT a page renders it IN PLACE on its page — background and neighbours included — so you score what is actually on the page. `export` still produces the block alone when you need it with an alpha channel. For native-resolution certainty, `export` the page and open its `httpUrl`.\n\nTo look at a stored ASSET rather than the design — an image you just generated, or one the customer uploaded — pass `uri` instead: `preview({ uri: <meta.thumbUri from the asset> })`. Use the asset's `thumbUri`, not its `id`: the id is the full-resolution original and is refused. Nothing is rendered and no design is touched; you simply see the picture.",
+      "description": "Render blocks (almost always pages) to inline images so you can see the result.\n\n`blockIds` is a LIST, rendered in the order you give it: `[pageId]` for one page, `[a, b]` for a subset, or OMIT it entirely to preview every page of the design in document order.\n\nThere is nothing to address: this always renders the design you are working on. Its last state is loaded before rendering, so the ids always resolve against the right scene — never against a different design another agent may have loaded on a shared server.\n\nPreview several blocks at once when REVIEWING or capturing a finished design — a whole deck in one call, or just the pages a fix touched. While BUILDING a multi-page design, keep previewing each page right after you build it: batching there does not avoid the bugs, it only delays finding them.\n\nAnimated or video designs (any scene mode): pass `time` (seconds along the timeline of what is rendered — the page, since a block is previewed in place on it; 0 = first frame) to render any frame as a still — use `export format=mp4` for motion. `time` applies to every block in the call, and each timed preview (and every preview of a Video-mode scene) returns `{blockId, time, duration}` JSON alongside its image; `duration` is the scrubbable range.\n\nOutput is always PNG (lossless — thin lines render exactly). EACH block gets the full 0.25 megapixel budget, adjusted to its own aspect ratio — a square page renders 512×512, a 1:4 page 256×1024. There are no size or format knobs, and at most 10 blocks render per call.\n\nTo SEE SMALL TYPE as it is actually set — legal copy, a caption, a label — the simplest zoom is to pass THAT BLOCK'S id: `blockIds: [<textId>]` renders it on its page, framed, with context around it. No coordinates needed.\n\nFor a tighter or arbitrary crop, pass `region`: a rectangle `{x, y, width, height}` with ONE id in `blockIds`. It is measured from the top-left corner of that block's PAGE, in the design's units (the page's own width and height bound it) — the same numbers on page 1 and page 5, and NOT pixels of a preview image you already have. `globalBoundingBox` is in scene coordinates: for a block, subtract its page's `globalBoundingBox` x and y, or pass back the `region` a `preview({ blockIds: [<blockId>] })` reported. A rectangle that runs off the page is trimmed to it, one that misses it is moved onto it, and the result says `clampedToPage`. Every partial render reports the `region` it shows in these coordinates, ready to pass back. The crop is rendered into the same budget, so a smaller rectangle means bigger pixels, and it is never enlarged past the design's own resolution.\n\nPreviewing a block that is NOT a page renders it IN PLACE on its page — background and neighbours included — so you score what is actually on the page. `export` still produces the block alone when you need it with an alpha channel. For native-resolution certainty, `export` the page and open its `httpUrl`.\n\nTo look at an ASSET rather than the design — an image you just generated, one the customer uploaded, or one an asset search returned — pass `uri` instead: the `uri` (or `meta.thumbUri`) an earlier tool result in this session gave you, never one you assembled or found on the web. An image an asset source lists shows as its thumbnail; a stored one too large to show comes back downscaled when this deployment can shrink its format. Nothing is rendered and no design is touched; you simply see the picture.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "uri": {
             "type": "string",
-            "description": "Look at a stored ASSET instead of the design. Pass the `meta.thumbUri` an asset tool gave you — not its `id`, which is the full-resolution original. Cannot be combined with `blockIds`."
+            "description": "Look at an ASSET instead of the design: the `uri` or `meta.thumbUri` an earlier tool result gave you (a generated, uploaded or imported image, or one an asset search returned). Cannot be combined with a non-empty `blockIds`."
           },
           "blockIds": {
             "type": "array",
             "items": {
               "type": "integer"
             },
-            "description": "Blocks to render, in the order you want them back — almost always page ids, not the scene root. Omit to preview every page of the design in document order. At most 10 render per call."
+            "description": "Blocks to render, in the order you want them back — almost always page ids, not the scene root. Omit it (or pass `[]`) to preview every page of the design in document order. At most 10 render per call."
           },
           "region": {
             "type": "object",
@@ -73,7 +73,7 @@
               "height"
             ],
             "additionalProperties": false,
-            "description": "Rectangle to render, in the design's own coordinates — the space block bounding boxes are reported in. Requires exactly one id in `blockIds`; the rectangle is taken on that block's page. Rendered into the same 0.25 MP budget, so a smaller rectangle reads bigger, up to the design's native resolution."
+            "description": "Rectangle to render, in the design's units from the top-left corner of the page of the one id in `blockIds` (required) — {x: 0, y: 0} is that page's corner on every page; subtract the page's `globalBoundingBox` x/y from a block's. Off-page parts are trimmed and a rectangle that misses the page is moved onto it (`clampedToPage` in the result). Rendered into the same 0.25 MP budget, so a smaller rectangle reads bigger, up to the design's native resolution."
           },
           "time": {
             "type": "number",
@@ -90,7 +90,7 @@
     },
     {
       "name": "import",
-      "description": "Import a design FILE as a NEW design — a CE.SDK `.imgly` design file; a Photoshop (`.psd`/`.psb`), InDesign (`.idml`), PowerPoint (`.pptx`) or PDF file; or a plain image or SVG, which becomes a one-page design sized to the image. To make a media file (image/font/video/audio) available for use INSIDE a design instead of becoming one: Use `asset_add` to bring it into the workspace, then apply it inside `edit`.\n\nSource: `{ url }` (http/https), `{ uri }` (a saved design — you get a copy of it — or a file you were given), `{ demo }` (a design bundled with this server — ids: `\"cybernews\"`) or `{ path }` (absolute local file path).\n\nEvery import starts a NEW design, and you work on it from then on: the design you were on is left as it is. To keep working on a saved design itself rather than a copy, use `open` with its `uri`. With only a `title` and no `source`, it starts an empty design: do that for every new design, before you name it or build it.\n\nReturns JSON `{ uri, title, format }` — the new design, saved after every change; to continue it later, `open` this `uri`. Foreign-format imports may add `warnings` (what did not survive — substituted fonts, unsupported features): treat them as your touch-up list — `preview` the pages, then repair with `edit`.",
+      "description": "Import a design FILE as a NEW design — a CE.SDK `.imgly` design file; a Photoshop (`.psd`/`.psb`), InDesign (`.idml`), PowerPoint (`.pptx`) or PDF file; or a plain image or SVG, which becomes a one-page design sized to the image. To make a media file (image/font/video/audio) available for use INSIDE a design instead of becoming one: Use `asset_add` to bring it into the workspace, then apply it inside `edit`.\n\nSource: `{ url }` (http/https), `{ uri }` (a saved design — you get a copy of it — or a file you were given), `{ demo }` (a design bundled with this server — ids: `\"cybernews\"`) or `{ path }` (absolute local file path).\n\nEvery import starts a NEW design, and you work on it from then on: the design you were on is left as it is. To keep working on a saved design itself rather than a copy, use `open` with its `uri`. With only a `title` and no `source` (`import({ title: 'Poster' })`), it starts an empty design: do that for every new design, before you name it or build it.\n\nReturns JSON `{ uri, title, format }` — the new design, saved after every change; to continue it later, `open` this `uri`. Foreign-format imports may add `warnings` (what did not survive — substituted fonts, unsupported features): treat them as your touch-up list — `preview` the pages, then repair with `edit`.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -148,7 +148,7 @@
     },
     {
       "name": "export",
-      "description": "Export the design you are working on — `format` picks the deliverable: `pdf` (print PDF), `png`/`jpeg`/`webp` (image), `svg` (vector SVG), `pdfx` (print-ready PDF/X), `html` (responsive HTML5), `idml` (Adobe InDesign), `psd` (layered PSD), `mp4` (video), `wav`/`m4a` (audio), `imgly` (editable design file). Renders `blockId` — or the whole document when `blockId` is omitted.\n\nYour edits are saved to the design as you make them (the viewer shows it), so there is nothing to save: every format is a copy for the person — a pdf to print, a png to post, `imgly` the editable design file with its images.\n\nReturns JSON `{ uri, httpUrl, bytes, format }` (plus `path` when you pass `outPath`). `uri` is the durable handle — treat it as opaque and pass it back verbatim where a URI is wanted. `httpUrl` is a fetch link tied to this process — fetch it to download the bytes to disk, or hand it to the user.\n\n`outPath` (optional, absolute path including the filename): ALSO write the artifact to that local path — the workspace copy is still written, and the response then carries `path`. Use it when the file is wanted on disk, and always when your environment cannot fetch localhost URLs (sandboxed harnesses, e.g. Claude Cowork — target your session's outputs folder there).\n\n`format=svg` is the engine's vector export: text is outlined into paths (renders identically everywhere, but is not editable text in the SVG), and raster images are embedded in the file at source resolution — an SVG of a photo-heavy design can be much larger than its source images.\n\n`format=imgly` writes a portable, self-contained `.imgly` design file (scene + all asset bytes bundled) — the inverse of `import`, and the only format that stays editable: a copy to move, back up or send. Whole-design only: `blockId` is not accepted. Because the archive inlines every referenced asset it is the heaviest call this server makes, and it REFUSES rather than ship a design whose fonts or images could not be loaded — retry it, do not ignore it.\n\n`format=pdfx` runs the print PDF through a PDF/X conversion: CMYK with an embedded ICC profile and PDF/X conformance markers, ready for a print shop. Tune it via the optional `pdfx` object — conformance standard (X-4 default / X-3 / X-1a), output profile (fogra39/gracol/srgb/custom), transparency flattening and its resolution, OutputIntent metadata. srgb is never PDF/X compliant. The result carries `warnings` when the file breaks its standard (each names the fix): relay them or re-export before calling the file print-ready. CMYK and spot colours, bleed and the print checklist: `skill://codesign/handbook/print.md`.\n\n`format=html` renders ONE page (`blockId` required — pass a page id) to responsive HTML5. Default is a single self-contained `.html` (assets inlined; animated designs get a CDN GSAP player injected so the file plays as-is); `html: { assets: \"external\" }` delivers html + separate image/font files as one `.zip`.\n\n`format=mp4` renders the authored timeline of the block (typically a page) to an H.264 `mp4`; duration and resolution come from the scene; frame rate is `fps` (default 30). Requires the native engine (the default). Long encodes report MCP progress notifications when the client sends a progressToken. The result also carries `duration` (seconds of video) and `audioDuration` (seconds of audio; absent when the mp4 has no audio track), both read from the encoded file — no need to probe it.\n\n`format=wav` / `format=m4a` renders the audio mix of a page (`blockId` required, a page id): every audio block and video-fill audio on it, over the page duration. `wav` is 48 kHz stereo 32-bit float, `m4a` is AAC. The result carries `duration` (seconds, read from the encoded file). To get one clip alone, export while it is the only audio on the page. Requires the native engine. Every clip sounds over exactly its own window (within a few ms; its first ~10 ms may be silent), whatever its start and trim. `m4a` as a whole may sit ~35 ms late from AAC encoder priming, as in the mp4.",
+      "description": "Export the design you are working on — `format` picks the deliverable: `pdf` (print PDF), `png`/`jpeg`/`webp` (image), `svg` (vector SVG), `pdfx` (print-ready PDF/X), `html` (responsive HTML5), `idml` (Adobe InDesign), `psd` (layered PSD), `mp4` (video), `wav`/`m4a` (audio), `imgly` (editable design file). Renders `blockId` — or the whole document when `blockId` is omitted.\n\nYour edits are saved to the design as you make them (the viewer shows it), so there is nothing to save: every format is a copy for the person — a pdf to print, a png to post, `imgly` the editable design file with its images.\n\nReturns JSON `{ uri, httpUrl, bytes, format }` (plus `path` when you pass `outPath`). `uri` is the durable handle — treat it as opaque and pass it back verbatim where a URI is wanted. `httpUrl` is a fetch link tied to this process — fetch it to download the bytes to disk, or hand it to the user.\n\n`outPath` (optional, absolute path including the filename): ALSO write the artifact to that local path — the workspace copy is still written, and the response then carries `path`. Use it when the file is wanted on disk, and always when your environment cannot fetch localhost URLs (sandboxed harnesses, e.g. Claude Cowork — target your session's outputs folder there).\n\n`format=svg` is the engine's vector export: text is outlined into paths (renders identically everywhere, but is not editable text in the SVG), and raster images are embedded in the file at source resolution — an SVG of a photo-heavy design can be much larger than its source images.\n\n`format=imgly` writes a portable, self-contained `.imgly` design file (scene + all asset bytes bundled) — the inverse of `import`, and the only format that stays editable: a copy to move, back up or send. Whole-design only: `blockId` is not accepted. Because the archive inlines every referenced asset it is the heaviest call this server makes, and it REFUSES rather than ship a design whose fonts or images could not be loaded — retry it, do not ignore it.\n\n`format=pdfx` runs the print PDF through a PDF/X conversion: CMYK with an embedded ICC profile and PDF/X conformance markers, ready for a print shop. Tune it via the optional `pdfx` object — conformance standard (X-4 default / X-3 / X-1a), output profile (fogra39/gracol/srgb/custom), transparency flattening and its resolution, OutputIntent metadata. srgb is never PDF/X compliant. The result carries `warnings` when the file breaks its standard (each names the fix): relay them or re-export before calling the file print-ready. CMYK and spot colours, bleed and the print checklist: `skill://codesign/formats/print.md`.\n\n`format=html` renders ONE page (`blockId` required — pass a page id) to responsive HTML5. Default is a single self-contained `.html` (assets inlined; animated designs get a CDN GSAP player injected so the file plays as-is); `html: { assets: \"external\" }` delivers html + separate image/font files as one `.zip`.\n\n`format=mp4` renders the authored timeline of the block (typically a page) to an H.264 `mp4`; duration and resolution come from the scene; frame rate is `fps` (default 30). Requires the native engine (the default). Long encodes report MCP progress notifications when the client sends a progressToken. The result also carries `duration` (seconds of video) and `audioDuration` (seconds of audio; absent when the mp4 has no audio track), both read from the encoded file — no need to probe it.\n\n`format=wav` / `format=m4a` renders the audio mix of a page (`blockId` required, a page id): every audio block and video-fill audio on it, over the page duration. `wav` is 48 kHz stereo 16-bit PCM, `m4a` is AAC. The result carries `duration` (seconds, read from the encoded file). To get one clip alone, export while it is the only audio on the page. Requires the native engine. Every clip sounds over exactly its own window (within a few ms), whatever its start and trim. `m4a` as a whole may sit ~35 ms late from AAC encoder priming, as in the mp4.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -253,6 +253,22 @@
               }
             },
             "additionalProperties": false
+          },
+          "bleed": {
+            "type": "boolean",
+            "description": "For `format=png`/`jpeg`/`webp` only (invalid with any other format). A page with print bleed renders trim + bleed by default; `false` renders it at its trim size. The design keeps its bleed."
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16000,
+            "description": "For `format=png`/`jpeg`/`webp` only: the image's width in px, scaled up or down; the aspect is kept, and with both the image fits inside them, never stretched. Default: the design's own size."
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 16000,
+            "description": "For `format=png`/`jpeg`/`webp` only: the image's height in px, scaled up or down; the aspect is kept, and with both the image fits inside them, never stretched. Default: the design's own size."
           },
           "fps": {
             "type": "number",
@@ -369,7 +385,7 @@
     },
     {
       "name": "view",
-      "description": "Get a URL the human can open to view and edit the design you are working on in CE.SDK. Returns the design's stable URL — it follows every change, so print it ONCE and don't re-emit a fresh URL every turn. The page is a full editor; when the human clicks 'Save', their edits land in the same design file. A new design is viewable after its first change. The editor opens in the mode the human last chose for this design, else 'motion' (timeline) when the design has animation, video, audio or timed blocks and 'design' otherwise; pass `mode` to force one.",
+      "description": "Get a URL the human can open to view and edit the design you are working on in CE.SDK. Returns the design's stable URL — it follows every change, so print it ONCE and don't re-emit a fresh URL every turn. The page is a full editor; when the human clicks 'Save', their edits land in the same design file. A new design is viewable after its first change. The editor opens in the mode the human last chose for this design, else 'motion' (timeline) when the design has animation, video, audio or timed blocks and 'design' otherwise; pass `mode` to force one. The human can change the design there and save it: your next call says so, and you `preview` their version before you continue.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -391,7 +407,7 @@
     },
     {
       "name": "asset_search",
-      "description": "Search every asset source of this server's engine, live; earlier sources rank first. Read-only — never creates a revision.\n\nReturns JSON `{ sources: [{ source, description, total, nextPage, failed, assets }] }`; each asset has `id`, `label`, `mimeType`, `uri` and `groups`, an image its `width` and `height` in pixels, and a typeface asset (e.g. from the `ly.img.gfonts` Google Fonts source) a compact `typeface: { name, weights, styles }`. A source's `description` says what it holds. Typefaces: `mimeType: ['application/ubq-typeface']`.\n\nThe `ly.img.workspace.images` source is this workspace's own store: every image the agent generated or imported AND every image the human uploaded in the browser editor, newest first. Uploads carry their original filename as `label` (the human will refer to it — \"use logo-final.png\" — so search that name) and `groups: [\"uploads\"]`. \"The image the user just uploaded\" = the first asset in the `uploads` group.\n\n⚠ Asset sources are deployment configuration — where their content lives (IMG.LY CDN, a customer host) is the server's business. NEVER fetch asset manifests (`content.json`) or hardcode `cdn.img.ly` URLs yourself; this tool and the uris it returns are the only correct path. A source this tool does not name is not available on this server — say so instead of working around it.\n\nTo USE a result, apply it inside `edit` code — either:\n(A) new block: `await engine.design.create({ type: 'graphic', props: { shape: { type: 'rect' }, fill: { type: 'image', uri }, width, height, contentFill: { mode: 'Cover' } } }, { parent: page })` with the asset's `uri` — keep `width`:`height` at the asset's aspect, or let `Cover` crop a photo; a logo or other mark takes `{ mode: 'Contain' }`; audio: `{ type: 'audio', props: { audio: { fileURI: uri } } }`;\n(B) existing block: `await engine.design.setProps(blockId, { fill: { type: 'image', uri }, contentFill: { mode: 'Cover' } })` with the asset's `uri` — `Cover` fills the frame and crops what does not fit, right for a photo; a logo or mark takes `{ mode: 'Contain' }`, or a frame at its `width`:`height`, so it is never cut.\n(C) fonts: set the family BY NAME inside `edit` — `text: { font: { family: name, weight: 'normal' } }` in `engine.design.create` or `engine.design.setProps`; the edit API finds the family and loads the weight. Never copy font URIs out of this tool into edit code.",
+      "description": "Search every asset source of this server's engine, live; earlier sources rank first. Read-only — never creates a revision.\n\nReturns JSON `{ sources: [{ source, description, total, nextPage, failed, assets }] }`; each asset has `id`, `label`, `mimeType`, `uri` and `groups`, an image its `width` and `height` in pixels, and a typeface asset (e.g. from the `ly.img.gfonts` Google Fonts source) a compact `typeface: { name, weights, styles }`. A source's `description` says what it holds. Typefaces: `mimeType: ['application/ubq-typeface']`.\n\nThe `ly.img.workspace.images` source is this workspace's own store: every image the agent generated or imported AND every image the human uploaded in the browser editor, newest first. Uploads carry their original filename as `label` (the human will refer to it — \"use logo-final.png\" — so search that name) and `groups: [\"uploads\"]`. \"The image the user just uploaded\" = the first asset in the `uploads` group.\n\n⚠ Asset sources are deployment configuration — where their content lives (IMG.LY CDN, a customer host) is the server's business. NEVER fetch asset manifests (`content.json`) or hardcode `cdn.img.ly` URLs yourself; this tool and the uris it returns are the only correct path. A source this tool does not name is not available on this server — say so instead of working around it.\n\nTo USE a result, apply it inside `edit` code — either:\n(A) new block: `await engine.design.create({ type: 'graphic', props: { shape: { type: 'rect' }, fill: { type: 'image', uri }, width, height, contentFill: { mode: 'Cover' } } }, { parent: page })` with the asset's `uri` — keep `width`:`height` at the asset's aspect, or let `Cover` crop a photo; a logo or other mark takes `{ mode: 'Contain' }`; audio: `{ type: 'audio', props: { audio: { fileURI: uri } } }`;\n(B) existing block: `await engine.design.setProps(blockId, { fill: { type: 'image', uri }, contentFill: { mode: 'Cover' } })` with the asset's `uri` — `Cover` fills the frame and crops what does not fit, right for a photo; a logo or mark takes `{ mode: 'Contain' }`, or a frame at its `width`:`height`, so it is never cut.\n(C) fonts: set the family BY NAME inside `edit` — `text: { font: { family: name, weight: 'normal' } }` in `engine.design.create` or `engine.design.setProps`; the edit API finds the family and loads the weight. Never copy font URIs out of this tool into edit code.\n\nA photo has to show what the design says it shows. When no result fits the subject, say so, then use the person's own image or one you can generate if this host makes images; failing both, a neutral placeholder (a solid shape in a palette colour, not an empty image frame), never an unrelated photo.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -460,7 +476,7 @@
     },
     {
       "name": "asset_generate",
-      "description": "Generate images, video, speech, music and sound effects — and transcribe speech — via the AI gateway.\n\nCall with NO arguments first: returns the curated model catalog, every entry tagged with its `capability` (text2image, image2image, text2video, image2video, text2speech, speech2text, …). Filter with `capability`; `source: \"all\"` (together with a `capability`) adds the provider models — e.g. music and sound effects under `text2audio`.\n\nThen call with `model` + `prompt` (+ optional `format` aspect like \"16:9\"). Model-specific inputs (duration, voice, lyrics, an input file…) go in `params`, sent to the model verbatim under the model's own field names — `model` + `schema: true` returns the fields a model takes. A `uri` inside `params` that an earlier tool result gave you is uploaded for the model first (e.g. `{ audio_url: '<id>' }` to transcribe).\n\nFor image-to-image, pass `image_uris` with uris an earlier tool result gave you. Never assemble one by hand.\n\nReturns ONE JSON part: the asset, in the engine's own asset shape — `{ id, meta: { uri, mimeType, kind, duration?, width?, height?, thumbUri? } }`, the same objects `asset_search` returns, plus `cost` (credits) when the gateway reports it. `id` is the durable handle: embed it in `edit` code (image or video fill, audio block) and pass it back here as an `image_uris` entry. It equals `meta.uri`. `meta.kind` is `image`, `video`, `audio` or `file`; `meta.duration` (seconds, as a string) is present for audio/video when the file header states it. Any other result that is data rather than a file comes back as `{ output }`, verbatim.\n\nTranscription (speech2text, e.g. `elevenlabs/scribe-v2`): put the recording's uri in the model's audio field (`audio_url`) — audio OR video of any length; the audio is extracted and long recordings are split for you. The result is `{ transcriptUri, duration, language?, wordCount, lines }`: `lines` holds one `[mm:ss.s–mm:ss.s] sentence` per sentence (times in the source), enough to pick moments by; the word timings stay in the `transcriptUri` asset — read them inside `edit` with `engine.design.readTranscript(transcriptUri, { from, to })` (words whose start lies in [from, to) seconds), e.g. to build captions.\n\nNO PICTURE COMES BACK. To see what was generated, place it and look at the render `edit` returns: `await engine.design.setProps(blockId, { fill: { type: 'image', uri: '<id>' } })`, or `await engine.design.create({ type: 'graphic', props: { width: 400, height: 400, shape: { type: 'rect' }, fill: { type: 'image', uri: '<id>' } } }, { parent: page })`. That shows it in the layout, which is what you have to judge anyway. Do not assume a generation is good — look before you build on it.\n\nMulti-output models (layerize-class: decompose an input image into layers) add an `assets` array of the same objects, in stack order (residual background first, then cutout layers). The top-level fields ARE `assets[0]`. Single-output results carry no `assets` array. Any non-image output the model produced is passed through VERBATIM under `metadata` — read it, it binds semantics to the assets.\n\nRequires a free IMG.LY sign-in (the `login` tool); all other design tools work without an account.",
+      "description": "Unavailable until you sign in with `login` (free IMG.LY account); once signed in, it works.\n\nGenerate images, video, speech, music and sound effects — and transcribe speech — via the AI gateway.\n\nCall with NO arguments first: returns the curated model catalog, every entry tagged with its `capability` (text2image, image2image, text2video, image2video, text2speech, speech2text, …). Filter with `capability`; `source: \"all\"` (together with a `capability`) adds the provider models — e.g. music and sound effects under `text2audio`.\n\nThen call with `model` + `prompt` (+ optional `format` aspect like \"16:9\"). Model-specific inputs (duration, voice, lyrics, an input file…) go in `params`, sent to the model verbatim under the model's own field names — `model` + `schema: true` returns the fields a model takes. A `uri` inside `params` that an earlier tool result gave you is uploaded for the model first (e.g. `{ audio_url: '<id>' }` to transcribe).\n\nFor image-to-image, pass `image_uris` with uris an earlier tool result gave you. Never assemble one by hand.\n\nReturns ONE JSON part: the asset, in the engine's own asset shape — `{ id, meta: { uri, mimeType, kind, duration?, width?, height?, thumbUri? } }`, the same objects `asset_search` returns, plus `cost` (credits) when the gateway reports it. `id` is the durable handle: embed it in `edit` code (image or video fill, audio block) and pass it back here as an `image_uris` entry. It equals `meta.uri`. `meta.kind` is `image`, `video`, `audio` or `file`; `meta.duration` (seconds, as a string) is present for audio/video when the file header states it. Any other result that is data rather than a file comes back as `{ output }`, verbatim.\n\nTranscription (speech2text, e.g. `elevenlabs/scribe-v2`): put the recording's uri in the model's audio field (`audio_url`) — audio OR video of any length; the audio is extracted and long recordings are split for you. The result is `{ transcriptUri, duration, language?, wordCount, lines }`: `lines` holds one `[mm:ss.s–mm:ss.s] sentence` per sentence (times in the source), enough to pick moments by; the word timings stay in the `transcriptUri` asset — read them inside `edit` with `engine.design.readTranscript(transcriptUri, { from, to })` (words whose start lies in [from, to) seconds), e.g. to build captions.\n\nNO PICTURE COMES BACK. To see what was generated, place it and look at the render `edit` returns: `await engine.design.setProps(blockId, { fill: { type: 'image', uri: '<id>' } })`, or `await engine.design.create({ type: 'graphic', props: { width: 400, height: 400, shape: { type: 'rect' }, fill: { type: 'image', uri: '<id>' } } }, { parent: page })`. That shows it in the layout, which is what you have to judge anyway. Do not assume a generation is good — look before you build on it.\n\nMulti-output models (layerize-class: decompose an input image into layers) add an `assets` array of the same objects, in stack order (residual background first, then cutout layers). The top-level fields ARE `assets[0]`. Single-output results carry no `assets` array. Any non-image output the model produced is passed through VERBATIM under `metadata` — read it, it binds semantics to the assets.\n\nRequires a free IMG.LY sign-in (the `login` tool); all other design tools work without an account.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -561,7 +577,7 @@
         "properties": {
           "uri": {
             "type": "string",
-            "description": "A skill URI, e.g. skill://codesign/handbook/SKILL.md."
+            "description": "A skill URI, e.g. skill://codesign/api/SKILL.md."
           }
         },
         "required": [
@@ -578,13 +594,13 @@
     "claude-code": [
       {
         "name": "edit",
-        "description": "Edit the CE.SDK canvas by running JavaScript against the live CreativeEngine. The result becomes the session’s current state.\n\n⚠ BEFORE your first `edit`, load the installed `handbook` skill; if it isn't installed, read the MCP resource `skill://codesign/handbook/SKILL.md`. It documents the design loop, the typeface schema, and the engine recipes; on cryptic errors, read `skill://codesign/handbook/quirks.md`.\n\nThere is no `parent` and no revision id: `edit` always continues the design in front of you.\n\nEvery successful edit is kept — the product stores the design after each one, so there is nothing to save.\n\nReturns: the first content part is JSON `{ names? }` — every named block in the scene, which are exactly the strings `engine.design.findByName(name)` resolves in your NEXT edit. Name what you build and re-find it instead of matching copy. When the edit changed the scene, the result also ends with a downscaled render of the first page it changed — verify your work from it instead of spending a `preview` call. `preview` remains required for full-size judging (the judge loop) and multi-page review; set `render: false` to skip the image on read-only/diagnostic edits.\n\n`code` return contract (STRICT): return `undefined` (no message back), `{ type: \"text\", text }`, `{ type: \"image\", data: \"<base64>\", mimeType }`, or an array of those. Anything else (raw strings, Blobs, plain objects) is rejected.\n\nDIALECT (enforced): edit code uses `engine.design` only — scene, pages, props, text, variables, spot colours, transitions. Code that reaches engine.block/scene/variable/editor/asset/event is rejected before execution with the equivalent calls.\n\n`code` scope: `engine.design`, plus `findText(copy)` / `findAllText(copy)` for reaching a block by its text. Use them instead of comparing text strings with `===` — the copy on the page routinely carries a trailing space or an NBSP (before a `€`/`%`), which is what makes hand-rolled lookups throw. Matching folds those space variants and trims; a miss lists the copy actually on the page.\n\nDirty-on-throw: if your `code` throws, nothing is checkpointed and the next `edit` reloads the session from its last good state. Do not catch-and-swallow errors that should propagate — let them throw so this safety contract kicks in.",
+        "description": "Edit the CE.SDK canvas by running JavaScript against the live CreativeEngine. The result becomes the session’s current state.\n\n⚠ BEFORE your first `edit`, read `skill://codesign/api/SKILL.md`, `skill://codesign/judge/SKILL.md` and `skill://codesign/judge/design-rules.md` in one message: the edit-code API and the rules a design is built to. Worked examples, and the lookup for a cryptic error (\"Known engine defects\"), are `skill://codesign/api/recipes.md`.\n\nThere is no `parent` and no revision id: `edit` always continues the design in front of you.\n\nEvery successful edit is kept — the product stores the design after each one, so there is nothing to save.\n\nReturns: the first content part is JSON `{ names? }` — every named block in the scene, which are exactly the strings `engine.design.findByName(name)` resolves in your NEXT edit. Name what you build and re-find it instead of matching copy. When the edit changed the scene, the result also ends with a downscaled render of the first page it changed — verify your work from it instead of spending a `preview` call. `preview` remains required for full-size judging (the judge loop) and multi-page review; set `render: false` to skip the image on read-only/diagnostic edits.\n\n`code` return contract (STRICT): return `undefined` (no message back), `{ type: \"text\", text }`, `{ type: \"image\", data: \"<base64>\", mimeType }`, or an array of those. Anything else (raw strings, Blobs, plain objects) is rejected.\n\nDIALECT (enforced): edit code uses `engine.design` only — scene, pages, props, text, variables, spot colours, transitions. Code that reaches engine.block/scene/variable/editor/asset/event is rejected before execution with the equivalent calls.\n\n`code` scope: `engine.design`, plus `await findText(copy)` / `await findAllText(copy)` (async like every `engine.design` member) for reaching a block by its text. Use them instead of comparing text strings with `===` — the copy on the page routinely carries a trailing space or an NBSP (before a `€`/`%`), which is what makes hand-rolled lookups throw. Matching folds those space variants and trims; a miss lists the copy actually on the page.\n\nDirty-on-throw: if your `code` throws, nothing is checkpointed and the next `edit` reloads the session from its last good state. Do not catch-and-swallow errors that should propagate — let them throw so this safety contract kicks in.",
         "inputSchema": {
           "type": "object",
           "properties": {
             "code": {
               "type": "string",
-              "description": "Async JS body using `engine.design` — the whole edit API; EVERY member returns a Promise (await it): create({ type, name?, props?, children? }, { parent? }), setProps(id, props), getProps(id, select?) — see the api skill. Strict return contract per the handbook."
+              "description": "Async JS body using `engine.design` — the whole edit API; EVERY member returns a Promise (await it): create({ type, name?, props?, children? }, { parent? }), setProps(id, props), getProps(id, select?) — see the api skill; its recipes.md shows the return contract."
             },
             "note": {
               "type": "string",
@@ -596,7 +612,7 @@
             },
             "skills": {
               "type": "string",
-              "description": "Optional: comma-separated names of the CoDesign skills you are following for this edit (e.g. \"handbook,api,judge\"). The names are sent with usage telemetry; the edit itself ignores them."
+              "description": "Optional: comma-separated names of the CoDesign skills you are following for this edit (e.g. \"create,api,judge\"). The names are sent with usage telemetry; the edit itself ignores them."
             }
           },
           "required": [
@@ -607,20 +623,20 @@
       },
       {
         "name": "preview",
-        "description": "Render blocks (almost always pages) to inline images so you can see the result.\n\n`blockIds` is a LIST, rendered in the order you give it: `[pageId]` for one page, `[a, b]` for a subset, or OMIT it entirely to preview every page of the design in document order.\n\nThere is nothing to address: this always renders the design you are working on. Its last state is loaded before rendering, so the ids always resolve against the right scene — never against a different design another agent may have loaded on a shared server.\n\nPreview several blocks at once when REVIEWING or capturing a finished design — a whole deck in one call, or just the pages a fix touched. While BUILDING a multi-page design, keep previewing each page right after you build it: batching there does not avoid the bugs, it only delays finding them.\n\nAnimated or video designs (any scene mode): pass `time` (seconds along the timeline of what is rendered — the page, since a block is previewed in place on it; 0 = first frame) to render any frame as a still — use `export format=mp4` for motion. `time` applies to every block in the call, and each timed preview (and every preview of a Video-mode scene) returns `{blockId, time, duration}` JSON alongside its image; `duration` is the scrubbable range.\n\nOutput is always PNG (lossless — thin lines render exactly). EACH block gets the full 0.25 megapixel budget, adjusted to its own aspect ratio — a square page renders 512×512, a 1:4 page 256×1024. There are no size or format knobs, and at most 10 blocks render per call.\n\nTo SEE SMALL TYPE as it is actually set — legal copy, a caption, a label — the simplest zoom is to pass THAT BLOCK'S id: `blockIds: [<textId>]` renders it on its page, framed, with context around it. No coordinates needed.\n\nFor a tighter or arbitrary crop, pass `region`: a rectangle `{x, y, width, height}` with ONE id in `blockIds`. Its numbers are the design's own coordinates — what `engine.design.getProps(id, ['globalBoundingBox'])` returns inside `edit` — NOT pixels of a preview image you already have. Either way the crop is rendered into the same budget, so a smaller rectangle means bigger pixels, and it is never enlarged past the design's own resolution.\n\nPreviewing a block that is NOT a page renders it IN PLACE on its page — background and neighbours included — so you score what is actually on the page. `export` still produces the block alone when you need it with an alpha channel. For native-resolution certainty, `export` the page and open its `httpUrl`.\n\nTo look at a stored ASSET rather than the design — an image you just generated, or one the customer uploaded — pass `uri` instead: `preview({ uri: <meta.thumbUri from the asset> })`. Use the asset's `thumbUri`, not its `id`: the id is the full-resolution original and is refused. Nothing is rendered and no design is touched; you simply see the picture.",
+        "description": "Render blocks (almost always pages) to inline images so you can see the result.\n\n`blockIds` is a LIST, rendered in the order you give it: `[pageId]` for one page, `[a, b]` for a subset, or OMIT it entirely to preview every page of the design in document order.\n\nThere is nothing to address: this always renders the design you are working on. Its last state is loaded before rendering, so the ids always resolve against the right scene — never against a different design another agent may have loaded on a shared server.\n\nPreview several blocks at once when REVIEWING or capturing a finished design — a whole deck in one call, or just the pages a fix touched. While BUILDING a multi-page design, keep previewing each page right after you build it: batching there does not avoid the bugs, it only delays finding them.\n\nAnimated or video designs (any scene mode): pass `time` (seconds along the timeline of what is rendered — the page, since a block is previewed in place on it; 0 = first frame) to render any frame as a still — use `export format=mp4` for motion. `time` applies to every block in the call, and each timed preview (and every preview of a Video-mode scene) returns `{blockId, time, duration}` JSON alongside its image; `duration` is the scrubbable range.\n\nOutput is always PNG (lossless — thin lines render exactly). EACH block gets the full 0.25 megapixel budget, adjusted to its own aspect ratio — a square page renders 512×512, a 1:4 page 256×1024. There are no size or format knobs, and at most 10 blocks render per call.\n\nTo SEE SMALL TYPE as it is actually set — legal copy, a caption, a label — the simplest zoom is to pass THAT BLOCK'S id: `blockIds: [<textId>]` renders it on its page, framed, with context around it. No coordinates needed.\n\nFor a tighter or arbitrary crop, pass `region`: a rectangle `{x, y, width, height}` with ONE id in `blockIds`. It is measured from the top-left corner of that block's PAGE, in the design's units (the page's own width and height bound it) — the same numbers on page 1 and page 5, and NOT pixels of a preview image you already have. `globalBoundingBox` is in scene coordinates: for a block, subtract its page's `globalBoundingBox` x and y, or pass back the `region` a `preview({ blockIds: [<blockId>] })` reported. A rectangle that runs off the page is trimmed to it, one that misses it is moved onto it, and the result says `clampedToPage`. Every partial render reports the `region` it shows in these coordinates, ready to pass back. The crop is rendered into the same budget, so a smaller rectangle means bigger pixels, and it is never enlarged past the design's own resolution.\n\nPreviewing a block that is NOT a page renders it IN PLACE on its page — background and neighbours included — so you score what is actually on the page. `export` still produces the block alone when you need it with an alpha channel. For native-resolution certainty, `export` the page and open its `httpUrl`.\n\nTo look at an ASSET rather than the design — an image you just generated, one the customer uploaded, or one an asset search returned — pass `uri` instead: the `uri` (or `meta.thumbUri`) an earlier tool result in this session gave you, never one you assembled or found on the web. An image an asset source lists shows as its thumbnail; a stored one too large to show comes back downscaled when this deployment can shrink its format. Nothing is rendered and no design is touched; you simply see the picture.",
         "inputSchema": {
           "type": "object",
           "properties": {
             "uri": {
               "type": "string",
-              "description": "Look at a stored ASSET instead of the design. Pass the `meta.thumbUri` an asset tool gave you — not its `id`, which is the full-resolution original. Cannot be combined with `blockIds`."
+              "description": "Look at an ASSET instead of the design: the `uri` or `meta.thumbUri` an earlier tool result gave you (a generated, uploaded or imported image, or one an asset search returned). Cannot be combined with a non-empty `blockIds`."
             },
             "blockIds": {
               "type": "array",
               "items": {
                 "type": "integer"
               },
-              "description": "Blocks to render, in the order you want them back — almost always page ids, not the scene root. Omit to preview every page of the design in document order. At most 10 render per call."
+              "description": "Blocks to render, in the order you want them back — almost always page ids, not the scene root. Omit it (or pass `[]`) to preview every page of the design in document order. At most 10 render per call."
             },
             "region": {
               "type": "object",
@@ -647,7 +663,7 @@
                 "height"
               ],
               "additionalProperties": false,
-              "description": "Rectangle to render, in the design's own coordinates — the space block bounding boxes are reported in. Requires exactly one id in `blockIds`; the rectangle is taken on that block's page. Rendered into the same 0.25 MP budget, so a smaller rectangle reads bigger, up to the design's native resolution."
+              "description": "Rectangle to render, in the design's units from the top-left corner of the page of the one id in `blockIds` (required) — {x: 0, y: 0} is that page's corner on every page; subtract the page's `globalBoundingBox` x/y from a block's. Off-page parts are trimmed and a rectangle that misses the page is moved onto it (`clampedToPage` in the result). Rendered into the same 0.25 MP budget, so a smaller rectangle reads bigger, up to the design's native resolution."
             },
             "time": {
               "type": "number",
@@ -664,7 +680,7 @@
       },
       {
         "name": "import",
-        "description": "Import a design FILE as a NEW design — a CE.SDK `.imgly` design file; a Photoshop (`.psd`/`.psb`), InDesign (`.idml`), PowerPoint (`.pptx`) or PDF file; or a plain image or SVG, which becomes a one-page design sized to the image. To make a media file (image/font/video/audio) available for use INSIDE a design instead of becoming one: Use `asset_add` to bring it into the workspace, then apply it inside `edit`.\n\nSource: `{ url }` (http/https), `{ uri }` (a saved design — you get a copy of it — or a file you were given), `{ demo }` (a design bundled with this server — ids: `\"cybernews\"`) or `{ path }` (absolute local file path).\n\nEvery import starts a NEW design, and you work on it from then on: the design you were on is left as it is. To keep working on a saved design itself rather than a copy, use `open` with its `uri`. With only a `title` and no `source`, it starts an empty design: do that for every new design, before you name it or build it.\n\nReturns JSON `{ uri, title, format }` — the new design, saved after every change; to continue it later, `open` this `uri`. Foreign-format imports may add `warnings` (what did not survive — substituted fonts, unsupported features): treat them as your touch-up list — `preview` the pages, then repair with `edit`.",
+        "description": "Import a design FILE as a NEW design — a CE.SDK `.imgly` design file; a Photoshop (`.psd`/`.psb`), InDesign (`.idml`), PowerPoint (`.pptx`) or PDF file; or a plain image or SVG, which becomes a one-page design sized to the image. To make a media file (image/font/video/audio) available for use INSIDE a design instead of becoming one: Use `asset_add` to bring it into the workspace, then apply it inside `edit`.\n\nSource: `{ url }` (http/https), `{ uri }` (a saved design — you get a copy of it — or a file you were given), `{ demo }` (a design bundled with this server — ids: `\"cybernews\"`) or `{ path }` (absolute local file path).\n\nEvery import starts a NEW design, and you work on it from then on: the design you were on is left as it is. To keep working on a saved design itself rather than a copy, use `open` with its `uri`. With only a `title` and no `source` (`import({ title: 'Poster' })`), it starts an empty design: do that for every new design, before you name it or build it.\n\nReturns JSON `{ uri, title, format }` — the new design, saved after every change; to continue it later, `open` this `uri`. Foreign-format imports may add `warnings` (what did not survive — substituted fonts, unsupported features): treat them as your touch-up list — `preview` the pages, then repair with `edit`.",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -722,7 +738,7 @@
       },
       {
         "name": "export",
-        "description": "Export the design you are working on — `format` picks the deliverable: `pdf` (print PDF), `png`/`jpeg`/`webp` (image), `svg` (vector SVG), `pdfx` (print-ready PDF/X), `html` (responsive HTML5), `idml` (Adobe InDesign), `psd` (layered PSD), `mp4` (video), `wav`/`m4a` (audio), `imgly` (editable design file). Renders `blockId` — or the whole document when `blockId` is omitted.\n\nYour edits are saved to the design as you make them (the viewer shows it), so there is nothing to save: every format is a copy for the person — a pdf to print, a png to post, `imgly` the editable design file with its images.\n\nReturns JSON `{ uri, httpUrl, bytes, format }` (plus `path` when you pass `outPath`). `uri` is the durable handle — treat it as opaque and pass it back verbatim where a URI is wanted. `httpUrl` is a fetch link tied to this process — fetch it to download the bytes to disk, or hand it to the user.\n\n`outPath` (optional, absolute path including the filename): ALSO write the artifact to that local path — the workspace copy is still written, and the response then carries `path`. Use it when the file is wanted on disk, and always when your environment cannot fetch localhost URLs (sandboxed harnesses, e.g. Claude Cowork — target your session's outputs folder there).\n\n`format=svg` is the engine's vector export: text is outlined into paths (renders identically everywhere, but is not editable text in the SVG), and raster images are embedded in the file at source resolution — an SVG of a photo-heavy design can be much larger than its source images.\n\n`format=imgly` writes a portable, self-contained `.imgly` design file (scene + all asset bytes bundled) — the inverse of `import`, and the only format that stays editable: a copy to move, back up or send. Whole-design only: `blockId` is not accepted. Because the archive inlines every referenced asset it is the heaviest call this server makes, and it REFUSES rather than ship a design whose fonts or images could not be loaded — retry it, do not ignore it.\n\n`format=pdfx` runs the print PDF through a PDF/X conversion: CMYK with an embedded ICC profile and PDF/X conformance markers, ready for a print shop. Tune it via the optional `pdfx` object — conformance standard (X-4 default / X-3 / X-1a), output profile (fogra39/gracol/srgb/custom), transparency flattening and its resolution, OutputIntent metadata. srgb is never PDF/X compliant. The result carries `warnings` when the file breaks its standard (each names the fix): relay them or re-export before calling the file print-ready. CMYK and spot colours, bleed and the print checklist: `skill://codesign/handbook/print.md`.\n\n`format=html` renders ONE page (`blockId` required — pass a page id) to responsive HTML5. Default is a single self-contained `.html` (assets inlined; animated designs get a CDN GSAP player injected so the file plays as-is); `html: { assets: \"external\" }` delivers html + separate image/font files as one `.zip`.\n\n`format=mp4` renders the authored timeline of the block (typically a page) to an H.264 `mp4`; duration and resolution come from the scene; frame rate is `fps` (default 30). Requires the native engine (the default). Long encodes report MCP progress notifications when the client sends a progressToken. The result also carries `duration` (seconds of video) and `audioDuration` (seconds of audio; absent when the mp4 has no audio track), both read from the encoded file — no need to probe it.\n\n`format=wav` / `format=m4a` renders the audio mix of a page (`blockId` required, a page id): every audio block and video-fill audio on it, over the page duration. `wav` is 48 kHz stereo 32-bit float, `m4a` is AAC. The result carries `duration` (seconds, read from the encoded file). To get one clip alone, export while it is the only audio on the page. Requires the native engine. Every clip sounds over exactly its own window (within a few ms; its first ~10 ms may be silent), whatever its start and trim. `m4a` as a whole may sit ~35 ms late from AAC encoder priming, as in the mp4.",
+        "description": "Export the design you are working on — `format` picks the deliverable: `pdf` (print PDF), `png`/`jpeg`/`webp` (image), `svg` (vector SVG), `pdfx` (print-ready PDF/X), `html` (responsive HTML5), `idml` (Adobe InDesign), `psd` (layered PSD), `mp4` (video), `wav`/`m4a` (audio), `imgly` (editable design file). Renders `blockId` — or the whole document when `blockId` is omitted.\n\nYour edits are saved to the design as you make them (the viewer shows it), so there is nothing to save: every format is a copy for the person — a pdf to print, a png to post, `imgly` the editable design file with its images.\n\nReturns JSON `{ uri, httpUrl, bytes, format }` (plus `path` when you pass `outPath`). `uri` is the durable handle — treat it as opaque and pass it back verbatim where a URI is wanted. `httpUrl` is a fetch link tied to this process — fetch it to download the bytes to disk, or hand it to the user.\n\n`outPath` (optional, absolute path including the filename): ALSO write the artifact to that local path — the workspace copy is still written, and the response then carries `path`. Use it when the file is wanted on disk, and always when your environment cannot fetch localhost URLs (sandboxed harnesses, e.g. Claude Cowork — target your session's outputs folder there).\n\n`format=svg` is the engine's vector export: text is outlined into paths (renders identically everywhere, but is not editable text in the SVG), and raster images are embedded in the file at source resolution — an SVG of a photo-heavy design can be much larger than its source images.\n\n`format=imgly` writes a portable, self-contained `.imgly` design file (scene + all asset bytes bundled) — the inverse of `import`, and the only format that stays editable: a copy to move, back up or send. Whole-design only: `blockId` is not accepted. Because the archive inlines every referenced asset it is the heaviest call this server makes, and it REFUSES rather than ship a design whose fonts or images could not be loaded — retry it, do not ignore it.\n\n`format=pdfx` runs the print PDF through a PDF/X conversion: CMYK with an embedded ICC profile and PDF/X conformance markers, ready for a print shop. Tune it via the optional `pdfx` object — conformance standard (X-4 default / X-3 / X-1a), output profile (fogra39/gracol/srgb/custom), transparency flattening and its resolution, OutputIntent metadata. srgb is never PDF/X compliant. The result carries `warnings` when the file breaks its standard (each names the fix): relay them or re-export before calling the file print-ready. CMYK and spot colours, bleed and the print checklist: `skill://codesign/formats/print.md`.\n\n`format=html` renders ONE page (`blockId` required — pass a page id) to responsive HTML5. Default is a single self-contained `.html` (assets inlined; animated designs get a CDN GSAP player injected so the file plays as-is); `html: { assets: \"external\" }` delivers html + separate image/font files as one `.zip`.\n\n`format=mp4` renders the authored timeline of the block (typically a page) to an H.264 `mp4`; duration and resolution come from the scene; frame rate is `fps` (default 30). Requires the native engine (the default). Long encodes report MCP progress notifications when the client sends a progressToken. The result also carries `duration` (seconds of video) and `audioDuration` (seconds of audio; absent when the mp4 has no audio track), both read from the encoded file — no need to probe it.\n\n`format=wav` / `format=m4a` renders the audio mix of a page (`blockId` required, a page id): every audio block and video-fill audio on it, over the page duration. `wav` is 48 kHz stereo 16-bit PCM, `m4a` is AAC. The result carries `duration` (seconds, read from the encoded file). To get one clip alone, export while it is the only audio on the page. Requires the native engine. Every clip sounds over exactly its own window (within a few ms), whatever its start and trim. `m4a` as a whole may sit ~35 ms late from AAC encoder priming, as in the mp4.",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -827,6 +843,22 @@
                 }
               },
               "additionalProperties": false
+            },
+            "bleed": {
+              "type": "boolean",
+              "description": "For `format=png`/`jpeg`/`webp` only (invalid with any other format). A page with print bleed renders trim + bleed by default; `false` renders it at its trim size. The design keeps its bleed."
+            },
+            "width": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000,
+              "description": "For `format=png`/`jpeg`/`webp` only: the image's width in px, scaled up or down; the aspect is kept, and with both the image fits inside them, never stretched. Default: the design's own size."
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 16000,
+              "description": "For `format=png`/`jpeg`/`webp` only: the image's height in px, scaled up or down; the aspect is kept, and with both the image fits inside them, never stretched. Default: the design's own size."
             },
             "fps": {
               "type": "number",
@@ -943,7 +975,7 @@
       },
       {
         "name": "view",
-        "description": "Get a URL the human can open to view and edit the design you are working on in CE.SDK. Returns the design's stable URL — it follows every change, so print it ONCE and don't re-emit a fresh URL every turn. The page is a full editor; when the human clicks 'Save', their edits land in the same design file. A new design is viewable after its first change. The editor opens in the mode the human last chose for this design, else 'motion' (timeline) when the design has animation, video, audio or timed blocks and 'design' otherwise; pass `mode` to force one.",
+        "description": "Get a URL the human can open to view and edit the design you are working on in CE.SDK. Returns the design's stable URL — it follows every change, so print it ONCE and don't re-emit a fresh URL every turn. The page is a full editor; when the human clicks 'Save', their edits land in the same design file. A new design is viewable after its first change. The editor opens in the mode the human last chose for this design, else 'motion' (timeline) when the design has animation, video, audio or timed blocks and 'design' otherwise; pass `mode` to force one. The human can change the design there and save it: your next call says so, and you `preview` their version before you continue.",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -965,7 +997,7 @@
       },
       {
         "name": "asset_search",
-        "description": "Search every asset source of this server's engine, live; earlier sources rank first. Read-only — never creates a revision.\n\nReturns JSON `{ sources: [{ source, description, total, nextPage, failed, assets }] }`; each asset has `id`, `label`, `mimeType`, `uri` and `groups`, an image its `width` and `height` in pixels, and a typeface asset (e.g. from the `ly.img.gfonts` Google Fonts source) a compact `typeface: { name, weights, styles }`. A source's `description` says what it holds. Typefaces: `mimeType: ['application/ubq-typeface']`.\n\nThe `ly.img.workspace.images` source is this workspace's own store: every image the agent generated or imported AND every image the human uploaded in the browser editor, newest first. Uploads carry their original filename as `label` (the human will refer to it — \"use logo-final.png\" — so search that name) and `groups: [\"uploads\"]`. \"The image the user just uploaded\" = the first asset in the `uploads` group.\n\n⚠ Asset sources are deployment configuration — where their content lives (IMG.LY CDN, a customer host) is the server's business. NEVER fetch asset manifests (`content.json`) or hardcode `cdn.img.ly` URLs yourself; this tool and the uris it returns are the only correct path. A source this tool does not name is not available on this server — say so instead of working around it.\n\nTo USE a result, apply it inside `edit` code — either:\n(A) new block: `await engine.design.create({ type: 'graphic', props: { shape: { type: 'rect' }, fill: { type: 'image', uri }, width, height, contentFill: { mode: 'Cover' } } }, { parent: page })` with the asset's `uri` — keep `width`:`height` at the asset's aspect, or let `Cover` crop a photo; a logo or other mark takes `{ mode: 'Contain' }`; audio: `{ type: 'audio', props: { audio: { fileURI: uri } } }`;\n(B) existing block: `await engine.design.setProps(blockId, { fill: { type: 'image', uri }, contentFill: { mode: 'Cover' } })` with the asset's `uri` — `Cover` fills the frame and crops what does not fit, right for a photo; a logo or mark takes `{ mode: 'Contain' }`, or a frame at its `width`:`height`, so it is never cut.\n(C) fonts: set the family BY NAME inside `edit` — `text: { font: { family: name, weight: 'normal' } }` in `engine.design.create` or `engine.design.setProps`; the edit API finds the family and loads the weight. Never copy font URIs out of this tool into edit code.",
+        "description": "Search every asset source of this server's engine, live; earlier sources rank first. Read-only — never creates a revision.\n\nReturns JSON `{ sources: [{ source, description, total, nextPage, failed, assets }] }`; each asset has `id`, `label`, `mimeType`, `uri` and `groups`, an image its `width` and `height` in pixels, and a typeface asset (e.g. from the `ly.img.gfonts` Google Fonts source) a compact `typeface: { name, weights, styles }`. A source's `description` says what it holds. Typefaces: `mimeType: ['application/ubq-typeface']`.\n\nThe `ly.img.workspace.images` source is this workspace's own store: every image the agent generated or imported AND every image the human uploaded in the browser editor, newest first. Uploads carry their original filename as `label` (the human will refer to it — \"use logo-final.png\" — so search that name) and `groups: [\"uploads\"]`. \"The image the user just uploaded\" = the first asset in the `uploads` group.\n\n⚠ Asset sources are deployment configuration — where their content lives (IMG.LY CDN, a customer host) is the server's business. NEVER fetch asset manifests (`content.json`) or hardcode `cdn.img.ly` URLs yourself; this tool and the uris it returns are the only correct path. A source this tool does not name is not available on this server — say so instead of working around it.\n\nTo USE a result, apply it inside `edit` code — either:\n(A) new block: `await engine.design.create({ type: 'graphic', props: { shape: { type: 'rect' }, fill: { type: 'image', uri }, width, height, contentFill: { mode: 'Cover' } } }, { parent: page })` with the asset's `uri` — keep `width`:`height` at the asset's aspect, or let `Cover` crop a photo; a logo or other mark takes `{ mode: 'Contain' }`; audio: `{ type: 'audio', props: { audio: { fileURI: uri } } }`;\n(B) existing block: `await engine.design.setProps(blockId, { fill: { type: 'image', uri }, contentFill: { mode: 'Cover' } })` with the asset's `uri` — `Cover` fills the frame and crops what does not fit, right for a photo; a logo or mark takes `{ mode: 'Contain' }`, or a frame at its `width`:`height`, so it is never cut.\n(C) fonts: set the family BY NAME inside `edit` — `text: { font: { family: name, weight: 'normal' } }` in `engine.design.create` or `engine.design.setProps`; the edit API finds the family and loads the weight. Never copy font URIs out of this tool into edit code.\n\nA photo has to show what the design says it shows. When no result fits the subject, say so, then use the person's own image or one you can generate if this host makes images; failing both, a neutral placeholder (a solid shape in a palette colour, not an empty image frame), never an unrelated photo.",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -1034,7 +1066,7 @@
       },
       {
         "name": "asset_generate",
-        "description": "Generate images, video, speech, music and sound effects — and transcribe speech — via the AI gateway.\n\nCall with NO arguments first: returns the curated model catalog, every entry tagged with its `capability` (text2image, image2image, text2video, image2video, text2speech, speech2text, …). Filter with `capability`; `source: \"all\"` (together with a `capability`) adds the provider models — e.g. music and sound effects under `text2audio`.\n\nThen call with `model` + `prompt` (+ optional `format` aspect like \"16:9\"). Model-specific inputs (duration, voice, lyrics, an input file…) go in `params`, sent to the model verbatim under the model's own field names — `model` + `schema: true` returns the fields a model takes. A `uri` inside `params` that an earlier tool result gave you is uploaded for the model first (e.g. `{ audio_url: '<id>' }` to transcribe).\n\nFor image-to-image, pass `image_uris` with uris an earlier tool result gave you. Never assemble one by hand.\n\nReturns ONE JSON part: the asset, in the engine's own asset shape — `{ id, meta: { uri, mimeType, kind, duration?, width?, height?, thumbUri? } }`, the same objects `asset_search` returns, plus `cost` (credits) when the gateway reports it. `id` is the durable handle: embed it in `edit` code (image or video fill, audio block) and pass it back here as an `image_uris` entry. It equals `meta.uri`. `meta.kind` is `image`, `video`, `audio` or `file`; `meta.duration` (seconds, as a string) is present for audio/video when the file header states it. Any other result that is data rather than a file comes back as `{ output }`, verbatim.\n\nTranscription (speech2text, e.g. `elevenlabs/scribe-v2`): put the recording's uri in the model's audio field (`audio_url`) — audio OR video of any length; the audio is extracted and long recordings are split for you. The result is `{ transcriptUri, duration, language?, wordCount, lines }`: `lines` holds one `[mm:ss.s–mm:ss.s] sentence` per sentence (times in the source), enough to pick moments by; the word timings stay in the `transcriptUri` asset — read them inside `edit` with `engine.design.readTranscript(transcriptUri, { from, to })` (words whose start lies in [from, to) seconds), e.g. to build captions.\n\nNO PICTURE COMES BACK. To see what was generated, place it and look at the render `edit` returns: `await engine.design.setProps(blockId, { fill: { type: 'image', uri: '<id>' } })`, or `await engine.design.create({ type: 'graphic', props: { width: 400, height: 400, shape: { type: 'rect' }, fill: { type: 'image', uri: '<id>' } } }, { parent: page })`. That shows it in the layout, which is what you have to judge anyway. Do not assume a generation is good — look before you build on it.\n\nMulti-output models (layerize-class: decompose an input image into layers) add an `assets` array of the same objects, in stack order (residual background first, then cutout layers). The top-level fields ARE `assets[0]`. Single-output results carry no `assets` array. Any non-image output the model produced is passed through VERBATIM under `metadata` — read it, it binds semantics to the assets.\n\nRequires a free IMG.LY sign-in (the `login` tool); all other design tools work without an account.",
+        "description": "Unavailable until you sign in with `login` (free IMG.LY account); once signed in, it works.\n\nGenerate images, video, speech, music and sound effects — and transcribe speech — via the AI gateway.\n\nCall with NO arguments first: returns the curated model catalog, every entry tagged with its `capability` (text2image, image2image, text2video, image2video, text2speech, speech2text, …). Filter with `capability`; `source: \"all\"` (together with a `capability`) adds the provider models — e.g. music and sound effects under `text2audio`.\n\nThen call with `model` + `prompt` (+ optional `format` aspect like \"16:9\"). Model-specific inputs (duration, voice, lyrics, an input file…) go in `params`, sent to the model verbatim under the model's own field names — `model` + `schema: true` returns the fields a model takes. A `uri` inside `params` that an earlier tool result gave you is uploaded for the model first (e.g. `{ audio_url: '<id>' }` to transcribe).\n\nFor image-to-image, pass `image_uris` with uris an earlier tool result gave you. Never assemble one by hand.\n\nReturns ONE JSON part: the asset, in the engine's own asset shape — `{ id, meta: { uri, mimeType, kind, duration?, width?, height?, thumbUri? } }`, the same objects `asset_search` returns, plus `cost` (credits) when the gateway reports it. `id` is the durable handle: embed it in `edit` code (image or video fill, audio block) and pass it back here as an `image_uris` entry. It equals `meta.uri`. `meta.kind` is `image`, `video`, `audio` or `file`; `meta.duration` (seconds, as a string) is present for audio/video when the file header states it. Any other result that is data rather than a file comes back as `{ output }`, verbatim.\n\nTranscription (speech2text, e.g. `elevenlabs/scribe-v2`): put the recording's uri in the model's audio field (`audio_url`) — audio OR video of any length; the audio is extracted and long recordings are split for you. The result is `{ transcriptUri, duration, language?, wordCount, lines }`: `lines` holds one `[mm:ss.s–mm:ss.s] sentence` per sentence (times in the source), enough to pick moments by; the word timings stay in the `transcriptUri` asset — read them inside `edit` with `engine.design.readTranscript(transcriptUri, { from, to })` (words whose start lies in [from, to) seconds), e.g. to build captions.\n\nNO PICTURE COMES BACK. To see what was generated, place it and look at the render `edit` returns: `await engine.design.setProps(blockId, { fill: { type: 'image', uri: '<id>' } })`, or `await engine.design.create({ type: 'graphic', props: { width: 400, height: 400, shape: { type: 'rect' }, fill: { type: 'image', uri: '<id>' } } }, { parent: page })`. That shows it in the layout, which is what you have to judge anyway. Do not assume a generation is good — look before you build on it.\n\nMulti-output models (layerize-class: decompose an input image into layers) add an `assets` array of the same objects, in stack order (residual background first, then cutout layers). The top-level fields ARE `assets[0]`. Single-output results carry no `assets` array. Any non-image output the model produced is passed through VERBATIM under `metadata` — read it, it binds semantics to the assets.\n\nRequires a free IMG.LY sign-in (the `login` tool); all other design tools work without an account.",
         "inputSchema": {
           "type": "object",
           "properties": {
@@ -1131,81 +1163,57 @@
   },
   "skills": [
     {
-      "name": "handbook",
-      "description": "The CoDesign design loop, tool contract, session model, typeface schema,\ncommon operations cheatsheet, and the full design-quality rubric.\n**Read this skill before any edit call** — it contains the 6-step Loop\n(resolve brief → read API → edit → verify → judge → reply), the tool roster\nand cross-tool rules, the session model (one design context, saved to its\ndesign file after every change), the typeface\nshape text.font declarations need, and §6: the design-rules index. The full\nenforceable rubric (typography, hierarchy, composition, craft) ships as this\nskill's design-rules.md, the runtime-quirk reference as its quirks.md, and\nthe input-resolution contract every skill follows as its intake.md — all read\non demand.\n\nTriggered for any task using this server's `edit` or `preview` tools.\n",
-      "uri": "skill://codesign/handbook/SKILL.md",
+      "name": "api",
+      "description": "Authoritative TypeScript signatures for `engine.design`, the only API edit\ncode uses. Use this skill whenever you need the exact signature, prop path,\nor return type — especially before calling a member you haven't used yet.\nGenerated from the running engine's own `.d.ts`: THE source of truth.\n\nIts entry document carries the whole edit-code API inline, in one read.\n\nThe sub-file \"signatures.d.ts\" adds the upstream CE.SDK core as reference\nonly (edit code never calls it), every vocabulary type flattened to its\nliteral union.\n",
+      "uri": "skill://codesign/api/SKILL.md",
       "files": [
         "SKILL.md",
         "animation.md",
-        "copy-writing-rules.md",
-        "design-rules.md",
-        "fonts.md",
-        "intake.md",
-        "print.md",
-        "quirks.md",
+        "recipes.md",
         "shapes.md",
-        "templates.md",
+        "signatures-extended.d.ts",
+        "signatures.d.ts",
         "video.md"
       ],
       "frontmatter": {
-        "name": "handbook",
-        "description": "The CoDesign design loop, tool contract, session model, typeface schema,\ncommon operations cheatsheet, and the full design-quality rubric.\n**Read this skill before any edit call** — it contains the 6-step Loop\n(resolve brief → read API → edit → verify → judge → reply), the tool roster\nand cross-tool rules, the session model (one design context, saved to its\ndesign file after every change), the typeface\nshape text.font declarations need, and §6: the design-rules index. The full\nenforceable rubric (typography, hierarchy, composition, craft) ships as this\nskill's design-rules.md, the runtime-quirk reference as its quirks.md, and\nthe input-resolution contract every skill follows as its intake.md — all read\non demand.\n\nTriggered for any task using this server's `edit` or `preview` tools.\n"
+        "name": "api",
+        "description": "Authoritative TypeScript signatures for `engine.design`, the only API edit\ncode uses. Use this skill whenever you need the exact signature, prop path,\nor return type — especially before calling a member you haven't used yet.\nGenerated from the running engine's own `.d.ts`: THE source of truth.\n\nIts entry document carries the whole edit-code API inline, in one read.\n\nThe sub-file \"signatures.d.ts\" adds the upstream CE.SDK core as reference\nonly (edit code never calls it), every vocabulary type flattened to its\nliteral union.\n"
       },
       "entries": [
         {
-          "uri": "skill://codesign/handbook/SKILL.md",
-          "digest": "sha256:4d61abc30c4653eae35770e201bfe63be350bd79e16321edc2c8a68eb9dcf855",
-          "size": 46547
+          "uri": "skill://codesign/api/SKILL.md",
+          "digest": "sha256:c957d98a85ade12ab5926c2a7c27387374a915fd22d58ed8bd5dafff5fe35219",
+          "size": 45338
         },
         {
-          "uri": "skill://codesign/handbook/animation.md",
-          "digest": "sha256:f5e9d5993a95f1b0ef151c846cd45491ddc47f096cab0c2578f21ffa90445cf1",
-          "size": 13125
+          "uri": "skill://codesign/api/animation.md",
+          "digest": "sha256:0299d7c4928551523e15c50927b979cb1d2cdc12ac977a6bc62c3e9c73aacab3",
+          "size": 6059
         },
         {
-          "uri": "skill://codesign/handbook/copy-writing-rules.md",
-          "digest": "sha256:6001d7f3cf16cf2dcab89f0f4e7a8fc1844fe5de7fb3e1455d404a69be180c8d",
-          "size": 6136
+          "uri": "skill://codesign/api/recipes.md",
+          "digest": "sha256:931a1a558e3825ead5da89efe85fab94cc4e736c9484ee3f4e8f6ad6b07a19f9",
+          "size": 11377
         },
         {
-          "uri": "skill://codesign/handbook/design-rules.md",
-          "digest": "sha256:122efce82043c216f291aa6161e301689f6a0cc98a08d62fb6b1899a4ea66b33",
-          "size": 45387
+          "uri": "skill://codesign/api/shapes.md",
+          "digest": "sha256:a6b364752452c4c89af24ba5c958aae9c9203584b8de4488bd2312bde80db07d",
+          "size": 5911
         },
         {
-          "uri": "skill://codesign/handbook/fonts.md",
-          "digest": "sha256:3cc6b2747e44b3226c321caa669e0f6ecf52495ba547818217712a016674766d",
-          "size": 5232
+          "uri": "skill://codesign/api/signatures-extended.d.ts",
+          "digest": "sha256:721e3a0d700640619e5fe495da0ea6c2d6df42128e8f3752c4760a35b2d80103",
+          "size": 56431
         },
         {
-          "uri": "skill://codesign/handbook/intake.md",
-          "digest": "sha256:07012b9ed3e6a239f3c31609f28005b48df6fe415ceff1725958f20597436965",
-          "size": 5837
+          "uri": "skill://codesign/api/signatures.d.ts",
+          "digest": "sha256:006fd2664080e05d9b9da0ef62bf153cc8b730e204ad0149ce9bf7b0b47ea168",
+          "size": 115543
         },
         {
-          "uri": "skill://codesign/handbook/print.md",
-          "digest": "sha256:e30f04c4a6c9ede23c682f43daffa4f04937ddd557022ee5d4fc1a9e5e9705ac",
-          "size": 11115
-        },
-        {
-          "uri": "skill://codesign/handbook/quirks.md",
-          "digest": "sha256:157977e25b1d6d96ef2e60c7021cf6e1fb018de70b5a67b91c1f1358af1cfa19",
-          "size": 17085
-        },
-        {
-          "uri": "skill://codesign/handbook/shapes.md",
-          "digest": "sha256:0f5121b31f20cb5dc93c9041d8cb6abac423628e9c8a2262181e146c528425a7",
-          "size": 5904
-        },
-        {
-          "uri": "skill://codesign/handbook/templates.md",
-          "digest": "sha256:5726d8da3b73a9ee27053a1cdb60e9ea5b4adac2cb2f9e15d3e428bb67c8f887",
-          "size": 11009
-        },
-        {
-          "uri": "skill://codesign/handbook/video.md",
-          "digest": "sha256:ef4932bafd8a96d25d2357ea872b9613d653646610f21f74b7ce435468f66523",
-          "size": 21641
+          "uri": "skill://codesign/api/video.md",
+          "digest": "sha256:d03f5693562b63c867d5d982d5ce6c44460553f1709e5afcf3f80650af5ed34b",
+          "size": 15360
         }
       ]
     },
@@ -1227,8 +1235,8 @@
       "entries": [
         {
           "uri": "skill://codesign/animate/SKILL.md",
-          "digest": "sha256:52ce80a95134bbbef5206bcef6c5fddeb6a8bd99208677cae8d35a46ef1c0ad8",
-          "size": 8729
+          "digest": "sha256:d7b6a51ce17d14e9f94c1f6852beecb2b64df1548672a18380cde31e7ddf7a5b",
+          "size": 8715
         },
         {
           "uri": "skill://codesign/animate/reference/multipage.md",
@@ -1244,37 +1252,6 @@
           "uri": "skill://codesign/animate/reference/styles.md",
           "digest": "sha256:3462eff794f6229b2d2f71150e4e4b5012ce3217923b433b949fb423ad7693f6",
           "size": 2164
-        }
-      ]
-    },
-    {
-      "name": "api",
-      "description": "Authoritative TypeScript signatures for `engine.design`, the only API edit\ncode uses. Use this skill whenever you need the exact signature, prop path,\nor return type — especially before calling a member you haven't used yet.\nGenerated from the `.d.ts` of the same `@cesdk/node` package the engine\nruns, it is THE source of truth; prose docs can drift.\n\nThis skill's entry document carries the WHOLE edit-code API surface inline\n— the engine.design facade, the props trees, the attachment unions and the\ncapability matrix: all edit code needs, in one read.\n\nThe sub-file \"signatures.d.ts\" adds the upstream CE.SDK core as reference\nonly (edit code never calls it), every vocabulary type flattened to its\nliteral union.\n",
-      "uri": "skill://codesign/api/SKILL.md",
-      "files": [
-        "SKILL.md",
-        "signatures-extended.d.ts",
-        "signatures.d.ts"
-      ],
-      "frontmatter": {
-        "name": "api",
-        "description": "Authoritative TypeScript signatures for `engine.design`, the only API edit\ncode uses. Use this skill whenever you need the exact signature, prop path,\nor return type — especially before calling a member you haven't used yet.\nGenerated from the `.d.ts` of the same `@cesdk/node` package the engine\nruns, it is THE source of truth; prose docs can drift.\n\nThis skill's entry document carries the WHOLE edit-code API surface inline\n— the engine.design facade, the props trees, the attachment unions and the\ncapability matrix: all edit code needs, in one read.\n\nThe sub-file \"signatures.d.ts\" adds the upstream CE.SDK core as reference\nonly (edit code never calls it), every vocabulary type flattened to its\nliteral union.\n"
-      },
-      "entries": [
-        {
-          "uri": "skill://codesign/api/SKILL.md",
-          "digest": "sha256:1b989dbc13d00c290fa8751ff501b2df16a4dce7bf96f3f14ec46f9ed59257bc",
-          "size": 47785
-        },
-        {
-          "uri": "skill://codesign/api/signatures-extended.d.ts",
-          "digest": "sha256:721e3a0d700640619e5fe495da0ea6c2d6df42128e8f3752c4760a35b2d80103",
-          "size": 56431
-        },
-        {
-          "uri": "skill://codesign/api/signatures.d.ts",
-          "digest": "sha256:24b46bb08053e899743f095998326699e8b3e14e2ec35e98ac60ed849cb3f4d2",
-          "size": 112032
         }
       ]
     },
@@ -1295,13 +1272,13 @@
       "entries": [
         {
           "uri": "skill://codesign/brand/SKILL.md",
-          "digest": "sha256:fb94bf7193d85befc39361448e62be294c6640600158e64f5725cf3f79646a3f",
-          "size": 32836
+          "digest": "sha256:ce57571612133bde94afda9f4b15f324d71cc32281e2eacb3062badf5d76fcfa",
+          "size": 32834
         },
         {
           "uri": "skill://codesign/brand/reference/asset-loading.md",
-          "digest": "sha256:d4b9946fba7dfa0e1af16c293544a4cdf576b32ba7ae9d69e4c70e8328341da7",
-          "size": 11916
+          "digest": "sha256:4015b47ba4c82ea9b575ece9c3b7da2533f4bdcf7dc271503c43de97f7871313",
+          "size": 11904
         },
         {
           "uri": "skill://codesign/brand/reference/authoring.md",
@@ -1310,39 +1287,45 @@
         },
         {
           "uri": "skill://codesign/brand/reference/brandkit-spec.md",
-          "digest": "sha256:55e05d52da5d11f4f9e4b310ae610f09c51bd6fbddc943d72a4784dfb2fa118c",
-          "size": 11721
+          "digest": "sha256:6193e7a2bc963f5b5621b61b63ac238336e508b0327ecc06e523f021a8a475f4",
+          "size": 11725
         }
       ]
     },
     {
       "name": "create",
-      "description": "Use when the user asks to create / generate / make a NEW design from a prompt — a deck or slides, poster, flyer, social post, business card, a video (animated post, reel, clip with music or voiceover), or a custom-size canvas. Runs the guided intake: derive every brief parameter the prompt already answers (class, format, audience, vibe, brand, content), ask ONLY the missing questions — one round, chip-style options, \"Decide automatically\" defaults — then echo the design brief and hand off to the handbook Loop. A brief given to the /codesign prompt lands here as the stated input.",
+      "description": "Use when the user asks to create / generate / make a NEW design from a prompt — a deck or slides, poster, flyer, social post, business card, a video (animated post, reel, clip with music or voiceover), or a custom-size canvas. Runs the guided intake: derive every brief parameter the prompt already answers (class, format, audience, vibe, brand, content), ask ONLY the missing questions — one round, chip-style options, \"Decide automatically\" defaults — then echo the design brief and hand off to the design loop. A brief given to the /codesign prompt lands here as the stated input.",
       "uri": "skill://codesign/create/SKILL.md",
       "files": [
         "SKILL.md",
         "choice-copy.md",
-        "classes.md"
+        "classes.md",
+        "intake.md"
       ],
       "frontmatter": {
         "name": "create",
-        "description": "Use when the user asks to create / generate / make a NEW design from a prompt — a deck or slides, poster, flyer, social post, business card, a video (animated post, reel, clip with music or voiceover), or a custom-size canvas. Runs the guided intake: derive every brief parameter the prompt already answers (class, format, audience, vibe, brand, content), ask ONLY the missing questions — one round, chip-style options, \"Decide automatically\" defaults — then echo the design brief and hand off to the handbook Loop. A brief given to the /codesign prompt lands here as the stated input."
+        "description": "Use when the user asks to create / generate / make a NEW design from a prompt — a deck or slides, poster, flyer, social post, business card, a video (animated post, reel, clip with music or voiceover), or a custom-size canvas. Runs the guided intake: derive every brief parameter the prompt already answers (class, format, audience, vibe, brand, content), ask ONLY the missing questions — one round, chip-style options, \"Decide automatically\" defaults — then echo the design brief and hand off to the design loop. A brief given to the /codesign prompt lands here as the stated input."
       },
       "entries": [
         {
           "uri": "skill://codesign/create/SKILL.md",
-          "digest": "sha256:c9a840330263ec82abb11bfb4a58e9ae5680388667afd19a542c6abc1da4f198",
-          "size": 7997
+          "digest": "sha256:69282e80b60afc2f6b08f6d356d0fcbd23a431aa0405b82740004f6c671dd364",
+          "size": 10941
         },
         {
           "uri": "skill://codesign/create/choice-copy.md",
-          "digest": "sha256:b9545697224bb38f92e26cc2f24ea80b187f2a80e96ec2dd3084e957e7b81317",
-          "size": 4379
+          "digest": "sha256:092c222538c586c67b8bfdc5baeb7a2f43236f3880a60194fb1c004c64cd538c",
+          "size": 4405
         },
         {
           "uri": "skill://codesign/create/classes.md",
-          "digest": "sha256:2f71d85ec8698f9ab250a7bf978968ea1b7bb681b4e6600dd47545034f3aa6bc",
-          "size": 5721
+          "digest": "sha256:730e115baea67bff3734993a2b46353ae28eca1042ecf39ce40e89b3a95e4723",
+          "size": 5740
+        },
+        {
+          "uri": "skill://codesign/create/intake.md",
+          "digest": "sha256:98b1101b99d4096a9307189f8c8201d65709a5246703cc2bb23f53547d165bf1",
+          "size": 5839
         }
       ]
     },
@@ -1360,6 +1343,7 @@
         "ig-story.md",
         "linkedin-post.md",
         "poster.md",
+        "print.md",
         "tiktok.md",
         "widescreen.md",
         "x-post.md",
@@ -1373,28 +1357,28 @@
       "entries": [
         {
           "uri": "skill://codesign/formats/SKILL.md",
-          "digest": "sha256:6fb5158d78f233b871fb788f3b1df279f4f07fdaef1773e13a0fe802c9acb32d",
-          "size": 5302
+          "digest": "sha256:03bf615064570d70110f58283e6937f06d0869c5feef37e1b69a60d19199d1e2",
+          "size": 5430
         },
         {
           "uri": "skill://codesign/formats/business-card.md",
-          "digest": "sha256:d9c085277bbb1c1c1455662dc0903f465a9905b1da02b5777e4028a7d224cb52",
-          "size": 727
+          "digest": "sha256:7ddbb1f690f8b47aa6b13be289585efc9818be597f4c5c456c5a4dc361dfb65b",
+          "size": 761
         },
         {
           "uri": "skill://codesign/formats/deck.md",
-          "digest": "sha256:a88a97b4afc40adf726ed5c513d8dce05521de3945ddc616abe1de82bee819f5",
-          "size": 598
+          "digest": "sha256:50b6a6cec889c27de63d22c2c07dae4ac747374be0af1920a5a0d9d10fa17ce4",
+          "size": 602
         },
         {
           "uri": "skill://codesign/formats/flyer.md",
-          "digest": "sha256:1f27e77e41db119f7a1dfb3f27ddfc8c3709bc4d640bc77cf06edc9528ba0e3d",
-          "size": 723
+          "digest": "sha256:2a4f563713b6e6a063ec77574511dc1f5183d45ddd84a409a47e030f64c27b77",
+          "size": 735
         },
         {
           "uri": "skill://codesign/formats/ig-post.md",
-          "digest": "sha256:deb3279d2d65f4b1b8168a49186f7f0e4a214f6a526cd4e0745ee752b3c93330",
-          "size": 670
+          "digest": "sha256:ab2cbbedb46028b0cced4f6ce317bedd1143f817679519320b63e770e47b1d49",
+          "size": 678
         },
         {
           "uri": "skill://codesign/formats/ig-square.md",
@@ -1413,8 +1397,13 @@
         },
         {
           "uri": "skill://codesign/formats/poster.md",
-          "digest": "sha256:7312c561d20f34ca96f4999eae7dd8f0c6ef7169e3be89638f8dede0e4cfd6ac",
-          "size": 838
+          "digest": "sha256:1a93b140127e1867b839dd2e94c56f4c5c35492456d9a88cf4dd59d1917ef9e7",
+          "size": 846
+        },
+        {
+          "uri": "skill://codesign/formats/print.md",
+          "digest": "sha256:00eddabc04e7648e9a0702e122a0b1a25155194b8ec6c4db685ae8d8c9c673c3",
+          "size": 8757
         },
         {
           "uri": "skill://codesign/formats/tiktok.md",
@@ -1423,8 +1412,8 @@
         },
         {
           "uri": "skill://codesign/formats/widescreen.md",
-          "digest": "sha256:289e956a31ad9b6300be4e11b59e507e00fa1599d7eafe26355934a19a556631",
-          "size": 421
+          "digest": "sha256:6a5942af76fa32bde0dd83835ff07bed490669b6a006a91c385a523f8b454764",
+          "size": 425
         },
         {
           "uri": "skill://codesign/formats/x-post.md",
@@ -1445,20 +1434,26 @@
     },
     {
       "name": "judge",
-      "description": "Use to quality-gate a design before reporting it done — the mandatory step 5 of the handbook Loop; when the user asks for a design review, score, audit, or QA; or when a design needs remediation after a failed review. The axes, the gate, the scorecard format, and the remediation loop are defined in this skill's body — read it before scoring; do not judge from memory of this description.",
+      "description": "The quality gate and the rules every design is built to. Read it, with its design-rules.md, before the first `edit` of any design: the rules are what you build to, and the gate is the mandatory step before reporting a design done. Also when the user asks for a design review, score, audit, or QA, or when a design needs remediation after a failed review. The axes, the gate, the scorecard format and the remediation loop are defined in this skill's body — do not judge from memory of this description.",
       "uri": "skill://codesign/judge/SKILL.md",
       "files": [
-        "SKILL.md"
+        "SKILL.md",
+        "design-rules.md"
       ],
       "frontmatter": {
         "name": "judge",
-        "description": "Use to quality-gate a design before reporting it done — the mandatory step 5 of the handbook Loop; when the user asks for a design review, score, audit, or QA; or when a design needs remediation after a failed review. The axes, the gate, the scorecard format, and the remediation loop are defined in this skill's body — read it before scoring; do not judge from memory of this description."
+        "description": "The quality gate and the rules every design is built to. Read it, with its design-rules.md, before the first `edit` of any design: the rules are what you build to, and the gate is the mandatory step before reporting a design done. Also when the user asks for a design review, score, audit, or QA, or when a design needs remediation after a failed review. The axes, the gate, the scorecard format and the remediation loop are defined in this skill's body — do not judge from memory of this description."
       },
       "entries": [
         {
           "uri": "skill://codesign/judge/SKILL.md",
-          "digest": "sha256:db01f91a8a19bf0cd2654947e307e5619a2f60c42f9ca943f8470742d3ca6efe",
-          "size": 32124
+          "digest": "sha256:605f4b4d067c6e62d466beeada8983fb750b4ab5a366d9b1e92159b4be74b5f2",
+          "size": 29847
+        },
+        {
+          "uri": "skill://codesign/judge/design-rules.md",
+          "digest": "sha256:d830f96a5d6814aa9759ac92b02ed4654a13458835bb01769fdf784d6e7c24ba",
+          "size": 47219
         }
       ]
     },
@@ -1479,13 +1474,13 @@
       "entries": [
         {
           "uri": "skill://codesign/launch-video/SKILL.md",
-          "digest": "sha256:442c23d48bc20076921c71953084eb6b05de512f95eda6903ff51f7587f42dfe",
-          "size": 12541
+          "digest": "sha256:50c55ab9b55a979cb52f637d926554701280c1d47e271ece2c7dde34ca951821",
+          "size": 12500
         },
         {
           "uri": "skill://codesign/launch-video/reference/sound.md",
-          "digest": "sha256:e5c7646b6c2b7f08fba92045d3a0a5157a313717747b7a8e8378bcb982c3a737",
-          "size": 5571
+          "digest": "sha256:ecd8a2c276d8b7419f0f1f53d24466386decc10e528210b66b8886cebe12c7b1",
+          "size": 5563
         },
         {
           "uri": "skill://codesign/launch-video/reference/story.md",
@@ -1535,43 +1530,43 @@
       "entries": [
         {
           "uri": "skill://codesign/localize/SKILL.md",
-          "digest": "sha256:ae20ac183d69bbb30b5b2f96ef94a561bf01af33b095431512e4789120feb8eb",
-          "size": 33016
+          "digest": "sha256:1439051338e6b9bcf0a7cf0eac1b0136ff6688a3c7eedcf479f4f139d34e390b",
+          "size": 32900
         },
         {
           "uri": "skill://codesign/localize/reference/arabic.md",
-          "digest": "sha256:d172816e82722e6714294704ec827a21e78cf1f63251a211f711d99672e9836b",
-          "size": 4649
+          "digest": "sha256:ff7bec516c442013c3af5d7a1a3912a4e5acf20d3d2003bba810b80f257a910d",
+          "size": 4657
         },
         {
           "uri": "skill://codesign/localize/reference/cjk.md",
-          "digest": "sha256:ae8231d2a272cd38215a0046e2ce14f73e37f2c36d0ac694e0ac32a94a493fdb",
-          "size": 5026
+          "digest": "sha256:8c06a45370b828b1dfa684fc27f7dcd05b5cd8a0a2e62adb2b6de166975c7e33",
+          "size": 5034
         },
         {
           "uri": "skill://codesign/localize/reference/cyrillic.md",
-          "digest": "sha256:2ffab13cf587d9a475a86be64a60250e49652583942be3494eb2e5c1a0827b82",
-          "size": 1633
+          "digest": "sha256:d6a311f8f3d744ce58d217a9994920457486535c3f312f4f7a52b32990e54131",
+          "size": 1641
         },
         {
           "uri": "skill://codesign/localize/reference/font-loading.md",
-          "digest": "sha256:c5008cf0e084de118ca25b2c806a33b64b83c37087547f19e5092259869071c3",
-          "size": 9490
+          "digest": "sha256:f05945e9bfce90330a2b30582e070cfedf930d16dd618b71cb3cf2df00615234",
+          "size": 9528
         },
         {
           "uri": "skill://codesign/localize/reference/language-rules.md",
-          "digest": "sha256:6c029806e7c0d335cc3e3ab26b72e92cc43392044d37b6ff2bccc7c29959e15e",
-          "size": 13045
+          "digest": "sha256:24b3403613510e69cd60f6e2e5048f2738364f01cc1f335a2f23313b465c979b",
+          "size": 13059
         },
         {
           "uri": "skill://codesign/localize/reference/latin-expansion.md",
-          "digest": "sha256:7a043691110bfc9b4eaf09108dd0c0d63160d2d296d714cff5de924fd122703e",
-          "size": 6109
+          "digest": "sha256:d9cce21e5bebabe3cb51d4b1826c4053328bf5fd183f29471f6b38fca5b8e459",
+          "size": 6155
         },
         {
           "uri": "skill://codesign/localize/reference/vietnamese.md",
-          "digest": "sha256:c9c303a98ecacae40341d6cb3f7c59e25c79d59c51cd4f3921e68d3341331aa2",
-          "size": 1964
+          "digest": "sha256:4acacef6bdc8e573e23f2664a848a9972d45dd9bbada58aa2c65f6ffcecf465c",
+          "size": 1968
         }
       ]
     },
@@ -1595,8 +1590,8 @@
       "entries": [
         {
           "uri": "skill://codesign/models/SKILL.md",
-          "digest": "sha256:74e11c2d03bae622c9ff163258a8fde7a8aaa76b07bfb5fe38325dc140a51af6",
-          "size": 5511
+          "digest": "sha256:3980bcb5fcbbaf11b2ede368cb70d977f514031d535b7e13e29b28aa8159d7ab",
+          "size": 5506
         },
         {
           "uri": "skill://codesign/models/audio.md",
@@ -1620,14 +1615,14 @@
         },
         {
           "uri": "skill://codesign/models/video.md",
-          "digest": "sha256:c6fce31349e5808f6fc23727f6852263c437a569409e613817a04b90e6182463",
-          "size": 675
+          "digest": "sha256:4dd9a6e20bf53ff3519e8d3523b615b36f2b96a0ceb31a83670f8c0a24f900ab",
+          "size": 670
         }
       ]
     },
     {
       "name": "onboard",
-      "description": "Use when the user is new here or asks what this server is / what it can do (\"what is CoDesign\", \"what can you make\", \"show me\"). A guided, plain-language introduction for a HUMAN: explain what CoDesign is in everyday terms, put the six jobs it does on the table, let the user pick one, then run it either on the bundled demo design or on the user's own idea — closing with the optional (never required) IMG.LY sign-in and the ways to earn more credits. Not a design manual: the handbook remains the required read before any edit.",
+      "description": "Use when the user is new here or asks what this server is / what it can do (\"what is CoDesign\", \"what can you make\", \"show me\"). A guided, plain-language introduction for a HUMAN: explain what CoDesign is in everyday terms, put the six jobs it does on the table, let the user pick one, then run it either on the bundled demo design or on the user's own idea — closing with the optional (never required) IMG.LY sign-in and the ways to earn more credits. Not a design manual: the `api` and `judge` skills remain the required reads before any edit.",
       "uri": "skill://codesign/onboard/SKILL.md",
       "files": [
         "SKILL.md",
@@ -1635,19 +1630,19 @@
       ],
       "frontmatter": {
         "name": "onboard",
-        "description": "Use when the user is new here or asks what this server is / what it can do (\"what is CoDesign\", \"what can you make\", \"show me\"). A guided, plain-language introduction for a HUMAN: explain what CoDesign is in everyday terms, put the six jobs it does on the table, let the user pick one, then run it either on the bundled demo design or on the user's own idea — closing with the optional (never required) IMG.LY sign-in and the ways to earn more credits. Not a design manual: the handbook remains the required read before any edit.",
+        "description": "Use when the user is new here or asks what this server is / what it can do (\"what is CoDesign\", \"what can you make\", \"show me\"). A guided, plain-language introduction for a HUMAN: explain what CoDesign is in everyday terms, put the six jobs it does on the table, let the user pick one, then run it either on the bundled demo design or on the user's own idea — closing with the optional (never required) IMG.LY sign-in and the ways to earn more credits. Not a design manual: the `api` and `judge` skills remain the required reads before any edit.",
         "requires": "import, export, drafts, interactive"
       },
       "entries": [
         {
           "uri": "skill://codesign/onboard/SKILL.md",
-          "digest": "sha256:30149f2a3042b34c15f02dd5d399f1e70f10be38408f0d9daa99646c724f85e9",
-          "size": 12671
+          "digest": "sha256:66263ce5866f01bfee4a1c6d84d4ec748848716c7fa531fa873c8e96139b512a",
+          "size": 12735
         },
         {
           "uri": "skill://codesign/onboard/demo-brief.md",
-          "digest": "sha256:dd14605d047b9b0f78980204de0abca9cc120c6fb47909b28ee471b0d042d303",
-          "size": 3642
+          "digest": "sha256:fa3e8329bf3ef626f0586566bbb34cb38677b17d3160ca261551b4fcc00a497a",
+          "size": 3640
         }
       ]
     },
@@ -1666,13 +1661,32 @@
       "entries": [
         {
           "uri": "skill://codesign/resize/SKILL.md",
-          "digest": "sha256:f7322c284660c81a3691cd23f894da6852f2f0995c9b03ca3199d8d284b69b7a",
-          "size": 28088
+          "digest": "sha256:47f9a2bc2f5550ec859b83351718a3109742147e2602b24d0554a070910bff41",
+          "size": 25895
         },
         {
           "uri": "skill://codesign/resize/editions.md",
           "digest": "sha256:2e66b4c0a8c749aac973aa9abbc985b93241cec5a44d362283e11e1c2f1fb21f",
           "size": 2629
+        }
+      ]
+    },
+    {
+      "name": "templates",
+      "description": "Use when a design is a template someone else fills in — \"make this a template\", \"lock the layout\", \"editable fields\", text variables (`{{key}}` tokens), image or text placeholders, or which parts a person may change. Covers text and typed variables, bindings (re-theme in one write), placeholder slots, locking with scopes, and delivering a filled-in, judged template.",
+      "uri": "skill://codesign/templates/SKILL.md",
+      "files": [
+        "SKILL.md"
+      ],
+      "frontmatter": {
+        "name": "templates",
+        "description": "Use when a design is a template someone else fills in — \"make this a template\", \"lock the layout\", \"editable fields\", text variables (`{{key}}` tokens), image or text placeholders, or which parts a person may change. Covers text and typed variables, bindings (re-theme in one write), placeholder slots, locking with scopes, and delivering a filled-in, judged template."
+      },
+      "entries": [
+        {
+          "uri": "skill://codesign/templates/SKILL.md",
+          "digest": "sha256:29eb1ac732ef0141be3f4dee0a3b232abc0169986475af35cefe17e10159cfeb",
+          "size": 10238
         }
       ]
     },
@@ -1691,8 +1705,8 @@
       "entries": [
         {
           "uri": "skill://codesign/video-thumbnail-template/SKILL.md",
-          "digest": "sha256:6ba138fabb761017bbb506ba78bef388b1f2e4c4f78f0970b4558a99c1dcc771",
-          "size": 9656
+          "digest": "sha256:4003c40a0820d493598d6e7068ff887259fe97963eb873624302a1361266cd6e",
+          "size": 9649
         }
       ]
     }
@@ -1700,7 +1714,7 @@
   "prompts": [
     {
       "name": "codesign",
-      "description": "Start a design session with the FULL context preloaded in one message — handbook, design rules, API surface, judge + copy rules, quirks, fonts — so no reference reads are needed before the first edit. Optional brief: what to design.",
+      "description": "Start a design session with the FULL context preloaded in one message — design rules, judge + copy rules and the API surface — so no reads are needed before the first edit. Optional brief: what to design.",
       "arguments": [
         {
           "name": "brief",
