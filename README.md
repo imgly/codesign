@@ -5,20 +5,54 @@
 
 **The design layer for the agent era.**
 
-> **Prerelease channel.** This `canary` branch installs `@imgly/codesign-mcp@0.5.2-canary.20261030171552.g721e82a` —
+> **Prerelease channel.** This `canary` branch installs `@imgly/codesign-mcp@0.5.2-canary.20261030190721.g9c88c54` —
 > unreleased builds, published on every merge to IMG.LY's development branch, on the newest CE.SDK engine nightly.
 > For the stable release, use the [`main` branch](https://github.com/imgly/codesign/tree/main).
 
-CoDesign gives your coding agent a real design engine. Generate, edit, and
-automate _fully editable_ designs — print, social, and video — straight from
-the chat, then export print-ready PDFs, images, mp4 video, and more. You steer, the agent
-edits the same scene, and you keep control of the outcome.
+Create posters, social posts, videos and print layouts from a prompt, then
+change any part of them yourself. CoDesign gives you a professional design
+engine. Every headline, image, shape and clip stays its own layer, so you can
+swap a font or move a logo without starting over.
 
-It ships as an MCP server (plus a Claude Code plugin) that hands your agent
+Start from scratch or from files you already have. InDesign, Photoshop,
+PowerPoint and PDF files open with their layers intact. Then resize one design
+for every social format, translate it with the layout reflowing to fit (Arabic
+and other right-to-left scripts included), apply your brand colors and fonts,
+or check it against your guidelines.
+
+Every design opens in a built-in editor when you want to fix something by
+hand. Export print-ready PDFs with CMYK color and bleed, Photoshop and InDesign
+files your team can keep working on, or video for social.
+
+Built by IMG.LY on the IMG.LY design engine. Runs on your computer. No account
+needed to start.
+
+CoDesign ships as an MCP server (plus a Claude Code plugin) that hands your agent
 IMG.LY's CE.SDK CreativeEngine — the same production engine behind IMG.LY's
 commercial SDKs. Every recipe below spawns the published npm package
 `@imgly/codesign-mcp` over stdio; no separate install step — `npx` fetches it on first
 use.
+
+## Use cases
+
+- A social team turns one campaign into every format, from Instagram posts to
+  short videos.
+- An agency opens an old InDesign file, rebrands it, and exports it back as
+  .idml.
+- A global brand translates print ads and video ads without breaking the
+  layout.
+- A designer generates a first draft, then moves and restyles layers by hand
+  in the visual editor.
+- A brand manager checks assets against guidelines before they go out.
+
+## Formats
+
+- **Import:** InDesign (.idml), Photoshop (.psd), PowerPoint (.pptx), PDF,
+  images (PNG, JPEG, GIF, WebP, SVG) and CoDesign (.imgly) files.
+- **Export:** PDF and print-ready PDF/X, PNG, JPEG, WebP, SVG, HTML, InDesign
+  (.idml), Photoshop (.psd), MP4 video, WAV and M4A audio, and CoDesign
+  (.imgly). Video and audio export need the native engine; Windows runs the
+  WASM engine, which has no video.
 
 ## What you can make
 
@@ -83,8 +117,8 @@ print, video, and social:
   browser or config.
 - **Native performance** — a purpose-built engine that stays fast at scale and
   under heavy assets.
-- **Full compatibility** — imports InDesign, PSD, PowerPoint (PPTX), PDF, and
-  Lottie; exports print-ready PDF, image, video, and HTML.
+- **Full compatibility** — imports InDesign, PSD, PowerPoint (PPTX) and PDF;
+  exports print-ready PDF, image, video, InDesign, PSD and HTML.
 
 ## Requirements & known limitations
 
@@ -94,7 +128,7 @@ print, video, and social:
   system Node. With no Node (or Node < 22.15) on `PATH`, the host reports the
   server as failed with no useful reason — typically `local: 0` and
   `MCP error -32000`. Install Node 22.15+ first: <https://nodejs.org>.
-- **Pin `@0.5.2-canary.20261030171552.g721e82a` — every recipe names that exact version.** Each release
+- **Pin `@0.5.2-canary.20261030190721.g9c88c54` — every recipe names that exact version.** Each release
   republishes this repo with a new pin — update the plugin (or your recipe) to
   move forward.
 - **Windows is not supported under bare `npx`.** Hosts that spawn `npx`
@@ -116,7 +150,7 @@ claude plugin install codesign@imgly-codesign-canary
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-canary.20261030171552.g721e82a stdio
+claude mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-canary.20261030190721.g9c88c54 stdio
 ```
 
 ### Codex
@@ -131,7 +165,7 @@ codex plugin add codesign@imgly-codesign-canary
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-canary.20261030171552.g721e82a stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-canary.20261030190721.g9c88c54 stdio
 ```
 
 ### Antigravity CLI
@@ -146,7 +180,7 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-canary.20261030171552.g721e82a stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-canary.20261030190721.g9c88c54 stdio
 ```
 
 ### Gemini CLI
@@ -169,7 +203,7 @@ Or add the server manually to `~/.gemini/settings.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.5.2-canary.20261030171552.g721e82a",
+        "@imgly/codesign-mcp@0.5.2-canary.20261030190721.g9c88c54",
         "stdio"
       ]
     }
@@ -189,7 +223,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.5.2-canary.20261030171552.g721e82a",
+        "@imgly/codesign-mcp@0.5.2-canary.20261030190721.g9c88c54",
         "stdio"
       ]
     }
@@ -213,7 +247,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.5.2-canary.20261030171552.g721e82a",
+        "@imgly/codesign-mcp@0.5.2-canary.20261030190721.g9c88c54",
         "stdio"
       ]
     }
@@ -231,7 +265,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.5.2-canary.20261030171552.g721e82a",
+          "@imgly/codesign-mcp@0.5.2-canary.20261030190721.g9c88c54",
           "stdio"
         ]
       }
