@@ -5,7 +5,7 @@
 
 **The design layer for the agent era.**
 
-> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.5.2-next.20261030190721.g9c88c54` —
+> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.5.2-next.20261030212943.g791b37c` —
 > unreleased builds, published on every merge to IMG.LY's development branch.
 > For the stable release, use the [`main` branch](https://github.com/imgly/codesign/tree/main).
 
@@ -29,7 +29,7 @@ needed to start.
 
 CoDesign ships as an MCP server (plus a Claude Code plugin) that hands your agent
 IMG.LY's CE.SDK CreativeEngine — the same production engine behind IMG.LY's
-commercial SDKs. Every recipe below spawns the published npm package
+commercial SDKs. The Claude Code plugin runs the launcher it carries ([what it runs](#what-the-claude-code-plugin-runs)); every other recipe below spawns the published npm package
 `@imgly/codesign-mcp` over stdio; no separate install step — `npx` fetches it on first
 use.
 
@@ -103,7 +103,7 @@ This repository — the Claude Code and Codex plugins, marketplace manifests
 and documentation — is released under the [MIT License](./LICENSE).
 The CoDesign engine itself, distributed as the npm package `@imgly/codesign-mcp`, is
 proprietary software from IMG.LY and free to use locally. The full terms ship
-inside the package as `LICENSE.md`.
+inside the package as `LICENSE.md`. The launcher in `plugins/codesign/runtime/` is not under the MIT License either: [its NOTICE](./plugins/codesign/runtime/NOTICE) names its licences.
 
 ## Why a real engine matters
 
@@ -120,6 +120,48 @@ print, video, and social:
 - **Full compatibility** — imports InDesign, PSD, PowerPoint (PPTX) and PDF;
   exports print-ready PDF, image, video, InDesign, PSD and HTML.
 
+## What the Claude Code plugin runs
+
+- **A local MCP server.** The plugin starts `sh runtime/codesign.sh mcp` over
+  stdio. IMG.LY's CE.SDK engine imports, renders and exports on your machine,
+  from your files, and designs are saved in a local workspace.
+- **A launcher, and the runtime it installs.** The plugin carries only the
+  launcher: `runtime/codesign.sh` (`codesign.cmd` on Windows), readable
+  JavaScript modules in `runtime/codesign-shim/` that run on your Node.js, and
+  `runtime/snapshot.json`, the tool list it answers with until the runtime is
+  installed. The runtime (CoDesign with its own Node.js, a CE.SDK engine and its
+  assets) is downloaded into `~/.codesign` from IMG.LY's release server,
+  `https://get.codesign.co/runtime/<channel>/`, and checks there for an update
+  every 6 hours. Every download is listed in a release manifest signed with
+  IMG.LY's Ed25519 key, which the launcher carries, and must match the SHA-256
+  and size the manifest gives; a manifest older than the last one accepted is
+  refused.
+- **Two hooks.** On session start and on a model switch,
+  `hooks/record-model.mjs` writes the session's model name to the plugin's
+  data folder, for error reports and usage data. On session start,
+  `codesign.sh bootstrap ensure --detach` installs the runtime in the
+  background when it is missing. Without Node.js, both do nothing.
+- **What Claude reads from it.** The MCP instructions, tool descriptions,
+  skills and prompts ship inside the signed runtime release (until it is
+  installed, in the plugin's `runtime/snapshot.json`); nothing fetches them
+  from anywhere else.
+- **Where it connects:**
+  - `get.codesign.co`: runtime downloads and update checks.
+  - `cdn.img.ly`: templates, fonts, other default assets and the browser
+    editor.
+  - `img.ly` and `clerk.img.ly`: the IMG.LY sign-in, only when you sign in
+    with the `login` tool.
+  - `gateway.img.ly`: only for AI generation.
+  - `api.img.ly`: usage data, and Sentry (`sentry.io`): error reports.
+    Turn them off in the plugin's settings (Send usage data to IMG.LY, Send
+    error reports to IMG.LY), or set `DO_NOT_TRACK=1` or
+    `IMGLY_TELEMETRY=off`.
+  - Addresses a design, you or Claude name, such as an image or font URL:
+    fetched and copied into your workspace.
+  - IMG.LY's CE.SDK engine, which renders and exports, may itself contact
+    IMG.LY about its licence and exports; the plugin's two settings do not
+    cover that.
+
 ## Requirements & known limitations
 
 > **Read this first — the failure modes below are silent.**
@@ -128,7 +170,7 @@ print, video, and social:
   system Node. With no Node (or Node < 22.15) on `PATH`, the host reports the
   server as failed with no useful reason — typically `local: 0` and
   `MCP error -32000`. Install Node 22.15+ first: <https://nodejs.org>.
-- **Pin `@0.5.2-next.20261030190721.g9c88c54` — every recipe names that exact version.** Each release
+- **Pin `@0.5.2-next.20261030212943.g791b37c` — every recipe names that exact version.** Each release
   republishes this repo with a new pin — update the plugin (or your recipe) to
   move forward.
 - **Windows is not supported under bare `npx`.** Hosts that spawn `npx`
@@ -150,7 +192,7 @@ claude plugin install codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-next.20261030190721.g9c88c54 stdio
+claude mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-next.20261030212943.g791b37c stdio
 ```
 
 ### Codex
@@ -165,7 +207,7 @@ codex plugin add codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-next.20261030190721.g9c88c54 stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-next.20261030212943.g791b37c stdio
 ```
 
 ### Antigravity CLI
@@ -180,7 +222,7 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-next.20261030190721.g9c88c54 stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.2-next.20261030212943.g791b37c stdio
 ```
 
 ### Gemini CLI
@@ -203,7 +245,7 @@ Or add the server manually to `~/.gemini/settings.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.5.2-next.20261030190721.g9c88c54",
+        "@imgly/codesign-mcp@0.5.2-next.20261030212943.g791b37c",
         "stdio"
       ]
     }
@@ -223,7 +265,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.5.2-next.20261030190721.g9c88c54",
+        "@imgly/codesign-mcp@0.5.2-next.20261030212943.g791b37c",
         "stdio"
       ]
     }
@@ -247,7 +289,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.5.2-next.20261030190721.g9c88c54",
+        "@imgly/codesign-mcp@0.5.2-next.20261030212943.g791b37c",
         "stdio"
       ]
     }
@@ -265,7 +307,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.5.2-next.20261030190721.g9c88c54",
+          "@imgly/codesign-mcp@0.5.2-next.20261030212943.g791b37c",
           "stdio"
         ]
       }

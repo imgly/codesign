@@ -28,8 +28,5 @@ esac
 [ "$major" -ge 18 ] && exec node "$here/codesign-shim.mjs" "$@"
 [ "$1" = mcp ] || exit 0
 
-channel=${IMGLY_CODESIGN_CHANNEL:-stable}
-pipe=sh
-[ "$channel" = stable ] || pipe="IMGLY_CODESIGN_CHANNEL=$channel sh"
-echo "CoDesign needs Node 18 or newer, or a one-time install: curl -fsSL https://get.codesign.co/runtime/$channel/install.sh | $pipe" >&2
+echo "CoDesign needs Node 18 or newer once, to install itself. Install Node from https://nodejs.org, or see https://codesign.co/install" >&2
 exit 1
