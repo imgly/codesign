@@ -21,9 +21,5 @@ if %major% GEQ 18 (
 
 :none
 if not "%~1"=="mcp" exit /b 0
-set "channel=%IMGLY_CODESIGN_CHANNEL%"
-if not defined channel set channel=stable
-set "run=iex"
-if not "%channel%"=="stable" set "run=$env:IMGLY_CODESIGN_CHANNEL='%channel%'; iex"
-echo CoDesign needs Node 18 or newer, or a one-time install in PowerShell: irm https://get.codesign.co/runtime/%channel%/install.ps1 ^| %run% 1>&2
+echo CoDesign needs Node 18 or newer once, to install itself. Install Node from https://nodejs.org, or see https://codesign.co/install 1>&2
 exit /b 1
