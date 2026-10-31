@@ -3,7 +3,7 @@
   "name": "codesign",
   "displayName": "CoDesign",
   "description": "Generate designs and videos, then resize, rebrand or translate them. Open them in a visual editor and export to .pdf, .psd, .idml, .mp4 & more",
-  "version": "0.5.2-canary.20261030212943.g791b37c",
+  "version": "0.5.2-canary.20261031100116.gb49b209",
   "author": {
     "name": "IMG.LY GmbH",
     "url": "https://img.ly"
@@ -19,7 +19,6 @@
     "design",
     "design-automation",
     "design-tools",
-    "gemini-cli-extension",
     "graphic-design",
     "imgly",
     "local-first",
@@ -33,7 +32,6 @@
     "video-processing"
   ],
   "icon": "./.claude-plugin/icon.png",
-  "hooks": "./hooks/claude-code.json",
   "documentationUrl": "https://github.com/imgly/codesign#readme",
   "supportUrl": "https://img.ly/support",
   "privacyPolicyUrl": "https://img.ly/privacy-policy",
