@@ -338,7 +338,7 @@ async function runBootstrap(args, env = process.env) {
 		await runCheck(paths, env);
 		return;
 	}
-	if (args[0] !== "ensure") throw new Error("usage: codesign-shim.mjs bootstrap ensure [--detach | --core <dir> | --seed <dir> --channel <stable|next>] | check");
+	if (args[0] !== "ensure") throw new Error("usage: codesign-shim.mjs bootstrap ensure [--core <dir> | --seed <dir> --channel <stable|next>] | check");
 	const seedAt = args.indexOf("--seed");
 	if (seedAt !== -1) {
 		const channelAt = args.indexOf("--channel");
@@ -347,10 +347,6 @@ async function runBootstrap(args, env = process.env) {
 	}
 	const at = args.indexOf("--core");
 	const core = at === -1 ? void 0 : args[at + 1];
-	if (args.includes("--detach")) {
-		spawnInstaller(paths, env);
-		return;
-	}
 	const toLog = sameFile(process.stderr.fd, paths.installLog);
 	const say = (line) => {
 		logInstall(paths, line);
@@ -423,13 +419,23 @@ function sameFile(fd, path) {
 	const named = statSync(path, { throwIfNoEntry: false });
 	return named !== void 0 && open.dev === named.dev && open.ino === named.ino;
 }
+/** What to tell a host that starts the shim on a Node older than 18 (Node 14 and older cannot even parse it). */
+function nodeTooOld(version) {
+	if (Number(version.split(".")[0]) >= 18) return void 0;
+	return `CoDesign needs Node 18 or newer, this is Node ${version}. Install Node from https://nodejs.org, or see https://codesign.co/install`;
+}
 if (process.argv[1] !== void 0 && realpathSync(fileURLToPath(import.meta.url)) === realpathSync(process.argv[1])) {
 	const [command, ...rest] = process.argv.slice(2);
-	(command === "mcp" ? runMcp() : command === "bootstrap" ? runBootstrap(rest) : Promise.reject(/* @__PURE__ */ new Error("usage: codesign-shim.mjs mcp | bootstrap ensure [--detach | --core <dir> | --seed <dir> --channel <stable|next>] | bootstrap check"))).catch((err) => {
+	const tooOld = nodeTooOld(process.versions.node);
+	if (tooOld !== void 0) {
+		process.stderr.write(`${tooOld}\n`);
+		process.exit(1);
+	}
+	(command === "mcp" ? runMcp() : command === "bootstrap" ? runBootstrap(rest) : Promise.reject(/* @__PURE__ */ new Error("usage: codesign-shim.mjs mcp | bootstrap ensure [--core <dir> | --seed <dir> --channel <stable|next>] | bootstrap check"))).catch((err) => {
 		process.stderr.write(`codesign: ${err instanceof Error ? err.message : String(err)}\n`);
 		process.exit(1);
 	});
 }
 
 //#endregion
-export { cliCommand, ensureDaemon, ensureInstalled, ensureSeed, progressEveryMs, runBootstrap, runMcp };
+export { cliCommand, ensureDaemon, ensureInstalled, ensureSeed, nodeTooOld, progressEveryMs, runBootstrap, runMcp };
