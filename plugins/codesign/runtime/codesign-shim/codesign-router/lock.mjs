@@ -50,11 +50,13 @@ async function withFileLock(lockFile, fn, { maxWaitMs = MAX_WAIT_MS, name = "aut
 			return 0;
 		}
 	};
+	const timeout = () => {
+		const detail = lastReadError !== void 0 ? ` (last lock read error: ${lastReadError instanceof Error ? lastReadError.message : String(lastReadError)})` : "";
+		return /* @__PURE__ */ new Error(`${name} lock timeout: ${lockFile}${detail}`);
+	};
+	let slept = false;
 	for (;;) {
-		if (Date.now() > deadline) {
-			const detail = lastReadError !== void 0 ? ` (last lock read error: ${lastReadError instanceof Error ? lastReadError.message : String(lastReadError)})` : "";
-			throw new Error(`${name} lock timeout: ${lockFile}${detail}`);
-		}
+		if (slept && Date.now() > deadline) throw timeout();
 		try {
 			await writeFile(lockFile, myPid, { flag: "wx" });
 		} catch (err) {
@@ -75,7 +77,9 @@ async function withFileLock(lockFile, fn, { maxWaitMs = MAX_WAIT_MS, name = "aut
 				const refused = refuse?.(holderNote.length > 0 ? holderNote.join("\n") : void 0);
 				if (refused !== void 0) throw refused;
 			}
+			if (Date.now() >= deadline) throw timeout();
 			await new Promise((r) => setTimeout(r, RETRY_MS));
+			slept = true;
 			continue;
 		}
 		holders.set(lockFile, ours);
