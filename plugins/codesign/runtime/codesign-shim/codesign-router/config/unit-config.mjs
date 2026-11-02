@@ -1,4 +1,5 @@
-import { dirname } from "node:path";
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 
@@ -23,8 +24,18 @@ function doNotTrack(env) {
 	const v = env.DO_NOT_TRACK?.trim().toLowerCase() ?? "";
 	return v !== "" && v !== "0" && v !== "false";
 }
+/** IMGLY_GATEWAY_API_KEY_FILE's contents when it is set (none when it cannot be read: the edge says why), else IMGLY_GATEWAY_API_KEY. */
+function gatewayKey(env) {
+	const file = env.IMGLY_GATEWAY_API_KEY_FILE?.trim();
+	if (!file) return env.IMGLY_GATEWAY_API_KEY?.trim() || void 0;
+	try {
+		return readFileSync(file, "utf8").trim() || void 0;
+	} catch {
+		return;
+	}
+}
 /** The client's environment as a ClientConfig; the edges (adapter, CLI, app) call it once. Only what is set. */
-function clientConfigFromEnv(env = process.env, releaseBuild = true) {
+function clientConfigFromEnv(env = process.env, releaseBuild = true, cwd = process.cwd()) {
 	const config = {};
 	const licence = releaseBuild ? void 0 : env.CESDK_LICENSE?.trim() || env.IMGLY_CESDK_LICENSE?.trim();
 	if (licence) config.licence = licence;
@@ -38,9 +49,13 @@ function clientConfigFromEnv(env = process.env, releaseBuild = true) {
 	const prefer = env.IMGLY_CESDK_ENGINE?.trim();
 	if (prefer === "native" || prefer === "wasm") config.engine = { prefer };
 	const gateway = env.IMGLY_GATEWAY_BASE_URL?.trim();
-	if (gateway) config.gateway = { baseURL: gateway };
+	const apiKey = gatewayKey(env);
+	if (gateway || apiKey) config.gateway = {
+		...gateway && { baseURL: gateway },
+		...apiKey && { apiKey }
+	};
 	const workspace = env.CODESIGN_WORKSPACE?.trim();
-	if (workspace) config.workspacePath = workspace;
+	if (workspace) config.workspacePath = resolve(cwd, workspace);
 	return config;
 }
 

@@ -92,7 +92,9 @@ function runtimePaths(home, platform = process.platform) {
 		redemptions: join(home, "redemptions.json"),
 		id: join(home, "id"),
 		engineSlots: join(home, "engine-slots"),
-		styles: join(home, "styles")
+		experimentsJson: join(home, "experiments.json"),
+		/** Packs downloaded by URL, until they are installed. */
+		packDownloads: join(home, "downloads", "packs")
 	};
 }
 

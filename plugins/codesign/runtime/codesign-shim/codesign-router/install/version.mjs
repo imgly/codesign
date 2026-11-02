@@ -41,6 +41,12 @@ function compareNumeric(x, y) {
 	if (a.length !== b.length) return a.length - b.length;
 	return a < b ? -1 : a > b ? 1 : 0;
 }
+/** The one line a client or unit shows when the router serving it is older than itself; undefined otherwise. */
+function olderRouterWarning(router, own) {
+	if (!isVersion(router) || !isVersion(own)) return void 0;
+	if (compareVersions(router, own) >= 0) return void 0;
+	return `an older CoDesign (${router}) router serves this workspace; update it to get the newest features`;
+}
 
 //#endregion
-export { compareVersions, isVersion };
+export { compareVersions, isVersion, olderRouterWarning };
