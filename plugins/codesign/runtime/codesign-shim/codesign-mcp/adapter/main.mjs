@@ -1,3 +1,4 @@
+import { olderRouterWarning } from "../../codesign-router/install/version.mjs";
 import { clientConfigFromEnv } from "../../codesign-router/config/unit-config.mjs";
 import { connectRemote } from "./remote.mjs";
 import { createMcpAdapter } from "./server.mjs";
@@ -6,7 +7,7 @@ import { createInterface } from "node:readline";
 //#region src/adapter/main.ts
 /** The notification every attached client gets after a call that may have changed the design. */
 const SESSION_CHANGED = "notifications/codesign/session_changed";
-/** The channel through the router: what `cdsn mcp` serves. */
+/** The channel through the router: what `cdsn mcp` serves. With `version`, an older router is named on stderr. */
 function routerChannel(opts) {
 	return async (client) => {
 		const link = await connectRemote({
@@ -17,6 +18,8 @@ function routerChannel(opts) {
 			...opts.conversation !== void 0 ? { conversation: opts.conversation } : {},
 			...opts.chatClientKind !== void 0 ? { chatClientKind: opts.chatClientKind } : {}
 		});
+		const older = opts.version !== void 0 ? olderRouterWarning(link.routerVersion(), opts.version) : void 0;
+		if (older !== void 0) process.stderr.write(`codesign-mcp: ${older}\n`);
 		const { text } = await link.request("instructions", {});
 		return {
 			link,

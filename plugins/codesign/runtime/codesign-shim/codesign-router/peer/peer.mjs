@@ -10,6 +10,17 @@ const METHOD_TIMEOUTS = {
 	"client.call": null,
 	"permission.request": null,
 	"agent.install": null,
+	"pack.install": null,
+	"workspace.import": null,
+	"assets.import": null,
+	"designs.remove": null,
+	"styles.save": null,
+	"styles.duplicate": null,
+	"styles.copy": null,
+	"styles.delete": null,
+	"styles.migrate": null,
+	"pack.remove": null,
+	"pack.create": null,
 	"draft.save": 3e4
 };
 /** Above this many unsent bytes a peer stops reading what makes it write more, until the buffer drains. */

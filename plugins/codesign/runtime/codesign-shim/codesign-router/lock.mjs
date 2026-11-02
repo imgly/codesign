@@ -29,10 +29,10 @@ function pidAlive(pid) {
 		return err.code !== "ESRCH";
 	}
 }
-async function withFileLock(lockFile, fn, { maxWaitMs = MAX_WAIT_MS, name = "auth", staleAfterMs = Infinity } = {}) {
+async function withFileLock(lockFile, fn, { maxWaitMs = MAX_WAIT_MS, name = "auth", staleAfterMs = Infinity, note, refuse } = {}) {
 	await mkdir(dirname(lockFile), { recursive: true });
 	const deadline = Date.now() + maxWaitMs;
-	const myPid = String(process.pid);
+	const myPid = note === void 0 ? String(process.pid) : `${process.pid}\n${note}`;
 	let lastReadError;
 	const ours = Symbol(lockFile);
 	const readLock = async () => {
@@ -60,7 +60,8 @@ async function withFileLock(lockFile, fn, { maxWaitMs = MAX_WAIT_MS, name = "aut
 		} catch (err) {
 			if (err.code !== "EEXIST") throw err;
 			const holderContent = await readLock();
-			const holder = holderContent !== null && PID.test(holderContent) ? Number(holderContent) : NaN;
+			const [holderPid, ...holderNote] = (holderContent ?? "").split("\n");
+			const holder = holderContent !== null && PID.test(holderPid) ? Number(holderPid) : NaN;
 			if (holder > 0 && (!pidAlive(holder) || await lockAgeMs() > staleAfterMs)) {
 				const recheck = await readLock();
 				if (recheck !== null && recheck === holderContent && (!pidAlive(holder) || await lockAgeMs() > staleAfterMs)) await rm(lockFile, { force: true });
@@ -69,6 +70,10 @@ async function withFileLock(lockFile, fn, { maxWaitMs = MAX_WAIT_MS, name = "aut
 			if (holderContent !== null && !(holder > 0) && await lockAgeMs() > NO_PID_GRACE_MS) {
 				if (await readLock() === holderContent && await lockAgeMs() > NO_PID_GRACE_MS) await rm(lockFile, { force: true });
 				continue;
+			}
+			if (holder > 0) {
+				const refused = refuse?.(holderNote.length > 0 ? holderNote.join("\n") : void 0);
+				if (refused !== void 0) throw refused;
 			}
 			await new Promise((r) => setTimeout(r, RETRY_MS));
 			continue;

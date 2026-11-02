@@ -18,6 +18,7 @@ async function connectRemote(opts) {
 	/** The unit to rejoin after a handoff. */
 	let unit;
 	let runtime = "";
+	let routerVersion = "";
 	/** Told to the model with the first tool result after its unit died. */
 	let notice;
 	let connecting;
@@ -45,12 +46,12 @@ async function connectRemote(opts) {
 		});
 		let opened;
 		try {
-			await next.request("hello", {
+			routerVersion = (await next.request("hello", {
 				role: "client",
 				range: PROTOCOL_RANGE,
 				client: opts.client,
 				pid: process.pid
-			});
+			})).server.version;
 			try {
 				opened = await open(next, unit);
 			} catch (err) {
@@ -182,6 +183,7 @@ async function connectRemote(opts) {
 			return () => progress.delete(listener);
 		},
 		runtime: () => runtime,
+		routerVersion: () => routerVersion,
 		onToolsChanged: (listener) => void toolsChanged.add(listener),
 		onDesignChanged: (listener) => void designChanged.add(listener),
 		close() {
