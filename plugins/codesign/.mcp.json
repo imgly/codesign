@@ -1,9 +1,8 @@
 {
   "mcpServers": {
     "codesign": {
-      "command": "sh",
+      "command": "${CLAUDE_PLUGIN_ROOT}/runtime/codesign",
       "args": [
-        "${CLAUDE_PLUGIN_ROOT}/runtime/codesign.sh",
         "mcp"
       ],
       "env": {

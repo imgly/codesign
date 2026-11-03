@@ -3,7 +3,7 @@ Copyright (c) 2026 IMG.LY GmbH
 
 The CoDesign launcher is proprietary software of IMG.LY GmbH under the terms below: codesign-shim.mjs, the
 modules in its codesign-shim/codesign-mcp/ and codesign-shim/codesign-router/ folders, and the files shipped
-with them (codesign.sh, codesign.cmd, snapshot.json). No open-source licence of a repository or package that
+with them (codesign, codesign.cmd, snapshot.json). No open-source licence of a repository or package that
 carries them applies to them.
 
 # License
