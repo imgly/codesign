@@ -278,7 +278,6 @@ async function ensureSeed(paths, opts) {
 		activated
 	};
 }
-const SEED_CHANNELS = ["stable", "next"];
 /** Install the core install.sh unpacked: its platform, and its tarball served from disk, checked again by the install. */
 function adoptCore(manifest, core) {
 	const { platform } = JSON.parse(readFileSync(join(core, "manifest.json"), "utf8"));
@@ -338,7 +337,7 @@ async function runBootstrap(args, env = process.env) {
 		await runCheck(paths, env);
 		return;
 	}
-	if (args[0] !== "ensure") throw new Error("usage: codesign-shim.mjs bootstrap ensure [--core <dir> | --seed <dir> --channel <stable|next>] | check");
+	if (args[0] !== "ensure") throw new Error(`usage: codesign-shim.mjs bootstrap ensure [--core <dir> | --seed <dir> --channel <${CHANNELS.join("|")}>] | check`);
 	const seedAt = args.indexOf("--seed");
 	if (seedAt !== -1) {
 		const channelAt = args.indexOf("--channel");
@@ -368,8 +367,8 @@ async function runBootstrap(args, env = process.env) {
 /** `bootstrap ensure --seed`: `seed <version>` on stdout, or `install failed: <reason>` in the log and on stderr and exit 1. */
 async function runSeed(paths, env, dir, channel) {
 	try {
-		const seedChannel = SEED_CHANNELS.find((c) => c === channel);
-		if (dir === void 0 || seedChannel === void 0) throw new Error("usage: codesign-shim.mjs bootstrap ensure --seed <dir> --channel <stable|next>");
+		const seedChannel = CHANNELS.find((c) => c === channel);
+		if (dir === void 0 || seedChannel === void 0) throw new Error(`usage: codesign-shim.mjs bootstrap ensure --seed <dir> --channel <${CHANNELS.join("|")}>`);
 		const { version } = await ensureSeed(paths, {
 			dir,
 			channel: seedChannel,
@@ -431,7 +430,7 @@ if (process.argv[1] !== void 0 && realpathSync(fileURLToPath(import.meta.url)) =
 		process.stderr.write(`${tooOld}\n`);
 		process.exit(1);
 	}
-	(command === "mcp" ? runMcp() : command === "bootstrap" ? runBootstrap(rest) : Promise.reject(/* @__PURE__ */ new Error("usage: codesign-shim.mjs mcp | bootstrap ensure [--core <dir> | --seed <dir> --channel <stable|next>] | bootstrap check"))).catch((err) => {
+	(command === "mcp" ? runMcp() : command === "bootstrap" ? runBootstrap(rest) : Promise.reject(/* @__PURE__ */ new Error(`usage: codesign-shim.mjs mcp | bootstrap ensure [--core <dir> | --seed <dir> --channel <${CHANNELS.join("|")}>] | bootstrap check`))).catch((err) => {
 		process.stderr.write(`codesign: ${err instanceof Error ? err.message : String(err)}\n`);
 		process.exit(1);
 	});
