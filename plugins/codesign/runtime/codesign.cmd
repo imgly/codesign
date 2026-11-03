@@ -1,5 +1,5 @@
 @echo off
-rem The plugin's MCP server on Windows, as codesign.sh: the installed runtime, else the shim beside this file on the
+rem The plugin's MCP server on Windows, as the codesign script: the installed runtime, else the shim beside this file on the
 rem user's Node 18+, else one line saying what to install. The build writes it with CRLF line ends.
 setlocal
 set "home=%IMGLY_CODESIGN_HOME%"

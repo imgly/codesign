@@ -18,6 +18,11 @@ import { fileURLToPath } from "node:url";
 //#region src/runtime/shim/main.ts
 const PROGRESS_EVERY_MS = 1e4;
 const INSTALL_HINT = "CoDesign is installing its engine for the first time. Call this tool again in a minute.";
+const INSTALL_RETRY_MS = 6e5;
+/** How long after a failed install no new one starts; `IMGLY_CODESIGN_INSTALL_RETRY_MS` moves it only in a build that is not a release. */
+function installRetryMs(env = process.env, releaseBuild = true) {
+	return (releaseBuild ? void 0 : Number(env.IMGLY_CODESIGN_INSTALL_RETRY_MS)) || INSTALL_RETRY_MS;
+}
 /** How often a call waiting for the install hears progress; `IMGLY_CODESIGN_PROGRESS_MS` moves it only in a build that is not a release. */
 function progressEveryMs(env = process.env, releaseBuild = true) {
 	return (releaseBuild ? void 0 : Number(env.IMGLY_CODESIGN_PROGRESS_MS)) || PROGRESS_EVERY_MS;
@@ -100,6 +105,8 @@ function snapshotChannel(snapshot, client, opts) {
 	/** A call that waits for the install hears progress, then runs; a cancel ends the wait. */
 	const waitAndCall = async (params) => {
 		if (params.progress !== true) {
+			const failure = opts.installFailure();
+			if (failure !== void 0) return failed(failure);
 			ready().catch(() => void 0);
 			return {
 				content: [{
@@ -166,10 +173,15 @@ async function runMcp(env = process.env) {
 	const snapshot = readSnapshot();
 	const progressMs = progressEveryMs(env);
 	const installed = () => cliCommand(paths, env) !== void 0;
+	const retryMs = installRetryMs(env);
+	let lastFailure;
+	const installFailure = () => lastFailure !== void 0 && Date.now() - lastFailure.at < retryMs && !installed() ? lastFailure.error : void 0;
 	let installing;
 	/** The install runs in a detached installer, so it outlives this shim; install.lock keeps it to one download. */
 	const install = () => {
 		if (installed()) return Promise.resolve();
+		const failure = installFailure();
+		if (failure !== void 0) return Promise.reject(failure);
 		installing ??= (async () => {
 			try {
 				const logged = statSync(paths.installLog, { throwIfNoEntry: false });
@@ -180,6 +192,12 @@ async function runMcp(env = process.env) {
 				});
 				if (installed()) return;
 				throw new Error(lastInstallFailure(paths, logged?.size ?? 0) ?? ended);
+			} catch (error) {
+				lastFailure = {
+					error,
+					at: Date.now()
+				};
+				throw error;
 			} finally {
 				installing = void 0;
 			}
@@ -205,6 +223,7 @@ async function runMcp(env = process.env) {
 		}
 		return snapshotChannel(snapshot, client, {
 			install,
+			installFailure,
 			connect: () => viaRouter(client),
 			progressMs
 		});
@@ -437,4 +456,4 @@ if (process.argv[1] !== void 0 && realpathSync(fileURLToPath(import.meta.url)) =
 }
 
 //#endregion
-export { cliCommand, ensureDaemon, ensureInstalled, ensureSeed, nodeTooOld, progressEveryMs, runBootstrap, runMcp };
+export { cliCommand, ensureDaemon, ensureInstalled, ensureSeed, installRetryMs, nodeTooOld, progressEveryMs, runBootstrap, runMcp };

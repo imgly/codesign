@@ -410,9 +410,13 @@ async function download({ url, size }, file, fetchImpl) {
 	if (received < size) throw new InstallError("download", `${url}: the server sent ${received} bytes, fewer than the ${size} the release names`);
 	return hash.digest("hex");
 }
+/** Windows' own bsdtar: Git Bash's GNU tar, first on PATH there, reads `C:\…` as a remote host. */
+function tarCommand(platform = process.platform, systemRoot = process.env.SystemRoot) {
+	return platform === "win32" ? `${systemRoot ?? "C:\\Windows"}\\System32\\tar.exe` : "tar";
+}
 function untar(archive, dir) {
 	return new Promise((resolve, reject) => {
-		const tar = spawn("tar", [
+		const tar = spawn(tarCommand(), [
 			"-xzf",
 			archive,
 			"-C",
@@ -570,4 +574,4 @@ function writeAtomic(file, text) {
 }
 
 //#endregion
-export { CHANNELS, InstallError, RUNTIME_PUBLIC_KEYS, activate, alive, assertAcceptable, collect, currentPlatform, currentVersion, fetchManifest, installRelease, keyIdOf, linkEnginePack, onCollect, readUpdateState, recordAccepted, releaseBase, unpackArtifact, verifyManifest, withInstallLock, writeUpdateState };
+export { CHANNELS, InstallError, RUNTIME_PUBLIC_KEYS, activate, alive, assertAcceptable, collect, currentPlatform, currentVersion, fetchManifest, installRelease, keyIdOf, linkEnginePack, onCollect, readUpdateState, recordAccepted, releaseBase, tarCommand, unpackArtifact, untar, verifyManifest, withInstallLock, writeUpdateState };
