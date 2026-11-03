@@ -6,13 +6,13 @@
     "url": "https://github.com/imgly/codesign",
     "source": "github"
   },
-  "version": "0.6.0-canary.20261103170711.g1ab3c14",
+  "version": "0.6.0-canary.20261103174055.g5633faf",
   "packages": [
     {
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@imgly/codesign-mcp",
-      "version": "0.6.0-canary.20261103170711.g1ab3c14",
+      "version": "0.6.0-canary.20261103174055.g5633faf",
       "transport": {
         "type": "stdio"
       },
