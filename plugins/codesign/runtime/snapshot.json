@@ -1,5 +1,5 @@
 {
-  "runtime": "0.6.0-next.20261103201227.ga13e469",
+  "runtime": "0.6.0-next.20261104013816.g85b30c7",
   "instructions": "**IMG.LY CoDesign** MCP server: design with a CE.SDK engine. Tool names here are bare (`edit`): call the prefixed name in your tool list (e.g. `mcp__codesign__edit`); `Edit` is your host's file editor. Skills: the installed skill of that name, else its `skill://codesign/<name>/SKILL.md` resource.\n\n**Before your first `edit`**, read in ONE message, in parallel: `skill://codesign/api/SKILL.md`, `skill://codesign/judge/SKILL.md` and `skill://codesign/judge/design-rules.md`; for a new design also `skill://codesign/create/SKILL.md`. Never guess an engine method or prop.\n\n**The loop, for every canvas change:**\n1. **Brief.** Derive what the request answers. If two or more of topic, audience, visual direction, brand and format are open, ask ONE round of options plus `Decide automatically` before the first `edit`. Never invent the user's values (brand colours, fonts, a locale's wording): `skill://codesign/create/intake.md`.\n   Register the brief's acceptance items with `checklist({ items })` first.\n2. **Build one complete page per `edit`**, page 1 first; name blocks and find them with `findByName`. A new design is scene first: `create({ type: 'scene', children: [page] })`; a later scene replaces the design and every block built before it.\n3. **Look** at the render each changing `edit` returns (`preview` for more). Edit again only for an objective bug (overflow, overlap, missing glyphs); polish waits for the judge.\n4. **Judge** with the `judge` loop; fix each axis below 8 in place, never by rebuilding. Never report an unjudged design as done; record the pass with `scorecard({ verdict: 'pass' })` (a later `edit`, `import` or `open` clears it).\n5. **Reply.** Every change is saved to the design as you make it; there is nothing to save. Report its `uri` and `export` a file when the brief asks.\n   A new design starts with `import({ title })`; every change revises the design you are on, so `import` a copy for another edition (a locale, a format).\n\nAny design can become a video: add timed content to the scene you have, never rebuild it; read `skill://codesign/api/video.md` first.\n\n**Design must-haves:**\n- Use the brief's copy verbatim; where it gives none, write copy that is generic but true. Never invent a name, price, date or claim.\n- Fill the format: margins 8–12 % of the shortest side, no dead bands.\n- Legible sizes. Screen: body ≥ 16 px and ≥ 1.5 % of the page height, captions ≥ 12 px, nothing below 11 px. Print: body 9–12 pt, captions ≥ 7 pt, nothing below 5 pt.\n- No widows or orphans in headings and short blocks.\n- Text padded inside its container; nothing crowds, overlaps or leaves the page.\n- One alignment grid; repeated items built identically.\n- Text contrast ≥ 4.5:1 on its actual background.\n- Template slots stay editable (`editor/select` plus `text/edit` or `fill/change`).\n\n**Speak the user's language** in everything they read. The design's own text follows the brief, else that language (say so); changing it is the `localize` skill, on request. Never translate ids, tool names, typed values or URLs, and translate a chip's label, never its value.\n\nSkills: `api` and `judge` first (above); as the brief needs, `create` `animate` `brand` `resize` `localize` `layerize` `formats` `templates` `onboard` `video-thumbnail-template` `launch-video`. Read `models` before any `asset_generate` call.",
   "tools": [
     {
@@ -1192,13 +1192,13 @@
       "entries": [
         {
           "uri": "skill://codesign/api/SKILL.md",
-          "digest": "sha256:03379f381da937230b79bec41f675ec48b8fb39a97c23c196708eddba49b7c41",
-          "size": 45490
+          "digest": "sha256:75807ca14c31bc5490eec8702fb57e6172d2f8d53f9cb0b8d0ac91b16654bdd8",
+          "size": 46412
         },
         {
           "uri": "skill://codesign/api/animation.md",
-          "digest": "sha256:0299d7c4928551523e15c50927b979cb1d2cdc12ac977a6bc62c3e9c73aacab3",
-          "size": 6059
+          "digest": "sha256:c5fad36f3e86c58396603dc802ce28b883068961e06e9a385d56c77ee3882e93",
+          "size": 6135
         },
         {
           "uri": "skill://codesign/api/recipes.md",
@@ -1207,18 +1207,18 @@
         },
         {
           "uri": "skill://codesign/api/shapes.md",
-          "digest": "sha256:a6b364752452c4c89af24ba5c958aae9c9203584b8de4488bd2312bde80db07d",
-          "size": 5911
+          "digest": "sha256:fe49446718381a8a6a8e1b10bd4b1be017fa4f51b3d46d0121c8ef2112decc72",
+          "size": 5905
         },
         {
           "uri": "skill://codesign/api/signatures-extended.d.ts",
-          "digest": "sha256:3e5a1d02466e4efb941cf923ec21749e49e9e40f5c7aa512d682d6720c03efce",
-          "size": 56295
+          "digest": "sha256:3f4c2eeaf5a534ebe31fb292ac779133bd4a9d45bec2482f3194f68054e01811",
+          "size": 56785
         },
         {
           "uri": "skill://codesign/api/signatures.d.ts",
-          "digest": "sha256:a37664d5623630b33a3f6ade6bc0c9879a9a0adb2e4fc316f396b7284d2ed34b",
-          "size": 114884
+          "digest": "sha256:0f80a0cae0f6006217c1979dd1f4026c0c06f43a2a0a1481fdff5922eb36c4fa",
+          "size": 115646
         },
         {
           "uri": "skill://codesign/api/video.md",

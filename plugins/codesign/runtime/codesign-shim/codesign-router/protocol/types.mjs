@@ -5,6 +5,7 @@ const ROLE_ONLY = {
 	"units.list": "client",
 	"update.check": "client",
 	"update.apply": "client",
+	"update.status": "client",
 	"update.channel": "client",
 	handoff: "client",
 	shutdown: "client",

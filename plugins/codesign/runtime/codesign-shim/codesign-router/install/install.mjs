@@ -1,3 +1,4 @@
+import { CHANNEL } from "../release-build.generated.mjs";
 import { linkedVersion, runtimePaths } from "../paths.mjs";
 import { withFileLock } from "../lock.mjs";
 import { ENGINE_PACKAGES, chooseEnginePacks, linkEntry, linkSharedAssets } from "./engine-packs.mjs";
@@ -81,13 +82,19 @@ function verifyManifest(signed, publicKeys, channel) {
 function areArtifacts(entries) {
 	return typeof entries === "object" && entries !== null && Object.values(entries).every((a) => typeof a?.url === "string" && typeof a.sha256 === "string" && /^[0-9a-f]{64}$/.test(a.sha256) && typeof a.size === "number" && Number.isSafeInteger(a.size) && a.size > 0);
 }
-/** Refuse a manifest older than the last accepted on its channel, or below `current` unless the user switched to it. */
+/** The first version of the workspace format 0.6 writes, its pre-releases included. */
+const WORKSPACE_FORMAT_FLOOR = "0.6.0-0";
+/**
+* Refuse a manifest older than the last accepted on its channel, below the workspace format's floor, or below
+* `current` unless the user switched to it.
+*/
 function assertAcceptable(paths, manifest) {
 	const state = readUpdateState(paths);
 	if (state.bad?.includes(manifest.runtime)) throw new InstallError("rolled-back", `CoDesign ${manifest.runtime} did not start here and was rolled back; waiting for a newer release`);
 	const last = state.accepted?.[manifest.channel];
 	if (last !== void 0 && Date.parse(manifest.issuedAt) < Date.parse(last)) throw new InstallError("replay", `the release server offered a ${manifest.channel} manifest issued ${manifest.issuedAt}, older than the one installed (${last}); try again later`);
 	const current = currentVersion(paths);
+	if (current !== void 0 && isVersion(current) && compareVersions(current, "0.6.0-0") >= 0 && compareVersions(manifest.runtime, "0.6.0-0") < 0) throw new InstallError("below-floor", `the ${manifest.channel} channel offers ${manifest.runtime}, which cannot read the workspace ${current} uses; keeping ${current}`);
 	if (current !== void 0 && isVersion(current) && state.downgrade !== manifest.channel && compareVersions(manifest.runtime, current) < 0) throw new InstallError("downgrade", `the ${manifest.channel} channel offers ${manifest.runtime}, older than the installed ${current}; keeping ${current}`);
 }
 /** After an install from `manifest`: remember its issue time and consume a channel switch's downgrade allowance. */
@@ -116,7 +123,7 @@ function readUpdateState(paths) {
 	try {
 		return JSON.parse(readFileSync(paths.updateJson, "utf8"));
 	} catch {
-		return { channel: "stable" };
+		return { channel: CHANNEL };
 	}
 }
 function writeUpdateState(paths, state) {
@@ -574,4 +581,4 @@ function writeAtomic(file, text) {
 }
 
 //#endregion
-export { CHANNELS, InstallError, RUNTIME_PUBLIC_KEYS, activate, alive, assertAcceptable, collect, currentPlatform, currentVersion, fetchManifest, installRelease, keyIdOf, linkEnginePack, onCollect, readUpdateState, recordAccepted, releaseBase, tarCommand, unpackArtifact, untar, verifyManifest, withInstallLock, writeUpdateState };
+export { CHANNELS, InstallError, RUNTIME_PUBLIC_KEYS, WORKSPACE_FORMAT_FLOOR, activate, alive, assertAcceptable, collect, currentPlatform, currentVersion, fetchManifest, installRelease, keyIdOf, linkEnginePack, onCollect, readUpdateState, recordAccepted, releaseBase, tarCommand, unpackArtifact, untar, verifyManifest, withInstallLock, writeUpdateState };

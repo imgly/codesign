@@ -1,8 +1,9 @@
 import { runtimePaths } from "../paths.mjs";
 import { withFileLock } from "../lock.mjs";
-import { InstallError, assertAcceptable, collect, currentVersion, fetchManifest, installRelease, readUpdateState, recordAccepted, writeUpdateState } from "./install.mjs";
 import { versionsInUse } from "../units/leases.mjs";
+import { InstallError, assertAcceptable, collect, currentVersion, fetchManifest, installRelease, readUpdateState, recordAccepted, writeUpdateState } from "./install.mjs";
 import { agentPacksToUpdate, installAgentPack } from "./agent-packs.mjs";
+import { existsSync } from "node:fs";
 import { join } from "node:path";
 
 //#region ../codesign-router/dist/install/updater.js
@@ -100,13 +101,15 @@ function createUpdater(home, opts = {}) {
 				removed: collect(paths, versionsInUse(home))
 			};
 		},
-		async setChannel(channel) {
+		async setChannel(channel, opts = {}) {
 			const state = readUpdateState(paths);
-			if (state.channel === channel) return;
+			const pending = state.downgrade !== void 0;
+			if (state.channel === channel && existsSync(paths.updateJson) && !(opts.downgrade === false && pending)) return;
+			const { downgrade: _, ...rest } = state;
 			writeUpdateState(paths, {
-				...state,
+				...rest,
 				channel,
-				downgrade: channel
+				...opts.downgrade !== false && state.channel !== channel && { downgrade: channel }
 			});
 		},
 		schedule(run, everyMs = CHECK_EVERY_MS) {

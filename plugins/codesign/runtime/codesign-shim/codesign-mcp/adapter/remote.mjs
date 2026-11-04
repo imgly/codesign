@@ -36,6 +36,7 @@ async function connectRemote(opts) {
 		config: opts.config,
 		...opts.conversation !== void 0 ? { conversation: opts.conversation } : {},
 		...opts.chatClientKind !== void 0 ? { chatClientKind: opts.chatClientKind } : {},
+		...opts.oneShot === true ? { oneShot: true } : {},
 		...rejoin !== void 0 ? { session: rejoin } : opts.attach !== void 0 ? { attach: opts.attach } : {}
 	}, { timeoutMs: CHANNEL_OPEN_MS });
 	const connect = async () => {
