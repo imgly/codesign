@@ -14,6 +14,7 @@ const METHOD_TIMEOUTS = {
 	"workspace.import": null,
 	"assets.import": null,
 	"designs.remove": null,
+	"workspace.dismissNotice": null,
 	"styles.save": null,
 	"styles.duplicate": null,
 	"styles.copy": null,

@@ -24,9 +24,11 @@ function linkedVersion(link, platform = process.platform) {
 const socketPathMax = (platform) => platform === "darwin" ? 103 : 107;
 /** Room after a socket path for the `.<pid>` a staged server.sock takes (router/main.ts). */
 const STAGED_SUFFIX = 8;
-/** Where a home's sockets go when one is too long for sun_path: a private /tmp/cdsn-<hash>, the same for every caller. */
+/** Where a home's sockets go when one is too long for sun_path: a private /tmp/cdsn-<hash of the user and the home>,
+* the same for every caller of this user; two users of one Mac never share one, and the name stays as short as before. */
 function socketDir(home) {
-	return `/tmp/cdsn-${createHash("sha256").update(home).digest("hex").slice(0, 12)}`;
+	const user = process.getuid?.() ?? 0;
+	return `/tmp/cdsn-${createHash("sha256").update(`${user}:${home}`).digest("hex").slice(0, 12)}`;
 }
 /** A socket at `file` in the home, or `name` in socketDir(home) when `file` would not fit sun_path; on Windows a named
 * pipe, which leaves no file there. Decided per socket: a unit's is longer than the home's own server.sock. */

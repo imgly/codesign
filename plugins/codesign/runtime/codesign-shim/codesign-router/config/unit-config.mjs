@@ -54,10 +54,15 @@ function clientConfigFromEnv(env = process.env, releaseBuild = true, cwd = proce
 		...gateway && { baseURL: gateway },
 		...apiKey && { apiKey }
 	};
-	const workspace = env.CODESIGN_WORKSPACE?.trim();
-	if (workspace) config.workspacePath = resolve(cwd, workspace);
+	const workspacePath = workspacePathFromEnv(env, cwd);
+	if (workspacePath !== void 0) config.workspacePath = workspacePath;
 	return config;
+}
+/** The workspace folder CODESIGN_WORKSPACE names, trimmed; none when it is unset or blank. */
+function workspacePathFromEnv(env, cwd) {
+	const workspace = env.CODESIGN_WORKSPACE?.trim();
+	return workspace ? resolve(cwd, workspace) : void 0;
 }
 
 //#endregion
-export { clientConfigFromEnv };
+export { clientConfigFromEnv, workspacePathFromEnv };
