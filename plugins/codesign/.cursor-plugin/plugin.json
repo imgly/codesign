@@ -1,0 +1,32 @@
+{
+  "name": "codesign",
+  "version": "0.6.0",
+  "description": "Generate designs and videos, then resize, rebrand or translate them. Open them in a visual editor and export to .pdf, .psd, .idml, .mp4 & more",
+  "author": {
+    "name": "IMG.LY GmbH",
+    "email": "support@img.ly"
+  },
+  "homepage": "https://codesign.co",
+  "repository": "https://github.com/imgly/codesign",
+  "license": "MIT",
+  "keywords": [
+    "ai-agents",
+    "brand",
+    "claude-code",
+    "codex",
+    "design",
+    "design-automation",
+    "design-tools",
+    "graphic-design",
+    "imgly",
+    "local-first",
+    "mcp",
+    "mcp-server",
+    "model-context-protocol",
+    "nodejs",
+    "pdf-tools",
+    "print",
+    "video-editing",
+    "video-processing"
+  ]
+}

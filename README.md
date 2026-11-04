@@ -5,16 +5,50 @@
 
 **The design layer for the agent era.**
 
-CoDesign gives your coding agent a real design engine. Generate, edit, and
-automate _fully editable_ designs — print, social, and video — straight from
-the chat, then export print-ready PDFs, images, mp4 video, and more. You steer, the agent
-edits the same scene, and you keep control of the outcome.
+Create posters, social posts, videos and print layouts from a prompt, then
+change any part of them yourself. CoDesign gives you a professional design
+engine. Every headline, image, shape and clip stays its own layer, so you can
+swap a font or move a logo without starting over.
 
-It ships as an MCP server (plus a Claude Code plugin) that hands your agent
-IMG.LY's CE.SDK CreativeEngine — the same production engine behind IMG.LY's
-commercial SDKs. Every recipe below spawns the published npm package
+Start from scratch or from files you already have. InDesign, Photoshop,
+PowerPoint and PDF files open with their layers intact. Then resize one design
+for every social format, translate it with the layout reflowing to fit (Arabic
+and other right-to-left scripts included), apply your brand colors and fonts,
+or check it against your guidelines.
+
+Every design opens in a built-in editor when you want to fix something by
+hand. Export print-ready PDFs with CMYK color and bleed, Photoshop and InDesign
+files your team can keep working on, or video for social.
+
+Built by IMG.LY on the IMG.LY design engine. Runs on your computer. No account
+needed to start.
+
+CoDesign ships as an MCP server (plus a plugin for Claude Code, Codex, Copilot
+CLI, Antigravity and Cursor) that hands your agent IMG.LY's CE.SDK CreativeEngine — the
+same production engine behind IMG.LY's commercial SDKs. The plugin runs the launcher it carries ([what it runs](#what-the-plugin-runs)); every direct recipe below spawns the published npm package
 `@imgly/codesign-mcp` over stdio; no separate install step — `npx` fetches it on first
 use.
+
+## Use cases
+
+- A social team turns one campaign into every format, from Instagram posts to
+  short videos.
+- An agency opens an old InDesign file, rebrands it, and exports it back as
+  .idml.
+- A global brand translates print ads and video ads without breaking the
+  layout.
+- A designer generates a first draft, then moves and restyles layers by hand
+  in the visual editor.
+- A brand manager checks assets against guidelines before they go out.
+
+## Formats
+
+- **Import:** InDesign (.idml), Photoshop (.psd), PowerPoint (.pptx), PDF,
+  images (PNG, JPEG, GIF, WebP, SVG) and CoDesign (.imgly) files.
+- **Export:** PDF and print-ready PDF/X, PNG, JPEG, WebP, SVG, HTML, InDesign
+  (.idml), Photoshop (.psd), MP4 video, WAV and M4A audio, and CoDesign
+  (.imgly). Video and audio export need the native engine; Windows runs the
+  WASM engine, which has no video.
 
 ## What you can make
 
@@ -49,22 +83,23 @@ Ask your agent, in plain language:
 
 Three layers, one product:
 
-- **The plugin** — skills, slash commands, and an embedded design handbook your
-  agent draws on to design _well_ (brand, localize, resize, and quality-check
-  its own output). This is the piece you install.
+- **The plugin** — installs the MCP server and connects it to your agent. This
+  is the piece you install.
 - **The MCP server** (`@imgly/codesign-mcp`) — exposes the design tools (`edit`,
   `preview`, `export`, `list`, `history`, …) over MCP, driven by tool calls
-  from any agent host.
+  from any agent host, and serves the skills and design rules your agent
+  draws on to design _well_ (brand, localize, resize, and quality-check its
+  own output), always matching the server's version.
 - **The CE.SDK CreativeEngine** — IMG.LY's real, headless design engine that
   does the actual layout, rendering, and export.
 
 ## Licensing
 
-This repository — the Claude Code and Codex plugins, marketplace manifests,
-skills and documentation — is released under the [MIT License](./LICENSE).
+This repository — the plugin, marketplace manifests and documentation — is
+released under the [MIT License](./LICENSE).
 The CoDesign engine itself, distributed as the npm package `@imgly/codesign-mcp`, is
 proprietary software from IMG.LY and free to use locally. The full terms ship
-inside the package as `LICENSE.md`.
+inside the package as `LICENSE.md`. The launcher in `plugins/codesign/runtime/` is not under the MIT License either: [its NOTICE](./plugins/codesign/runtime/NOTICE) names its licences.
 
 ## Why a real engine matters
 
@@ -78,25 +113,75 @@ print, video, and social:
   browser or config.
 - **Native performance** — a purpose-built engine that stays fast at scale and
   under heavy assets.
-- **Full compatibility** — imports InDesign, PSD, PowerPoint (PPTX), PDF, and
-  Lottie; exports print-ready PDF, image, video, and HTML.
+- **Full compatibility** — imports InDesign, PSD, PowerPoint (PPTX) and PDF;
+  exports print-ready PDF, image, video, InDesign, PSD and HTML.
+
+## What the plugin runs
+
+- **A local MCP server.** Claude Code starts `runtime/codesign mcp`;
+  Codex, Copilot CLI, Antigravity and Cursor (untested) start `node runtime/codesign-shim.mjs mcp`
+  in the plugin folder. Both run over stdio. IMG.LY's CE.SDK engine imports, renders and exports on your machine,
+  from your files, and designs are saved in a local workspace.
+- **A launcher, and the runtime it installs.** The plugin carries only the
+  launcher: `runtime/codesign` (`codesign.cmd` on Windows), readable
+  JavaScript modules in `runtime/codesign-shim/` that run on your Node.js, and
+  `runtime/snapshot.json`, the tool list it answers with until the runtime is
+  installed. The runtime (CoDesign with its own Node.js, a CE.SDK engine and its
+  assets) is downloaded into `~/.codesign` from IMG.LY's release server,
+  `https://get.codesign.co/runtime/<channel>/`, and checks there for an update
+  every 6 hours. Every download is listed in a release manifest signed with
+  IMG.LY's Ed25519 key, which the launcher carries, and must match the SHA-256
+  and size the manifest gives; a manifest older than the last one accepted is
+  refused.
+- **No hooks.** The plugin runs nothing at session start. When the runtime
+  is missing, the server answers from `runtime/snapshot.json` and installs it
+  in the background on its first start.
+- **What your agent reads from it.** The MCP instructions, tool descriptions,
+  skills and prompts ship inside the signed runtime release (until it is
+  installed, in the plugin's `runtime/snapshot.json`); nothing fetches them
+  from anywhere else.
+- **Where it connects:**
+  - `get.codesign.co`: runtime downloads and update checks.
+  - `cdn.img.ly`: templates, fonts, other default assets and the browser
+    editor.
+  - `img.ly` and `clerk.img.ly`: the IMG.LY sign-in, only when you sign in
+    with the `login` tool.
+  - `gateway.img.ly`: only for AI generation.
+  - `api.img.ly`: usage data, and Sentry (`sentry.io`): error reports.
+    In Claude Code, turn them off in the plugin's settings (Send usage data
+    to IMG.LY, Send error reports to IMG.LY); on any host, set
+    `DO_NOT_TRACK=1` or `IMGLY_TELEMETRY=off`.
+  - Addresses a design, you or your agent name, such as an image or font URL:
+    fetched and copied into your workspace.
+  - IMG.LY's CE.SDK engine, which renders and exports, itself checks its
+    licence with IMG.LY (`api.img.ly`) and reports its own usage there when
+    it starts; neither the plugin's two settings nor `DO_NOT_TRACK` turn that
+    off.
 
 ## Requirements & known limitations
 
 > **Read this first — the failure modes below are silent.**
 
-- **Node.js ≥ 22.15 is required and is _not_ provided.** The server runs on your
-  system Node. With no Node (or Node < 22.15) on `PATH`, the host reports the
-  server as failed with no useful reason — typically `local: 0` and
-  `MCP error -32000`. Install Node 22.15+ first: <https://nodejs.org>.
-- **Pin `@0.5.1` — every recipe names that exact version on purpose.** The
-  plugin ships the skills that version was built with, and a bare or dist-tagged
-  `npx` would pair them with a different server. Each release republishes this
-  repo with a new pin — update the plugin (or your recipe) to move forward.
-- **Windows is not supported under bare `npx`.** Hosts that spawn `npx`
-  directly hit `spawn npx ENOENT`
+- **Node.js is required and is _not_ provided.** The plugin needs Node.js ≥ 18
+  on `PATH`: Claude Code until the runtime is installed, Codex, Copilot CLI,
+  Antigravity and Cursor (untested) on every start. On an older Node the server says what to
+  install. With no Node at all the host cannot start it and reports the server
+  as failed with no useful reason — typically `spawn node ENOENT`, `local: 0`
+  or `MCP error -32000`. The direct recipes need Node.js ≥ 22.15. Install
+  Node first: <https://nodejs.org>, or see <https://codesign.co/install>.
+- **The plugin updates itself.** It installs the runtime of its channel and
+  checks for an update every 6 hours; no plugin update is needed to move
+  forward.
+- **Pin `@0.6.0` — every direct recipe names that exact version.** Each release
+  republishes this repo with a new pin — update your recipe to
+  move forward.
+- **Windows: the direct recipes need WSL.** Hosts that spawn `npx` directly
+  hit `spawn npx ENOENT`
   ([anthropics/claude-code#58510](https://github.com/anthropics/claude-code/issues/58510)).
-  Use WSL for now; a native Windows launcher is coming.
+  The plugin runs no `npx` and needs no Git. Claude Code, Codex and Copilot CLI
+  start it natively on Windows; Antigravity and Cursor on Windows are untested.
+  Without Node, Claude Code can use the plugin if you first run
+  `irm https://get.codesign.co/runtime/stable/install.ps1 | iex`.
 
 ## Install
 
@@ -112,7 +197,7 @@ claude plugin install codesign@imgly-codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.1 stdio
+claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.6.0 stdio
 ```
 
 ### Codex
@@ -127,7 +212,7 @@ codex plugin add codesign@imgly-codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.1 stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.6.0 stdio
 ```
 
 ### Antigravity CLI
@@ -142,21 +227,45 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.5.1 stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.6.0 stdio
 ```
 
-### Gemini CLI
+### GitHub Copilot CLI
 
-Gemini CLI now serves Gemini Code Assist Standard/Enterprise and API-key
-accounts; on a personal Google account, use Antigravity CLI above.
-
-Install as an extension straight from the public repo:
+Install the plugin from the marketplace:
 
 ```bash
-gemini extensions install https://github.com/imgly/codesign
+copilot plugin marketplace add imgly/codesign
+copilot plugin install codesign@imgly-codesign
 ```
 
-Or add the server manually to `~/.gemini/settings.json`:
+Or add the MCP server directly, without the plugin:
+
+```bash
+copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.6.0 stdio
+```
+
+### Cursor
+
+In Cursor, open **Customize**, choose **From GitHub Repository**, enter <https://github.com/imgly/codesign>,
+then **Install** the CoDesign plugin (untested). On a Teams or Enterprise
+plan, an admin can instead add the same URL as a team marketplace with
+**Import from Repo**, and teammates install CoDesign from **Customize**.
+
+Or copy the plugin folder into Cursor’s local plugins, then run
+**Developer: Reload Window** (untested; on Enterprise, an admin must allow
+local plugin imports):
+
+```bash
+d=$(mktemp -d) &&
+git clone --depth 1 https://github.com/imgly/codesign "$d/codesign" &&
+mkdir -p ~/.cursor/plugins/local &&
+rm -rf ~/.cursor/plugins/local/codesign &&
+cp -R "$d/codesign/plugins/codesign" ~/.cursor/plugins/local/ &&
+rm -rf "$d"
+```
+
+Or add the MCP server directly, without the plugin, in `.cursor/mcp.json`:
 
 ```json
 {
@@ -165,7 +274,7 @@ Or add the server manually to `~/.gemini/settings.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.5.1",
+        "@imgly/codesign-mcp@0.6.0",
         "stdio"
       ]
     }
@@ -185,7 +294,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.5.1",
+        "@imgly/codesign-mcp@0.6.0",
         "stdio"
       ]
     }
@@ -195,7 +304,6 @@ the top-level key differ. Add this block to the host’s MCP config:
 
 | Host | Config file | Note |
 | --- | --- | --- |
-| Cursor | `.cursor/mcp.json` | as-is |
 | Windsurf | `~/.codeium/windsurf/mcp_config.json` | as-is |
 | VS Code | `.vscode/mcp.json` | use the key `servers` instead of `mcpServers` |
 | Zed | `settings.json` | use the `context_servers` shape below |
@@ -209,7 +317,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.5.1",
+        "@imgly/codesign-mcp@0.6.0",
         "stdio"
       ]
     }
@@ -227,7 +335,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.5.1",
+          "@imgly/codesign-mcp@0.6.0",
           "stdio"
         ]
       }

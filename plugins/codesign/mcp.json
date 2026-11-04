@@ -3,12 +3,14 @@
   "mcpServers": {
     "codesign": {
       "type": "stdio",
-      "command": "npx",
+      "command": "node",
       "args": [
-        "-y",
-        "@imgly/codesign-mcp@0.5.1",
-        "stdio"
-      ]
+        "runtime/codesign-shim.mjs",
+        "mcp"
+      ],
+      "env": {
+        "IMGLY_CODESIGN_CHANNEL": "stable"
+      }
     }
   }
 }

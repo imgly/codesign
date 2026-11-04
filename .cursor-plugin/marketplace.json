@@ -1,0 +1,17 @@
+{
+  "name": "imgly-codesign",
+  "owner": {
+    "name": "IMG.LY GmbH",
+    "email": "support@img.ly"
+  },
+  "metadata": {
+    "description": "Generate designs and videos, then resize, rebrand or translate them. Open them in a visual editor and export to .pdf, .psd, .idml, .mp4 & more"
+  },
+  "plugins": [
+    {
+      "name": "codesign",
+      "source": "./plugins/codesign",
+      "description": "Generate designs and videos, then resize, rebrand or translate them. Open them in a visual editor and export to .pdf, .psd, .idml, .mp4 & more"
+    }
+  ]
+}
