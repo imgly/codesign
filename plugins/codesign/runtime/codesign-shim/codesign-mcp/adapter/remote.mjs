@@ -34,6 +34,7 @@ async function connectRemote(opts) {
 		kind: "design",
 		client: opts.client,
 		config: opts.config,
+		...opts.harness !== void 0 ? { harness: opts.harness } : {},
 		...opts.conversation !== void 0 ? { conversation: opts.conversation } : {},
 		...opts.chatClientKind !== void 0 ? { chatClientKind: opts.chatClientKind } : {},
 		...opts.oneShot === true ? { oneShot: true } : {},
