@@ -123,6 +123,7 @@ function installFromNpm(paths, source, platform, dir, onProgress, npm = findNpm(
 			onProgress(`installing the ${source.name} agent ${packVersion(source)} from npm (a development build)`);
 			writeFileSync(join(stage, "package.json"), "{\"private\":true}");
 			await new Promise((resolve, reject) => execFile(npm[0], [...npm.slice(1), ...npmInstallArgs(source, platform)], {
+				windowsHide: true,
 				cwd: stage,
 				maxBuffer: 16777216
 			}, (err, _stdout, stderr) => err ? reject(new InstallError("download", `npm could not install the ${source.name} agent: ${stderr.trim() || err.message}`)) : resolve()));

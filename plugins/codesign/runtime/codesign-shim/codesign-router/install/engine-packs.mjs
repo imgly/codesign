@@ -20,6 +20,7 @@ const systemLoader = () => ({
 			"/usr/sbin/ldconfig"
 		]) try {
 			return execFileSync(bin, ["-p"], {
+				windowsHide: true,
 				encoding: "utf8",
 				stdio: [
 					"ignore",
