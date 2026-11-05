@@ -428,11 +428,14 @@ function untar(archive, dir) {
 			archive,
 			"-C",
 			dir
-		], { stdio: [
-			"ignore",
-			"ignore",
-			"pipe"
-		] });
+		], {
+			windowsHide: true,
+			stdio: [
+				"ignore",
+				"ignore",
+				"pipe"
+			]
+		});
 		let stderr = "";
 		tar.stderr.on("data", (d) => stderr += d.toString());
 		tar.once("error", (err) => reject(new InstallError("unpack", `tar failed: ${err.message}`)));

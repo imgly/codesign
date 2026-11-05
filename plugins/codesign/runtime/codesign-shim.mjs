@@ -52,6 +52,7 @@ async function ensureDaemon(paths, command, timeoutMs = 3e4) {
 		"start",
 		"--detach"
 	], {
+		windowsHide: true,
 		env: {
 			...process.env,
 			IMGLY_CODESIGN_HOME: paths.home
@@ -336,6 +337,7 @@ function spawnInstaller(paths, env, verb = "ensure") {
 			"bootstrap",
 			verb
 		], {
+			windowsHide: true,
 			detached: true,
 			stdio: [
 				"ignore",

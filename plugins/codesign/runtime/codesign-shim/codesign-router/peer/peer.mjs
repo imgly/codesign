@@ -22,6 +22,7 @@ const METHOD_TIMEOUTS = {
 	"styles.migrate": null,
 	"pack.remove": null,
 	"pack.create": null,
+	"agent.signin.code": null,
 	"draft.save": 3e4
 };
 /** Above this many unsent bytes a peer stops reading what makes it write more, until the buffer drains. */
