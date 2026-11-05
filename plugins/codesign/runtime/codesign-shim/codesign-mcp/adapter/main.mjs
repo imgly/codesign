@@ -1,5 +1,6 @@
 import { olderRouterWarning } from "../../codesign-router/install/version.mjs";
 import { clientConfigFromEnv } from "../../codesign-router/config/unit-config.mjs";
+import { harnessFromEnv } from "../../codesign-router/config/harness.mjs";
 import { connectRemote } from "./remote.mjs";
 import { createMcpAdapter } from "./server.mjs";
 import { createInterface } from "node:readline";
@@ -15,6 +16,7 @@ function routerChannel(opts) {
 			startRouter: opts.startRouter,
 			client,
 			config: clientConfigFromEnv(opts.env),
+			harness: harnessFromEnv(opts.env),
 			...opts.conversation !== void 0 ? { conversation: opts.conversation } : {},
 			...opts.chatClientKind !== void 0 ? { chatClientKind: opts.chatClientKind } : {}
 		});
