@@ -37,6 +37,7 @@ async function connectRemote(opts) {
 		...opts.harness !== void 0 ? { harness: opts.harness } : {},
 		...opts.conversation !== void 0 ? { conversation: opts.conversation } : {},
 		...opts.chatClientKind !== void 0 ? { chatClientKind: opts.chatClientKind } : {},
+		...opts.chatHarness !== void 0 ? { chatHarness: opts.chatHarness } : {},
 		...opts.oneShot === true ? { oneShot: true } : {},
 		...rejoin !== void 0 ? { session: rejoin } : opts.attach !== void 0 ? { attach: opts.attach } : {}
 	}, { timeoutMs: CHANNEL_OPEN_MS });
