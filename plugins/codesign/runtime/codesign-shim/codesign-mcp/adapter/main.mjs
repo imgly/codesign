@@ -18,7 +18,8 @@ function routerChannel(opts) {
 			config: clientConfigFromEnv(opts.env),
 			harness: harnessFromEnv(opts.env),
 			...opts.conversation !== void 0 ? { conversation: opts.conversation } : {},
-			...opts.chatClientKind !== void 0 ? { chatClientKind: opts.chatClientKind } : {}
+			...opts.chatClientKind !== void 0 ? { chatClientKind: opts.chatClientKind } : {},
+			...opts.chatHarness !== void 0 ? { chatHarness: opts.chatHarness } : {}
 		});
 		const older = opts.version !== void 0 ? olderRouterWarning(link.routerVersion(), opts.version) : void 0;
 		if (older !== void 0) process.stderr.write(`codesign-mcp: ${older}\n`);
