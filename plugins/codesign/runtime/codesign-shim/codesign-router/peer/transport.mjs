@@ -69,7 +69,11 @@ function streamTransport(input, output, end = () => output.end()) {
 		},
 		pause: () => void input.pause(),
 		resume: () => void input.resume(),
-		close: end
+		close: end,
+		destroy() {
+			input.destroy();
+			if (!duplex) output.destroy();
+		}
 	};
 }
 
