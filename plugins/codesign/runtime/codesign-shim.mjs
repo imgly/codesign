@@ -245,6 +245,10 @@ async function ensureInstalled(paths, env = process.env, log = (line) => logInst
 	const state = readUpdateState(paths);
 	const requested = env.IMGLY_CODESIGN_CHANNEL;
 	const channel = requested !== void 0 && CHANNELS.includes(requested) ? requested : state.channel;
+	if (channel !== state.channel) writeUpdateState(paths, {
+		...state,
+		channel
+	});
 	log(`installing the ${channel} channel`);
 	const manifest = await fetchManifest(channel, {
 		env,
