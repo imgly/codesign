@@ -74,6 +74,17 @@ async function runAdapter(open) {
 			})}\n`);
 			return;
 		}
+		if (first !== void 0 && "id" in message && "method" in message && message.method === "server/discover") {
+			transport.send({
+				jsonrpc: "2.0",
+				id: message.id,
+				error: {
+					code: -32601,
+					message: "Method not found"
+				}
+			});
+			return;
+		}
 		if (first !== void 0) {
 			first(message);
 			first = void 0;
