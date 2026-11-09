@@ -142,6 +142,10 @@ var Peer = class {
 	close() {
 		this.transport.close();
 	}
+	destroy() {
+		if (this.transport.destroy !== void 0) this.transport.destroy();
+		else this.transport.close();
+	}
 	#accept(version) {
 		if (!Number.isInteger(version) || version < this.#range[0] || version > this.#range[1]) return new ProtocolError("protocol", `the other side chose protocol ${version}, outside ${this.#range[0]}–${this.#range[1]}: run \`${UPDATE_COMMAND}\``);
 		this.#version = version;
