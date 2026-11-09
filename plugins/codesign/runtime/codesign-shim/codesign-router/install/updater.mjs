@@ -1,7 +1,7 @@
 import { runtimePaths } from "../paths.mjs";
 import { withFileLock } from "../lock.mjs";
-import { versionsInUse } from "../units/leases.mjs";
 import { InstallError, assertAcceptable, collect, currentVersion, fetchManifest, installRelease, readUpdateState, recordAccepted, writeUpdateState } from "./install.mjs";
+import { versionsInUse } from "../units/leases.mjs";
 import { agentPacksToUpdate, installAgentPack } from "./agent-packs.mjs";
 import { existsSync } from "node:fs";
 import { join } from "node:path";

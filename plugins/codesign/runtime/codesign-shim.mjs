@@ -1,15 +1,17 @@
 #!/usr/bin/env node
 import { runtimeHome, runtimePaths } from "./codesign-shim/codesign-router/paths.mjs";
 import { socketAnswers } from "./codesign-shim/codesign-router/peer/ndjson.mjs";
-import { connectUnix } from "./codesign-shim/codesign-router/peer/transports/unix.mjs";
-import { versionCommand } from "./codesign-shim/codesign-router/units/lifecycle.mjs";
-import { compareVersions } from "./codesign-shim/codesign-router/install/version.mjs";
-import { CHANNELS, InstallError, activate, assertAcceptable, currentVersion, fetchManifest, installRelease, readUpdateState, recordAccepted, writeUpdateState } from "./codesign-shim/codesign-router/install/install.mjs";
-import { checkDue, checkWhenDue, createUpdater } from "./codesign-shim/codesign-router/install/updater.mjs";
 import { PROTOCOL_RANGE } from "./codesign-shim/codesign-router/protocol/version.mjs";
 import { Peer } from "./codesign-shim/codesign-router/peer/peer.mjs";
+import { compareVersions } from "./codesign-shim/codesign-router/install/version.mjs";
+import { CHANNELS, InstallError, activate, assertAcceptable, currentVersion, fetchManifest, installRelease, readUpdateState, recordAccepted, writeUpdateState } from "./codesign-shim/codesign-router/install/install.mjs";
+import { connectUnix } from "./codesign-shim/codesign-router/peer/transports/unix.mjs";
+import { versionCommand } from "./codesign-shim/codesign-router/units/lifecycle.mjs";
+import { answersOnceStarted } from "./codesign-shim/codesign-router/router/handoff.mjs";
+import { startServer } from "./codesign-shim/codesign-router/client/index.mjs";
+import { checkDue, checkWhenDue, createUpdater } from "./codesign-shim/codesign-router/install/updater.mjs";
 import { routerChannel, runAdapter } from "./codesign-shim/codesign-mcp/adapter/main.mjs";
-import { spawn, spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { appendFileSync, closeSync, createReadStream, existsSync, fstatSync, mkdirSync, openSync, readFileSync, realpathSync, statSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { Readable } from "node:stream";
@@ -43,24 +45,13 @@ function cliCommand(paths, env = process.env) {
 	const current = currentVersion(paths);
 	return (existsSync(join(beside, "manifest.json")) ? core(beside) : void 0) ?? (current !== void 0 ? core(paths.version(current)) : void 0);
 }
+/** Start the router unless it answers, waiting while server.lock is held (at most 5 min); the server answers meanwhile. */
 async function ensureDaemon(paths, command, timeoutMs = 3e4) {
-	if (await socketAnswers(paths.daemonSock)) return;
-	const [bin, ...args] = command;
-	const started = spawnSync(bin, [
-		...args,
-		"server",
-		"start",
-		"--detach"
-	], {
-		windowsHide: true,
-		env: {
-			...process.env,
-			IMGLY_CODESIGN_HOME: paths.home
-		},
-		encoding: "utf8",
-		timeout: timeoutMs
-	});
-	if (!await socketAnswers(paths.daemonSock)) throw new Error(`the CoDesign daemon did not start: ${started.stderr || started.error?.message || started.status}`);
+	if (await answersOnceStarted(paths)) return;
+	await startServer(paths.daemonSock, command, {
+		...process.env,
+		IMGLY_CODESIGN_HOME: paths.home
+	}, timeoutMs);
 }
 function readSnapshot() {
 	const here = dirname(fileURLToPath(import.meta.url));
@@ -77,9 +68,15 @@ function snapshotChannel(snapshot, client, opts) {
 	const designChanged = /* @__PURE__ */ new Set();
 	/** Calls waiting for the install, by call id: each one's cancel. */
 	const waiting = /* @__PURE__ */ new Map();
+	/** Why the router did not start after a good install, until a start works. */
+	let startFailure;
 	const ready = () => connecting ??= (async () => {
 		await opts.install();
-		const opened = await opts.connect();
+		const opened = await opts.connect().catch((err) => {
+			startFailure = err;
+			throw err;
+		});
+		startFailure = void 0;
 		live = opened.link;
 		opened.link.onProgress((p) => {
 			for (const listener of progress) listener(p);
@@ -99,16 +96,16 @@ function snapshotChannel(snapshot, client, opts) {
 	const failed = (err) => ({
 		content: [{
 			type: "text",
-			text: `CoDesign could not install: ${err instanceof Error ? err.message : String(err)}`
+			text: `CoDesign could not ${err === startFailure ? "start" : "install"}: ${err instanceof Error ? err.message : String(err)}`
 		}],
 		isError: true
 	});
 	/** A call that waits for the install hears progress, then runs; a cancel ends the wait. */
 	const waitAndCall = async (params) => {
 		if (params.progress !== true) {
-			const failure = opts.installFailure();
-			if (failure !== void 0) return failed(failure);
+			const failure = opts.installFailure() ?? startFailure;
 			ready().catch(() => void 0);
+			if (failure !== void 0) return failed(failure);
 			return {
 				content: [{
 					type: "text",

@@ -4,6 +4,8 @@ import { PROTOCOL_RANGE, UPDATE_COMMAND, negotiate } from "../protocol/version.m
 
 //#region ../codesign-router/dist/peer/peer.js
 const DEFAULT_TIMEOUT_MS = 3e4;
+/** A new channel may start a unit, which the router waits for up to two minutes. */
+const CHANNEL_OPEN_MS = 18e4;
 /** `null`: no timeout, the call's own deadline applies. */
 const METHOD_TIMEOUTS = {
 	"tools.call": null,
@@ -279,4 +281,4 @@ function parseLine(line) {
 }
 
 //#endregion
-export { DEFAULT_TIMEOUT_MS, HIGH_WATER_BYTES, METHOD_TIMEOUTS, Peer };
+export { CHANNEL_OPEN_MS, DEFAULT_TIMEOUT_MS, HIGH_WATER_BYTES, METHOD_TIMEOUTS, Peer };
