@@ -5,7 +5,7 @@
 
 **The design layer for the agent era.**
 
-> **Prerelease channel.** This `canary` branch installs `@imgly/codesign-mcp@0.6.1-canary.20261110113014.gfc52fb5` —
+> **Prerelease channel.** This `canary` branch installs `@imgly/codesign-mcp@0.6.1-canary.20261110134456.g50c7b9d` —
 > unreleased builds, published on every merge to IMG.LY's development branch, on the newest CE.SDK engine nightly.
 > For the stable release, use the [`main` branch](https://github.com/imgly/codesign/tree/main).
 
@@ -176,7 +176,7 @@ print, video, and social:
 - **The plugin updates itself.** It installs the runtime of its channel and
   checks for an update every 6 hours; no plugin update is needed to move
   forward.
-- **Pin `@0.6.1-canary.20261110113014.gfc52fb5` — every direct recipe names that exact version.** Each release
+- **Pin `@0.6.1-canary.20261110134456.g50c7b9d` — every direct recipe names that exact version.** Each release
   republishes this repo with a new pin — update your recipe to
   move forward.
 - **Windows: the direct recipes need WSL.** Hosts that spawn `npx` directly
@@ -201,7 +201,7 @@ claude plugin install codesign@imgly-codesign-canary
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.6.1-canary.20261110113014.gfc52fb5 stdio
+claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.6.1-canary.20261110134456.g50c7b9d stdio
 ```
 
 ### Codex
@@ -216,7 +216,7 @@ codex plugin add codesign@imgly-codesign-canary
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.6.1-canary.20261110113014.gfc52fb5 stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.6.1-canary.20261110134456.g50c7b9d stdio
 ```
 
 ### Antigravity CLI
@@ -231,7 +231,7 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.6.1-canary.20261110113014.gfc52fb5 stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.6.1-canary.20261110134456.g50c7b9d stdio
 ```
 
 ### GitHub Copilot CLI
@@ -246,7 +246,7 @@ copilot plugin install codesign@imgly-codesign-canary
 Or add the MCP server directly, without the plugin:
 
 ```bash
-copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.6.1-canary.20261110113014.gfc52fb5 stdio
+copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.6.1-canary.20261110134456.g50c7b9d stdio
 ```
 
 ### Cursor
@@ -273,7 +273,7 @@ Or add the MCP server directly, without the plugin, in `.cursor/mcp.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.6.1-canary.20261110113014.gfc52fb5",
+        "@imgly/codesign-mcp@0.6.1-canary.20261110134456.g50c7b9d",
         "stdio"
       ]
     }
@@ -293,7 +293,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.6.1-canary.20261110113014.gfc52fb5",
+        "@imgly/codesign-mcp@0.6.1-canary.20261110134456.g50c7b9d",
         "stdio"
       ]
     }
@@ -316,7 +316,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.6.1-canary.20261110113014.gfc52fb5",
+        "@imgly/codesign-mcp@0.6.1-canary.20261110134456.g50c7b9d",
         "stdio"
       ]
     }
@@ -334,7 +334,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.6.1-canary.20261110113014.gfc52fb5",
+          "@imgly/codesign-mcp@0.6.1-canary.20261110134456.g50c7b9d",
           "stdio"
         ]
       }
