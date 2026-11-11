@@ -92,6 +92,9 @@ function runtimePaths(home, platform = process.platform) {
 		credentials: join(home, ".credentials.json"),
 		authJson: join(home, "auth.json"),
 		redemptions: join(home, "redemptions.json"),
+		/** Per account, the packs seeded into it after sign-in. */
+		packSeeds: join(home, "pack-seeds.json"),
+		packSeedsLock: join(home, "pack-seeds.lock"),
 		id: join(home, "id"),
 		engineSlots: join(home, "engine-slots"),
 		experimentsJson: join(home, "experiments.json"),

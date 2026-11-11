@@ -3,7 +3,7 @@
   "name": "codesign",
   "displayName": "CoDesign",
   "description": "Generate designs and videos, then resize, rebrand or translate them. Open them in a visual editor and export to .pdf, .psd, .idml, .mp4 & more",
-  "version": "0.6.1-canary.20261111174655.g4f3814a",
+  "version": "0.6.1-canary.20261111185917.g015c17e",
   "author": {
     "name": "IMG.LY GmbH",
     "url": "https://img.ly"
