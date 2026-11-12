@@ -10,6 +10,8 @@ const ROLE_ONLY = {
 	handoff: "client",
 	shutdown: "client",
 	"workspaces.list": "client",
+	"telemetry.consent.get": "client",
+	"telemetry.consent.set": "client",
 	"design.claim": "unit",
 	"design.release": "unit",
 	"chat.activate": "client"
