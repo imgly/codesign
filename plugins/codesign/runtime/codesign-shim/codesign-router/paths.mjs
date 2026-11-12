@@ -98,6 +98,7 @@ function runtimePaths(home, platform = process.platform) {
 		id: join(home, "id"),
 		engineSlots: join(home, "engine-slots"),
 		experimentsJson: join(home, "experiments.json"),
+		consentJson: join(home, "consent.json"),
 		/** Packs downloaded by URL, until they are installed. */
 		packDownloads: join(home, "downloads", "packs")
 	};
