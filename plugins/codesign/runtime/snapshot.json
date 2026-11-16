@@ -1,5 +1,5 @@
 {
-  "runtime": "0.7.1-next.20261116141255.g46dbde0",
+  "runtime": "0.7.1-next.20261116150739.g75fb0b2",
   "instructions": "**IMG.LY CoDesign** MCP server: design with a CE.SDK engine. Tool names here are bare (`edit`): call the prefixed name in your tool list (e.g. `mcp__codesign__edit`); `Edit` is your host's file editor. Skills: the installed skill of that name, else its `skill://codesign/<name>/SKILL.md` resource.\n\n**Before your first `edit`**, read in ONE message, in parallel: `skill://codesign/api/SKILL.md`, `skill://codesign/judge/SKILL.md` and `skill://codesign/judge/design-rules.md`; for a new design also `skill://codesign/create/SKILL.md`. Never guess an engine method or prop.\n\n**The loop, for every canvas change:**\n1. **Brief.** Derive what the request answers. If two or more of topic, audience, visual direction, brand and format are open, ask ONE round of options plus `Decide automatically` before the first `edit`. Never invent the user's values (brand colours, fonts, a locale's wording): `skill://codesign/create/intake.md`.\n   Register the brief's acceptance items with `checklist({ items })` first.\n2. **Build one complete page per `edit`**, page 1 first; name blocks and find them with `findByName`. A new design is scene first: `create({ type: 'scene', children: [page] })`; a later scene replaces the design and every block built before it.\n3. **Look** at the render each changing `edit` returns (`preview` for more). Edit again only for an objective bug (overflow, overlap, missing glyphs); polish waits for the judge.\n4. **Judge** with the `judge` loop; fix each axis below 8 in place, never by rebuilding. Never report an unjudged design as done; record the pass with `scorecard({ verdict: 'pass' })` (a later `edit`, `import` or `open` clears it).\n5. **Reply.** Every change is saved to the design as you make it; there is nothing to save. Report its `uri` and `export` a file when the brief asks.\n   A new design starts with `import({ title })`; every change revises the design you are on, so `import` a copy for another edition (a locale, a format).\n\nAny design can become a video: add timed content to the scene you have, never rebuild it; read `skill://codesign/api/video.md` first.\n\n**Design must-haves:**\n- Use the brief's copy verbatim; where it gives none, write copy that is generic but true. Never invent a name, price, date or claim.\n- Fill the format: margins 8–12 % of the shortest side, no dead bands.\n- Legible sizes. Screen: body ≥ 16 px and ≥ 1.5 % of the page height, captions ≥ 12 px, nothing below 11 px. Print: body 9–12 pt, captions ≥ 7 pt, nothing below 5 pt.\n- No widows or orphans in headings and short blocks.\n- Text padded inside its container; nothing crowds, overlaps or leaves the page.\n- One alignment grid; repeated items built identically.\n- Text contrast ≥ 4.5:1 on its actual background.\n- Template slots stay editable (`editor/select` plus `text/edit` or `fill/change`).\n\n**Speak the user's language** in everything they read. The design's own text follows the brief, else that language (say so); changing it is the `localize` skill, on request. Never translate ids, tool names, typed values or URLs, and translate a chip's label, never its value.\n\nSkills: `api` and `judge` first (above); as the brief needs, `create` `animate` `brand` `resize` `localize` `layerize` `formats` `templates` `onboard` `video-thumbnail-template` `launch-video`. Read `models` before any `asset_generate` call.",
   "tools": [
     {
@@ -1212,13 +1212,13 @@
       "entries": [
         {
           "uri": "skill://codesign/api/SKILL.md",
-          "digest": "sha256:73a1afa19d9bb77260919181114779723b2e8be94b52ae44f65fffdf60a0b58c",
-          "size": 46449
+          "digest": "sha256:bcf5dbfcc412a058ccd2a9978920fd611923099cc8134f08f6b8c10d72137226",
+          "size": 46866
         },
         {
           "uri": "skill://codesign/api/animation.md",
-          "digest": "sha256:480e045eb1bb09d3b79c1f0201248816b742b8a45767a99436b43c2eadde115b",
-          "size": 12704
+          "digest": "sha256:4df08bc00d7dc1ba5e8d5f55b29dfedc8fe8e62da1189263bd82ba03b5c7d4ff",
+          "size": 12867
         },
         {
           "uri": "skill://codesign/api/recipes.md",
@@ -1232,13 +1232,13 @@
         },
         {
           "uri": "skill://codesign/api/signatures-extended.d.ts",
-          "digest": "sha256:3f4c2eeaf5a534ebe31fb292ac779133bd4a9d45bec2482f3194f68054e01811",
-          "size": 56785
+          "digest": "sha256:5f6652aa187cbbf513a096dd4ef45b0df5fb42f38dd38e7e41bf51eabacc6480",
+          "size": 57214
         },
         {
           "uri": "skill://codesign/api/signatures.d.ts",
-          "digest": "sha256:fc48905fba0541e2aafedd06fac1dd24c804003eff4fccfcd9466dc47dad5054",
-          "size": 115764
+          "digest": "sha256:c12e75ed1e26343bda735dadb98b5c5e557bb1d55fb7e30b10cf30b6253188f3",
+          "size": 119461
         },
         {
           "uri": "skill://codesign/api/video.md",
@@ -1302,8 +1302,8 @@
       "entries": [
         {
           "uri": "skill://codesign/brand/SKILL.md",
-          "digest": "sha256:edab07398b50ae433f699305caae914db7e1547b8843783057ee7ccb73dc0486",
-          "size": 33759
+          "digest": "sha256:8293b4e625b9c021f8844ac271de87153dce2db4889c19366189b918c1a77192",
+          "size": 33816
         },
         {
           "uri": "skill://codesign/brand/reference/asset-loading.md",
@@ -1432,8 +1432,8 @@
         },
         {
           "uri": "skill://codesign/formats/print.md",
-          "digest": "sha256:00eddabc04e7648e9a0702e122a0b1a25155194b8ec6c4db685ae8d8c9c673c3",
-          "size": 8757
+          "digest": "sha256:04961e6fbb394db773c2200035b0e42d3fad40c6c5d35264f9dc2e3e2ed8f10e",
+          "size": 8830
         },
         {
           "uri": "skill://codesign/formats/tiktok.md",
@@ -1560,8 +1560,8 @@
       "entries": [
         {
           "uri": "skill://codesign/localize/SKILL.md",
-          "digest": "sha256:3691b58db4d07dcc44815e2af2d9ee0ffae7ca304ff393d9fbe46394852dfd89",
-          "size": 34499
+          "digest": "sha256:08bb482196bbb2e6d868090b0e019613e8411c3d8d8aa5e582c4a4b814d3c26a",
+          "size": 34909
         },
         {
           "uri": "skill://codesign/localize/reference/arabic.md",
@@ -1703,20 +1703,20 @@
     },
     {
       "name": "templates",
-      "description": "Use when a design is a template someone else fills in — \"make this a template\", \"lock the layout\", \"editable fields\", text variables (`{{key}}` tokens), image or text placeholders, or which parts a person may change. Covers text and typed variables, bindings (re-theme in one write), placeholder slots, locking with scopes, and delivering a filled-in, judged template.",
+      "description": "Use when a design is a template someone else fills in — \"make this a template\", \"lock the layout\", \"editable fields\", text variables (`{{key}}` tokens), image or text placeholders, or which parts a person may change. Covers text and typed variables, bindings (re-theme in one write), value sets (one design, several languages or copy variants), placeholder slots, locking with scopes, and delivering a filled-in, judged template.",
       "uri": "skill://codesign/templates/SKILL.md",
       "files": [
         "SKILL.md"
       ],
       "frontmatter": {
         "name": "templates",
-        "description": "Use when a design is a template someone else fills in — \"make this a template\", \"lock the layout\", \"editable fields\", text variables (`{{key}}` tokens), image or text placeholders, or which parts a person may change. Covers text and typed variables, bindings (re-theme in one write), placeholder slots, locking with scopes, and delivering a filled-in, judged template."
+        "description": "Use when a design is a template someone else fills in — \"make this a template\", \"lock the layout\", \"editable fields\", text variables (`{{key}}` tokens), image or text placeholders, or which parts a person may change. Covers text and typed variables, bindings (re-theme in one write), value sets (one design, several languages or copy variants), placeholder slots, locking with scopes, and delivering a filled-in, judged template."
       },
       "entries": [
         {
           "uri": "skill://codesign/templates/SKILL.md",
-          "digest": "sha256:29eb1ac732ef0141be3f4dee0a3b232abc0169986475af35cefe17e10159cfeb",
-          "size": 10238
+          "digest": "sha256:76668489a126d76f3a0a6b1092f2b75d5d119db150ae36308b2b2b964df0afdf",
+          "size": 12364
         }
       ]
     },
