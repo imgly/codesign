@@ -1,5 +1,6 @@
 import { olderRouterWarning } from "../../codesign-router/install/version.mjs";
 import { clientConfigFromEnv } from "../../codesign-router/config/unit-config.mjs";
+import { harnessFromEnv } from "../../codesign-router/config/harness.mjs";
 import { connectRemote } from "./remote.mjs";
 import { createMcpAdapter } from "./server.mjs";
 import { createInterface } from "node:readline";
@@ -15,8 +16,10 @@ function routerChannel(opts) {
 			startRouter: opts.startRouter,
 			client,
 			config: clientConfigFromEnv(opts.env),
+			harness: harnessFromEnv(opts.env),
 			...opts.conversation !== void 0 ? { conversation: opts.conversation } : {},
-			...opts.chatClientKind !== void 0 ? { chatClientKind: opts.chatClientKind } : {}
+			...opts.chatClientKind !== void 0 ? { chatClientKind: opts.chatClientKind } : {},
+			...opts.chatHarness !== void 0 ? { chatHarness: opts.chatHarness } : {}
 		});
 		const older = opts.version !== void 0 ? olderRouterWarning(link.routerVersion(), opts.version) : void 0;
 		if (older !== void 0) process.stderr.write(`codesign-mcp: ${older}\n`);
@@ -69,6 +72,17 @@ async function runAdapter(open) {
 					message: "Parse error"
 				}
 			})}\n`);
+			return;
+		}
+		if (first !== void 0 && "id" in message && "method" in message && message.method === "server/discover") {
+			transport.send({
+				jsonrpc: "2.0",
+				id: message.id,
+				error: {
+					code: -32601,
+					message: "Method not found"
+				}
+			});
 			return;
 		}
 		if (first !== void 0) {

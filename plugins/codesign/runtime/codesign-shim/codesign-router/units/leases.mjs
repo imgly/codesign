@@ -46,6 +46,7 @@ function processStart(pid) {
 			"-p",
 			String(pid)
 		], {
+			windowsHide: true,
 			encoding: "utf8",
 			env: {
 				...process.env,

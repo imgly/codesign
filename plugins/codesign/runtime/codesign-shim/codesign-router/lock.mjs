@@ -181,6 +181,27 @@ function parseNote(note) {
 		return;
 	}
 }
+/** A lock file's content: the pid line, then the JSON line or an older build's note; undefined without a pid. */
+function parseLockFile(text) {
+	const [first = "", ...rest] = text.trimEnd().split("\n");
+	if (!PID.test(first)) return void 0;
+	const note = rest.join("\n");
+	if (note === "") return { pid: Number(first) };
+	return {
+		pid: Number(first),
+		...parseNote(note) ?? { note }
+	};
+}
+/** Whether a live process holds `lockFile`, for less than `maxAgeMs`: one that names no pid, or a dead one, does not. */
+async function lockHeld(lockFile, maxAgeMs = Infinity) {
+	try {
+		const holder = parseLockFile(await readFile(lockFile, "utf8"));
+		if (holder === void 0 || !pidAlive(holder.pid)) return false;
+		return Date.now() - (await stat(lockFile)).mtimeMs < maxAgeMs;
+	} catch {
+		return false;
+	}
+}
 
 //#endregion
-export { withFileLock };
+export { lockHeld, parseLockFile, withFileLock };

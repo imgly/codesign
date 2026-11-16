@@ -57,7 +57,10 @@ function killTree(pid, platform = process.platform) {
 			String(pid),
 			"/T",
 			"/F"
-		], { stdio: "ignore" });
+		], {
+			windowsHide: true,
+			stdio: "ignore"
+		});
 		return;
 	}
 	const children = /* @__PURE__ */ new Map();
@@ -65,7 +68,10 @@ function killTree(pid, platform = process.platform) {
 		"-A",
 		"-o",
 		"pid=,ppid="
-	], { encoding: "utf8" });
+	], {
+		windowsHide: true,
+		encoding: "utf8"
+	});
 	for (const line of (ps.stdout ?? "").split("\n")) {
 		const [p, parent] = line.trim().split(/\s+/).map(Number);
 		if (p && parent) children.set(parent, [...children.get(parent) ?? [], p]);

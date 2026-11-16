@@ -1,6 +1,6 @@
-import { CHANNEL } from "../release-build.generated.mjs";
 import { linkedVersion, runtimePaths } from "../paths.mjs";
 import { withFileLock } from "../lock.mjs";
+import { CHANNEL } from "../release-build.generated.mjs";
 import { ENGINE_PACKAGES, chooseEnginePacks, linkEntry, linkSharedAssets } from "./engine-packs.mjs";
 import { logRollback, probeVersion } from "./rollback.mjs";
 import { compareVersions, isVersion } from "./version.mjs";
@@ -428,11 +428,14 @@ function untar(archive, dir) {
 			archive,
 			"-C",
 			dir
-		], { stdio: [
-			"ignore",
-			"ignore",
-			"pipe"
-		] });
+		], {
+			windowsHide: true,
+			stdio: [
+				"ignore",
+				"ignore",
+				"pipe"
+			]
+		});
 		let stderr = "";
 		tar.stderr.on("data", (d) => stderr += d.toString());
 		tar.once("error", (err) => reject(new InstallError("unpack", `tar failed: ${err.message}`)));

@@ -4,6 +4,8 @@ import { PROTOCOL_RANGE, UPDATE_COMMAND, negotiate } from "../protocol/version.m
 
 //#region ../codesign-router/dist/peer/peer.js
 const DEFAULT_TIMEOUT_MS = 3e4;
+/** A new channel may start a unit, which the router waits for up to two minutes. */
+const CHANNEL_OPEN_MS = 18e4;
 /** `null`: no timeout, the call's own deadline applies. */
 const METHOD_TIMEOUTS = {
 	"tools.call": null,
@@ -22,6 +24,7 @@ const METHOD_TIMEOUTS = {
 	"styles.migrate": null,
 	"pack.remove": null,
 	"pack.create": null,
+	"agent.signin.code": null,
 	"draft.save": 3e4
 };
 /** Above this many unsent bytes a peer stops reading what makes it write more, until the buffer drains. */
@@ -140,6 +143,10 @@ var Peer = class {
 	}
 	close() {
 		this.transport.close();
+	}
+	destroy() {
+		if (this.transport.destroy !== void 0) this.transport.destroy();
+		else this.transport.close();
 	}
 	#accept(version) {
 		if (!Number.isInteger(version) || version < this.#range[0] || version > this.#range[1]) return new ProtocolError("protocol", `the other side chose protocol ${version}, outside ${this.#range[0]}–${this.#range[1]}: run \`${UPDATE_COMMAND}\``);
@@ -274,4 +281,4 @@ function parseLine(line) {
 }
 
 //#endregion
-export { DEFAULT_TIMEOUT_MS, HIGH_WATER_BYTES, METHOD_TIMEOUTS, Peer };
+export { CHANNEL_OPEN_MS, DEFAULT_TIMEOUT_MS, HIGH_WATER_BYTES, METHOD_TIMEOUTS, Peer };

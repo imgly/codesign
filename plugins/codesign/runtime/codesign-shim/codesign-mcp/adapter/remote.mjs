@@ -1,13 +1,11 @@
 import { ProtocolError } from "../../codesign-router/peer/ndjson.mjs";
-import { connectUnix } from "../../codesign-router/peer/transports/unix.mjs";
 import { sessionEndedNotice } from "../../codesign-router/protocol/types.mjs";
 import { PROTOCOL_RANGE } from "../../codesign-router/protocol/version.mjs";
-import { Peer } from "../../codesign-router/peer/peer.mjs";
+import { CHANNEL_OPEN_MS, Peer } from "../../codesign-router/peer/peer.mjs";
+import { connectUnix } from "../../codesign-router/peer/transports/unix.mjs";
 import { randomUUID } from "node:crypto";
 
 //#region src/adapter/remote.ts
-/** A new channel may start a unit, which the router waits for up to two minutes. */
-const CHANNEL_OPEN_MS = 18e4;
 /** How often a call is resent to its unit after the router died under it. */
 const RESENDS = 3;
 const ROUTER_RESTARTED = "The CoDesign server restarted during this call. Call it again.";
@@ -34,8 +32,10 @@ async function connectRemote(opts) {
 		kind: "design",
 		client: opts.client,
 		config: opts.config,
+		...opts.harness !== void 0 ? { harness: opts.harness } : {},
 		...opts.conversation !== void 0 ? { conversation: opts.conversation } : {},
 		...opts.chatClientKind !== void 0 ? { chatClientKind: opts.chatClientKind } : {},
+		...opts.chatHarness !== void 0 ? { chatHarness: opts.chatHarness } : {},
 		...opts.oneShot === true ? { oneShot: true } : {},
 		...rejoin !== void 0 ? { session: rejoin } : opts.attach !== void 0 ? { attach: opts.attach } : {}
 	}, { timeoutMs: CHANNEL_OPEN_MS });

@@ -14,6 +14,7 @@ async function warmUp(core, log, { timeoutMs = WARMUP_TIMEOUT_MS } = {}) {
 function run(file, name, log, timeoutMs) {
 	return new Promise((resolve) => {
 		execFile(file, ["--version"], {
+			windowsHide: true,
 			timeout: timeoutMs,
 			killSignal: "SIGKILL"
 		}, (err, _stdout, stderr) => {
