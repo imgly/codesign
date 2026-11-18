@@ -5,7 +5,7 @@
 
 **The design layer for the agent era.**
 
-> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.7.1-next.20261118122111.g5e37b41` —
+> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.7.1-next.20261118151023.gaa0a3ef` —
 > unreleased builds, published on every merge to IMG.LY's development branch.
 > For the stable release, use the [`main` branch](https://github.com/imgly/codesign/tree/main).
 
@@ -152,14 +152,16 @@ print, video, and social:
     with the `login` tool.
   - `gateway.img.ly`: only for AI generation.
   - `api.img.ly`: usage data, and Sentry (`sentry.io`): error reports.
-    In Claude Code, turn them off in the plugin's settings (Send usage data
-    to IMG.LY, Send error reports to IMG.LY); on any host, set
-    `DO_NOT_TRACK=1` or `IMGLY_TELEMETRY=off`.
+    To turn them off for every client on this computer, run
+    `~/.codesign/bin/cdsn telemetry off` (on Windows,
+    `%USERPROFILE%\.codesign\bin\cdsn.cmd telemetry off`); or set
+    `DO_NOT_TRACK=1` or `IMGLY_TELEMETRY=off` in your MCP client's
+    environment.
   - Addresses a design, you or your agent name, such as an image or font URL:
     fetched and copied into your workspace.
   - IMG.LY's CE.SDK engine, which renders and exports, itself checks its
     licence with IMG.LY (`api.img.ly`) and reports its own usage there when
-    it starts; neither the plugin's two settings nor `DO_NOT_TRACK` turn that
+    it starts; neither `cdsn telemetry off` nor `DO_NOT_TRACK` turns that
     off.
 
 ## Requirements & known limitations
@@ -176,7 +178,7 @@ print, video, and social:
 - **The plugin updates itself.** It installs the runtime of its channel and
   checks for an update every 6 hours; no plugin update is needed to move
   forward.
-- **Pin `@0.7.1-next.20261118122111.g5e37b41` — every direct recipe names that exact version.** Each release
+- **Pin `@0.7.1-next.20261118151023.gaa0a3ef` — every direct recipe names that exact version.** Each release
   republishes this repo with a new pin — update your recipe to
   move forward.
 - **Windows: the direct recipes need WSL.** Hosts that spawn `npx` directly
@@ -201,7 +203,7 @@ claude plugin install codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.7.1-next.20261118122111.g5e37b41 stdio
+claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.7.1-next.20261118151023.gaa0a3ef stdio
 ```
 
 ### Codex
@@ -216,7 +218,7 @@ codex plugin add codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.1-next.20261118122111.g5e37b41 stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.1-next.20261118151023.gaa0a3ef stdio
 ```
 
 ### Antigravity CLI
@@ -231,7 +233,7 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.1-next.20261118122111.g5e37b41 stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.1-next.20261118151023.gaa0a3ef stdio
 ```
 
 ### GitHub Copilot CLI
@@ -246,7 +248,7 @@ copilot plugin install codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.1-next.20261118122111.g5e37b41 stdio
+copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.1-next.20261118151023.gaa0a3ef stdio
 ```
 
 ### Cursor
@@ -273,7 +275,7 @@ Or add the MCP server directly, without the plugin, in `.cursor/mcp.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.1-next.20261118122111.g5e37b41",
+        "@imgly/codesign-mcp@0.7.1-next.20261118151023.gaa0a3ef",
         "stdio"
       ]
     }
@@ -293,7 +295,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.1-next.20261118122111.g5e37b41",
+        "@imgly/codesign-mcp@0.7.1-next.20261118151023.gaa0a3ef",
         "stdio"
       ]
     }
@@ -316,7 +318,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.1-next.20261118122111.g5e37b41",
+        "@imgly/codesign-mcp@0.7.1-next.20261118151023.gaa0a3ef",
         "stdio"
       ]
     }
@@ -334,7 +336,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.7.1-next.20261118122111.g5e37b41",
+          "@imgly/codesign-mcp@0.7.1-next.20261118151023.gaa0a3ef",
           "stdio"
         ]
       }
