@@ -172,7 +172,7 @@ print, video, and social:
 - **The plugin updates itself.** It installs the runtime of its channel and
   checks for an update every 6 hours; no plugin update is needed to move
   forward.
-- **Pin `@0.7.0` — every direct recipe names that exact version.** Each release
+- **Pin `@0.7.1` — every direct recipe names that exact version.** Each release
   republishes this repo with a new pin — update your recipe to
   move forward.
 - **Windows: the direct recipes need WSL.** Hosts that spawn `npx` directly
@@ -197,7 +197,7 @@ claude plugin install codesign@imgly-codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.7.0 stdio
+claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.7.1 stdio
 ```
 
 ### Codex
@@ -212,7 +212,7 @@ codex plugin add codesign@imgly-codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.0 stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.1 stdio
 ```
 
 ### Antigravity CLI
@@ -227,7 +227,7 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.0 stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.1 stdio
 ```
 
 ### GitHub Copilot CLI
@@ -242,7 +242,7 @@ copilot plugin install codesign@imgly-codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.0 stdio
+copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.1 stdio
 ```
 
 ### Cursor
@@ -274,7 +274,7 @@ Or add the MCP server directly, without the plugin, in `.cursor/mcp.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.0",
+        "@imgly/codesign-mcp@0.7.1",
         "stdio"
       ]
     }
@@ -294,7 +294,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.0",
+        "@imgly/codesign-mcp@0.7.1",
         "stdio"
       ]
     }
@@ -317,7 +317,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.0",
+        "@imgly/codesign-mcp@0.7.1",
         "stdio"
       ]
     }
@@ -335,7 +335,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.7.0",
+          "@imgly/codesign-mcp@0.7.1",
           "stdio"
         ]
       }
