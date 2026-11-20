@@ -5,7 +5,7 @@
 
 **The design layer for the agent era.**
 
-> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.7.2-next.20261119211750.g76cddeb` —
+> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.7.2-next.20261120095936.g768d1dd` —
 > unreleased builds, published on every merge to IMG.LY's development branch.
 > For the stable release, use the [`main` branch](https://github.com/imgly/codesign/tree/main).
 
@@ -47,11 +47,11 @@ use.
 
 ## Formats
 
-- **Import:** InDesign (.idml), Photoshop (.psd), PowerPoint (.pptx), PDF,
-  images (PNG, JPEG, GIF, WebP, SVG) and CoDesign (.imgly) files.
+- **Import:** InDesign (.idml), Photoshop (.psd), PowerPoint (.pptx), Figma
+  (.fig), PDF, images (PNG, JPEG, GIF, WebP, SVG) and CoDesign (.imgly) files.
 - **Export:** PDF and print-ready PDF/X, PNG, JPEG, WebP, SVG, HTML, InDesign
-  (.idml), Photoshop (.psd), MP4 video, WAV and M4A audio, and CoDesign
-  (.imgly). Video and audio export need the native engine; Windows runs the
+  (.idml), Photoshop (.psd), Figma (.fig), MP4 video, WAV and M4A audio, and
+  CoDesign (.imgly). Video and audio export need the native engine; Windows runs the
   WASM engine, which has no video.
 
 ## What you can make
@@ -117,8 +117,9 @@ print, video, and social:
   browser or config.
 - **Native performance** — a purpose-built engine that stays fast at scale and
   under heavy assets.
-- **Full compatibility** — imports InDesign, PSD, PowerPoint (PPTX) and PDF;
-  exports print-ready PDF, image, video, InDesign, PSD and HTML.
+- **Full compatibility** — imports InDesign, PSD, PowerPoint (PPTX), Figma
+  and PDF; exports print-ready PDF, image, video, InDesign, PSD, Figma and
+  HTML.
 
 ## What the plugin runs
 
@@ -178,7 +179,7 @@ print, video, and social:
 - **The plugin updates itself.** It installs the runtime of its channel and
   checks for an update every 6 hours; no plugin update is needed to move
   forward.
-- **Pin `@0.7.2-next.20261119211750.g76cddeb` — every direct recipe names that exact version.** Each release
+- **Pin `@0.7.2-next.20261120095936.g768d1dd` — every direct recipe names that exact version.** Each release
   republishes this repo with a new pin — update your recipe to
   move forward.
 - **Windows: the direct recipes need WSL.** Hosts that spawn `npx` directly
@@ -203,7 +204,7 @@ claude plugin install codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261119211750.g76cddeb stdio
+claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261120095936.g768d1dd stdio
 ```
 
 ### Codex
@@ -218,7 +219,7 @@ codex plugin add codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261119211750.g76cddeb stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261120095936.g768d1dd stdio
 ```
 
 ### Antigravity CLI
@@ -233,7 +234,7 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261119211750.g76cddeb stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261120095936.g768d1dd stdio
 ```
 
 ### GitHub Copilot CLI
@@ -248,7 +249,7 @@ copilot plugin install codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261119211750.g76cddeb stdio
+copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261120095936.g768d1dd stdio
 ```
 
 ### Cursor
@@ -275,7 +276,7 @@ Or add the MCP server directly, without the plugin, in `.cursor/mcp.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.2-next.20261119211750.g76cddeb",
+        "@imgly/codesign-mcp@0.7.2-next.20261120095936.g768d1dd",
         "stdio"
       ]
     }
@@ -295,7 +296,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.2-next.20261119211750.g76cddeb",
+        "@imgly/codesign-mcp@0.7.2-next.20261120095936.g768d1dd",
         "stdio"
       ]
     }
@@ -318,7 +319,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.2-next.20261119211750.g76cddeb",
+        "@imgly/codesign-mcp@0.7.2-next.20261120095936.g768d1dd",
         "stdio"
       ]
     }
@@ -336,7 +337,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.7.2-next.20261119211750.g76cddeb",
+          "@imgly/codesign-mcp@0.7.2-next.20261120095936.g768d1dd",
           "stdio"
         ]
       }
