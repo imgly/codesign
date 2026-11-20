@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "codesign",
-  "version": "0.7.2-next.20261119200219.g56a98f7",
+  "version": "0.7.2-next.20261119211750.g76cddeb",
   "description": "Generate designs and videos, then resize, rebrand or translate them. Open them in a visual editor and export to .pdf, .psd, .idml, .mp4 & more",
   "author": {
     "name": "IMG.LY GmbH",
