@@ -5,7 +5,7 @@
 
 **The design layer for the agent era.**
 
-> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.7.2-next.20261122220050.g003869d` —
+> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.7.2-next.20261122222322.g69a49aa` —
 > unreleased builds, published on every merge to IMG.LY's development branch.
 > For the stable release, use the [`main` branch](https://github.com/imgly/codesign/tree/main).
 
@@ -179,7 +179,7 @@ print, video, and social:
 - **The plugin updates itself.** It installs the runtime of its channel and
   checks for an update every 6 hours; no plugin update is needed to move
   forward.
-- **Pin `@0.7.2-next.20261122220050.g003869d` — every direct recipe names that exact version.** Each release
+- **Pin `@0.7.2-next.20261122222322.g69a49aa` — every direct recipe names that exact version.** Each release
   republishes this repo with a new pin — update your recipe to
   move forward.
 - **Windows: the direct recipes need WSL.** Hosts that spawn `npx` directly
@@ -204,7 +204,7 @@ claude plugin install codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261122220050.g003869d stdio
+claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261122222322.g69a49aa stdio
 ```
 
 ### Codex
@@ -219,7 +219,7 @@ codex plugin add codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261122220050.g003869d stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261122222322.g69a49aa stdio
 ```
 
 ### Antigravity CLI
@@ -234,7 +234,7 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261122220050.g003869d stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261122222322.g69a49aa stdio
 ```
 
 ### GitHub Copilot CLI
@@ -249,7 +249,7 @@ copilot plugin install codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261122220050.g003869d stdio
+copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2-next.20261122222322.g69a49aa stdio
 ```
 
 ### Cursor
@@ -276,7 +276,7 @@ Or add the MCP server directly, without the plugin, in `.cursor/mcp.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.2-next.20261122220050.g003869d",
+        "@imgly/codesign-mcp@0.7.2-next.20261122222322.g69a49aa",
         "stdio"
       ]
     }
@@ -296,7 +296,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.2-next.20261122220050.g003869d",
+        "@imgly/codesign-mcp@0.7.2-next.20261122222322.g69a49aa",
         "stdio"
       ]
     }
@@ -319,7 +319,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.2-next.20261122220050.g003869d",
+        "@imgly/codesign-mcp@0.7.2-next.20261122222322.g69a49aa",
         "stdio"
       ]
     }
@@ -337,7 +337,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.7.2-next.20261122220050.g003869d",
+          "@imgly/codesign-mcp@0.7.2-next.20261122222322.g69a49aa",
           "stdio"
         ]
       }
