@@ -40,10 +40,10 @@ function createMcpAdapter(opts) {
 		}]
 	}, {
 		capabilities: {
-			tools: {},
-			prompts: {},
+			tools: { listChanged: true },
+			prompts: { listChanged: true },
 			completions: {},
-			resources: {},
+			resources: { listChanged: true },
 			extensions: { "io.modelcontextprotocol/skills": {} }
 		},
 		instructions: opts.instructions

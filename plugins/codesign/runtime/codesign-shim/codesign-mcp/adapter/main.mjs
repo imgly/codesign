@@ -1,8 +1,8 @@
 import { olderRouterWarning } from "../../codesign-router/install/version.mjs";
 import { clientConfigFromEnv } from "../../codesign-router/config/unit-config.mjs";
+import { createMcpAdapter } from "./server.mjs";
 import { harnessFromEnv } from "../../codesign-router/config/harness.mjs";
 import { connectRemote } from "./remote.mjs";
-import { createMcpAdapter } from "./server.mjs";
 import { createInterface } from "node:readline";
 
 //#region src/adapter/main.ts

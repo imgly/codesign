@@ -1,19 +1,55 @@
 #!/bin/sh
-# The plugin's MCP server: never on musl; the installed runtime, else the shim beside this file on the user's Node 18+,
-# else one line saying what to install. Shell builtins only, so it runs on a machine that has nothing else on PATH.
-for loader in /lib/ld-musl-*; do
-  [ -e "$loader" ] || continue
+# The plugin's MCP server: the native launcher for this OS, else the installed runtime, else the shim on Node 18+.
+# Never on musl. Shell builtins, uname and xattr only, so it runs with nothing else on PATH.
+# musl when no glibc loader is there too (a glibc system may carry the musl package), or when gcompat fakes one.
+lib=/lib
+musl=
+for loader in $lib/ld-musl-*; do [ -e "$loader" ] && musl=1; done
+for loader in $lib/ld-linux-* ${lib}64/ld-linux-*; do [ -e "$loader" ] && musl=; done
+[ -e $lib/libgcompat.so.0 ] && musl=1 # Alpine's gcompat names a glibc loader, but cannot run the runtime
+if [ -n "$musl" ]; then
   echo "CoDesign does not support musl Linux (Alpine)" >&2
   exit 1
-done
-
-home=${IMGLY_CODESIGN_HOME:-$HOME/.codesign}
-[ -x "$home/bin/cdsn" ] && exec "$home/bin/cdsn" mcp
+fi
 
 case $0 in
   */*) here=${0%/*} ;;
   *) here=. ;;
 esac
+machine=$(uname -sm 2>/dev/null || /usr/bin/uname -sm 2>/dev/null)
+case $machine in
+  'Darwin arm64') native=darwin-arm64 ;;
+  'Darwin x86_64') native=darwin-x64 ;;
+  'Linux x86_64') native=linux-x64 ;;
+  'Linux aarch64' | 'Linux arm64') native=linux-arm64 ;;
+  *) native=none ;;
+esac
+launcher=$here/launcher/$native/codesign
+if [ -x "$launcher" ]; then
+  # Gatekeeper blocks a quarantined, unnotarized binary without a word: start without it.
+  case $native in
+    darwin-*)
+      # Go builds run on macOS 12 (Darwin 21) and newer only.
+      darwin=$(uname -r 2>/dev/null || /usr/bin/uname -r 2>/dev/null)
+      darwin=${darwin%%.*}
+      case $darwin in
+        '' | *[!0-9]*) darwin=99 ;;
+      esac
+      if [ "$darwin" -lt 21 ]; then
+        :
+      elif /usr/bin/xattr -p com.apple.quarantine "$launcher" >/dev/null 2>&1; then
+        echo "CoDesign: macOS holds $launcher in quarantine (a downloaded copy), so it starts without it" >&2
+      else
+        exec "$launcher" mcp
+      fi
+      ;;
+    *) exec "$launcher" mcp ;;
+  esac
+fi
+
+home=${IMGLY_CODESIGN_HOME:-$HOME/.codesign}
+[ -x "$home/bin/cdsn" ] && exec "$home/bin/cdsn" mcp
+
 version=$(node --version 2>/dev/null) || version=
 major=${version#v}
 major=${major%%.*}

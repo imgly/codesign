@@ -5,7 +5,7 @@
 
 **The design layer for the agent era.**
 
-> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.7.3-next.20261125135902.gfdc6ee3` —
+> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.7.3-next.20261125154156.gf18fd43` —
 > unreleased builds, published on every merge to IMG.LY's development branch.
 > For the stable release, use the [`main` branch](https://github.com/imgly/codesign/tree/main).
 
@@ -127,23 +127,34 @@ print, video, and social:
   Codex, Copilot CLI, Antigravity and Cursor (untested) start `node runtime/codesign-shim.mjs mcp`
   in the plugin folder. Both run over stdio. IMG.LY's CE.SDK engine imports, renders and exports on your machine,
   from your files, and designs are saved in a local workspace.
-- **A launcher, and the runtime it installs.** The plugin carries only the
-  launcher: `runtime/codesign` (`codesign.cmd` on Windows), readable
-  JavaScript modules in `runtime/codesign-shim/` that run on your Node.js, and
-  `runtime/snapshot.json`, the tool list it answers with until the runtime is
-  installed. The runtime (CoDesign with its own Node.js, a CE.SDK engine and its
+- **A launcher, and the runtime it installs.** The plugin carries only
+  launchers: `runtime/codesign`, a `sh` script (`codesign.cmd` on
+  Windows); the native launcher of each OS in `runtime/launcher/`, which answers
+  from `runtime/answers.json` until the runtime is installed; and readable
+  JavaScript modules in `runtime/codesign-shim/` that run on your Node.js, for
+  Windows and the other hosts, which answer from `runtime/snapshot.json`. The runtime (CoDesign with its own Node.js, a CE.SDK engine and its
   assets) is downloaded into `~/.codesign` from IMG.LY's release server,
   `https://get.codesign.co/runtime/<channel>/`, and checks there for an update
   every 6 hours. Every download is listed in a release manifest signed with
   IMG.LY's Ed25519 key, which the launcher carries, and must match the SHA-256
   and size the manifest gives; a manifest older than the last one accepted is
   refused.
+- **The native launcher (macOS and Linux).** There `runtime/codesign` starts
+  `runtime/launcher/<platform>/codesign`, a program IMG.LY compiles from Go
+  (its standard library, and Mozilla's root certificates from
+  `golang.org/x/crypto` for a system that has none). Until the runtime is
+  installed it answers from `runtime/answers.json` and downloads the runtime
+  from the same release server. Before it runs anything it downloaded, it checks
+  the release manifest's Ed25519 signature with IMG.LY's key, which it carries,
+  and the SHA-256 the manifest gives. It never runs the Node.js on your `PATH`.
 - **No hooks.** The plugin runs nothing at session start. When the runtime
-  is missing, the server answers from `runtime/snapshot.json` and installs it
+  is missing, the server answers from `runtime/answers.json` (the native launcher) or
+  `runtime/snapshot.json` (the shim) and installs it
   in the background on its first start.
 - **What your agent reads from it.** The MCP instructions, tool descriptions,
   skills and prompts ship inside the signed runtime release (until it is
-  installed, in the plugin's `runtime/snapshot.json`); nothing fetches them
+  installed, in the plugin's `runtime/answers.json` and
+  `runtime/snapshot.json`); nothing fetches them
   from anywhere else.
 - **Where it connects:**
   - `get.codesign.co`: runtime downloads and update checks.
@@ -169,17 +180,18 @@ print, video, and social:
 
 > **Read this first — the failure modes below are silent.**
 
-- **Node.js is required and is _not_ provided.** The plugin needs Node.js ≥ 18
-  on `PATH`: Claude Code until the runtime is installed, Codex, Copilot CLI,
-  Antigravity and Cursor (untested) on every start. On an older Node the server says what to
-  install. With no Node at all the host cannot start it and reports the server
-  as failed with no useful reason — typically `spawn node ENOENT`, `local: 0`
-  or `MCP error -32000`. The direct recipes need Node.js ≥ 22.15. Install
-  Node first: <https://nodejs.org>, or see <https://codesign.co/install>.
-- **The plugin updates itself.** It installs the runtime of its channel and
-  checks for an update every 6 hours; no plugin update is needed to move
-  forward.
-- **Pin `@0.7.3-next.20261125135902.gfdc6ee3` — every direct recipe names that exact version.** Each release
+- **Claude Code on macOS and Linux needs no Node.js.** There it starts the
+  native launcher the plugin carries, which installs and starts the runtime
+  without Node. musl Linux (Alpine) is not supported. Claude Code on Windows needs Node.js ≥ 18 on `PATH` until the
+  runtime is installed, and Codex, Copilot CLI, Antigravity and Cursor (untested)
+  on every start. On an older Node the server says what to install. With no Node
+  at all those hosts cannot start it and report the server as failed with no
+  useful reason — typically `spawn node ENOENT`, `local: 0` or
+  `MCP error -32000`. The direct recipes need Node.js ≥ 22.15. Install Node
+  first: <https://nodejs.org>, or see <https://codesign.co/install>.
+- **The runtime updates itself.** It checks its channel for an update every 6
+  hours, with no plugin update. The launcher changes only with a plugin update.
+- **Pin `@0.7.3-next.20261125154156.gf18fd43` — every direct recipe names that exact version.** Each release
   republishes this repo with a new pin — update your recipe to
   move forward.
 - **Windows: the direct recipes need WSL.** Hosts that spawn `npx` directly
@@ -204,7 +216,7 @@ claude plugin install codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.7.3-next.20261125135902.gfdc6ee3 stdio
+claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.7.3-next.20261125154156.gf18fd43 stdio
 ```
 
 ### Codex
@@ -219,7 +231,7 @@ codex plugin add codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.3-next.20261125135902.gfdc6ee3 stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.3-next.20261125154156.gf18fd43 stdio
 ```
 
 ### Antigravity CLI
@@ -234,7 +246,7 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.3-next.20261125135902.gfdc6ee3 stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.3-next.20261125154156.gf18fd43 stdio
 ```
 
 ### GitHub Copilot CLI
@@ -249,7 +261,7 @@ copilot plugin install codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.3-next.20261125135902.gfdc6ee3 stdio
+copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.3-next.20261125154156.gf18fd43 stdio
 ```
 
 ### Cursor
@@ -276,7 +288,7 @@ Or add the MCP server directly, without the plugin, in `.cursor/mcp.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.3-next.20261125135902.gfdc6ee3",
+        "@imgly/codesign-mcp@0.7.3-next.20261125154156.gf18fd43",
         "stdio"
       ]
     }
@@ -296,7 +308,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.3-next.20261125135902.gfdc6ee3",
+        "@imgly/codesign-mcp@0.7.3-next.20261125154156.gf18fd43",
         "stdio"
       ]
     }
@@ -319,7 +331,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.3-next.20261125135902.gfdc6ee3",
+        "@imgly/codesign-mcp@0.7.3-next.20261125154156.gf18fd43",
         "stdio"
       ]
     }
@@ -337,7 +349,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.7.3-next.20261125135902.gfdc6ee3",
+          "@imgly/codesign-mcp@0.7.3-next.20261125154156.gf18fd43",
           "stdio"
         ]
       }
