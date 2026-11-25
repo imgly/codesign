@@ -12,6 +12,7 @@ const ROLE_ONLY = {
 	"workspaces.list": "client",
 	"telemetry.consent.get": "client",
 	"telemetry.consent.set": "client",
+	"telemetry.reports.set": "client",
 	"design.claim": "unit",
 	"design.release": "unit",
 	"chat.activate": "client"

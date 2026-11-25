@@ -3,7 +3,7 @@
   "name": "codesign",
   "displayName": "CoDesign",
   "description": "Generate designs and videos, then resize, rebrand or translate them. Open them in a visual editor and export to .pdf, .psd, .idml, .mp4 & more",
-  "version": "0.7.2",
+  "version": "0.8.0",
   "author": {
     "name": "IMG.LY GmbH",
     "url": "https://img.ly"
@@ -35,19 +35,5 @@
   "documentationUrl": "https://github.com/imgly/codesign#readme",
   "supportUrl": "https://img.ly/support",
   "privacyPolicyUrl": "https://img.ly/privacy-policy",
-  "termsOfServiceUrl": "https://img.ly/tos/codesign/",
-  "userConfig": {
-    "error_reports": {
-      "type": "boolean",
-      "title": "Send error reports to IMG.LY",
-      "description": "Crash and failed-tool-call reports: error type, a scrubbed message, stack frames, versions and OS. Never your prompts, files or designs.",
-      "default": true
-    },
-    "usage_telemetry": {
-      "type": "boolean",
-      "title": "Send usage data to IMG.LY",
-      "description": "Anonymous counts of tool use. Turning this off also stops error reports.",
-      "default": true
-    }
-  }
+  "termsOfServiceUrl": "https://img.ly/tos/codesign/"
 }

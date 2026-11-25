@@ -43,11 +43,11 @@ use.
 
 ## Formats
 
-- **Import:** InDesign (.idml), Photoshop (.psd), PowerPoint (.pptx), PDF,
-  images (PNG, JPEG, GIF, WebP, SVG) and CoDesign (.imgly) files.
+- **Import:** InDesign (.idml), Photoshop (.psd), PowerPoint (.pptx), Figma
+  (.fig), PDF, images (PNG, JPEG, GIF, WebP, SVG) and CoDesign (.imgly) files.
 - **Export:** PDF and print-ready PDF/X, PNG, JPEG, WebP, SVG, HTML, InDesign
-  (.idml), Photoshop (.psd), MP4 video, WAV and M4A audio, and CoDesign
-  (.imgly). Video and audio export need the native engine; Windows runs the
+  (.idml), Photoshop (.psd), Figma (.fig), MP4 video, WAV and M4A audio, and
+  CoDesign (.imgly). Video and audio export need the native engine; Windows runs the
   WASM engine, which has no video.
 
 ## What you can make
@@ -113,8 +113,9 @@ print, video, and social:
   browser or config.
 - **Native performance** — a purpose-built engine that stays fast at scale and
   under heavy assets.
-- **Full compatibility** — imports InDesign, PSD, PowerPoint (PPTX) and PDF;
-  exports print-ready PDF, image, video, InDesign, PSD and HTML.
+- **Full compatibility** — imports InDesign, PSD, PowerPoint (PPTX), Figma
+  and PDF; exports print-ready PDF, image, video, InDesign, PSD, Figma and
+  HTML.
 
 ## What the plugin runs
 
@@ -148,14 +149,16 @@ print, video, and social:
     with the `login` tool.
   - `gateway.img.ly`: only for AI generation.
   - `api.img.ly`: usage data, and Sentry (`sentry.io`): error reports.
-    In Claude Code, turn them off in the plugin's settings (Send usage data
-    to IMG.LY, Send error reports to IMG.LY); on any host, set
-    `DO_NOT_TRACK=1` or `IMGLY_TELEMETRY=off`.
+    To turn them off for every client on this computer, run
+    `~/.codesign/bin/cdsn telemetry off` (on Windows,
+    `%USERPROFILE%\.codesign\bin\cdsn.cmd telemetry off`); or set
+    `DO_NOT_TRACK=1` or `IMGLY_TELEMETRY=off` in your MCP client's
+    environment.
   - Addresses a design, you or your agent name, such as an image or font URL:
     fetched and copied into your workspace.
   - IMG.LY's CE.SDK engine, which renders and exports, itself checks its
     licence with IMG.LY (`api.img.ly`) and reports its own usage there when
-    it starts; neither the plugin's two settings nor `DO_NOT_TRACK` turn that
+    it starts; neither `cdsn telemetry off` nor `DO_NOT_TRACK` turns that
     off.
 
 ## Requirements & known limitations
@@ -172,7 +175,7 @@ print, video, and social:
 - **The plugin updates itself.** It installs the runtime of its channel and
   checks for an update every 6 hours; no plugin update is needed to move
   forward.
-- **Pin `@0.7.2` — every direct recipe names that exact version.** Each release
+- **Pin `@0.8.0` — every direct recipe names that exact version.** Each release
   republishes this repo with a new pin — update your recipe to
   move forward.
 - **Windows: the direct recipes need WSL.** Hosts that spawn `npx` directly
@@ -197,7 +200,7 @@ claude plugin install codesign@imgly-codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.7.2 stdio
+claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.8.0 stdio
 ```
 
 ### Codex
@@ -212,7 +215,7 @@ codex plugin add codesign@imgly-codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2 stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.8.0 stdio
 ```
 
 ### Antigravity CLI
@@ -227,7 +230,7 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2 stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.8.0 stdio
 ```
 
 ### GitHub Copilot CLI
@@ -242,7 +245,7 @@ copilot plugin install codesign@imgly-codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.7.2 stdio
+copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.8.0 stdio
 ```
 
 ### Cursor
@@ -274,7 +277,7 @@ Or add the MCP server directly, without the plugin, in `.cursor/mcp.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.2",
+        "@imgly/codesign-mcp@0.8.0",
         "stdio"
       ]
     }
@@ -294,7 +297,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.2",
+        "@imgly/codesign-mcp@0.8.0",
         "stdio"
       ]
     }
@@ -317,7 +320,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.7.2",
+        "@imgly/codesign-mcp@0.8.0",
         "stdio"
       ]
     }
@@ -335,7 +338,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.7.2",
+          "@imgly/codesign-mcp@0.8.0",
           "stdio"
         ]
       }

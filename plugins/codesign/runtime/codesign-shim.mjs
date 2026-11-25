@@ -10,9 +10,10 @@ import { versionCommand } from "./codesign-shim/codesign-router/units/lifecycle.
 import { answersOnceStarted } from "./codesign-shim/codesign-router/router/handoff.mjs";
 import { startServer } from "./codesign-shim/codesign-router/client/index.mjs";
 import { checkDue, checkWhenDue, createUpdater } from "./codesign-shim/codesign-router/install/updater.mjs";
+import { renderAnswers } from "./codesign-shim/codesign-mcp/runtime/shim/answers.mjs";
 import { routerChannel, runAdapter } from "./codesign-shim/codesign-mcp/adapter/main.mjs";
 import { spawn } from "node:child_process";
-import { appendFileSync, closeSync, createReadStream, existsSync, fstatSync, mkdirSync, openSync, readFileSync, realpathSync, statSync } from "node:fs";
+import { appendFileSync, closeSync, createReadStream, existsSync, fstatSync, mkdirSync, openSync, readFileSync, realpathSync, statSync, writeFileSync } from "node:fs";
 import { basename, dirname, join } from "node:path";
 import { Readable } from "node:stream";
 import { fileURLToPath } from "node:url";
@@ -440,6 +441,10 @@ function sameFile(fd, path) {
 	const named = statSync(path, { throwIfNoEntry: false });
 	return named !== void 0 && open.dev === named.dev && open.ino === named.ino;
 }
+async function writeAnswers(snapshotFile, out) {
+	const snapshot = JSON.parse(readFileSync(snapshotFile, "utf8"));
+	writeFileSync(out, `${JSON.stringify(await renderAnswers(snapshot), null, 2)}\n`);
+}
 /** What to tell a host that starts the shim on a Node older than 18 (Node 14 and older cannot even parse it). */
 function nodeTooOld(version) {
 	if (Number(version.split(".")[0]) >= 18) return void 0;
@@ -452,7 +457,7 @@ if (process.argv[1] !== void 0 && realpathSync(fileURLToPath(import.meta.url)) =
 		process.stderr.write(`${tooOld}\n`);
 		process.exit(1);
 	}
-	(command === "mcp" ? runMcp() : command === "bootstrap" ? runBootstrap(rest) : Promise.reject(/* @__PURE__ */ new Error(`usage: codesign-shim.mjs mcp | bootstrap ensure [--core <dir> | --seed <dir> --channel <${CHANNELS.join("|")}>] | bootstrap check`))).catch((err) => {
+	(command === "mcp" ? runMcp() : command === "bootstrap" ? runBootstrap(rest) : command === "answers" && rest.length === 2 ? writeAnswers(rest[0], rest[1]) : Promise.reject(/* @__PURE__ */ new Error(`usage: codesign-shim.mjs mcp | bootstrap ensure [--core <dir> | --seed <dir> --channel <${CHANNELS.join("|")}>] | bootstrap check | answers <snapshot.json> <answers.json>`))).catch((err) => {
 		process.stderr.write(`codesign: ${err instanceof Error ? err.message : String(err)}\n`);
 		process.exit(1);
 	});
