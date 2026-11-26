@@ -185,6 +185,7 @@ async function connectRemote(opts) {
 		},
 		runtime: () => runtime,
 		routerVersion: () => routerVersion,
+		unit: () => channel !== void 0 ? unit : void 0,
 		onToolsChanged: (listener) => void toolsChanged.add(listener),
 		onDesignChanged: (listener) => void designChanged.add(listener),
 		close() {

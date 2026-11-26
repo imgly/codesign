@@ -73,6 +73,7 @@ function runtimePaths(home, platform = process.platform) {
 		previous: join(runtime, "previous"),
 		leases: join(runtime, "leases"),
 		engines: join(home, "engines"),
+		previewNoPage: join(home, "preview-no-page"),
 		engine: (pack) => join(home, "engines", pack),
 		engineAssets: (cesdkVersion) => join(home, "engines", `assets-cesdk-${cesdkVersion}`),
 		agents: {

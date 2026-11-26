@@ -1,5 +1,6 @@
 import { olderRouterWarning } from "../../codesign-router/install/version.mjs";
 import { clientConfigFromEnv } from "../../codesign-router/config/unit-config.mjs";
+import { designLinks } from "./design-links.mjs";
 import { createMcpAdapter } from "./server.mjs";
 import { harnessFromEnv } from "../../codesign-router/config/harness.mjs";
 import { connectRemote } from "./remote.mjs";
@@ -11,6 +12,14 @@ const SESSION_CHANGED = "notifications/codesign/session_changed";
 /** The channel through the router: what `cdsn mcp` serves. With `version`, an older router is named on stderr. */
 function routerChannel(opts) {
 	return async (client) => {
+		const connect = (attach) => connectRemote({
+			socket: opts.socket,
+			startRouter: opts.startRouter,
+			client,
+			config: clientConfigFromEnv(opts.env),
+			harness: harnessFromEnv(opts.env),
+			...attach !== void 0 ? { attach } : {}
+		});
 		const link = await connectRemote({
 			socket: opts.socket,
 			startRouter: opts.startRouter,
@@ -27,7 +36,8 @@ function routerChannel(opts) {
 		return {
 			link,
 			instructions: text,
-			version: link.runtime()
+			version: link.runtime(),
+			...opts.conversation === void 0 ? { designs: (onLink) => designLinks(link, connect, onLink) } : {}
 		};
 	};
 }
@@ -98,21 +108,27 @@ async function runAdapter(open) {
 	});
 	const hello = await firstMessage;
 	try {
-		const { link, instructions, version } = await open(identityOf(hello));
-		closeLink = () => link.close();
+		const opened = await open(identityOf(hello));
+		const { link, instructions, version } = opened;
+		const listen = (on) => {
+			on.onToolsChanged(() => void adapter.sendToolListChanged());
+			on.onDesignChanged((p) => void adapter.notification({
+				method: SESSION_CHANGED,
+				params: {
+					...p.by.tool !== void 0 ? { tool: p.by.tool } : {},
+					design: p.uri
+				}
+			}));
+		};
+		const designs = opened.designs?.(listen);
+		closeLink = () => (designs ?? link).close();
 		const adapter = createMcpAdapter({
 			link,
 			instructions,
-			version
+			version,
+			...designs !== void 0 ? { designs } : {}
 		});
-		link.onToolsChanged(() => void adapter.sendToolListChanged());
-		link.onDesignChanged((p) => void adapter.notification({
-			method: SESSION_CHANGED,
-			params: {
-				...p.by.tool !== void 0 ? { tool: p.by.tool } : {},
-				design: p.uri
-			}
-		}));
+		listen(link);
 		await adapter.connect(transport);
 		server = adapter;
 	} catch (err) {

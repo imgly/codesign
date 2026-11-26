@@ -1,5 +1,5 @@
 {
-  "runtime": "0.8.1-next.20261126143729.gc3bff19",
+  "runtime": "0.8.1-next.20261126211703.g9b616ed",
   "protocolVersions": [
     "2025-11-25",
     "2025-06-18",
@@ -25,7 +25,7 @@
     },
     "serverInfo": {
       "name": "codesign",
-      "version": "0.8.1-next.20261126143729.gc3bff19",
+      "version": "0.8.1-next.20261126211703.g9b616ed",
       "websiteUrl": "https://codesign.co",
       "icons": [
         {
@@ -58,6 +58,10 @@
             "inputSchema": {
               "type": "object",
               "properties": {
+                "design": {
+                  "type": "string",
+                  "description": "The design this call is about: its `uri`, verbatim as `import`, `open` or `designs` gave it. Omitted ⇒ the design you are on. When other agents (subagents) share this connection, always pass it."
+                },
                 "code": {
                   "type": "string",
                   "description": "Async JS body using `engine.design` — the whole edit API; EVERY member returns a Promise (await it): create({ type, name?, props?, children? }, { parent? }), setProps(id, props), getProps(id, select?) — see the api skill; its recipes.md shows the return contract."
@@ -87,6 +91,10 @@
             "inputSchema": {
               "type": "object",
               "properties": {
+                "design": {
+                  "type": "string",
+                  "description": "The design this call is about: its `uri`, verbatim as `import`, `open` or `designs` gave it. Omitted ⇒ the design you are on. When other agents (subagents) share this connection, always pass it."
+                },
                 "uri": {
                   "type": "string",
                   "description": "Look at an ASSET instead of the design: the `uri` or `meta.thumbUri` an earlier tool result gave you (a generated, uploaded or imported image, or one an asset search returned). Cannot be combined with a non-empty `blockIds`."
@@ -202,6 +210,10 @@
             "inputSchema": {
               "type": "object",
               "properties": {
+                "design": {
+                  "type": "string",
+                  "description": "The design this call is about: its `uri`, verbatim as `import`, `open` or `designs` gave it. Omitted ⇒ the design you are on. When other agents (subagents) share this connection, always pass it."
+                },
                 "format": {
                   "type": "string",
                   "enum": [
@@ -371,6 +383,10 @@
             "inputSchema": {
               "type": "object",
               "properties": {
+                "design": {
+                  "type": "string",
+                  "description": "The design this call is about: its `uri`, verbatim as `import`, `open` or `designs` gave it. Omitted ⇒ the design you are on. When other agents (subagents) share this connection, always pass it."
+                },
                 "verdict": {
                   "type": "string",
                   "enum": [
@@ -395,6 +411,10 @@
             "inputSchema": {
               "type": "object",
               "properties": {
+                "design": {
+                  "type": "string",
+                  "description": "The design this call is about: its `uri`, verbatim as `import`, `open` or `designs` gave it. Omitted ⇒ the design you are on. When other agents (subagents) share this connection, always pass it."
+                },
                 "title": {
                   "type": "string",
                   "description": "The new title."
@@ -416,6 +436,10 @@
             "inputSchema": {
               "type": "object",
               "properties": {
+                "design": {
+                  "type": "string",
+                  "description": "The design this call is about: its `uri`, verbatim as `import`, `open` or `designs` gave it. Omitted ⇒ the design you are on. When other agents (subagents) share this connection, always pass it."
+                },
                 "items": {
                   "type": "array",
                   "description": "The full checklist (at most 64 items); replaces the current one. Omit to read the current list.",
@@ -1258,6 +1282,10 @@
             "inputSchema": {
               "type": "object",
               "properties": {
+                "design": {
+                  "type": "string",
+                  "description": "The design this call is about: its `uri`, verbatim as `import`, `open` or `designs` gave it. Omitted ⇒ the design you are on. When other agents (subagents) share this connection, always pass it."
+                },
                 "code": {
                   "type": "string",
                   "description": "Async JS body using `engine.design` — the whole edit API; EVERY member returns a Promise (await it): create({ type, name?, props?, children? }, { parent? }), setProps(id, props), getProps(id, select?) — see the api skill; its recipes.md shows the return contract."
@@ -1287,6 +1315,10 @@
             "inputSchema": {
               "type": "object",
               "properties": {
+                "design": {
+                  "type": "string",
+                  "description": "The design this call is about: its `uri`, verbatim as `import`, `open` or `designs` gave it. Omitted ⇒ the design you are on. When other agents (subagents) share this connection, always pass it."
+                },
                 "uri": {
                   "type": "string",
                   "description": "Look at an ASSET instead of the design: the `uri` or `meta.thumbUri` an earlier tool result gave you (a generated, uploaded or imported image, or one an asset search returned). Cannot be combined with a non-empty `blockIds`."
@@ -1402,6 +1434,10 @@
             "inputSchema": {
               "type": "object",
               "properties": {
+                "design": {
+                  "type": "string",
+                  "description": "The design this call is about: its `uri`, verbatim as `import`, `open` or `designs` gave it. Omitted ⇒ the design you are on. When other agents (subagents) share this connection, always pass it."
+                },
                 "format": {
                   "type": "string",
                   "enum": [
@@ -1571,6 +1607,10 @@
             "inputSchema": {
               "type": "object",
               "properties": {
+                "design": {
+                  "type": "string",
+                  "description": "The design this call is about: its `uri`, verbatim as `import`, `open` or `designs` gave it. Omitted ⇒ the design you are on. When other agents (subagents) share this connection, always pass it."
+                },
                 "verdict": {
                   "type": "string",
                   "enum": [
@@ -1595,6 +1635,10 @@
             "inputSchema": {
               "type": "object",
               "properties": {
+                "design": {
+                  "type": "string",
+                  "description": "The design this call is about: its `uri`, verbatim as `import`, `open` or `designs` gave it. Omitted ⇒ the design you are on. When other agents (subagents) share this connection, always pass it."
+                },
                 "title": {
                   "type": "string",
                   "description": "The new title."
@@ -1616,6 +1660,10 @@
             "inputSchema": {
               "type": "object",
               "properties": {
+                "design": {
+                  "type": "string",
+                  "description": "The design this call is about: its `uri`, verbatim as `import`, `open` or `designs` gave it. Omitted ⇒ the design you are on. When other agents (subagents) share this connection, always pass it."
+                },
                 "items": {
                   "type": "array",
                   "description": "The full checklist (at most 64 items); replaces the current one. Omit to read the current list.",

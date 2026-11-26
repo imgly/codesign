@@ -5,7 +5,7 @@
 
 **The design layer for the agent era.**
 
-> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.8.1-next.20261126143729.gc3bff19` —
+> **Prerelease channel.** This `develop` branch installs `@imgly/codesign-mcp@0.8.1-next.20261126211703.g9b616ed` —
 > unreleased builds, published on every merge to IMG.LY's development branch.
 > For the stable release, use the [`main` branch](https://github.com/imgly/codesign/tree/main).
 
@@ -147,6 +147,13 @@ print, video, and social:
   from the same release server. Before it runs anything it downloaded, it checks
   the release manifest's Ed25519 signature with IMG.LY's key, which it carries,
   and the SHA-256 the manifest gives. It never runs the Node.js on your `PATH`.
+  When an install fails, it sends IMG.LY one error report to Sentry
+  (`sentry.io`): the step that failed, an error code, the operating system and
+  the versions, never a path, a user name or the contents of a file. To turn it
+  off, set `DO_NOT_TRACK=1`, `IMGLY_TELEMETRY=off` or
+  `IMGLY_ERROR_REPORTING=off` in the `env` of CoDesign's entry in your MCP
+  client's config; once CoDesign is installed, `cdsn telemetry off` turns it
+  off too.
 - **No hooks.** The plugin runs nothing at session start. When the runtime
   is missing, the server answers from `runtime/answers.json` (the native launcher) or
   `runtime/snapshot.json` (the shim) and installs it
@@ -191,13 +198,13 @@ print, video, and social:
   first: <https://nodejs.org>, or see <https://codesign.co/install>.
 - **The runtime updates itself.** It checks its channel for an update every 6
   hours, with no plugin update. The launcher changes only with a plugin update.
-- **Pin `@0.8.1-next.20261126143729.gc3bff19` — every direct recipe names that exact version.** Each release
+- **Pin `@0.8.1-next.20261126211703.g9b616ed` — every direct recipe names that exact version.** Each release
   republishes this repo with a new pin — update your recipe to
   move forward.
 - **Windows: the direct recipes need WSL.** Hosts that spawn `npx` directly
   hit `spawn npx ENOENT`
   ([anthropics/claude-code#58510](https://github.com/anthropics/claude-code/issues/58510)).
-  The plugin runs no `npx` and needs no Git. Claude Code, Codex and Copilot CLI
+  The plugin runs no `npx` and needs no Git to run; Claude Code needs `git` to add the plugin from a GitHub marketplace. Claude Code, Codex and Copilot CLI
   start it natively on Windows; Antigravity and Cursor on Windows are untested.
   Without Node, Claude Code can use the plugin if you first run
   `irm https://get.codesign.co/runtime/next/install.ps1 | iex`.
@@ -216,7 +223,7 @@ claude plugin install codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.8.1-next.20261126143729.gc3bff19 stdio
+claude mcp add --scope user codesign -- npx -y @imgly/codesign-mcp@0.8.1-next.20261126211703.g9b616ed stdio
 ```
 
 ### Codex
@@ -231,7 +238,7 @@ codex plugin add codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.8.1-next.20261126143729.gc3bff19 stdio
+codex mcp add codesign -- npx -y @imgly/codesign-mcp@0.8.1-next.20261126211703.g9b616ed stdio
 ```
 
 ### Antigravity CLI
@@ -246,7 +253,7 @@ agy plugin install ./codesign/plugins/codesign
 Or add the MCP server directly, without the plugin:
 
 ```bash
-agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.8.1-next.20261126143729.gc3bff19 stdio
+agy mcp add codesign -- npx -y @imgly/codesign-mcp@0.8.1-next.20261126211703.g9b616ed stdio
 ```
 
 ### GitHub Copilot CLI
@@ -261,7 +268,7 @@ copilot plugin install codesign@imgly-codesign-next
 Or add the MCP server directly, without the plugin:
 
 ```bash
-copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.8.1-next.20261126143729.gc3bff19 stdio
+copilot mcp add codesign -- npx -y @imgly/codesign-mcp@0.8.1-next.20261126211703.g9b616ed stdio
 ```
 
 ### Cursor
@@ -288,7 +295,7 @@ Or add the MCP server directly, without the plugin, in `.cursor/mcp.json`:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.8.1-next.20261126143729.gc3bff19",
+        "@imgly/codesign-mcp@0.8.1-next.20261126211703.g9b616ed",
         "stdio"
       ]
     }
@@ -308,7 +315,7 @@ the top-level key differ. Add this block to the host’s MCP config:
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.8.1-next.20261126143729.gc3bff19",
+        "@imgly/codesign-mcp@0.8.1-next.20261126211703.g9b616ed",
         "stdio"
       ]
     }
@@ -331,7 +338,7 @@ VS Code (`servers` key):
       "command": "npx",
       "args": [
         "-y",
-        "@imgly/codesign-mcp@0.8.1-next.20261126143729.gc3bff19",
+        "@imgly/codesign-mcp@0.8.1-next.20261126211703.g9b616ed",
         "stdio"
       ]
     }
@@ -349,7 +356,7 @@ Zed (`context_servers`):
         "path": "npx",
         "args": [
           "-y",
-          "@imgly/codesign-mcp@0.8.1-next.20261126143729.gc3bff19",
+          "@imgly/codesign-mcp@0.8.1-next.20261126211703.g9b616ed",
           "stdio"
         ]
       }

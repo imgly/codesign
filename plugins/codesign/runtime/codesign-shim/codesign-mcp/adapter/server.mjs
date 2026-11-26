@@ -1,5 +1,6 @@
 import { CallToolRequestSchema, CompleteRequestSchema, GetPromptRequestSchema, ListPromptsRequestSchema, ListToolsRequestSchema } from "../../@modelcontextprotocol/sdk/dist/esm/types.mjs";
 import { Server } from "../../@modelcontextprotocol/sdk/dist/esm/server/index.mjs";
+import { designOf, notHeld } from "./design-links.mjs";
 import { mcpErrors } from "./errors.mjs";
 import { registerSkillResources } from "./skill-resources.mjs";
 
@@ -21,7 +22,7 @@ const mcpContent = (part) => part.type === "resource" ? {
 	}
 } : part;
 function createMcpAdapter(opts) {
-	const { link } = opts;
+	const link = opts.designs?.main() ?? opts.link;
 	const version = opts.buildId ? `${opts.version}+${opts.buildId}` : opts.version;
 	const server = new Server({
 		name: "codesign",
@@ -51,42 +52,80 @@ function createMcpAdapter(opts) {
 	server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: (await link.request("tools.list", {})).tools.map(mcpTool) }));
 	let calls = 0;
 	server.setRequestHandler(CallToolRequestSchema, async (req, extra) => {
-		const call = String(++calls);
-		const progressToken = req.params._meta?.progressToken;
-		const stopProgress = progressToken === void 0 ? void 0 : link.onProgress(({ call: of, ...update }) => {
-			if (of !== call) return;
-			extra.sendNotification({
-				method: "notifications/progress",
-				params: {
-					progressToken,
-					...update
-				}
-			}).catch(() => {});
+		/** The call down `link`, as the MCP answers it. */
+		const callDown = async (link) => {
+			const call = String(++calls);
+			const progressToken = req.params._meta?.progressToken;
+			const stopProgress = progressToken === void 0 ? void 0 : link.onProgress(({ call: of, ...update }) => {
+				if (of !== call) return;
+				extra.sendNotification({
+					method: "notifications/progress",
+					params: {
+						progressToken,
+						...update
+					}
+				}).catch(() => {});
+			});
+			const cancel = () => void link.request("tools.cancel", { call }).catch(() => void 0);
+			extra.signal.addEventListener("abort", cancel, { once: true });
+			try {
+				const result = await mcpErrors(link.request("tools.call", {
+					call,
+					name: req.params.name,
+					arguments: req.params.arguments ?? {},
+					...progressToken !== void 0 ? { progress: true } : {},
+					...req.params._meta !== void 0 ? { meta: req.params._meta } : {}
+				}));
+				if (!Array.isArray(result.content)) return {
+					isError: true,
+					content: [{
+						type: "text",
+						text: `${req.params.name} failed: the client answered without content.`
+					}]
+				};
+				return {
+					...result,
+					content: result.content.map(mcpContent)
+				};
+			} finally {
+				extra.signal.removeEventListener("abort", cancel);
+				stopProgress?.();
+			}
+		};
+		const { designs } = opts;
+		if (designs === void 0) return callDown(link);
+		const args = req.params.arguments ?? {};
+		const design = designOf(req.params.name, args);
+		const refused = (err) => ({
+			isError: true,
+			content: [{
+				type: "text",
+				text: `${req.params.name}: not run — ${err instanceof Error ? err.message : String(err)}`
+			}]
 		});
-		const cancel = () => void link.request("tools.cancel", { call }).catch(() => void 0);
-		extra.signal.addEventListener("abort", cancel, { once: true });
-		try {
-			const result = await mcpErrors(link.request("tools.call", {
-				call,
-				name: req.params.name,
-				arguments: req.params.arguments ?? {},
-				...progressToken !== void 0 ? { progress: true } : {},
-				...req.params._meta !== void 0 ? { meta: req.params._meta } : {}
-			}));
-			if (!Array.isArray(result.content)) return {
-				isError: true,
-				content: [{
-					type: "text",
-					text: `${req.params.name} failed: the client answered without content.`
-				}]
-			};
-			return {
-				...result,
-				content: result.content.map(mcpContent)
-			};
-		} finally {
-			extra.signal.removeEventListener("abort", cancel);
-			stopProgress?.();
+		let refusal;
+		for (let tries = 0;; tries += 1) {
+			let used;
+			try {
+				used = await designs.use(req.params.name, args);
+			} catch (err) {
+				if (design === void 0) throw err;
+				return refused(err);
+			}
+			if (extra.signal.aborted) {
+				used.done();
+				return refused(refusal ?? /* @__PURE__ */ new Error("cancelled"));
+			}
+			try {
+				return await callDown(used.link);
+			} catch (err) {
+				if (design === void 0 || !notHeld(err)) throw err;
+				if (tries > 0 || extra.signal.aborted) return refused(err);
+				refusal = err;
+				designs.drop(design, used.link);
+			} finally {
+				used.done();
+			}
 		}
 	});
 	registerSkillResources(server, link);
