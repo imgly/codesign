@@ -1,5 +1,5 @@
 {
-  "runtime": "0.8.1-next.20261126072730.ga59c148",
+  "runtime": "0.8.1-next.20261126092106.g2986a6c",
   "protocolVersions": [
     "2025-11-25",
     "2025-06-18",
@@ -25,7 +25,7 @@
     },
     "serverInfo": {
       "name": "codesign",
-      "version": "0.8.1-next.20261126072730.ga59c148",
+      "version": "0.8.1-next.20261126092106.g2986a6c",
       "websiteUrl": "https://codesign.co",
       "icons": [
         {
