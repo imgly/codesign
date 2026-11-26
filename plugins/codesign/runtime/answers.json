@@ -1,5 +1,5 @@
 {
-  "runtime": "0.8.1-next.20261126092106.g2986a6c",
+  "runtime": "0.8.1-next.20261126100443.gd69ee78",
   "protocolVersions": [
     "2025-11-25",
     "2025-06-18",
@@ -25,7 +25,7 @@
     },
     "serverInfo": {
       "name": "codesign",
-      "version": "0.8.1-next.20261126092106.g2986a6c",
+      "version": "0.8.1-next.20261126100443.gd69ee78",
       "websiteUrl": "https://codesign.co",
       "icons": [
         {
@@ -474,7 +474,7 @@
           },
           {
             "name": "asset_search",
-            "description": "Search every asset source of this server's engine, live; earlier sources rank first. Read-only — never creates a revision.\n\nReturns JSON `{ sources: [{ source, description, total, nextPage, failed, assets }] }`; each asset has `id`, `label`, `mimeType`, `uri` (a style: none) and `groups`, an image its `width` and `height` in pixels, and a typeface asset (e.g. from the `ly.img.gfonts` Google Fonts source) a compact `typeface: { name, weights, styles }`. A source's `description` says what it holds. Typefaces: `mimeType: ['application/ubq-typeface']`.\n\nThe `ly.img.workspace.styles` source is the workspace's saved styles (brand kits): when the user names a style or brand (\"in our Acme style\"), find it here by name or id and apply it with the `brand` skill.\n\nThe `ly.img.workspace.images` source is this workspace's own store: every image the agent generated or imported AND every image the human uploaded in the browser editor, newest first. Uploads carry their original filename as `label` (the human will refer to it — \"use logo-final.png\" — so search that name) and `groups: [\"uploads\"]`. \"The image the user just uploaded\" = the first asset in the `uploads` group.\n\n⚠ Asset sources are deployment configuration — where their content lives (IMG.LY CDN, a customer host) is the server's business. NEVER fetch asset manifests (`content.json`) or hardcode `cdn.img.ly` URLs yourself; this tool and the uris it returns are the only correct path. A source this tool does not name is not available on this server — say so instead of working around it.\n\nTo USE a result, apply it inside `edit` code — either:\n(A) new block: `await engine.design.create({ type: 'graphic', props: { shape: { type: 'rect' }, fill: { type: 'image', uri }, width, height, contentFill: { mode: 'Cover' } } }, { parent: page })` with the asset's `uri` — keep `width`:`height` at the asset's aspect, or let `Cover` crop a photo; a logo or other mark takes `{ mode: 'Contain' }`; audio: `{ type: 'audio', props: { audio: { fileURI: uri } } }`;\n(B) existing block: `await engine.design.setProps(blockId, { fill: { type: 'image', uri }, contentFill: { mode: 'Cover' } })` with the asset's `uri` — `Cover` fills the frame and crops what does not fit, right for a photo; a logo or mark takes `{ mode: 'Contain' }`, or a frame at its `width`:`height`, so it is never cut.\n(C) fonts: set the family BY NAME inside `edit` — `text: { font: { family: name, weight: 'normal' } }` in `engine.design.create` or `engine.design.setProps`; the edit API finds the family and loads the weight. Never copy font URIs out of this tool into edit code.\n\nA photo has to show what the design says it shows. When no result fits the subject, say so, then use the person's own image or one you can generate if this host makes images; failing both, a neutral placeholder (a solid shape in a palette colour, not an empty image frame), never an unrelated photo.",
+            "description": "Search every asset source of this server's engine, live; earlier sources rank first. Read-only — never creates a revision.\n\nReturns JSON `{ sources: [{ source, description, total, nextPage, failed, assets }] }`; each asset has `id`, `label`, `mimeType`, `uri` (a style: none) and `groups`, an image its `width` and `height` in pixels, an audio and video asset its `duration` in seconds, and a typeface asset (e.g. from the `ly.img.gfonts` Google Fonts source) a compact `typeface: { name, weights, styles }`. A source's `description` says what it holds. Typefaces: `mimeType: ['application/ubq-typeface']`.\n\nThe `ly.img.workspace.styles` source is the workspace's saved styles (brand kits): when the user names a style or brand (\"in our Acme style\"), find it here by name or id and apply it with the `brand` skill.\n\nThe `ly.img.workspace.images` source is this workspace's own store: every image the agent generated or imported AND every image the human uploaded in the browser editor, newest first. Uploads carry their original filename as `label` (the human will refer to it — \"use logo-final.png\" — so search that name) and `groups: [\"uploads\"]`. \"The image the user just uploaded\" = the first asset in the `uploads` group.\n\n⚠ Asset sources are deployment configuration — where their content lives (IMG.LY CDN, a customer host) is the server's business. NEVER fetch asset manifests (`content.json`) or hardcode `cdn.img.ly` URLs yourself; this tool and the uris it returns are the only correct path. A source this tool does not name is not available on this server — say so instead of working around it.\n\nTo USE a result, apply it inside `edit` code — either:\n(A) new block: `await engine.design.create({ type: 'graphic', props: { shape: { type: 'rect' }, fill: { type: 'image', uri }, width, height, contentFill: { mode: 'Cover' } } }, { parent: page })` with the asset's `uri` — keep `width`:`height` at the asset's aspect, or let `Cover` crop a photo; a logo or other mark takes `{ mode: 'Contain' }`; audio: `{ type: 'audio', props: { audio: { fileURI: uri } } }`;\n(B) existing block: `await engine.design.setProps(blockId, { fill: { type: 'image', uri }, contentFill: { mode: 'Cover' } })` with the asset's `uri` — `Cover` fills the frame and crops what does not fit, right for a photo; a logo or mark takes `{ mode: 'Contain' }`, or a frame at its `width`:`height`, so it is never cut.\n(C) fonts: set the family BY NAME inside `edit` — `text: { font: { family: name, weight: 'normal' } }` in `engine.design.create` or `engine.design.setProps`; the edit API finds the family and loads the weight. Never copy font URIs out of this tool into edit code.\n\nA photo has to show what the design says it shows. When no result fits the subject, say so, then use the person's own image or one you can generate if this host makes images; failing both, a neutral placeholder (a solid shape in a palette colour, not an empty image frame), never an unrelated photo.",
             "inputSchema": {
               "type": "object",
               "properties": {
@@ -690,7 +690,7 @@
             "name": "api",
             "description": "Authoritative TypeScript signatures for `engine.design`, the only API edit\ncode uses. Use this skill whenever you need the exact signature, prop path,\nor return type — especially before calling a member you haven't used yet.\nGenerated from the running engine's own `.d.ts`: THE source of truth.\n\nIts entry document carries the whole edit-code API inline, in one read.\n\nThe sub-file \"signatures.d.ts\" adds the upstream CE.SDK core as reference\nonly (edit code never calls it), every vocabulary type flattened to its\nliteral union.\n",
             "mimeType": "text/markdown",
-            "size": 46866
+            "size": 47511
           },
           {
             "uri": "skill://codesign/animate/SKILL.md",
@@ -767,7 +767,7 @@
             "name": "resize",
             "description": "Use when resizing or reformatting a CoDesign / CE.SDK design to a new size or aspect ratio (ig-post ↔ ig-square ↔ ig-story ↔ widescreen, or a custom W×H); when building the size/format editions of a design from an existing design or from a brief; or when a reformatted edition has a dead void / letterboxed empty band, drifted or broken margins, off-canvas or clipped elements, mis-scaled decoration, or a stretched / squished layout. Also for animated / video designs: timed blocks, animations, captions, and audio carried into each edition.",
             "mimeType": "text/markdown",
-            "size": 25895
+            "size": 26086
           },
           {
             "uri": "skill://codesign/templates/SKILL.md",
@@ -797,8 +797,8 @@
             "resources": [
               {
                 "uri": "skill://codesign/api/SKILL.md",
-                "digest": "sha256:bcf5dbfcc412a058ccd2a9978920fd611923099cc8134f08f6b8c10d72137226",
-                "size": 46866
+                "digest": "sha256:254a1aa081ee6cdc39d1c5a3c475777e74e749e4d05d50db2d09d149c1a04b99",
+                "size": 47511
               },
               {
                 "uri": "skill://codesign/api/animation.md",
@@ -807,13 +807,13 @@
               },
               {
                 "uri": "skill://codesign/api/recipes.md",
-                "digest": "sha256:4b2d3914b71979198b1f99b503d6f71c95e96f513263d843e21733450e309d3a",
-                "size": 11797
+                "digest": "sha256:dc7ff3ba6a21e7d60a28ccecccf9f6d5fa7aa9381f96bc9c806a5ad9503705bc",
+                "size": 11852
               },
               {
                 "uri": "skill://codesign/api/shapes.md",
-                "digest": "sha256:fe49446718381a8a6a8e1b10bd4b1be017fa4f51b3d46d0121c8ef2112decc72",
-                "size": 5905
+                "digest": "sha256:cb902448371cb449830cfca6403b746d42f9a2c6ea898b66ed19bfc67e7e7db5",
+                "size": 6253
               },
               {
                 "uri": "skill://codesign/api/signatures-extended.d.ts",
@@ -822,8 +822,8 @@
               },
               {
                 "uri": "skill://codesign/api/signatures.d.ts",
-                "digest": "sha256:c12e75ed1e26343bda735dadb98b5c5e557bb1d55fb7e30b10cf30b6253188f3",
-                "size": 119461
+                "digest": "sha256:788d6b41d6039dac5b529cfdd24ebc095b03933c7c3494e0cfdb1f433dd9c92b",
+                "size": 119970
               },
               {
                 "uri": "skill://codesign/api/video.md",
@@ -1181,8 +1181,8 @@
             "resources": [
               {
                 "uri": "skill://codesign/resize/SKILL.md",
-                "digest": "sha256:47f9a2bc2f5550ec859b83351718a3109742147e2602b24d0554a070910bff41",
-                "size": 25895
+                "digest": "sha256:ff82057a7d71b553a8139fdca73ad409dabc8a32d9c3d9fc4b4d3fcb0ad9a3a8",
+                "size": 26086
               },
               {
                 "uri": "skill://codesign/resize/editions.md",
@@ -1648,7 +1648,7 @@
           },
           {
             "name": "asset_search",
-            "description": "Search every asset source of this server's engine, live; earlier sources rank first. Read-only — never creates a revision.\n\nReturns JSON `{ sources: [{ source, description, total, nextPage, failed, assets }] }`; each asset has `id`, `label`, `mimeType`, `uri` (a style: none) and `groups`, an image its `width` and `height` in pixels, and a typeface asset (e.g. from the `ly.img.gfonts` Google Fonts source) a compact `typeface: { name, weights, styles }`. A source's `description` says what it holds. Typefaces: `mimeType: ['application/ubq-typeface']`.\n\nThe `ly.img.workspace.styles` source is the workspace's saved styles (brand kits): when the user names a style or brand (\"in our Acme style\"), find it here by name or id and apply it with the `brand` skill.\n\nThe `ly.img.workspace.images` source is this workspace's own store: every image the agent generated or imported AND every image the human uploaded in the browser editor, newest first. Uploads carry their original filename as `label` (the human will refer to it — \"use logo-final.png\" — so search that name) and `groups: [\"uploads\"]`. \"The image the user just uploaded\" = the first asset in the `uploads` group.\n\n⚠ Asset sources are deployment configuration — where their content lives (IMG.LY CDN, a customer host) is the server's business. NEVER fetch asset manifests (`content.json`) or hardcode `cdn.img.ly` URLs yourself; this tool and the uris it returns are the only correct path. A source this tool does not name is not available on this server — say so instead of working around it.\n\nTo USE a result, apply it inside `edit` code — either:\n(A) new block: `await engine.design.create({ type: 'graphic', props: { shape: { type: 'rect' }, fill: { type: 'image', uri }, width, height, contentFill: { mode: 'Cover' } } }, { parent: page })` with the asset's `uri` — keep `width`:`height` at the asset's aspect, or let `Cover` crop a photo; a logo or other mark takes `{ mode: 'Contain' }`; audio: `{ type: 'audio', props: { audio: { fileURI: uri } } }`;\n(B) existing block: `await engine.design.setProps(blockId, { fill: { type: 'image', uri }, contentFill: { mode: 'Cover' } })` with the asset's `uri` — `Cover` fills the frame and crops what does not fit, right for a photo; a logo or mark takes `{ mode: 'Contain' }`, or a frame at its `width`:`height`, so it is never cut.\n(C) fonts: set the family BY NAME inside `edit` — `text: { font: { family: name, weight: 'normal' } }` in `engine.design.create` or `engine.design.setProps`; the edit API finds the family and loads the weight. Never copy font URIs out of this tool into edit code.\n\nA photo has to show what the design says it shows. When no result fits the subject, say so, then use the person's own image or one you can generate if this host makes images; failing both, a neutral placeholder (a solid shape in a palette colour, not an empty image frame), never an unrelated photo.",
+            "description": "Search every asset source of this server's engine, live; earlier sources rank first. Read-only — never creates a revision.\n\nReturns JSON `{ sources: [{ source, description, total, nextPage, failed, assets }] }`; each asset has `id`, `label`, `mimeType`, `uri` (a style: none) and `groups`, an image its `width` and `height` in pixels, an audio and video asset its `duration` in seconds, and a typeface asset (e.g. from the `ly.img.gfonts` Google Fonts source) a compact `typeface: { name, weights, styles }`. A source's `description` says what it holds. Typefaces: `mimeType: ['application/ubq-typeface']`.\n\nThe `ly.img.workspace.styles` source is the workspace's saved styles (brand kits): when the user names a style or brand (\"in our Acme style\"), find it here by name or id and apply it with the `brand` skill.\n\nThe `ly.img.workspace.images` source is this workspace's own store: every image the agent generated or imported AND every image the human uploaded in the browser editor, newest first. Uploads carry their original filename as `label` (the human will refer to it — \"use logo-final.png\" — so search that name) and `groups: [\"uploads\"]`. \"The image the user just uploaded\" = the first asset in the `uploads` group.\n\n⚠ Asset sources are deployment configuration — where their content lives (IMG.LY CDN, a customer host) is the server's business. NEVER fetch asset manifests (`content.json`) or hardcode `cdn.img.ly` URLs yourself; this tool and the uris it returns are the only correct path. A source this tool does not name is not available on this server — say so instead of working around it.\n\nTo USE a result, apply it inside `edit` code — either:\n(A) new block: `await engine.design.create({ type: 'graphic', props: { shape: { type: 'rect' }, fill: { type: 'image', uri }, width, height, contentFill: { mode: 'Cover' } } }, { parent: page })` with the asset's `uri` — keep `width`:`height` at the asset's aspect, or let `Cover` crop a photo; a logo or other mark takes `{ mode: 'Contain' }`; audio: `{ type: 'audio', props: { audio: { fileURI: uri } } }`;\n(B) existing block: `await engine.design.setProps(blockId, { fill: { type: 'image', uri }, contentFill: { mode: 'Cover' } })` with the asset's `uri` — `Cover` fills the frame and crops what does not fit, right for a photo; a logo or mark takes `{ mode: 'Contain' }`, or a frame at its `width`:`height`, so it is never cut.\n(C) fonts: set the family BY NAME inside `edit` — `text: { font: { family: name, weight: 'normal' } }` in `engine.design.create` or `engine.design.setProps`; the edit API finds the family and loads the weight. Never copy font URIs out of this tool into edit code.\n\nA photo has to show what the design says it shows. When no result fits the subject, say so, then use the person's own image or one you can generate if this host makes images; failing both, a neutral placeholder (a solid shape in a palette colour, not an empty image frame), never an unrelated photo.",
             "inputSchema": {
               "type": "object",
               "properties": {
@@ -1844,7 +1844,7 @@
             "name": "api",
             "description": "Authoritative TypeScript signatures for `engine.design`, the only API edit\ncode uses. Use this skill whenever you need the exact signature, prop path,\nor return type — especially before calling a member you haven't used yet.\nGenerated from the running engine's own `.d.ts`: THE source of truth.\n\nIts entry document carries the whole edit-code API inline, in one read.\n\nThe sub-file \"signatures.d.ts\" adds the upstream CE.SDK core as reference\nonly (edit code never calls it), every vocabulary type flattened to its\nliteral union.\n",
             "mimeType": "text/markdown",
-            "size": 46866
+            "size": 47511
           },
           {
             "uri": "skill://codesign/animate/SKILL.md",
@@ -1921,7 +1921,7 @@
             "name": "resize",
             "description": "Use when resizing or reformatting a CoDesign / CE.SDK design to a new size or aspect ratio (ig-post ↔ ig-square ↔ ig-story ↔ widescreen, or a custom W×H); when building the size/format editions of a design from an existing design or from a brief; or when a reformatted edition has a dead void / letterboxed empty band, drifted or broken margins, off-canvas or clipped elements, mis-scaled decoration, or a stretched / squished layout. Also for animated / video designs: timed blocks, animations, captions, and audio carried into each edition.",
             "mimeType": "text/markdown",
-            "size": 25895
+            "size": 26086
           },
           {
             "uri": "skill://codesign/templates/SKILL.md",
@@ -1951,8 +1951,8 @@
             "resources": [
               {
                 "uri": "skill://codesign/api/SKILL.md",
-                "digest": "sha256:bcf5dbfcc412a058ccd2a9978920fd611923099cc8134f08f6b8c10d72137226",
-                "size": 46866
+                "digest": "sha256:254a1aa081ee6cdc39d1c5a3c475777e74e749e4d05d50db2d09d149c1a04b99",
+                "size": 47511
               },
               {
                 "uri": "skill://codesign/api/animation.md",
@@ -1961,13 +1961,13 @@
               },
               {
                 "uri": "skill://codesign/api/recipes.md",
-                "digest": "sha256:4b2d3914b71979198b1f99b503d6f71c95e96f513263d843e21733450e309d3a",
-                "size": 11797
+                "digest": "sha256:dc7ff3ba6a21e7d60a28ccecccf9f6d5fa7aa9381f96bc9c806a5ad9503705bc",
+                "size": 11852
               },
               {
                 "uri": "skill://codesign/api/shapes.md",
-                "digest": "sha256:fe49446718381a8a6a8e1b10bd4b1be017fa4f51b3d46d0121c8ef2112decc72",
-                "size": 5905
+                "digest": "sha256:cb902448371cb449830cfca6403b746d42f9a2c6ea898b66ed19bfc67e7e7db5",
+                "size": 6253
               },
               {
                 "uri": "skill://codesign/api/signatures-extended.d.ts",
@@ -1976,8 +1976,8 @@
               },
               {
                 "uri": "skill://codesign/api/signatures.d.ts",
-                "digest": "sha256:c12e75ed1e26343bda735dadb98b5c5e557bb1d55fb7e30b10cf30b6253188f3",
-                "size": 119461
+                "digest": "sha256:788d6b41d6039dac5b529cfdd24ebc095b03933c7c3494e0cfdb1f433dd9c92b",
+                "size": 119970
               },
               {
                 "uri": "skill://codesign/api/video.md",
@@ -2335,8 +2335,8 @@
             "resources": [
               {
                 "uri": "skill://codesign/resize/SKILL.md",
-                "digest": "sha256:47f9a2bc2f5550ec859b83351718a3109742147e2602b24d0554a070910bff41",
-                "size": 25895
+                "digest": "sha256:ff82057a7d71b553a8139fdca73ad409dabc8a32d9c3d9fc4b4d3fcb0ad9a3a8",
+                "size": 26086
               },
               {
                 "uri": "skill://codesign/resize/editions.md",
