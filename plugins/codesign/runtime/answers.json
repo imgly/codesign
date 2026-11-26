@@ -1,5 +1,5 @@
 {
-  "runtime": "0.8.1-next.20261126100443.gd69ee78",
+  "runtime": "0.8.1-next.20261126134835.g466d2b8",
   "protocolVersions": [
     "2025-11-25",
     "2025-06-18",
@@ -25,7 +25,7 @@
     },
     "serverInfo": {
       "name": "codesign",
-      "version": "0.8.1-next.20261126100443.gd69ee78",
+      "version": "0.8.1-next.20261126134835.g466d2b8",
       "websiteUrl": "https://codesign.co",
       "icons": [
         {
@@ -697,7 +697,7 @@
             "name": "animate",
             "description": "Use when an existing CoDesign design should move — \"animate this\", \"make it move\", \"turn this post/poster/carousel into a video\", \"motion version\", \"make a loop of this\". Turns a still single- or multi-page design into one animated page and an mp4 without redesigning it, steered by one intake round and plain-language follow-ups (\"slower\", \"logo last\", \"no bounce\"). Not for videos from a repo or website (launch-video) or for new designs (create).",
             "mimeType": "text/markdown",
-            "size": 8622
+            "size": 8817
           },
           {
             "uri": "skill://codesign/brand/SKILL.md",
@@ -732,7 +732,7 @@
             "name": "launch-video",
             "description": "Use when turning a project — a repo, an app, a product, a website — into a short launch or promo video (15–25 s, mp4): \"make a launch video\", \"brag about this\", \"make a promo for what we built\", \"turn this into a video\". Reads the project itself for the story, then builds, animates, scores and exports the video with CoDesign.",
             "mimeType": "text/markdown",
-            "size": 12365
+            "size": 12541
           },
           {
             "uri": "skill://codesign/layerize/SKILL.md",
@@ -802,8 +802,8 @@
               },
               {
                 "uri": "skill://codesign/api/animation.md",
-                "digest": "sha256:932a94ed728ac2a46ca22356fef86593b03704ceef609e7082c5243725fd149f",
-                "size": 12840
+                "digest": "sha256:66d036806a8e1f41cad832e7e139212db7463fc2a802d5a155f5b67500695459",
+                "size": 13268
               },
               {
                 "uri": "skill://codesign/api/recipes.md",
@@ -842,8 +842,8 @@
             "resources": [
               {
                 "uri": "skill://codesign/animate/SKILL.md",
-                "digest": "sha256:ad0e48b075c6a1a4fa5a51c4cf738aae1dd70bbbb441b00a1abafb182b8330d8",
-                "size": 8622
+                "digest": "sha256:f612b9c7886b03b14e0734ede8294f3ea2bfe634f8e7a80a2fbe5dd3946481d5",
+                "size": 8817
               },
               {
                 "uri": "skill://codesign/animate/reference/multipage.md",
@@ -852,13 +852,13 @@
               },
               {
                 "uri": "skill://codesign/animate/reference/schedule.md",
-                "digest": "sha256:67cd16225624e0eec79e2212163b9b39ac4dbe1b504fbf442ada6f49f1d5b4e8",
-                "size": 24770
+                "digest": "sha256:136c37d13f6b062e8d3885f56c9379cf6ce2d7ab8d469957be7fc58ccb344185",
+                "size": 25384
               },
               {
                 "uri": "skill://codesign/animate/reference/styles.md",
-                "digest": "sha256:3462eff794f6229b2d2f71150e4e4b5012ce3217923b433b949fb423ad7693f6",
-                "size": 2164
+                "digest": "sha256:7e429873e04e9a5ea887c2c4e360a3d607d5a2c4a1351f187752c018b129d2b0",
+                "size": 2378
               }
             ]
           },
@@ -1033,8 +1033,8 @@
             "resources": [
               {
                 "uri": "skill://codesign/launch-video/SKILL.md",
-                "digest": "sha256:7ac28387be3fa3ec25664811f684e34e649abd46b98e22be2c9293a4c75dce77",
-                "size": 12365
+                "digest": "sha256:1bd7efc6fc2e3ab1689dd3377dbe05d3b361cfd454fb65661467d20e2aaec6c3",
+                "size": 12541
               },
               {
                 "uri": "skill://codesign/launch-video/reference/sound.md",
@@ -1851,7 +1851,7 @@
             "name": "animate",
             "description": "Use when an existing CoDesign design should move — \"animate this\", \"make it move\", \"turn this post/poster/carousel into a video\", \"motion version\", \"make a loop of this\". Turns a still single- or multi-page design into one animated page and an mp4 without redesigning it, steered by one intake round and plain-language follow-ups (\"slower\", \"logo last\", \"no bounce\"). Not for videos from a repo or website (launch-video) or for new designs (create).",
             "mimeType": "text/markdown",
-            "size": 8622
+            "size": 8817
           },
           {
             "uri": "skill://codesign/brand/SKILL.md",
@@ -1886,7 +1886,7 @@
             "name": "launch-video",
             "description": "Use when turning a project — a repo, an app, a product, a website — into a short launch or promo video (15–25 s, mp4): \"make a launch video\", \"brag about this\", \"make a promo for what we built\", \"turn this into a video\". Reads the project itself for the story, then builds, animates, scores and exports the video with CoDesign.",
             "mimeType": "text/markdown",
-            "size": 12365
+            "size": 12541
           },
           {
             "uri": "skill://codesign/layerize/SKILL.md",
@@ -1956,8 +1956,8 @@
               },
               {
                 "uri": "skill://codesign/api/animation.md",
-                "digest": "sha256:932a94ed728ac2a46ca22356fef86593b03704ceef609e7082c5243725fd149f",
-                "size": 12840
+                "digest": "sha256:66d036806a8e1f41cad832e7e139212db7463fc2a802d5a155f5b67500695459",
+                "size": 13268
               },
               {
                 "uri": "skill://codesign/api/recipes.md",
@@ -1996,8 +1996,8 @@
             "resources": [
               {
                 "uri": "skill://codesign/animate/SKILL.md",
-                "digest": "sha256:ad0e48b075c6a1a4fa5a51c4cf738aae1dd70bbbb441b00a1abafb182b8330d8",
-                "size": 8622
+                "digest": "sha256:f612b9c7886b03b14e0734ede8294f3ea2bfe634f8e7a80a2fbe5dd3946481d5",
+                "size": 8817
               },
               {
                 "uri": "skill://codesign/animate/reference/multipage.md",
@@ -2006,13 +2006,13 @@
               },
               {
                 "uri": "skill://codesign/animate/reference/schedule.md",
-                "digest": "sha256:67cd16225624e0eec79e2212163b9b39ac4dbe1b504fbf442ada6f49f1d5b4e8",
-                "size": 24770
+                "digest": "sha256:136c37d13f6b062e8d3885f56c9379cf6ce2d7ab8d469957be7fc58ccb344185",
+                "size": 25384
               },
               {
                 "uri": "skill://codesign/animate/reference/styles.md",
-                "digest": "sha256:3462eff794f6229b2d2f71150e4e4b5012ce3217923b433b949fb423ad7693f6",
-                "size": 2164
+                "digest": "sha256:7e429873e04e9a5ea887c2c4e360a3d607d5a2c4a1351f187752c018b129d2b0",
+                "size": 2378
               }
             ]
           },
@@ -2187,8 +2187,8 @@
             "resources": [
               {
                 "uri": "skill://codesign/launch-video/SKILL.md",
-                "digest": "sha256:7ac28387be3fa3ec25664811f684e34e649abd46b98e22be2c9293a4c75dce77",
-                "size": 12365
+                "digest": "sha256:1bd7efc6fc2e3ab1689dd3377dbe05d3b361cfd454fb65661467d20e2aaec6c3",
+                "size": 12541
               },
               {
                 "uri": "skill://codesign/launch-video/reference/sound.md",
