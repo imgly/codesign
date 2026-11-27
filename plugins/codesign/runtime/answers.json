@@ -1,5 +1,5 @@
 {
-  "runtime": "0.8.1-next.20261126211703.g9b616ed",
+  "runtime": "0.8.1-next.20261126225250.g3f2cbd6",
   "protocolVersions": [
     "2025-11-25",
     "2025-06-18",
@@ -25,7 +25,7 @@
     },
     "serverInfo": {
       "name": "codesign",
-      "version": "0.8.1-next.20261126211703.g9b616ed",
+      "version": "0.8.1-next.20261126225250.g3f2cbd6",
       "websiteUrl": "https://codesign.co",
       "icons": [
         {
@@ -833,8 +833,8 @@
               },
               {
                 "uri": "skill://codesign/api/animation.md",
-                "digest": "sha256:b00d9dedd0932a378924407cf389eca4963ceb20ace59cbe44087261cac0a374",
-                "size": 13545
+                "digest": "sha256:58df784c6b771888f8f80533ae85d73b3a15ee79d4209820021646d8b216a3e3",
+                "size": 13918
               },
               {
                 "uri": "skill://codesign/api/recipes.md",
@@ -2037,8 +2037,8 @@
               },
               {
                 "uri": "skill://codesign/api/animation.md",
-                "digest": "sha256:b00d9dedd0932a378924407cf389eca4963ceb20ace59cbe44087261cac0a374",
-                "size": 13545
+                "digest": "sha256:58df784c6b771888f8f80533ae85d73b3a15ee79d4209820021646d8b216a3e3",
+                "size": 13918
               },
               {
                 "uri": "skill://codesign/api/recipes.md",
